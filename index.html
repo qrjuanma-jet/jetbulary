@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jetbulary Mobile</title>
+    <title>Jetbulary 2.0</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .container { width: 90%; max-width: 600px; background: white; padding: 2rem; margin-top: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
@@ -14,6 +14,7 @@
         button.secondary { background: #6c757d; }
         button.success { background: #28a745; }
         button.warning { background: #ffc107; color: #333; }
+        button.danger { background: #dc3545; }
         input { padding: 12px; width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
         .hidden { display: none !important; }
         
@@ -29,10 +30,37 @@
         .youglish { display: block; margin-top: 1.5rem; color: #007bff; text-decoration: none; }
         .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 1.1rem; }
         
-        /* Topic List Item */
-        .topic-item { background: #f8f9fa; margin: 8px 0; padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .topic-actions { display: flex; gap: 5px; }
-        .topic-actions button { width: auto; flex-grow: 1; font-size: 0.9rem; padding: 8px; }
+        /* Accordion Topics */
+        details { background: #f8f9fa; margin: 8px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left; }
+        summary { padding: 15px; cursor: pointer; font-weight: bold; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; font-size: 1.5rem; color: #007bff; }
+        details[open] summary::after { content: '-'; color: #dc3545; }
+        details[open] { background: white; border: 1px solid #ddd; }
+        .topic-content { padding: 15px; border-top: 1px solid #eee; display: flex; flex-direction: column; gap: 10px; }
+        .topic-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+        .topic-actions button { flex: 1; font-size: 0.9rem; padding: 10px; margin: 0; }
+
+        /* Image Avatar CSS */
+        .avatar-container { width: 280px; height: 340px; margin: 0 auto 10px; position: relative; }
+        .avatar-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2)); }
+        
+        /* Vocab List */
+        .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        .vocab-info { flex-grow: 1; }
+        .vocab-en { font-weight: bold; font-size: 1.1rem; color: #007bff; }
+        .vocab-es { color: #555; font-size: 0.9rem; }
+        .vocab-score { font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; color: white; margin-left: 5px; }
+        .score-high { background: #28a745; }
+        .score-med { background: #ffc107; color: #333; }
+        .score-low { background: #dc3545; }
+        
+        select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 1rem; }
+        
+        /* Grammar Course */
+        .level-header { background: #e9ecef; padding: 10px; font-weight: bold; margin-top: 15px; border-radius: 5px; text-align: left; }
+        .lesson-item { background: white; border: 1px solid #ddd; padding: 12px; margin: 5px 0; border-radius: 6px; text-align: left; cursor: pointer; }
+        .lesson-item:hover { background: #f1f1f1; }
     </style>
 </head>
 <body>
@@ -40,59 +68,107 @@
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
         <h1>Jetbulary</h1>
-        <p>Tu entrenador de vocabulario personal</p>
-        <input type="text" id="login-user" placeholder="Usuario">
-        <input type="password" id="login-pass" placeholder="Contraseña">
-        <button onclick="app.login()">Entrar</button>
-        <button onclick="app.showRegister()" class="secondary">Crear Cuenta</button>
+        <p>Introduce tu API Key de Groq para empezar:</p>
         
-        <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-            <small style="color: #666; display:block; margin-bottom:5px;">Configuración (Necesario para IA)</small>
-            <input type="password" id="api-key-input" placeholder="Pega tu API Key de Groq aquí">
-            <button onclick="app.saveApiKey()" class="warning" style="padding: 8px;">Guardar API Key</button>
-            <small><a href="https://console.groq.com/keys" target="_blank" style="color:#007bff;">Conseguir Key Gratis</a></small>
-        </div>
-    </div>
-
-    <!-- VISTA REGISTRO -->
-    <div id="view-register" class="container hidden">
-        <h2>Crear Cuenta</h2>
-        <input type="text" id="reg-user" placeholder="Elige un Usuario">
-        <input type="password" id="reg-pass" placeholder="Elige una Contraseña">
-        <button onclick="app.register()" class="success">Registrarse</button>
-        <button onclick="app.showLogin()" class="secondary">Volver</button>
+        <input type="password" id="api-key-input" placeholder="gsk_...">
+        <button onclick="app.saveApiKey()" class="success">Entrar</button>
+        <p><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007bff;">Conseguir Key Gratis</a></small></p>
     </div>
 
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
-        <h1 id="dash-welcome">Hola</h1>
+        <h1 id="dash-welcome">Jetbulary</h1>
+        
+        <!-- AVATAR DASHBOARD -->
+        <div class="avatar-container" id="avatar-dash">
+        </div>
+        
+        <select id="lang-selector" onchange="app.changeLanguage()">
+            <option value="en">🇬🇧 Inglés (English)</option>
+            <option value="de">🇩🇪 Alemán (Deutsch)</option>
+            <option value="fr">🇫🇷 Francés (Français)</option>
+            <option value="it">🇮🇹 Italiano (Italiano)</option>
+            <option value="eu">🏴 Euskera (Euskara)</option>
+            <option value="zh">🇨🇳 Chino (中文)</option>
+        </select>
+
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
             <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
             <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
         </div>
+        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+            <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
+            <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
+        </div>
+
         <div id="topic-list"></div>
         <hr>
         <h3>Nuevo Tema</h3>
-        <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Negocios...">
+        <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         <br><br>
-        <button onclick="app.logout()" class="secondary">Cerrar Sesión</button>
+        <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
     </div>
 
     <!-- VISTA JUEGO -->
     <div id="view-game" class="container hidden">
+        <!-- AVATAR -->
+        <div class="avatar-container" id="avatar">
+        </div>
+
         <div id="game-card">
             <p class="sentence" id="sentence-display"></p>
             <button onclick="game.speak()" style="background:none; color:#007bff; padding:0; width:auto; display:inline;">🔊 Escuchar</button>
             <div class="word-target" id="word-display"></div>
-            <p>Pulsa y pronuncia:</p>
+            <button onclick="game.speakWordSlow()" style="background:none; color:#28a745; padding:0; width:auto; display:block; margin: -10px auto 10px auto; font-size: 0.9rem;">🐢 Escuchar Palabra (Lento)</button>
+            <p id="prompt-pronounce">Pulsa y pronuncia:</p>
             <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
             <p id="spoken-text" style="color:#888; font-style:italic;">...</p>
             <div id="feedback-msg" class="feedback"></div>
-            <a id="youglish-link" href="#" target="_blank" style="display:block; margin-top:15px;">Ver en YouGlish ↗</a>
+            <div id="ai-advice" class="hidden" style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem; color: #664d03;"></div>
+            <a id="youglish-link" href="#" target="_blank" style="display:block; margin-top:15px;">Ver ejemplos nativos ↗</a>
         </div>
         <button id="next-btn" class="hidden" onclick="game.next()">Siguiente ➡</button>
         <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Salir</button>
+    </div>
+
+    <!-- VISTA VOCABULARIO -->
+    <div id="view-vocab" class="container hidden">
+        <h2>Mi Vocabulario</h2>
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <button onclick="vocab.sort('score')" class="secondary" style="font-size:0.8rem">Dificultad</button>
+            <button onclick="vocab.sort('topic')" class="secondary" style="font-size:0.8rem">Tema</button>
+            <button onclick="vocab.sort('alpha')" class="secondary" style="font-size:0.8rem">A-Z</button>
+        </div>
+        <div id="vocab-list" style="max-height: 400px; overflow-y: auto;"></div>
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
+    </div>
+
+    <!-- VISTA GRAMÁTICA -->
+    <div id="view-grammar" class="container hidden">
+        <!-- AVATAR GRAMMAR -->
+        <div class="avatar-container" id="avatar-grammar">
+        </div>
+        
+        <h2 id="grammar-title">Gramática</h2>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 20px;">
+            <button onclick="app.showGrammarCourse()" class="success">🎓 Curso Guiado</button>
+            <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ Pregunta Rápida</button>
+        </div>
+
+        <!-- Pregunta Rápida -->
+        <div id="grammar-qa" class="hidden">
+            <p>Pide a la profesora que te explique algo:</p>
+            <input type="text" id="grammar-query" placeholder="Ej: Present Perfect, Verbos modales...">
+            <button onclick="app.askGrammar()" id="btn-grammar">Preguntar</button>
+            <div id="grammar-content" style="text-align: left; margin-top: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; min-height: 100px;"></div>
+        </div>
+
+        <!-- Curso Guiado -->
+        <div id="grammar-course-list" class="hidden"></div>
+
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
     </div>
 
     <!-- VISTA ESTADÍSTICAS -->
@@ -107,23 +183,27 @@
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
-    let db = { users: [], topics: [], words: [], progress: [] };
-    let currentUser = null;
+    let db = { topics: [], words: [], progress: [], grammar_courses: {} };
+    let currentLang = 'en';
 
     const app = {
         init: () => {
             const data = localStorage.getItem(DB_KEY);
             if (data) db = JSON.parse(data);
+            if (!db.grammar_courses) db.grammar_courses = {};
             
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if(savedKey) document.getElementById('api-key-input').value = savedKey;
+            // Clave recuperada de tu configuración de servidor
+            else document.getElementById('api-key-input').value = "";
             
-            // Auto login si hay sesión (simulado)
-            const lastUser = localStorage.getItem('jetbulary_last_user');
-            if(lastUser) {
-                currentUser = db.users.find(u => u.id == lastUser);
-                if(currentUser) app.showDashboard();
-                else app.showLogin();
+            // Permitir Enter en el input de nuevo tema
+            document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') app.createTopic();
+            });
+            
+            if(savedKey) {
+                app.showDashboard();
             } else {
                 app.showLogin();
             }
@@ -132,15 +212,19 @@
         
         // VISTAS
         showLogin: () => app.switchView('view-login'),
-        showRegister: () => app.switchView('view-register'),
         showDashboard: () => {
             app.switchView('view-dashboard');
-            document.getElementById('dash-welcome').innerText = `Hola, ${currentUser.username}`;
+            document.getElementById('lang-selector').value = currentLang;
+            game.updateAvatar(); // Actualizar avatar del dashboard
+            app.renderTopics();
+        },
+        changeLanguage: () => {
+            currentLang = document.getElementById('lang-selector').value;
             app.renderTopics();
         },
         showStats: () => {
             app.switchView('view-stats');
-            const prog = db.progress.filter(p => p.user_id === currentUser.id);
+            const prog = db.progress;
             const total = prog.length;
             const succ = prog.reduce((a,b) => a + b.successes, 0);
             const att = prog.reduce((a,b) => a + b.attempts, 0);
@@ -148,64 +232,83 @@
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-acc').innerText = acc + '%';
         },
+        showVocab: () => {
+            app.switchView('view-vocab');
+            vocab.render();
+        },
+        showGrammar: () => {
+            app.switchView('view-grammar');
+            document.getElementById('grammar-title').innerText = `Gramática (${app.getLangName()})`;
+            game.updateAvatar(); // Actualizar avatar de gramática
+            app.showGrammarCourse(); // Por defecto mostrar curso si existe
+        },
         switchView: (id) => {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         },
         
-        // AUTH
-        login: () => {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
-            const user = db.users.find(user => user.username === u && user.password === p);
-            if(user) {
-                currentUser = user;
-                localStorage.setItem('jetbulary_last_user', user.id);
-                app.showDashboard();
-            } else alert("Credenciales incorrectas");
-        },
-        register: () => {
-            const u = document.getElementById('reg-user').value;
-            const p = document.getElementById('reg-pass').value;
-            if(db.users.find(user => user.username === u)) return alert("Usuario ya existe");
-            const newUser = { id: Date.now(), username: u, password: p };
-            db.users.push(newUser);
-            app.saveDB();
-            alert("Cuenta creada. Inicia sesión.");
-            app.showLogin();
-        },
         logout: () => {
-            currentUser = null;
-            localStorage.removeItem('jetbulary_last_user');
-            app.showLogin();
+            if(confirm("¿Quieres cambiar la API Key?")) {
+                localStorage.removeItem(API_KEY_STORAGE);
+                app.showLogin();
+            }
         },
         saveApiKey: () => {
             const k = document.getElementById('api-key-input').value.trim();
             if(k) {
                 localStorage.setItem(API_KEY_STORAGE, k);
-                alert("API Key guardada en tu móvil.");
+                app.showDashboard();
+            } else {
+                alert("Introduce una API Key válida.");
             }
         },
         
         // LOGICA TEMAS
         renderTopics: () => {
             const list = document.getElementById('topic-list');
-            // Filtrar temas que tienen palabras
-            const myTopics = db.topics.filter(t => db.words.some(w => w.topic_id === t.id));
+            // Filtrar temas por idioma actual
+            const myTopics = db.topics.filter(t => (t.lang || 'en') === currentLang);
             
-            if(myTopics.length === 0) list.innerHTML = "<p>No hay temas. Crea uno nuevo.</p>";
+            if(myTopics.length === 0) list.innerHTML = `<p>No hay temas en ${app.getLangName()}. Crea uno nuevo.</p>`;
             else {
-                list.innerHTML = myTopics.map(t => `
-                    <div class="topic-item">
-                        <span style="font-weight:bold; font-size:1.1rem;">${t.name}</span>
-                        <div class="topic-actions">
-                            <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
-                            <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
-                            <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
+                // Orden inverso para que el último salga primero
+                const reversed = [...myTopics].reverse();
+                
+                list.innerHTML = reversed.map((t, index) => `
+                    <details ${index === 0 ? 'open' : ''} onclick="app.closeOthers(this)">
+                        <summary>${t.name}</summary>
+                        <div class="topic-content">
+                            <div class="topic-actions">
+                                <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
+                                <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
+                            </div>
+                            <div class="topic-actions">
+                                <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
+                                <button onclick="app.deleteTopic(${t.id})" class="danger">Borrar</button>
+                            </div>
                         </div>
-                    </div>
+                    </details>
                 `).join('');
             }
+        },
+        
+        closeOthers: (details) => {
+            if(!details.open) {
+                document.querySelectorAll('details').forEach(d => {
+                    if(d !== details) d.removeAttribute('open');
+                });
+            }
+        },
+        
+        deleteTopic: (id) => {
+            if(!confirm("¿Borrar este tema y todo su vocabulario?")) return;
+            db.topics = db.topics.filter(t => t.id !== id);
+            db.words = db.words.filter(w => w.topic_id !== id);
+            // Limpiar progreso huérfano
+            const validWordIds = db.words.map(w => w.id);
+            db.progress = db.progress.filter(p => validWordIds.includes(p.word_id));
+            app.saveDB();
+            app.renderTopics();
         },
         
         createTopic: async () => {
@@ -214,11 +317,11 @@
             const btn = document.getElementById('btn-create');
             
             // Verificar si existe
-            let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase());
+            let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
             if(topic) return alert("El tema ya existe.");
             
             await app.callAI(name, btn, (vocab) => {
-                const newTopic = { id: Date.now(), name: name };
+                const newTopic = { id: Date.now(), name: name, lang: currentLang };
                 db.topics.push(newTopic);
                 vocab.forEach((w, i) => db.words.push({ ...w, id: Date.now()+i, topic_id: newTopic.id }));
                 app.saveDB();
@@ -238,6 +341,84 @@
             }, `NO repitas estas palabras: ${existing}.`);
         },
         
+        showGrammarCourse: () => {
+            document.getElementById('grammar-qa').classList.add('hidden');
+            const container = document.getElementById('grammar-course-list');
+            container.classList.remove('hidden');
+            
+            const course = db.grammar_courses && db.grammar_courses[currentLang];
+            
+            if (!course) {
+                container.innerHTML = `
+                    <p>No hay un curso creado para ${app.getLangName()}.</p>
+                    <button onclick="app.createGrammarCourse(this)" class="success">✨ Generar Plan de Estudios con IA</button>
+                `;
+            } else {
+                container.innerHTML = course.map(level => `
+                    <div class="level-header">${level.level}</div>
+                    ${level.topics.map(topic => `
+                        <div class="lesson-item" onclick="app.openGrammarLesson('${level.level}', '${topic}')">
+                            📖 ${topic}
+                        </div>
+                    `).join('')}
+                `).join('');
+            }
+        },
+
+        createGrammarCourse: async (btn) => {
+            const langName = app.getLangName();
+            await app.callAI_Text(
+                `Genera un temario de gramática para aprender ${langName} dividido en 3 niveles (Principiante, Intermedio, Avanzado). Para cada nivel dame 5 temas clave. 
+                Responde SOLO con un JSON válido con este formato: [{"level": "Principiante", "topics": ["Tema 1", "Tema 2"]}, ...]`, 
+                btn, 
+                (text) => {
+                    try {
+                        const json = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+                        if(!db.grammar_courses) db.grammar_courses = {};
+                        db.grammar_courses[currentLang] = json;
+                        app.saveDB();
+                        app.showGrammarCourse();
+                    } catch(e) { alert("Error al procesar la respuesta de la IA: " + e.message); }
+                }
+            );
+        },
+
+        openGrammarLesson: async (level, topic) => {
+            const container = document.getElementById('grammar-content');
+            document.getElementById('grammar-qa').classList.remove('hidden'); // Reusamos la vista de QA para mostrar contenido
+            document.getElementById('grammar-course-list').classList.add('hidden');
+            document.getElementById('grammar-query').value = topic; // Para referencia
+            
+            // Simular click en preguntar
+            const btn = document.getElementById('btn-grammar');
+            const langName = app.getLangName();
+            const prompt = `Actúa como una profesora de ${langName}. Explica el tema de gramática: "${topic}" (Nivel ${level}). 
+            Incluye: 1. Explicación clara. 2. Ejemplos traducidos. 3. Un pequeño ejercicio al final. Usa formato HTML bonito.`;
+            
+            await app.callAI_Text(prompt, btn, (text) => {
+                container.innerHTML = text;
+            });
+        },
+
+        askGrammar: async () => {
+            const query = document.getElementById('grammar-query').value;
+            if(!query) return;
+            const btn = document.getElementById('btn-grammar');
+            const content = document.getElementById('grammar-content');
+            
+            const langName = app.getLangName();
+            const prompt = `Explica brevemente la gramática de "${query}" en el idioma ${langName}. Usa ejemplos. Formato HTML simple (usa <p>, <ul>, <li>, <strong>).`;
+            
+            await app.callAI_Text(prompt, btn, (text) => {
+                content.innerHTML = text;
+            });
+        },
+        
+        getLangName: () => {
+            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino' };
+            return map[currentLang] || 'Inglés';
+        },
+
         callAI: async (topicName, btn, callback, extraPrompt = "") => {
             const key = localStorage.getItem(API_KEY_STORAGE);
             if(!key) return alert("Falta la API Key. Configúrala en el Login.");
@@ -246,7 +427,8 @@
             btn.disabled = true;
             btn.innerText = "Generando...";
             
-            const prompt = `Genera un JSON con 10 palabras en inglés sobre: "${topicName}". ${extraPrompt} Formato JSON array estricto: [{"english": "word", "spanish": "traducción", "sentence_en": "Example sentence.", "sentence_es": "Frase traducida."}] Solo JSON.`;
+            const langName = app.getLangName();
+            const prompt = `Genera un JSON con 10 palabras en ${langName} sobre: "${topicName}". ${extraPrompt} Formato JSON array estricto: [{"english": "palabra_en_${currentLang}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -271,22 +453,98 @@
             }
         },
         
+        callAI_Text: async (prompt, btn, callback) => {
+            const key = localStorage.getItem(API_KEY_STORAGE);
+            if(!key) return alert("Falta API Key");
+            
+            let originalText = "";
+            if (btn) {
+                originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = "...";
+            }
+            
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{role:"user", content: prompt}],
+                        temperature: 0.5
+                    })
+                });
+                const data = await res.json();
+                callback(data.choices[0].message.content);
+            } catch(e) { alert(e.message); }
+            finally { 
+                if (btn) {
+                    btn.disabled = false; 
+                    btn.innerText = originalText; 
+                }
+            }
+        },
+        
         startReview: () => {
             // Modo repaso global
             game.start('global_review', 'review');
         }
     };
 
+    const vocab = {
+        render: (sortBy = 'score') => {
+            const list = document.getElementById('vocab-list');
+            // Obtener todas las palabras del idioma actual
+            const langTopics = db.topics.filter(t => (t.lang || 'en') === currentLang).map(t => t.id);
+            let words = db.words.filter(w => langTopics.includes(w.topic_id));
+            
+            // Añadir stats
+            words = words.map(w => {
+                const p = db.progress.find(pr => pr.word_id === w.id);
+                const score = p && p.attempts > 0 ? Math.round((p.successes/p.attempts)*100) : -1;
+                return { ...w, score, topicName: db.topics.find(t => t.id === w.topic_id).name };
+            });
+
+            // Ordenar
+            if(sortBy === 'score') words.sort((a,b) => a.score - b.score); // Menor score primero (más difícil)
+            if(sortBy === 'topic') words.sort((a,b) => a.topicName.localeCompare(b.topicName));
+            if(sortBy === 'alpha') words.sort((a,b) => a.english.localeCompare(b.english));
+
+            list.innerHTML = words.map(w => {
+                let badge = w.score === -1 ? '<span class="vocab-score" style="background:#999">Nuevo</span>' : 
+                            w.score < 50 ? `<span class="vocab-score score-low">${w.score}%</span>` :
+                            w.score < 80 ? `<span class="vocab-score score-med">${w.score}%</span>` :
+                            `<span class="vocab-score score-high">${w.score}%</span>`;
+                
+                return `
+                <div class="vocab-item">
+                    <div class="vocab-info">
+                        <div class="vocab-en">${w.english} ${badge}</div>
+                        <div class="vocab-es">${w.spanish} <small>(${w.topicName})</small></div>
+                    </div>
+                    <div class="vocab-controls">
+                        <button onclick="game.speakText('${w.english}')" class="secondary">🔊</button>
+                    </div>
+                </div>`;
+            }).join('');
+        },
+        sort: (type) => vocab.render(type)
+    };
+
     const game = {
         data: [],
         index: 0,
         recognition: null,
+        talkInterval: null,
         
         start: (topicId, mode) => {
             let words = [];
             if(topicId === 'global_review') {
                 // Buscar palabras con intentos y ordenarlas por peor score
-                const userProg = db.progress.filter(p => p.user_id === currentUser.id);
+                // Filtrar por idioma actual
+                const langTopics = db.topics.filter(t => (t.lang || 'en') === currentLang).map(t => t.id);
+                const userProg = db.progress.filter(p => db.words.find(w => w.id === p.word_id && langTopics.includes(w.topic_id)));
+                
                 userProg.sort((a,b) => (a.successes/a.attempts) - (b.successes/b.attempts));
                 words = userProg.slice(0, 10).map(p => db.words.find(w => w.id === p.word_id)).filter(w=>w);
             } else {
@@ -294,7 +552,7 @@
                 if(mode === 'review') {
                     // Solo palabras ya vistas
                     words = words.filter(w => {
-                        const p = db.progress.find(pr => pr.user_id === currentUser.id && pr.word_id === w.id);
+                        const p = db.progress.find(pr => pr.word_id === w.id);
                         return p && p.attempts > 0;
                     });
                 }
@@ -306,9 +564,19 @@
             game.data = words.sort(() => Math.random() - 0.5).slice(0, 10);
             game.index = 0;
             app.switchView('view-game');
+            game.updateAvatar();
             game.loadCard();
         },
         
+        updateAvatar: () => {
+            // Actualizar imagen del avatar (boca cerrada por defecto)
+            const containers = document.querySelectorAll('.avatar-container');
+            containers.forEach(c => {
+                // Usar siempre avatar en inglés (en) por ahora para todos los idiomas
+                c.innerHTML = `<img src="avatar_en_closed.png" class="avatar-img" alt="Avatar">`;
+            });
+        },
+
         loadCard: () => {
             if(game.index >= game.data.length) {
                 alert("Sesión terminada");
@@ -319,9 +587,27 @@
             const html = item.sentence_en.replace(new RegExp(`\\b${item.english}\\b`, 'gi'), `<strong>${item.english}</strong>`);
             document.getElementById('sentence-display').innerHTML = html;
             document.getElementById('word-display').innerText = item.spanish;
-            document.getElementById('youglish-link').href = `https://es.youglish.com/pronounce/${item.english}/english`;
+            
+            // Link YouGlish dinámico según idioma
+            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese' };
+            const ygLang = ygMap[currentLang];
+            const ygLink = document.getElementById('youglish-link');
+
+            if (ygLang) {
+                ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(item.english)}/${ygLang}`;
+                ygLink.innerText = "Ver ejemplos nativos (YouGlish) ↗";
+                ygLink.classList.remove('hidden');
+            } else if (currentLang === 'eu') {
+                ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
+                ygLink.innerText = "Ver en Elhuyar (Diccionario/Contexto) ↗";
+                ygLink.classList.remove('hidden');
+            } else {
+                ygLink.classList.add('hidden');
+            }
+            document.getElementById('prompt-pronounce').innerText = `Pulsa y pronuncia en ${app.getLangName()}:`;
             
             document.getElementById('feedback-msg').innerText = "";
+            document.getElementById('ai-advice').classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
             document.getElementById('next-btn').classList.add('hidden');
             document.getElementById('mic-btn').classList.remove('hidden');
@@ -330,12 +616,63 @@
         },
         
         speak: () => {
+            game.speakText(game.data[game.index].sentence_en);
+        },
+        
+        speakWordSlow: () => {
+            game.speakText(game.data[game.index].english, 0.5);
+        },
+        
+        speakText: (text, rate = 1) => {
             window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(game.data[game.index].sentence_en);
-            u.lang = 'en-US';
+            if (game.talkInterval) clearInterval(game.talkInterval);
+            const u = new SpeechSynthesisUtterance(text);
+            
+            u.rate = rate;
+            // Configurar idioma TTS
+            let langCode = 'en-US';
+            if(currentLang === 'de') langCode = 'de-DE';
+            if(currentLang === 'fr') langCode = 'fr-FR';
+            if(currentLang === 'it') langCode = 'it-IT';
+            if(currentLang === 'zh') langCode = 'zh-CN';
+            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback para Euskera (no suele haber TTS nativo fácil)
+            
+            u.lang = langCode;
+            
             const voices = window.speechSynthesis.getVoices();
-            const f = voices.find(v => v.name.includes('Google US') || v.name.includes('Samantha'));
+            
+            // Lista ampliada de nombres femeninos comunes en TTS para asegurar voz de mujer
+            const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
+            
+            // Buscar voz femenina que coincida con el idioma y no sea explícitamente masculina
+            const f = voices.find(v => v.lang.includes(langCode.split('-')[0]) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
+            
             if(f) u.voice = f;
+            
+            // Animación boca
+            u.onstart = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
+                
+                game.talkInterval = setInterval(() => {
+                    // Animación aleatoria más natural (más 'open' y 'half', menos 'closed')
+                    const rand = Math.random();
+                    const state = rand < 0.1 ? 'closed' : (rand < 0.55 ? 'half' : 'open');
+                    
+                    document.querySelectorAll('.avatar-img').forEach(img => {
+                        img.src = img.src.replace(/_(closed|half|open)\.png/, `_${state}.png`);
+                    });
+                }, 100);
+            };
+            u.onend = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+                if (game.talkInterval) clearInterval(game.talkInterval);
+                // Reset a closed
+                document.querySelectorAll('.avatar-img').forEach(img => {
+                    img.src = img.src.replace(/_(half|open)\.png/, '_closed.png');
+                });
+            };
+            
+            u.onerror = u.onend;
             window.speechSynthesis.speak(u);
         },
         
@@ -344,10 +681,28 @@
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
                 game.recognition = new SpeechRecognition();
-                game.recognition.lang = 'en-US';
+                
+                // Idioma reconocimiento
+                let langCode = 'en-US';
+                if(currentLang === 'de') langCode = 'de-DE';
+                if(currentLang === 'fr') langCode = 'fr-FR';
+                if(currentLang === 'it') langCode = 'it-IT';
+                if(currentLang === 'zh') langCode = 'zh-CN';
+                if(currentLang === 'eu') langCode = 'eu-ES';
+                
+                game.recognition.lang = langCode;
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
                 game.recognition.onend = () => document.getElementById('mic-btn').classList.remove('listening');
             }
+            // Actualizar lang por si cambió
+            let langCode = 'en-US';
+            if(currentLang === 'de') langCode = 'de-DE';
+            if(currentLang === 'fr') langCode = 'fr-FR';
+            if(currentLang === 'it') langCode = 'it-IT';
+            if(currentLang === 'zh') langCode = 'zh-CN';
+            if(currentLang === 'eu') langCode = 'eu-ES';
+            game.recognition.lang = langCode;
+            
             document.getElementById('mic-btn').classList.add('listening');
             game.recognition.start();
         },
@@ -362,9 +717,9 @@
             
             // Guardar progreso
             const wId = game.data[game.index].id;
-            let prog = db.progress.find(p => p.user_id === currentUser.id && p.word_id === wId);
+            let prog = db.progress.find(p => p.word_id === wId);
             if(!prog) {
-                prog = { user_id: currentUser.id, word_id: wId, attempts: 0, successes: 0 };
+                prog = { word_id: wId, attempts: 0, successes: 0 };
                 db.progress.push(prog);
             }
             prog.attempts++;
@@ -380,12 +735,26 @@
                 fb.innerText = `Casi... era "${target}"`;
                 fb.className = "feedback incorrect";
                 document.getElementById('next-btn').classList.remove('hidden');
+                game.getPronunciationAdvice(target, transcript);
             }
         },
         
         next: () => {
             game.index++;
             game.loadCard();
+        },
+        
+        getPronunciationAdvice: async (target, spoken) => {
+            const container = document.getElementById('ai-advice');
+            container.innerHTML = "🤔 Analizando tu pronunciación...";
+            container.classList.remove('hidden');
+            
+            const langName = app.getLangName();
+            const prompt = `Actúa como un profesor de pronunciación de ${langName}. El estudiante intentó decir "${target}" pero se entendió "${spoken}". Analiza el error fonético probable y da un consejo breve y práctico para corregirlo. Máximo 2 frases.`;
+            
+            await app.callAI_Text(prompt, null, (text) => {
+                container.innerHTML = `<strong>💡 Consejo IA:</strong> ${text}`;
+            });
         }
     };
 
