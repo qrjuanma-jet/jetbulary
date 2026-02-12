@@ -615,6 +615,14 @@
             containers.forEach(c => {
                 // Intentar cargar avatar del idioma, si falla usa el de inglés
                 c.innerHTML = `<img src="avatar_${currentLang}_closed.png" class="avatar-img" alt="Avatar" onerror="this.onerror=null; this.src='avatar_en_closed.png'">`;
+                // Crear imagen nueva para asegurar recarga
+                const img = new Image();
+                img.className = 'avatar-img';
+                img.alt = 'Avatar';
+                img.onerror = () => { if(img.src.indexOf('avatar_en_closed.png') === -1) img.src = 'avatar_en_closed.png'; };
+                img.src = `avatar_${currentLang}_closed.png`;
+                c.innerHTML = '';
+                c.appendChild(img);
             });
         },
 
