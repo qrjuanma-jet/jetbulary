@@ -15,6 +15,7 @@
         button.success { background: #28a745; }
         button.warning { background: #ffc107; color: #333; }
         button.danger { background: #dc3545; }
+        small { font-size: 0.8rem; color: #777; }
         input { padding: 12px; width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
         .hidden { display: none !important; }
         
@@ -24,7 +25,7 @@
         .mic-btn { width: 80px !important; height: 80px; border-radius: 50%; background: #dc3545; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; margin: 10px auto; cursor: pointer; }
         .mic-btn.listening { background: #ff0000; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .feedback { margin-top: 1rem; font-weight: bold; min-height: 1.5rem; }
+        .feedback { margin-top: 0.5rem; font-weight: bold; min-height: 1.5rem; }
         .correct { color: green; }
         .incorrect { color: red; }
         .youglish { display: block; margin-top: 1.5rem; color: #007bff; text-decoration: none; }
@@ -61,6 +62,16 @@
         .level-header { background: #e9ecef; padding: 10px; font-weight: bold; margin-top: 15px; border-radius: 5px; text-align: left; }
         .lesson-item { background: white; border: 1px solid #ddd; padding: 12px; margin: 5px 0; border-radius: 6px; text-align: left; cursor: pointer; }
         .lesson-item:hover { background: #f1f1f1; }
+        
+        /* Timer Bar */
+        #timer-container { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        #timer-bar { height: 100%; width: 0%; background: #28a745; transition: width 0.1s linear, background 0.5s; }
+
+        /* Calligraphy */
+        .calligraphy-container { position: relative; width: 300px; height: 300px; margin: 0 auto 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .calligraphy-watermark { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 100px; color: #e0e0e0; pointer-events: none; font-family: 'KaiTi', 'SimKai', serif; z-index: 0; user-select: none; word-break: break-all; text-align: center; line-height: 1; }
+        #calligraphy-canvas { position: relative; z-index: 1; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+        .brush-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -88,8 +99,15 @@
             <option value="de">🇩🇪 Alemán (Deutsch)</option>
             <option value="fr">🇫🇷 Francés (Français)</option>
             <option value="it">🇮🇹 Italiano (Italiano)</option>
-            <option value="eu">🏴 Euskera (Euskara)</option>
+            <option value="eu">🟢⚪🔴 Euskera (Euskara)</option>
             <option value="zh">🇨🇳 Chino (中文)</option>
+            <option value="ru">🇷🇺 Ruso (Русский)</option>
+            <option value="pt">🇵🇹 Portugués (Português)</option>
+            <option value="ca">🟡🔴 Catalán (Català)</option>
+            <option value="gl">⚪🔵 Gallego (Galego)</option>
+            <option value="ko">🇰🇷 Coreano (한국어)</option>
+            <option value="ar">🇸🇦 Árabe (العربية)</option>
+            <option value="he">🇮🇱 Hebreo (עברית)</option>
         </select>
 
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
@@ -120,9 +138,16 @@
             <p class="sentence" id="sentence-display"></p>
             <button onclick="game.speak()" style="background:none; color:#007bff; padding:0; width:auto; display:inline;">🔊 Escuchar</button>
             <div class="word-target" id="word-display"></div>
+            <button onclick="calligraphy.show()" style="background:none; color:#6c757d; padding:0; width:auto; display:block; margin: -5px auto 10px auto; font-size: 0.9rem;">✍️ Escribir / Caligrafía</button>
             <button onclick="game.speakWordSlow()" style="background:none; color:#28a745; padding:0; width:auto; display:block; margin: -10px auto 10px auto; font-size: 0.9rem;">🐢 Escuchar Palabra (Lento)</button>
+            
+            <small id="sentence-translation">Traducción de la frase aquí</small>
+
             <p id="prompt-pronounce">Pulsa y pronuncia:</p>
             <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
+            <div id="timer-container" class="hidden">
+                <div id="timer-bar"></div>
+            </div>
             <p id="spoken-text" style="color:#888; font-style:italic;">...</p>
             <div id="feedback-msg" class="feedback"></div>
             <div id="ai-advice" class="hidden" style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem; color: #664d03;"></div>
@@ -179,6 +204,19 @@
         <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
+    <!-- VISTA CALIGRAFÍA -->
+    <div id="view-calligraphy" class="container hidden">
+        <h2>Práctica de Escritura</h2>
+        <div class="calligraphy-container">
+            <div id="calligraphy-watermark" class="calligraphy-watermark"></div>
+            <canvas id="calligraphy-canvas"></canvas>
+        </div>
+        <div class="brush-controls">
+            <button onclick="calligraphy.clear()" class="warning" style="width:auto;">Borrar</button>
+            <button onclick="app.switchView('view-game')" class="secondary" style="width:auto;">Volver</button>
+        </div>
+    </div>
+
 <script>
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
@@ -207,6 +245,7 @@
             } else {
                 app.showLogin();
             }
+            calligraphy.init();
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
         
@@ -415,7 +454,7 @@
         },
         
         getLangName: () => {
-            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino' };
+            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego', ko: 'Coreano', ar: 'Árabe', he: 'Hebreo' };
             return map[currentLang] || 'Inglés';
         },
 
@@ -536,6 +575,7 @@
         index: 0,
         recognition: null,
         talkInterval: null,
+        timerInterval: null,
         
         start: (topicId, mode) => {
             let words = [];
@@ -572,8 +612,8 @@
             // Actualizar imagen del avatar (boca cerrada por defecto)
             const containers = document.querySelectorAll('.avatar-container');
             containers.forEach(c => {
-                // Usar siempre avatar en inglés (en) por ahora para todos los idiomas
-                c.innerHTML = `<img src="avatar_en_closed.png" class="avatar-img" alt="Avatar">`;
+                // Intentar cargar avatar del idioma, si falla usa el de inglés
+                c.innerHTML = `<img src="avatar_${currentLang}_closed.png" class="avatar-img" alt="Avatar" onerror="this.onerror=null; this.src='avatar_en_closed.png'">`;
             });
         },
 
@@ -587,9 +627,10 @@
             const html = item.sentence_en.replace(new RegExp(`\\b${item.english}\\b`, 'gi'), `<strong>${item.english}</strong>`);
             document.getElementById('sentence-display').innerHTML = html;
             document.getElementById('word-display').innerText = item.spanish;
+            document.getElementById('sentence-translation').innerText = item.sentence_es;
             
             // Link YouGlish dinámico según idioma
-            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese' };
+            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean', ar: 'arabic', he: 'hebrew' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
 
@@ -601,6 +642,14 @@
                 ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
                 ygLink.innerText = "Ver en Elhuyar (Diccionario/Contexto) ↗";
                 ygLink.classList.remove('hidden');
+            } else if (currentLang === 'ca') {
+                ygLink.href = `https://www.diccionari.cat/gdlc/${encodeURIComponent(item.english)}`;
+                ygLink.innerText = "Ver en Diccionari.cat ↗";
+                ygLink.classList.remove('hidden');
+            } else if (currentLang === 'gl') {
+                ygLink.href = `https://academia.gal/dicionario/-/termo/${encodeURIComponent(item.english)}`;
+                ygLink.innerText = "Ver en Academia Galega ↗";
+                ygLink.classList.remove('hidden');
             } else {
                 ygLink.classList.add('hidden');
             }
@@ -609,6 +658,8 @@
             document.getElementById('feedback-msg').innerText = "";
             document.getElementById('ai-advice').classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
+            document.getElementById('spoken-text').dataset.score = 10;
+            document.getElementById('spoken-text').innerText = `Puntuación: 10`;
             document.getElementById('next-btn').classList.add('hidden');
             document.getElementById('mic-btn').classList.remove('hidden');
             
@@ -636,6 +687,13 @@
             if(currentLang === 'it') langCode = 'it-IT';
             if(currentLang === 'zh') langCode = 'zh-CN';
             if(currentLang === 'eu') langCode = 'es-ES'; // Fallback para Euskera (no suele haber TTS nativo fácil)
+            if(currentLang === 'ru') langCode = 'ru-RU';
+            if(currentLang === 'pt') langCode = 'pt-PT';
+            if(currentLang === 'ca') langCode = 'ca-ES';
+            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback Gallego
+            if(currentLang === 'ko') langCode = 'ko-KR';
+            if(currentLang === 'ar') langCode = 'ar-SA';
+            if(currentLang === 'he') langCode = 'he-IL';
             
             u.lang = langCode;
             
@@ -689,10 +747,20 @@
                 if(currentLang === 'it') langCode = 'it-IT';
                 if(currentLang === 'zh') langCode = 'zh-CN';
                 if(currentLang === 'eu') langCode = 'eu-ES';
+                if(currentLang === 'ru') langCode = 'ru-RU';
+                if(currentLang === 'pt') langCode = 'pt-PT';
+                if(currentLang === 'ca') langCode = 'ca-ES';
+                if(currentLang === 'gl') langCode = 'gl-ES';
+                if(currentLang === 'ko') langCode = 'ko-KR';
+                if(currentLang === 'ar') langCode = 'ar-SA';
+                if(currentLang === 'he') langCode = 'he-IL';
                 
                 game.recognition.lang = langCode;
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
-                game.recognition.onend = () => document.getElementById('mic-btn').classList.remove('listening');
+                game.recognition.onend = () => {
+                    document.getElementById('mic-btn').classList.remove('listening');
+                    game.stopTimer();
+                };
             }
             // Actualizar lang por si cambió
             let langCode = 'en-US';
@@ -701,10 +769,18 @@
             if(currentLang === 'it') langCode = 'it-IT';
             if(currentLang === 'zh') langCode = 'zh-CN';
             if(currentLang === 'eu') langCode = 'eu-ES';
+            if(currentLang === 'ru') langCode = 'ru-RU';
+            if(currentLang === 'pt') langCode = 'pt-PT';
+            if(currentLang === 'ca') langCode = 'ca-ES';
+            if(currentLang === 'gl') langCode = 'gl-ES';
+            if(currentLang === 'ko') langCode = 'ko-KR';
+            if(currentLang === 'ar') langCode = 'ar-SA';
+            if(currentLang === 'he') langCode = 'he-IL';
             game.recognition.lang = langCode;
             
             document.getElementById('mic-btn').classList.add('listening');
             game.recognition.start();
+            game.startTimer();
         },
         
         check: (transcript) => {
@@ -713,6 +789,7 @@
             const clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
             const correct = clean.includes(target);
             
+            //const score = parseInt(document.getElementById('spoken-text').dataset.score) || 10;
             const fb = document.getElementById('feedback-msg');
             
             // Guardar progreso
@@ -725,18 +802,56 @@
             prog.attempts++;
             if(correct) prog.successes++;
             app.saveDB();
+            game.stopMic();
             
             if(correct) {
                 fb.innerText = "¡Correcto! 🎉";
                 fb.className = "feedback correct";
                 document.getElementById('mic-btn').classList.add('hidden');
                 setTimeout(game.next, 1500);
+
             } else {
                 fb.innerText = `Casi... era "${target}"`;
                 fb.className = "feedback incorrect";
                 document.getElementById('next-btn').classList.remove('hidden');
                 game.getPronunciationAdvice(target, transcript);
             }
+        },
+
+         stopMic: () => {
+            if(game.recognition) {
+                game.recognition.stop();
+            }
+        },
+        
+        startTimer: () => {
+            const bar = document.getElementById('timer-bar');
+            const container = document.getElementById('timer-container');
+            container.classList.remove('hidden');
+            bar.style.width = '0%';
+            bar.style.backgroundColor = '#28a745';
+            
+            let startTime = Date.now();
+            const duration = 5000; // 5 segundos
+            
+            if (game.timerInterval) clearInterval(game.timerInterval);
+            
+            game.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min((elapsed / duration) * 100, 100);
+                
+                bar.style.width = pct + '%';
+                
+                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107'; // Amarillo
+                else if (pct >= 80) bar.style.backgroundColor = '#dc3545'; // Rojo
+                
+                if (elapsed >= duration) game.stopMic();
+            }, 50);
+        },
+        
+        stopTimer: () => {
+            if (game.timerInterval) clearInterval(game.timerInterval);
+            document.getElementById('timer-container').classList.add('hidden');
         },
         
         next: () => {
@@ -755,6 +870,56 @@
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = `<strong>💡 Consejo IA:</strong> ${text}`;
             });
+        }
+    };
+
+    const calligraphy = {
+        canvas: null,
+        ctx: null,
+        isDrawing: false,
+        
+        init: () => {
+            const c = document.getElementById('calligraphy-canvas');
+            calligraphy.canvas = c;
+            calligraphy.ctx = c.getContext('2d');
+            
+            // Eventos
+            const start = (e) => {
+                e.preventDefault();
+                calligraphy.isDrawing = true;
+                calligraphy.ctx.beginPath();
+                const rect = c.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                calligraphy.ctx.moveTo(clientX - rect.left, clientY - rect.top);
+            };
+            const move = (e) => {
+                if(!calligraphy.isDrawing) return;
+                e.preventDefault();
+                const rect = c.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                calligraphy.ctx.lineWidth = 6;
+                calligraphy.ctx.lineCap = 'round';
+                calligraphy.ctx.strokeStyle = '#000';
+                calligraphy.ctx.lineTo(clientX - rect.left, clientY - rect.top);
+                calligraphy.ctx.stroke();
+            };
+            const end = () => calligraphy.isDrawing = false;
+
+            c.addEventListener('mousedown', start); c.addEventListener('mousemove', move); c.addEventListener('mouseup', end);
+            c.addEventListener('touchstart', start); c.addEventListener('touchmove', move); c.addEventListener('touchend', end);
+        },
+        clear: () => calligraphy.ctx.clearRect(0, 0, calligraphy.canvas.width, calligraphy.canvas.height),
+        show: () => {
+            app.switchView('view-calligraphy');
+            const c = document.getElementById('calligraphy-canvas');
+            c.width = c.offsetWidth; c.height = c.offsetHeight;
+            const word = game.data[game.index].english;
+            const wm = document.getElementById('calligraphy-watermark');
+            wm.innerText = word;
+            wm.style.fontSize = word.length > 2 ? '50px' : '150px';
+            calligraphy.clear();
         }
     };
 
