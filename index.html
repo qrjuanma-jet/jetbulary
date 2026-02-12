@@ -259,6 +259,7 @@
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
+            game.updateAvatar();
             app.renderTopics();
         },
         showStats: () => {
