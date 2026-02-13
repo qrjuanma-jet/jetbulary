@@ -5,73 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jetbulary 2.0</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { width: 90%; max-width: 600px; background: white; padding: 2rem; margin-top: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
-        h1, h2 { color: #333; }
-        button { background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 1rem; cursor: pointer; margin: 5px 0; width: 100%; transition: background 0.2s; }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        button.secondary { background: #6c757d; }
-        button.success { background: #28a745; }
-        button.warning { background: #ffc107; color: #333; }
-        button.danger { background: #dc3545; }
-        small { font-size: 0.8rem; color: #777; }
-        input { padding: 12px; width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
+        /* iOS Style Reset */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #F2F2F7; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #000; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; text-align: center; }
+        
+        h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 20px 0; color: #000; }
+        h2 { font-size: 22px; font-weight: 600; margin: 15px 0; color: #000; }
+        p { font-size: 17px; line-height: 1.4; color: #333; }
+        
+        button { background: #007AFF; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin: 8px 0; width: 100%; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button:active { opacity: 0.7; }
+        button:disabled { background: #8E8E93; cursor: not-allowed; }
+        button.secondary { background: #E5E5EA; color: #000; }
+        button.success { background: #34C759; }
+        button.warning { background: #FF9500; color: white; }
+        button.danger { background: #FF3B30; }
+        
+        input { padding: 16px; width: 100%; border: none; background: #fff; border-radius: 12px; margin-bottom: 15px; box-sizing: border-box; font-size: 17px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        select { width: 100%; padding: 16px; border-radius: 12px; border: none; background: #fff; margin-bottom: 15px; font-size: 17px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); -webkit-appearance: none; appearance: none; }
+        
         .hidden { display: none !important; }
         
         /* Game Styles */
-        .sentence { font-size: 1.2rem; color: #555; font-style: italic; margin-bottom: 1rem; }
-        .word-target { font-size: 2.5rem; color: #28a745; font-weight: bold; margin: 1rem 0; }
-        .mic-btn { width: 80px !important; height: 80px; border-radius: 50%; background: #dc3545; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; margin: 10px auto; cursor: pointer; }
+        .sentence { font-size: 20px; color: #333; font-weight: 500; margin-bottom: 20px; line-height: 1.4; }
+        .word-target { font-size: 42px; color: #007AFF; font-weight: 800; margin: 20px 0; letter-spacing: -1px; }
+        .mic-btn { width: 90px !important; height: 90px; border-radius: 50%; background: #FF3B30; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); transition: transform 0.1s; }
+        .mic-btn:active { transform: scale(0.95); }
         .mic-btn.listening { background: #ff0000; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .feedback { margin-top: 0.5rem; font-weight: bold; min-height: 1.5rem; }
-        .correct { color: green; }
-        .incorrect { color: red; }
-        .youglish { display: block; margin-top: 1.5rem; color: #007bff; text-decoration: none; }
-        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 1.1rem; }
+        .feedback { margin-top: 10px; font-weight: 600; min-height: 24px; font-size: 18px; }
+        .correct { color: #34C759; }
+        .incorrect { color: #FF3B30; }
+        .youglish { display: block; margin-top: 20px; color: #007AFF; text-decoration: none; font-weight: 500; font-size: 16px; }
+        
+        .stat-card { background: #fff; padding: 20px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         
         /* Accordion Topics */
-        details { background: #f8f9fa; margin: 8px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: left; }
-        summary { padding: 15px; cursor: pointer; font-weight: bold; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        details { background: #fff; margin: 10px 0; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: left; }
+        summary { padding: 18px; cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; font-size: 1.5rem; color: #007bff; }
-        details[open] summary::after { content: '-'; color: #dc3545; }
-        details[open] { background: white; border: 1px solid #ddd; }
-        .topic-content { padding: 15px; border-top: 1px solid #eee; display: flex; flex-direction: column; gap: 10px; }
-        .topic-actions { display: flex; gap: 5px; flex-wrap: wrap; }
-        .topic-actions button { flex: 1; font-size: 0.9rem; padding: 10px; margin: 0; }
+        summary::after { content: '+'; font-size: 20px; color: #007AFF; font-weight: 300; }
+        details[open] summary::after { content: '−'; color: #FF3B30; }
+        details[open] { background: white; }
+        .topic-content { padding: 15px; border-top: 1px solid #f2f2f7; display: flex; flex-direction: column; gap: 10px; }
+        .topic-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .topic-actions button { flex: 1; font-size: 15px; padding: 12px; margin: 0; border-radius: 10px; }
 
         /* Image Avatar CSS */
         .avatar-container { width: 280px; height: 340px; margin: 0 auto 10px; position: relative; }
         .avatar-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2)); }
         
         /* Vocab List */
-        .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; margin-bottom: 1px; text-align: left; }
+        .vocab-item:first-child { border-top-left-radius: 14px; border-top-right-radius: 14px; }
+        .vocab-item:last-child { border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; }
         .vocab-info { flex-grow: 1; }
-        .vocab-en { font-weight: bold; font-size: 1.1rem; color: #007bff; }
-        .vocab-es { color: #555; font-size: 0.9rem; }
-        .vocab-score { font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; color: white; margin-left: 5px; }
-        .score-high { background: #28a745; }
-        .score-med { background: #ffc107; color: #333; }
-        .score-low { background: #dc3545; }
-        
-        select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 10px; font-size: 1rem; }
+        .vocab-en { font-weight: 600; font-size: 18px; color: #000; }
+        .vocab-es { color: #8E8E93; font-size: 15px; margin-top: 2px; }
+        .vocab-score { font-size: 12px; padding: 4px 8px; border-radius: 6px; color: white; margin-left: 8px; font-weight: 600; }
+        .score-high { background: #34C759; }
+        .score-med { background: #FF9500; }
+        .score-low { background: #FF3B30; }
         
         /* Grammar Course */
-        .level-header { background: #e9ecef; padding: 10px; font-weight: bold; margin-top: 15px; border-radius: 5px; text-align: left; }
-        .lesson-item { background: white; border: 1px solid #ddd; padding: 12px; margin: 5px 0; border-radius: 6px; text-align: left; cursor: pointer; }
-        .lesson-item:hover { background: #f1f1f1; }
+        .level-header { background: transparent; padding: 10px 5px; font-weight: 700; font-size: 20px; margin-top: 20px; text-align: left; color: #000; }
+        .lesson-item { background: white; border-bottom: 1px solid #f2f2f7; padding: 16px; text-align: left; cursor: pointer; font-size: 17px; }
+        .lesson-item:first-of-type { border-top-left-radius: 14px; border-top-right-radius: 14px; }
+        .lesson-item:last-of-type { border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; border-bottom: none; }
+        .lesson-item:active { background: #f2f2f7; }
         
         /* Timer Bar */
-        #timer-container { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-        #timer-bar { height: 100%; width: 0%; background: #28a745; transition: width 0.1s linear, background 0.5s; }
-
-        /* Calligraphy */
-        .calligraphy-container { position: relative; width: 300px; height: 300px; margin: 0 auto 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
-        .calligraphy-watermark { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 100px; color: #e0e0e0; pointer-events: none; font-family: 'KaiTi', 'SimKai', serif; z-index: 0; user-select: none; word-break: break-all; text-align: center; line-height: 1; }
-        #calligraphy-canvas { position: relative; z-index: 1; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
-        .brush-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+        #timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
+        
+        /* Card Container for Game */
+        #game-card { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        .app-logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 20px; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -79,16 +89,42 @@
 
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
-        <h1>Jetbulary</h1>
-        <p>Introduce tu API Key de Groq para empezar:</p>
-        
-        <input type="password" id="api-key-input" placeholder="gsk_...">
-        <button onclick="app.saveApiKey()" class="success">Entrar</button>
-        <p><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007bff;">Conseguir Key Gratis</a></small></p>
+        <header style="margin-bottom: 30px;">
+            <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo">
+            <h1 style="margin-bottom: 10px;">Jetbulary</h1>
+            <p style="font-size: 1.1rem; color: #555;">Aprende idiomas con Inteligencia Artificial de forma inmersiva y personalizada.</p>
+        </header>
+
+        <section style="text-align: left; margin-bottom: 30px;">
+            <h3>¿Por qué Jetbulary?</h3>
+            <p>Jetbulary no es una app de tarjetas tradicional. Utilizamos IA generativa para crear lecciones únicas basadas en tus intereses. Elige un tema, y la IA preparará vocabulario, frases en contexto y ejercicios de pronunciación al instante.</p>
+            
+            <h3 style="margin-top: 20px;">Características</h3>
+            <ul style="padding-left: 20px; color: #444; text-align: left;">
+                <li><strong>IA Generativa:</strong> Contenido infinito adaptado a ti.</li>
+                <li><strong>Reconocimiento de Voz:</strong> Mejora tu pronunciación con feedback inmediato.</li>
+                <li><strong>Repaso Inteligente:</strong> Algoritmos que refuerzan lo que te cuesta aprender.</li>
+                <li><strong>Multi-idioma:</strong> Inglés, Francés, Alemán, Chino, y más.</li>
+            </ul>
+        </section>
+
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #e9ecef;">
+            <h3>Acceso a la Aplicación</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">Introduce tu API Key de Groq para comenzar tu sesión:</p>
+            
+            <input type="password" id="api-key-input" placeholder="gsk_...">
+            <button onclick="app.saveApiKey()" class="success">Entrar</button>
+            <p><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007bff;">Conseguir Key Gratis</a></small></p>
+        </div>
+
+        <footer style="margin-top: 40px; font-size: 0.8rem; color: #888; border-top: 1px solid #eee; padding-top: 20px;">
+            <p>&copy; 2024 Jetbulary. Todos los derechos reservados.</p>
+        </footer>
     </div>
 
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="width: 60px;">
         <h1 id="dash-welcome">Jetbulary</h1>
         
         <!-- AVATAR DASHBOARD -->
@@ -139,7 +175,6 @@
             <p class="sentence" id="sentence-display"></p>
             <button onclick="game.speak()" style="background:none; color:#007bff; padding:0; width:auto; display:inline;">🔊 Escuchar</button>
             <div class="word-target" id="word-display"></div>
-            <button onclick="calligraphy.show()" style="background:none; color:#6c757d; padding:0; width:auto; display:block; margin: -5px auto 10px auto; font-size: 0.9rem;">✍️ Escribir / Caligrafía</button>
             <button onclick="game.speakWordSlow()" style="background:none; color:#28a745; padding:0; width:auto; display:block; margin: -10px auto 10px auto; font-size: 0.9rem;">🐢 Escuchar Palabra (Lento)</button>
             
             <small id="sentence-translation">Traducción de la frase aquí</small>
@@ -205,18 +240,6 @@
         <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
-    <!-- VISTA CALIGRAFÍA -->
-    <div id="view-calligraphy" class="container hidden">
-        <h2>Práctica de Escritura</h2>
-        <div class="calligraphy-container">
-            <div id="calligraphy-watermark" class="calligraphy-watermark"></div>
-            <canvas id="calligraphy-canvas"></canvas>
-        </div>
-        <div class="brush-controls">
-            <button onclick="calligraphy.clear()" class="warning" style="width:auto;">Borrar</button>
-            <button onclick="app.switchView('view-game')" class="secondary" style="width:auto;">Volver</button>
-        </div>
-    </div>
 
 <script>
     // --- BASE DE DATOS LOCAL ---
@@ -246,7 +269,6 @@
             } else {
                 app.showLogin();
             }
-            calligraphy.init();
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
         
@@ -614,15 +636,19 @@
             // Actualizar imagen del avatar (boca cerrada por defecto)
             const containers = document.querySelectorAll('.avatar-container');
             containers.forEach(c => {
-                // Intentar cargar avatar del idioma, si falla usa el de inglés
-                c.innerHTML = `<img src="avatar_${currentLang}_closed.png" class="avatar-img" alt="Avatar" onerror="this.onerror=null; this.src='avatar_en_closed.png'">`;
-                // Crear imagen nueva para asegurar recarga
+                c.innerHTML = '';
                 const img = new Image();
                 img.className = 'avatar-img';
                 img.alt = 'Avatar';
-                img.onerror = () => { if(img.src.indexOf('avatar_en_closed.png') === -1) img.src = 'avatar_en_closed.png'; };
+                
+                const fallbacks = [
+                    `avatar_${currentLang}_closed.jpg`,
+                    'avatar_en_closed.png',
+                    'avatar_en_closed.jpg'
+                ];
+                
+                img.onerror = function() { if(fallbacks.length) this.src = fallbacks.shift(); };
                 img.src = `avatar_${currentLang}_closed.png`;
-                c.innerHTML = '';
                 c.appendChild(img);
             });
         },
@@ -727,7 +753,7 @@
                     const state = rand < 0.1 ? 'closed' : (rand < 0.55 ? 'half' : 'open');
                     
                     document.querySelectorAll('.avatar-img').forEach(img => {
-                        img.src = img.src.replace(/_(closed|half|open)\.png/, `_${state}.png`);
+                        img.src = img.src.replace(/_(closed|half|open)\.(png|jpg)/, `_${state}.$2`);
                     });
                 }, 100);
             };
@@ -736,7 +762,7 @@
                 if (game.talkInterval) clearInterval(game.talkInterval);
                 // Reset a closed
                 document.querySelectorAll('.avatar-img').forEach(img => {
-                    img.src = img.src.replace(/_(half|open)\.png/, '_closed.png');
+                    img.src = img.src.replace(/_(half|open)\.(png|jpg)/, '_closed.$2');
                 });
             };
             
@@ -788,9 +814,14 @@
             if(currentLang === 'he') langCode = 'he-IL';
             game.recognition.lang = langCode;
             
-            document.getElementById('mic-btn').classList.add('listening');
-            game.recognition.start();
-            game.startTimer();
+            try {
+                document.getElementById('mic-btn').classList.add('listening');
+                game.recognition.start();
+                game.startTimer();
+            } catch(e) {
+                console.error(e);
+                document.getElementById('mic-btn').classList.remove('listening');
+            }
         },
         
         check: (transcript) => {
@@ -830,7 +861,10 @@
 
          stopMic: () => {
             if(game.recognition) {
-                game.recognition.stop();
+                try { game.recognition.stop(); } catch(e) {}
+                // Forzar limpieza de UI por si onend falla (Safari)
+                document.getElementById('mic-btn').classList.remove('listening');
+                game.stopTimer();
             }
         },
         
@@ -880,56 +914,6 @@
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = `<strong>💡 Consejo IA:</strong> ${text}`;
             });
-        }
-    };
-
-    const calligraphy = {
-        canvas: null,
-        ctx: null,
-        isDrawing: false,
-        
-        init: () => {
-            const c = document.getElementById('calligraphy-canvas');
-            calligraphy.canvas = c;
-            calligraphy.ctx = c.getContext('2d');
-            
-            // Eventos
-            const start = (e) => {
-                e.preventDefault();
-                calligraphy.isDrawing = true;
-                calligraphy.ctx.beginPath();
-                const rect = c.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                calligraphy.ctx.moveTo(clientX - rect.left, clientY - rect.top);
-            };
-            const move = (e) => {
-                if(!calligraphy.isDrawing) return;
-                e.preventDefault();
-                const rect = c.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                calligraphy.ctx.lineWidth = 6;
-                calligraphy.ctx.lineCap = 'round';
-                calligraphy.ctx.strokeStyle = '#000';
-                calligraphy.ctx.lineTo(clientX - rect.left, clientY - rect.top);
-                calligraphy.ctx.stroke();
-            };
-            const end = () => calligraphy.isDrawing = false;
-
-            c.addEventListener('mousedown', start); c.addEventListener('mousemove', move); c.addEventListener('mouseup', end);
-            c.addEventListener('touchstart', start); c.addEventListener('touchmove', move); c.addEventListener('touchend', end);
-        },
-        clear: () => calligraphy.ctx.clearRect(0, 0, calligraphy.canvas.width, calligraphy.canvas.height),
-        show: () => {
-            app.switchView('view-calligraphy');
-            const c = document.getElementById('calligraphy-canvas');
-            c.width = c.offsetWidth; c.height = c.offsetHeight;
-            const word = game.data[game.index].english;
-            const wm = document.getElementById('calligraphy-watermark');
-            wm.innerText = word;
-            wm.style.fontSize = word.length > 2 ? '50px' : '150px';
-            calligraphy.clear();
         }
     };
 
