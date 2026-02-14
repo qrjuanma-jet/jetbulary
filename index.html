@@ -78,8 +78,6 @@
         #timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 20px 0; overflow: hidden; }
         #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
-        /* Card Container for Game */
-        #game-card { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         .app-logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 20px; }
     </style>
@@ -171,26 +169,30 @@
         <div class="avatar-container" id="avatar">
         </div>
 
-        <div id="game-card">
-            <p class="sentence" id="sentence-display"></p>
-            <button onclick="game.speak()" style="background:none; color:#007bff; padding:0; width:auto; display:inline;">🔊 Escuchar</button>
-            <div class="word-target" id="word-display"></div>
-            <button onclick="game.speakWordSlow()" style="background:none; color:#28a745; padding:0; width:auto; display:block; margin: -10px auto 10px auto; font-size: 0.9rem;">🐢 Escuchar Palabra (Lento)</button>
-            
-            <small id="sentence-translation">Traducción de la frase aquí</small>
-
-            <p id="prompt-pronounce">Pulsa y pronuncia:</p>
-            <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
-            <div id="timer-container" class="hidden">
-                <div id="timer-bar"></div>
-            </div>
-            <p id="spoken-text" style="color:#888; font-style:italic;">...</p>
-            <div id="feedback-msg" class="feedback"></div>
-            <div id="ai-advice" class="hidden" style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 8px; font-size: 0.9rem; color: #664d03;"></div>
-            <a id="youglish-link" href="#" target="_blank" style="display:block; margin-top:15px;">Ver ejemplos nativos ↗</a>
+        <p class="sentence" id="sentence-display"></p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+             <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
+             <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Lento</button>
         </div>
-        <button id="next-btn" class="hidden" onclick="game.next()">Siguiente ➡</button>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Salir</button>
+
+        <div class="word-target" id="word-display"></div>
+        <small id="sentence-translation" style="display:block; margin-bottom: 20px; color: #666; font-size: 16px;">Traducción</small>
+
+        <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
+        <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
+        
+        <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
+        
+        <p id="spoken-text" style="color:#333; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
+        <div id="feedback-msg" class="feedback"></div>
+        
+        <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #333; font-size: 17px;"></div>
+        
+        <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px 0; color:#007AFF; text-decoration:none; font-weight: 500;">Ver ejemplos nativos ↗</a>
+
+        <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Salir</button>
     </div>
 
     <!-- VISTA VOCABULARIO -->
@@ -601,6 +603,25 @@
         talkInterval: null,
         timerInterval: null,
         
+        // Algoritmo de distancia para "bajar dificultad" (fuzzy match)
+        isCloseMatch: (target, spoken) => {
+            if (spoken.includes(target)) return true;
+            // Levenshtein simple
+            const a = target, b = spoken;
+            if(a.length === 0) return b.length === 0;
+            const matrix = [];
+            for(let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for(let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for(let i = 1; i <= b.length; i++){
+                for(let j = 1; j <= a.length; j++){
+                    if(b.charAt(i-1) == a.charAt(j-1)) matrix[i][j] = matrix[i-1][j-1];
+                    else matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
+                }
+            }
+            const dist = matrix[b.length][a.length];
+            return (1 - dist / Math.max(a.length, b.length)) > 0.6; // 60% similitud aceptada
+        },
+
         start: (topicId, mode) => {
             let words = [];
             if(topicId === 'global_review') {
@@ -689,7 +710,7 @@
             } else {
                 ygLink.classList.add('hidden');
             }
-            document.getElementById('prompt-pronounce').innerText = `Pulsa y pronuncia en ${app.getLangName()}:`;
+            document.getElementById('prompt-pronounce').innerText = `Pulsa y pronuncia en ${app.getLangName()}`;
             
             document.getElementById('feedback-msg').innerText = "";
             document.getElementById('ai-advice').classList.add('hidden');
@@ -828,7 +849,7 @@
             document.getElementById('spoken-text').innerText = `Dijiste: "${transcript}"`;
             const target = game.data[game.index].english.toLowerCase();
             const clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
-            const correct = clean.includes(target);
+            const correct = game.isCloseMatch(target, clean);
             
             //const score = parseInt(document.getElementById('spoken-text').dataset.score) || 10;
             const fb = document.getElementById('feedback-msg');
@@ -909,10 +930,10 @@
             container.classList.remove('hidden');
             
             const langName = app.getLangName();
-            const prompt = `Actúa como un profesor de pronunciación de ${langName}. El estudiante intentó decir "${target}" pero se entendió "${spoken}". Analiza el error fonético probable y da un consejo breve y práctico para corregirlo. Máximo 2 frases.`;
+            const prompt = `El usuario dijo "${spoken}" intentando decir "${target}" en ${langName}. Dime solo 2 o 3 palabras simples en ${langName} que suenen parecido (rimen o suenen similar) a "${target}" para ayudarle a pronunciar. Formato: "Suena como: palabra1, palabra2". Nada más.`;
             
             await app.callAI_Text(prompt, null, (text) => {
-                container.innerHTML = `<strong>💡 Consejo IA:</strong> ${text}`;
+                container.innerHTML = text;
             });
         }
     };
