@@ -79,7 +79,7 @@
         #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
         
-        .app-logo { width: 280px; height: auto; margin-bottom: 20px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .app-logo { width: 100%; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; }
         
         /* Cookie Banner */
         #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px; text-align: center; z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
@@ -95,8 +95,7 @@
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
         <header style="margin-bottom: 40px;">
-            <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo">
-            <h1 style="margin-bottom: 10px; font-size: 2rem;">Jetbulary: ¡Tú mejor inmersión en idiomas! Gratis</h1>
+            <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
             <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto;">Bienvenido, bienvenida a la comunidad para hispanohablantes gratuita jetbulary.com. En 1 minuto, tendrás preparado tu aliado para aprender idiomas como un nativo, por inmersión lingüística. Entra e ilusiónate aprendiendo de forma divertida.</p>
         </header>
 
@@ -179,8 +178,7 @@
 
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
-        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="width: 100px; border-radius: 20px; margin-bottom: 10px;">
-        <h1 id="dash-welcome">Jetbulary</h1>
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
         
         <!-- AVATAR DASHBOARD -->
         <div class="avatar-container" id="avatar-dash">
@@ -209,6 +207,7 @@
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
             <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
             <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
+            <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
         </div>
 
         <div id="topic-list"></div>
@@ -235,6 +234,7 @@
 
     <!-- VISTA JUEGO -->
     <div id="view-game" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
         <!-- AVATAR -->
         <div class="avatar-container" id="avatar">
         </div>
@@ -262,7 +262,6 @@
         <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px 0; color:#007AFF; text-decoration:none; font-weight: 500;">Ver ejemplos nativos ↗</a>
 
         <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Salir</button>
     </div>
 
     <!-- VISTA VOCABULARIO -->
@@ -285,6 +284,7 @@
         
         <h2 id="grammar-title">Gramática</h2>
         
+        <button id="btn-alphabet" onclick="app.showAlphabet()" class="warning hidden" style="margin-bottom: 15px;">🔤 Alfabeto / Signos</button>
         <div style="display: flex; gap: 5px; margin-bottom: 20px;">
             <button onclick="app.showGrammarCourse()" class="success">🎓 Curso Guiado</button>
             <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ Pregunta Rápida</button>
@@ -302,6 +302,20 @@
         <div id="grammar-course-list" class="hidden"></div>
 
         <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
+    </div>
+
+    <!-- VISTA ALFABETO -->
+    <div id="view-alphabet" class="container hidden">
+        <h2>Alfabeto / Signos</h2>
+        <div id="alphabet-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px;"></div>
+        <button onclick="app.showGrammar()" class="secondary" style="margin-top:20px;">Volver</button>
+    </div>
+
+    <!-- VISTA RECURSOS -->
+    <div id="view-resources" class="container hidden">
+        <h2>Recursos Extra</h2>
+        <div id="resources-content" style="text-align: left;"></div>
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Volver</button>
     </div>
 
     <!-- VISTA ESTADÍSTICAS -->
@@ -379,8 +393,17 @@
             app.switchView('view-vocab');
             vocab.render();
         },
+        showResources: () => {
+            app.switchView('view-resources');
+            app.loadResources();
+        },
         showGrammar: () => {
             app.switchView('view-grammar');
+            // Mostrar botón alfabeto si es necesario
+            const specialLangs = ['zh', 'ru', 'ko', 'ar', 'he', 'ja', 'el'];
+            if(specialLangs.includes(currentLang)) document.getElementById('btn-alphabet').classList.remove('hidden');
+            else document.getElementById('btn-alphabet').classList.add('hidden');
+            
             document.getElementById('grammar-title').innerText = `Gramática (${app.getLangName()})`;
             game.updateAvatar(); // Actualizar avatar de gramática
             app.showGrammarCourse(); // Por defecto mostrar curso si existe
@@ -534,6 +557,44 @@
             }, `NO repitas estas palabras: ${existing}.`);
         },
         
+        showAlphabet: async () => {
+            app.switchView('view-alphabet');
+            const container = document.getElementById('alphabet-list');
+            container.innerHTML = '<p>Cargando signos...</p>';
+            
+            const langName = app.getLangName();
+            const prompt = `Genera una lista de los 20 caracteres/signos/letras más básicos e importantes del idioma ${langName}. 
+            Para cada uno dame: el signo, la pronunciación aproximada y una palabra de ejemplo.
+            Formato JSON array: [{"sign": "A", "pronunciation": "a", "example": "Apple"}]`;
+            
+            await app.callAI_Text(prompt, null, (text) => {
+                try {
+                    const json = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+                    container.innerHTML = json.map(item => `
+                        <div onclick="game.speakText('${item.example}')" style="background:white; padding:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); cursor:pointer;">
+                            <div style="font-size:2rem; font-weight:bold; color:#007AFF;">${item.sign}</div>
+                            <div style="font-size:0.8rem; color:#666;">${item.pronunciation}</div>
+                            <div style="font-size:0.8rem; color:#333;">Ex: ${item.example}</div>
+                        </div>
+                    `).join('');
+                } catch(e) { container.innerHTML = "Error al cargar alfabeto."; }
+            });
+        },
+
+        loadResources: async () => {
+            const container = document.getElementById('resources-content');
+            container.innerHTML = '<p>Generando recursos...</p>';
+            const langName = app.getLangName();
+            
+            const prompt = `Genera una lista útil para estudiantes de ${langName} con:
+            1. 5 Verbos irregulares comunes.
+            2. 5 Conectores de frases útiles.
+            3. 5 Phrasal verbs o expresiones idiomáticas comunes.
+            Usa formato HTML limpio (<h3>, <ul>, <li>, <strong>).`;
+            
+            await app.callAI_Text(prompt, null, (text) => { container.innerHTML = text; });
+        },
+
         showGrammarCourse: () => {
             document.getElementById('grammar-qa').classList.add('hidden');
             const container = document.getElementById('grammar-course-list');
