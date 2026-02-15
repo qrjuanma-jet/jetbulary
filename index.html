@@ -79,7 +79,14 @@
         #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
         
-        .app-logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 20px; }
+        .app-logo { width: 220px; height: auto; margin-bottom: 20px; border-radius: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        
+        /* Cookie Banner */
+        #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px; text-align: center; z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
+        @media (min-width: 600px) { #cookie-banner { flex-direction: row; justify-content: center; } }
+        #cookie-banner p { margin: 0; font-size: 0.9rem; color: #eee; }
+        #cookie-banner a { color: #4da3ff; }
+        #cookie-banner button { width: auto; padding: 8px 20px; margin: 0; font-size: 0.9rem; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -87,42 +94,90 @@
 
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
-        <header style="margin-bottom: 30px;">
+        <header style="margin-bottom: 40px;">
             <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo">
-            <h1 style="margin-bottom: 10px;">Jetbulary</h1>
-            <p style="font-size: 1.1rem; color: #555;">Aprende idiomas con Inteligencia Artificial de forma inmersiva y personalizada.</p>
+            <h1 style="margin-bottom: 10px; font-size: 2.5rem;">Jetbulary</h1>
+            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto;">La revolución en el aprendizaje de idiomas: Inteligencia Artificial, contexto real y pronunciación nativa.</p>
         </header>
 
-        <section style="text-align: left; margin-bottom: 30px;">
-            <h3>¿Por qué Jetbulary?</h3>
-            <p>Jetbulary no es una app de tarjetas tradicional. Utilizamos IA generativa para crear lecciones únicas basadas en tus intereses. Elige un tema, y la IA preparará vocabulario, frases en contexto y ejercicios de pronunciación al instante.</p>
+        <section style="text-align: left; margin-bottom: 40px;">
+            <h2 style="color: #007AFF; margin-bottom: 20px;">Aprendizaje Inmersivo con IA</h2>
+            <p style="margin-bottom: 15px;">Jetbulary no es simplemente otra aplicación de tarjetas de memoria. Utilizamos modelos de lenguaje avanzados (LLMs) para generar contenido educativo personalizado al instante. Olvídate de las listas de palabras estáticas y aburridas; aquí tú eliges el tema y la IA construye la lección para ti.</p>
+            <p>Nuestro enfoque se basa en el <strong>aprendizaje contextual</strong>. No aprendes palabras aisladas, sino que las ves y escuchas dentro de frases completas, lo que ayuda a tu cerebro a retener el significado y el uso gramatical de forma natural.</p>
             
-            <h3 style="margin-top: 20px;">Características</h3>
-            <ul style="padding-left: 20px; color: #444; text-align: left;">
-                <li><strong>IA Generativa:</strong> Contenido infinito adaptado a ti.</li>
-                <li><strong>Reconocimiento de Voz:</strong> Mejora tu pronunciación con feedback inmediato.</li>
-                <li><strong>Repaso Inteligente:</strong> Algoritmos que refuerzan lo que te cuesta aprender.</li>
-                <li><strong>Multi-idioma:</strong> Inglés, Francés, Alemán, Chino, y más.</li>
+            <h3 style="margin-top: 30px; margin-bottom: 15px;">¿Cómo funciona?</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h4 style="margin-top: 0;">1. Elige tu Tema</h4>
+                    <p style="font-size: 0.95rem;">Desde "Negocios Internacionales" hasta "Cocina Italiana". Tú decides qué quieres aprender hoy.</p>
+                </div>
+                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h4 style="margin-top: 0;">2. Generación IA</h4>
+                    <p style="font-size: 0.95rem;">Nuestra tecnología conecta con Groq para crear vocabulario relevante, frases de ejemplo y traducciones precisas en segundos.</p>
+                </div>
+                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h4 style="margin-top: 0;">3. Práctica Activa</h4>
+                    <p style="font-size: 0.95rem;">Escucha pronunciaciones nativas, usa el reconocimiento de voz para mejorar tu acento y recibe feedback instantáneo.</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;">Características Principales</h3>
+            <ul style="padding-left: 20px; color: #444; text-align: left; line-height: 1.6;">
+                <li><strong>IA Generativa Ilimitada:</strong> Nunca te quedarás sin contenido nuevo.</li>
+                <li><strong>Reconocimiento de Voz Avanzado:</strong> Evaluación de pronunciación en tiempo real.</li>
+                <li><strong>Sistema de Repaso Espaciado:</strong> Algoritmos inteligentes que detectan tus fallos y programan repasos automáticos.</li>
+                <li><strong>Soporte Multi-idioma:</strong> Aprende Inglés, Francés, Alemán, Chino, y más.</li>
+                <li><strong>Integración Multimedia:</strong> Enlaces directos a YouGlish y diccionarios contextuales.</li>
             </ul>
         </section>
 
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #e9ecef;">
-            <h3>Acceso a la Aplicación</h3>
-            <p style="font-size: 0.9rem; margin-bottom: 15px;">Introduce tu API Key de Groq para comenzar tu sesión:</p>
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 16px; border: 1px solid #e9ecef; margin-top: 40px;">
+            <h3 style="margin-top: 0;">Comienza tu viaje</h3>
+            <p style="font-size: 0.95rem; margin-bottom: 20px; color: #666;">Para utilizar la potencia de la IA generativa, necesitas una API Key de Groq. Es gratuita y fácil de conseguir.</p>
             
-            <input type="password" id="api-key-input" placeholder="gsk_...">
-            <button onclick="app.saveApiKey()" class="success">Entrar</button>
-            <p><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007bff;">Conseguir Key Gratis</a></small></p>
+            <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq (gsk_...)" style="margin-bottom: 15px;">
+            <button onclick="app.saveApiKey()" class="success" style="font-size: 1.1rem;">Entrar a Jetbulary</button>
+            <p style="margin-top: 15px;"><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none;">👉 Conseguir API Key Gratis aquí</a></small></p>
         </div>
 
-        <footer style="margin-top: 40px; font-size: 0.8rem; color: #888; border-top: 1px solid #eee; padding-top: 20px;">
+        <footer style="margin-top: 60px; font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 30px;">
             <p>&copy; 2024 Jetbulary. Todos los derechos reservados.</p>
+            <p>
+                <a href="#" onclick="app.showPrivacy()" style="color: #888; text-decoration: none; margin: 0 10px;">Política de Privacidad</a> | 
+                <a href="#" onclick="app.showTerms()" style="color: #888; text-decoration: none; margin: 0 10px;">Términos de Uso</a>
+            </p>
         </footer>
+    </div>
+
+    <!-- VISTA PRIVACIDAD -->
+    <div id="view-privacy" class="container hidden" style="text-align: left;">
+        <h2>Política de Privacidad</h2>
+        <p>En Jetbulary, respetamos su privacidad. Esta aplicación funciona principalmente en el lado del cliente (su dispositivo).</p>
+        <h3>Recopilación de Datos</h3>
+        <p>No almacenamos sus datos personales en servidores externos. Su progreso, vocabulario y configuraciones se guardan localmente en su dispositivo utilizando `localStorage`.</p>
+        <h3>Uso de API de Terceros</h3>
+        <p>Para generar contenido, la aplicación envía solicitudes a la API de Groq. Su API Key se almacena localmente en su dispositivo y solo se utiliza para autenticar estas solicitudes.</p>
+        <h3>Cookies</h3>
+        <p>Utilizamos cookies técnicas esenciales para el funcionamiento de la aplicación y cookies de Google AdSense para mostrar publicidad personalizada.</p>
+        <button onclick="app.showLogin()" class="secondary" style="margin-top: 20px;">Volver</button>
+    </div>
+
+    <!-- VISTA TÉRMINOS -->
+    <div id="view-terms" class="container hidden" style="text-align: left;">
+        <h2>Términos de Uso</h2>
+        <p>Al utilizar Jetbulary, usted acepta los siguientes términos:</p>
+        <h3>Uso Personal</h3>
+        <p>Esta aplicación es para uso personal y educativo.</p>
+        <h3>Contenido Generado por IA</h3>
+        <p>El contenido educativo es generado por Inteligencia Artificial. Aunque nos esforzamos por la precisión, puede haber errores ocasionales en las traducciones o explicaciones.</p>
+        <h3>Responsabilidad</h3>
+        <p>Jetbulary no se hace responsable del uso indebido de la aplicación o de la exactitud absoluta del contenido generado.</p>
+        <button onclick="app.showLogin()" class="secondary" style="margin-top: 20px;">Volver</button>
     </div>
 
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
-        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="width: 60px;">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="width: 100px; border-radius: 20px; margin-bottom: 10px;">
         <h1 id="dash-welcome">Jetbulary</h1>
         
         <!-- AVATAR DASHBOARD -->
@@ -242,6 +297,11 @@
         <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
+    <!-- COOKIE BANNER -->
+    <div id="cookie-banner" class="hidden">
+        <p>🍪 Usamos cookies para mejorar tu experiencia y mostrar anuncios. Al continuar, aceptas nuestra <a href="#" onclick="app.showPrivacy()">Política de Privacidad</a>.</p>
+        <button onclick="app.acceptCookies()" class="success">Aceptar</button>
+    </div>
 
 <script>
     // --- BASE DE DATOS LOCAL ---
@@ -271,11 +331,14 @@
             } else {
                 app.showLogin();
             }
+            app.checkCookies();
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
         
         // VISTAS
         showLogin: () => app.switchView('view-login'),
+        showPrivacy: () => app.switchView('view-privacy'),
+        showTerms: () => app.switchView('view-terms'),
         showDashboard: () => {
             app.switchView('view-dashboard');
             document.getElementById('lang-selector').value = currentLang;
@@ -326,6 +389,17 @@
             } else {
                 alert("Introduce una API Key válida.");
             }
+        },
+        
+        // COOKIES
+        checkCookies: () => {
+            if(!localStorage.getItem('jetbulary_cookies_accepted')) {
+                document.getElementById('cookie-banner').classList.remove('hidden');
+            }
+        },
+        acceptCookies: () => {
+            localStorage.setItem('jetbulary_cookies_accepted', 'true');
+            document.getElementById('cookie-banner').classList.add('hidden');
         },
         
         // LOGICA TEMAS
