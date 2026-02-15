@@ -97,7 +97,7 @@
         <header style="margin-bottom: 40px;">
             <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo">
             <h1 style="margin-bottom: 10px; font-size: 2.5rem;">Jetbulary</h1>
-            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto;">La revolución en el aprendizaje de idiomas: Inteligencia Artificial, contexto real y pronunciación nativa.</p>
+            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto;">Bienvenido, bienvenida a la comunidad para hispanohablantes gratuita jetbulary.com. En 1 minuto, tendrás preparado tu aliado para aprender idiomas como un nativo, por inmersión lingüística. Entra e ilusiónate aprendiendo de forma divertida.</p>
         </header>
 
         <section style="text-align: left; margin-bottom: 40px;">
@@ -133,15 +133,18 @@
 
         <div style="background: #f8f9fa; padding: 30px; border-radius: 16px; border: 1px solid #e9ecef; margin-top: 40px;">
             <h3 style="margin-top: 0;">Comienza tu viaje</h3>
-            <p style="font-size: 0.95rem; margin-bottom: 20px; color: #666;">Para utilizar la potencia de la IA generativa, necesitas una API Key de Groq. Es gratuita y fácil de conseguir.</p>
+            <p style="font-size: 0.95rem; margin-bottom: 10px; color: #444;"><strong>¿Por qué necesito una API Key?</strong></p>
+            <p style="font-size: 0.9rem; margin-bottom: 15px; color: #666;">Jetbulary utiliza modelos de Inteligencia Artificial de última generación para crear contenido único y corregirte. Para acceder a esta tecnología de alta calidad de forma gratuita, necesitas una "llave" personal (API Key) de Groq.</p>
+            <p style="font-size: 0.9rem; margin-bottom: 20px; color: #666;">Es muy fácil: solo tardas 1 minuto, es totalmente gratis y no requiere tarjeta de crédito.</p>
             
             <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq (gsk_...)" style="margin-bottom: 15px;">
             <button onclick="app.saveApiKey()" class="success" style="font-size: 1.1rem;">Entrar a Jetbulary</button>
-            <p style="margin-top: 15px;"><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none;">👉 Conseguir API Key Gratis aquí</a></small></p>
+            <p style="margin-top: 15px;"><small><a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">👉 Conseguir API Key Gratis aquí (Click y crear)</a></small></p>
         </div>
 
         <footer style="margin-top: 60px; font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 30px;">
             <p>&copy; 2024 Jetbulary. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Jetbulary. Todos los derechos reservados.</p>
             <p>
                 <a href="#" onclick="app.showPrivacy()" style="color: #888; text-decoration: none; margin: 0 10px;">Política de Privacidad</a> | 
                 <a href="#" onclick="app.showTerms()" style="color: #888; text-decoration: none; margin: 0 10px;">Términos de Uso</a>
@@ -216,6 +219,19 @@
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         <br><br>
         <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
+
+        <!-- SECCIÓN PREMIUM / SOPORTE -->
+        <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0; color: #007AFF;">Sincronización y Apoyo</h3>
+            <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Apoya este proyecto y desbloquea la función de guardar y exportar avance. Te permitirá usar Jetbulary en cualquier dispositivo sincronizando temas y resultados.</p>
+            <a href="https://www.paypal.com/donate/?business=qrjuanma@gmail.com&item_name=Apoyo+Jetbulary&currency_code=EUR" target="_blank" style="text-decoration: none;">
+                <button class="success" style="background: #0070ba; margin-bottom: 15px;">💙 Apoyar con PayPal</button>
+            </a>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="app.exportDB()" class="secondary">⬇️ Exportar Avance</button>
+                <button onclick="app.importDB()" class="secondary">⬆️ Importar Avance</button>
+            </div>
+        </div>
     </div>
 
     <!-- VISTA JUEGO -->
@@ -389,6 +405,41 @@
             } else {
                 alert("Introduce una API Key válida.");
             }
+        },
+        
+        // EXPORTAR / IMPORTAR
+        exportDB: () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "jetbulary_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        },
+        importDB: () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if(data.topics && data.words) {
+                            if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
+                                db = data;
+                                app.saveDB();
+                                alert("Datos importados correctamente. La página se recargará.");
+                                location.reload();
+                            }
+                        } else alert("Archivo inválido.");
+                    } catch(err) { alert("Error al leer el archivo."); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         },
         
         // COOKIES
@@ -656,13 +707,18 @@
                             `<span class="vocab-score score-high">${w.score}%</span>`;
                 
                 return `
-                <div class="vocab-item">
-                    <div class="vocab-info">
-                        <div class="vocab-en">${w.english} ${badge}</div>
-                        <div class="vocab-es">${w.spanish} <small>(${w.topicName})</small></div>
+                <div class="vocab-item" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                        <div class="vocab-info">
+                            <div class="vocab-en">${w.english} ${badge}</div>
+                            <div class="vocab-es">${w.spanish} <small>(${w.topicName})</small></div>
+                        </div>
+                        <div class="vocab-controls">
+                            <button onclick="game.speakText('${w.english}')" class="secondary" style="padding: 8px 12px;">🔊</button>
+                        </div>
                     </div>
-                    <div class="vocab-controls">
-                        <button onclick="game.speakText('${w.english}')" class="secondary">🔊</button>
+                    <div style="font-size: 0.9rem; color: #555; margin-top: 8px; font-style: italic; background: #f9f9f9; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
+                        "${w.sentence_en}"
                     </div>
                 </div>`;
             }).join('');
