@@ -136,7 +136,6 @@
             <p style="font-size: 0.9rem; margin-bottom: 15px; color: #666;">Jetbulary utiliza modelos de Inteligencia Artificial de última generación para crear contenido único y corregirte. Para acceder a esta tecnología de alta calidad de forma gratuita, necesitas una "llave" personal (API Key) de Groq.</p>
             <p style="font-size: 0.9rem; margin-bottom: 20px; color: #666;">Es muy fácil: sólo tardas 1 minuto y es totalmente gratis.</p>
             
-            <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq (gsk_...)" style="margin-bottom: 15px;">
             <div style="position: relative;">
                 <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq (gsk_...)" style="margin-bottom: 15px; padding-right: 40px;">
                 <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 15px; cursor: pointer; font-size: 1.2rem;">👁️</span>
@@ -459,7 +458,6 @@
         
         // EXPORTAR / IMPORTAR
         exportDB: () => {
-            const .db,
             const backup = {
                 ...db,
                 apiKey: localStorage.getItem(API_KEY_STORAGE)
@@ -475,7 +473,6 @@
         importDB: () => {
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.h {
             input.accept = '.json,application/json';
             input.onchange = e => {
                 const file = e.target.files[0];
