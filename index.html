@@ -211,6 +211,7 @@
         <div id="topic-list"></div>
         <hr>
         <h3>Nuevo Tema</h3>
+        <button id="install-btn" onclick="app.installApp()" class="success hidden" style="margin-bottom: 10px; background: #007AFF;">📲 Añadir a Inicio</button>
         <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         <br><br>
@@ -230,6 +231,7 @@
                 <button onclick="app.exportDB()" class="secondary">⬇️ Exportar Avance</button>
                 <button onclick="app.importDB()" class="secondary">⬆️ Importar Avance</button>
             </div>
+            <p style="color: #dc3545; font-size: 0.85rem; margin-top: 15px; text-align: left; line-height: 1.4;">⚠️ <strong>Importante:</strong> Si borras el historial o los datos de navegación de tu móvil, perderás tu avance y la API Key. Haz copias de seguridad (Exportar) regularmente para mantener tus datos a salvo.</p>
         </div>
     </div>
 
@@ -430,13 +432,28 @@
             }
         },
         
+        installApp: () => {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then((choiceResult) => {
+                    window.deferredPrompt = null;
+                    document.getElementById('install-btn').classList.add('hidden');
+                });
+            } else {
+                alert("Para instalar:\niOS: Pulsa botón 'Compartir' y luego 'Añadir a Inicio'.\nAndroid: Pulsa menú (3 puntos) y 'Instalar aplicación' o 'Añadir a pantalla de inicio'.");
+            }
+        },
+        
         unlockSync: () => {
             document.getElementById('sync-buttons').classList.remove('hidden');
         },
         
         // EXPORTAR / IMPORTAR
         exportDB: () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const .db,
+                apiKey: localStorage.getItem(API_KEY_STORAGE)
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
             downloadAnchorNode.setAttribute("download", "jetbulary_backup.json");
@@ -447,8 +464,7 @@
         importDB: () => {
             const input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.json';
-            input.onchange = e => {
+            input.accept = '.h {
                 const file = e.target.files[0];
                 const reader = new FileReader();
                 reader.onload = event => {
@@ -456,6 +472,11 @@
                         const data = JSON.parse(event.target.result);
                         if(data.topics && data.words) {
                             if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
+                                // Restaurar API Key si existe en el backup
+                                if(data.apiKey) {
+                                    localStorage.setItem(API_KEY_STORAGE, data.apiKey);
+                                    delete data.apiKey; // Limpiar antes de guardar en db
+                                }
                                 db = data;
                                 app.saveDB();
                                 alert("Datos importados correctamente. La página se recargará.");
@@ -814,7 +835,7 @@
                 }
             }
             const dist = matrix[b.length][a.length];
-            return (1 - dist / Math.max(a.length, b.length)) > 0.6; // 60% similitud aceptada
+            return (1 - dist / Math.max(a.length, b.length)) > 0.45; // 45% similitud aceptada (menos estricto)
         },
 
         start: (topicId, mode) => {
@@ -1119,7 +1140,7 @@
             container.classList.remove('hidden');
             
             const langName = app.getLangName();
-            const prompt = `El usuario dijo "${spoken}" intentando decir "${target}" en ${langName}. Dime solo 2 o 3 palabras simples en ${langName} que suenen parecido (rimen o suenen similar) a "${target}" para ayudarle a pronunciar. Formato: "Suena como: palabra1, palabra2". Nada más.`;
+            const prompt = `El usuario dijo "${spoken}" intentando decir "${target}" en ${langName}. Dime 2 o 3 palabras simples en ${langName} que suenen parecido. Para cada una genera un botón HTML así: <button onclick="game.speakText('palabra', 0.5)" class="secondary" style="padding:5px; margin:2px; font-size:0.9rem; width:auto; display:inline-block;">🐢 palabra</button>.`;
             
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = text;
@@ -1129,6 +1150,14 @@
 
     // INICIO
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
     app.init();
 </script>
 </body>
