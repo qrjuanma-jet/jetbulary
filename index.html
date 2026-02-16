@@ -79,7 +79,7 @@
         #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
         
-        .app-logo { width: 100%; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; }
+        .app-logo { width: calc(100% + 40px); margin-left: -20px; margin-top: -20px; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; }
         
         /* Cookie Banner */
         #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px; text-align: center; z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
@@ -196,8 +196,6 @@
             <option value="ca">🟡🔴 Catalán (Català)</option>
             <option value="gl">⚪🔵 Gallego (Galego)</option>
             <option value="ko">🇰🇷 Coreano (한국어)</option>
-            <option value="ar">🇸🇦 Árabe (العربية)</option>
-            <option value="he">🇮🇱 Hebreo (עברית)</option>
         </select>
 
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
@@ -224,6 +222,9 @@
             <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Apoya este proyecto y desbloquea la función de guardar y exportar avance. Te permitirá usar Jetbulary en cualquier dispositivo sincronizando temas y resultados.</p>
             <div onclick="app.unlockSync()" style="margin-bottom: 15px; cursor: pointer; display: inline-block;">
                 <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'X8X61UAY6L');kofiwidget2.draw();</script>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <a href="https://www.paypal.com/donate/?business=qrjuanma@gmail.com&item_name=Apoyo+Jetbulary&currency_code=EUR&amount=3" target="_blank" onclick="app.unlockSync()" style="text-decoration: none;"><button class="success" style="background: #0070ba; width: auto; padding: 10px 20px; font-size: 0.9rem;">💙 Pagar 3€ con PayPal</button></a>
             </div>
             <div id="sync-buttons" class="hidden" style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="app.exportDB()" class="secondary">⬇️ Exportar Avance</button>
@@ -400,7 +401,7 @@
         showGrammar: () => {
             app.switchView('view-grammar');
             // Mostrar botón alfabeto si es necesario
-            const specialLangs = ['zh', 'ru', 'ko', 'ar', 'he', 'ja', 'el'];
+            const specialLangs = ['zh', 'ru', 'ko', 'ja', 'el'];
             if(specialLangs.includes(currentLang)) document.getElementById('btn-alphabet').classList.remove('hidden');
             else document.getElementById('btn-alphabet').classList.add('hidden');
             
@@ -669,7 +670,7 @@
         },
         
         getLangName: () => {
-            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego', ko: 'Coreano', ar: 'Árabe', he: 'Hebreo' };
+            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego', ko: 'Coreano' };
             return map[currentLang] || 'Inglés';
         },
 
@@ -881,7 +882,7 @@
             document.getElementById('sentence-translation').innerText = item.sentence_es;
             
             // Link YouGlish dinámico según idioma
-            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean', ar: 'arabic', he: 'hebrew' };
+            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
 
@@ -943,8 +944,6 @@
             if(currentLang === 'ca') langCode = 'ca-ES';
             if(currentLang === 'gl') langCode = 'es-ES'; // Fallback Gallego
             if(currentLang === 'ko') langCode = 'ko-KR';
-            if(currentLang === 'ar') langCode = 'ar-SA';
-            if(currentLang === 'he') langCode = 'he-IL';
             
             u.lang = langCode;
             
@@ -1003,8 +1002,6 @@
                 if(currentLang === 'ca') langCode = 'ca-ES';
                 if(currentLang === 'gl') langCode = 'gl-ES';
                 if(currentLang === 'ko') langCode = 'ko-KR';
-                if(currentLang === 'ar') langCode = 'ar-SA';
-                if(currentLang === 'he') langCode = 'he-IL';
                 
                 game.recognition.lang = langCode;
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
@@ -1025,8 +1022,6 @@
             if(currentLang === 'ca') langCode = 'ca-ES';
             if(currentLang === 'gl') langCode = 'gl-ES';
             if(currentLang === 'ko') langCode = 'ko-KR';
-            if(currentLang === 'ar') langCode = 'ar-SA';
-            if(currentLang === 'he') langCode = 'he-IL';
             game.recognition.lang = langCode;
             
             try {
