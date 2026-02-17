@@ -99,6 +99,13 @@
             <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto;">Bienvenido, bienvenida a la comunidad para hispanohablantes gratuita jetbulary.com. En 1 minuto, tendrás preparado tu aliado para aprender idiomas como un nativo, por inmersión lingüística. Entra e ilusiónate aprendiendo de forma divertida.</p>
         </header>
 
+        <nav style="margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+            <a href="#" onclick="return false;" style="margin: 0 10px; text-decoration: none; color: #333; font-weight: bold;">Inicio</a>
+            <a href="#features" style="margin: 0 10px; text-decoration: none; color: #555;">Características</a>
+            <a href="#methodology" style="margin: 0 10px; text-decoration: none; color: #555;">Metodología</a>
+            <a href="#faq" style="margin: 0 10px; text-decoration: none; color: #555;">Preguntas Frecuentes</a>
+        </nav>
+
         <section style="text-align: left; margin-bottom: 40px;">
             <h2 style="color: #007AFF; margin-bottom: 20px;">Aprendizaje Inmersivo con IA</h2>
             <p style="margin-bottom: 15px;">Jetbulary no es simplemente otra aplicación de tarjetas de memoria. Utilizamos modelos de lenguaje avanzados (LLMs) para generar contenido educativo personalizado al instante. Olvídate de las listas de palabras estáticas y aburridas; aquí tú eliges el tema y la IA construye la lección para ti.</p>
@@ -120,7 +127,7 @@
                 </div>
             </div>
 
-            <h3 style="margin-top: 30px;">Características Principales</h3>
+            <h3 id="features" style="margin-top: 30px;">Características Principales</h3>
             <ul style="padding-left: 20px; color: #444; text-align: left; line-height: 1.6;">
                 <li><strong>IA Generativa Ilimitada:</strong> Nunca te quedarás sin contenido nuevo.</li>
                 <li><strong>Reconocimiento de Voz Avanzado:</strong> Evaluación de pronunciación en tiempo real.</li>
@@ -128,6 +135,32 @@
                 <li><strong>Soporte Multi-idioma:</strong> Aprende Inglés, Francés, Alemán, Chino, y más.</li>
                 <li><strong>Integración Multimedia:</strong> Enlaces directos a YouGlish y diccionarios contextuales.</li>
             </ul>
+        </section>
+
+        <section id="methodology" style="text-align: left; margin-bottom: 40px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <h2 style="color: #007AFF;">Nuestra Metodología</h2>
+            <p>En Jetbulary creemos que la mejor forma de aprender un idioma es usándolo. Por eso, hemos eliminado las barreras tradicionales:</p>
+            <ul style="list-style-type: none; padding: 0;">
+                <li style="margin-bottom: 10px;">🧠 <strong>Input Comprensible:</strong> Recibes frases que están ligeramente por encima de tu nivel actual, facilitando la adquisición natural.</li>
+                <li style="margin-bottom: 10px;">🗣️ <strong>Output Activo:</strong> Te obligamos a hablar desde el primer día. Sin pronunciación, no hay avance.</li>
+                <li style="margin-bottom: 10px;">🔄 <strong>Feedback Inmediato:</strong> La IA te corrige al instante, evitando que fosilices errores.</li>
+            </ul>
+        </section>
+
+        <section id="faq" style="text-align: left; margin-bottom: 40px;">
+            <h2 style="color: #007AFF;">Preguntas Frecuentes (FAQ)</h2>
+            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
+                <summary style="font-weight: bold; cursor: pointer;">¿Es realmente gratis?</summary>
+                <p style="margin-top: 10px;">Sí, Jetbulary es una herramienta gratuita. Utilizamos la API de Groq que ofrece un plan gratuito generoso para desarrolladores y estudiantes.</p>
+            </details>
+            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
+                <summary style="font-weight: bold; cursor: pointer;">¿Qué idiomas puedo aprender?</summary>
+                <p style="margin-top: 10px;">Actualmente soportamos Inglés, Alemán, Francés, Italiano, Euskera, Chino, Ruso, Portugués, Catalán, Gallego y Coreano.</p>
+            </details>
+            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
+                <summary style="font-weight: bold; cursor: pointer;">¿Necesito registrarme?</summary>
+                <p style="margin-top: 10px;">No necesitas crear una cuenta con email. Tu progreso se guarda localmente en tu dispositivo. Solo necesitas una API Key para activar la inteligencia artificial.</p>
+            </details>
         </section>
 
         <div style="background: #f8f9fa; padding: 30px; border-radius: 16px; border: 1px solid #e9ecef; margin-top: 40px;">
@@ -349,8 +382,10 @@
 
     const app = {
         init: () => {
-            const data = localStorage.getItem(DB_KEY);
-            if (data) db = JSON.parse(data);
+            try {
+                const data = localStorage.getItem(DB_KEY);
+                if (data) db = JSON.parse(data);
+            } catch(e) { console.error("Error DB", e); }
             if (!db.grammar_courses) db.grammar_courses = {};
             
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
@@ -364,20 +399,30 @@
             });
             
             if(savedKey) {
-                app.showDashboard();
+                app.showDashboard('replace');
             } else {
-                app.showLogin();
+                app.showLogin('replace');
             }
             app.checkCookies();
+            
+            // Manejo del botón Atrás del navegador
+            window.onpopstate = (event) => {
+                if (event.state && event.state.view) {
+                    // Navegar sin empujar nuevo estado al historial
+                    if (event.state.view === 'view-dashboard') app.showDashboard('none');
+                    else if (event.state.view === 'view-login') app.showLogin('none');
+                    else app.switchView(event.state.view, 'none');
+                }
+            };
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
         
         // VISTAS
-        showLogin: () => app.switchView('view-login'),
+        showLogin: (h) => app.switchView('view-login', h),
         showPrivacy: () => app.switchView('view-privacy'),
         showTerms: () => app.switchView('view-terms'),
-        showDashboard: () => {
-            app.switchView('view-dashboard');
+        showDashboard: (h) => {
+            app.switchView('view-dashboard', h);
             document.getElementById('lang-selector').value = currentLang;
             game.updateAvatar(); // Actualizar avatar del dashboard
             app.renderTopics();
@@ -416,9 +461,15 @@
             game.updateAvatar(); // Actualizar avatar de gramática
             app.showGrammarCourse(); // Por defecto mostrar curso si existe
         },
-        switchView: (id) => {
+        switchView: (id, historyAction = 'push') => {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            
+            if (historyAction === 'push') {
+                history.pushState({ view: id }, null, "");
+            } else if (historyAction === 'replace') {
+                history.replaceState({ view: id }, null, "");
+            }
         },
         
         logout: () => {
