@@ -87,10 +87,14 @@
         #cookie-banner p { margin: 0; font-size: 0.9rem; color: #eee; }
         #cookie-banner a { color: #4da3ff; }
         #cookie-banner button { width: auto; padding: 8px 20px; margin: 0; font-size: 0.9rem; }
+        
+        /* Install Button */
+        #install-btn { position: fixed; top: 15px; right: 15px; width: auto; padding: 8px 15px; font-size: 0.85rem; z-index: 1000; background: #007AFF; color: white; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; cursor: pointer; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
 <body>
+    <button id="install-btn" onclick="app.installApp()" class="hidden">📲 Añadir a Inicio</button>
 
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
@@ -241,7 +245,6 @@
         </div>
 
         <h3>Añade Tema</h3>
-        <button id="install-btn" onclick="app.installApp()" class="success hidden" style="margin-bottom: 10px; background: #007AFF;">📲 Añadir a Inicio</button>
         <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         
@@ -780,7 +783,12 @@
             btn.innerText = "Generando...";
             
             const langName = app.getLangName();
-            const prompt = `Genera un JSON con 10 palabras en ${langName} sobre: "${topicName}". ${extraPrompt} Formato JSON array estricto: [{"english": "palabra_en_${currentLang}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
+            const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
+            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english".
+            Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
+            const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
+            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english".
+            Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
