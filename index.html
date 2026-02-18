@@ -394,10 +394,8 @@
             
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if(savedKey) document.getElementById('api-key-input').value = savedKey;
-            // Clave recuperada de tu configuración de servidor
             else document.getElementById('api-key-input').value = "";
             
-            // Permitir Enter en el input de nuevo tema
             document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') app.createTopic();
             });
@@ -409,10 +407,8 @@
             }
             app.checkCookies();
             
-            // Manejo del botón Atrás del navegador
             window.onpopstate = (event) => {
                 if (event.state && event.state.view) {
-                    // Navegar sin empujar nuevo estado al historial
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
                     else if (event.state.view === 'view-login') app.showLogin('none');
                     else app.switchView(event.state.view, 'none');
@@ -421,14 +417,13 @@
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
         
-        // VISTAS
         showLogin: (h) => app.switchView('view-login', h),
         showPrivacy: () => app.switchView('view-privacy'),
         showTerms: () => app.switchView('view-terms'),
         showDashboard: (h) => {
             app.switchView('view-dashboard', h);
             document.getElementById('lang-selector').value = currentLang;
-            game.updateAvatar(); // Actualizar avatar del dashboard
+            game.updateAvatar();
             app.renderTopics();
         },
         changeLanguage: () => {
@@ -456,14 +451,13 @@
         },
         showGrammar: () => {
             app.switchView('view-grammar');
-            // Mostrar botón alfabeto si es necesario
             const specialLangs = ['zh', 'ru', 'ko', 'ja', 'el'];
             if(specialLangs.includes(currentLang)) document.getElementById('btn-alphabet').classList.remove('hidden');
             else document.getElementById('btn-alphabet').classList.add('hidden');
             
             document.getElementById('grammar-title').innerText = `Gramática (${app.getLangName()})`;
-            game.updateAvatar(); // Actualizar avatar de gramática
-            app.showGrammarCourse(); // Por defecto mostrar curso si existe
+            game.updateAvatar();
+            app.showGrammarCourse();
         },
         switchView: (id, historyAction = 'push') => {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
@@ -512,7 +506,6 @@
             document.getElementById('sync-buttons').classList.remove('hidden');
         },
         
-        // EXPORTAR / IMPORTAR
         exportDB: () => {
             const backup = {
                 ...db,
@@ -530,6 +523,8 @@
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '*/*';
+            input.style.display = 'none';
+            document.body.appendChild(input);
             input.onchange = e => {
                 const file = e.target.files[0];
                 const reader = new FileReader();
@@ -538,10 +533,9 @@
                         const data = JSON.parse(event.target.result);
                         if(data.topics && data.words) {
                             if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
-                                // Restaurar API Key si existe en el backup
                                 if(data.apiKey) {
                                     localStorage.setItem(API_KEY_STORAGE, data.apiKey);
-                                    delete data.apiKey; // Limpiar antes de guardar en db
+                                    delete data.apiKey;
                                 }
                                 db = data;
                                 app.saveDB();
@@ -550,13 +544,13 @@
                             }
                         } else alert("Archivo inválido.");
                     } catch(err) { alert("Error al leer el archivo."); }
+                    document.body.removeChild(input);
                 };
                 reader.readAsText(file);
             };
             input.click();
         },
         
-        // COOKIES
         checkCookies: () => {
             if(!localStorage.getItem('jetbulary_cookies_accepted')) {
                 document.getElementById('cookie-banner').classList.remove('hidden');
@@ -567,17 +561,13 @@
             document.getElementById('cookie-banner').classList.add('hidden');
         },
         
-        // LOGICA TEMAS
         renderTopics: () => {
             const list = document.getElementById('topic-list');
-            // Filtrar temas por idioma actual
             const myTopics = db.topics.filter(t => (t.lang || 'en') === currentLang);
             
             if(myTopics.length === 0) list.innerHTML = `<p>No hay temas en ${app.getLangName()}. Crea uno nuevo.</p>`;
             else {
-                // Orden inverso para que el último salga primero
                 const reversed = [...myTopics].reverse();
-                
                 list.innerHTML = reversed.map((t, index) => `
                     <details ${index === 0 ? 'open' : ''} onclick="app.closeOthers(this)">
                         <summary>${t.name}</summary>
@@ -609,7 +599,6 @@
             if(!confirm("¿Borrar este tema y todo su vocabulario?")) return;
             db.topics = db.topics.filter(t => t.id !== id);
             db.words = db.words.filter(w => w.topic_id !== id);
-            // Limpiar progreso huérfano
             const validWordIds = db.words.map(w => w.id);
             db.progress = db.progress.filter(p => validWordIds.includes(p.word_id));
             app.saveDB();
@@ -621,7 +610,6 @@
             if(!name) return;
             const btn = document.getElementById('btn-create');
             
-            // Verificar si existe
             let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
             if(topic) return alert("El tema ya existe.");
             
@@ -742,11 +730,10 @@
 
         openGrammarLesson: async (level, topic) => {
             const container = document.getElementById('grammar-content');
-            document.getElementById('grammar-qa').classList.remove('hidden'); // Reusamos la vista de QA para mostrar contenido
+            document.getElementById('grammar-qa').classList.remove('hidden'); 
             document.getElementById('grammar-course-list').classList.add('hidden');
-            document.getElementById('grammar-query').value = topic; // Para referencia
+            document.getElementById('grammar-query').value = topic; 
             
-            // Simular click en preguntar
             const btn = document.getElementById('btn-grammar');
             const langName = app.getLangName();
             const prompt = `Actúa como una profesora de ${langName}. Explica el tema de gramática: "${topic}" (Nivel ${level}). 
@@ -785,9 +772,6 @@
             btn.innerText = "Generando...";
             
             const langName = app.getLangName();
-            const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
-            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english".
-            Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
             IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english".
             Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
@@ -849,7 +833,6 @@
         },
         
         startReview: () => {
-            // Modo repaso global
             game.start('global_review', 'review');
         }
     };
@@ -857,19 +840,16 @@
     const vocab = {
         render: (sortBy = 'score') => {
             const list = document.getElementById('vocab-list');
-            // Obtener todas las palabras del idioma actual
             const langTopics = db.topics.filter(t => (t.lang || 'en') === currentLang).map(t => t.id);
             let words = db.words.filter(w => langTopics.includes(w.topic_id));
             
-            // Añadir stats
             words = words.map(w => {
                 const p = db.progress.find(pr => pr.word_id === w.id);
                 const score = p && p.attempts > 0 ? Math.round((p.successes/p.attempts)*100) : -1;
                 return { ...w, score, topicName: db.topics.find(t => t.id === w.topic_id).name };
             });
 
-            // Ordenar
-            if(sortBy === 'score') words.sort((a,b) => a.score - b.score); // Menor score primero (más difícil)
+            if(sortBy === 'score') words.sort((a,b) => a.score - b.score);
             if(sortBy === 'topic') words.sort((a,b) => a.topicName.localeCompare(b.topicName));
             if(sortBy === 'alpha') words.sort((a,b) => a.english.localeCompare(b.english));
 
@@ -906,10 +886,8 @@
         talkInterval: null,
         timerInterval: null,
         
-        // Algoritmo de distancia para "bajar dificultad" (fuzzy match)
         isCloseMatch: (target, spoken) => {
             if (spoken.includes(target)) return true;
-            // Levenshtein simple
             const a = target, b = spoken;
             if(a.length === 0) return b.length === 0;
             const matrix = [];
@@ -922,14 +900,12 @@
                 }
             }
             const dist = matrix[b.length][a.length];
-            return (1 - dist / Math.max(a.length, b.length)) > 0.45; // 45% similitud aceptada (menos estricto)
+            return (1 - dist / Math.max(a.length, b.length)) > 0.45;
         },
 
         start: (topicId, mode) => {
             let words = [];
             if(topicId === 'global_review') {
-                // Buscar palabras con intentos y ordenarlas por peor score
-                // Filtrar por idioma actual
                 const langTopics = db.topics.filter(t => (t.lang || 'en') === currentLang).map(t => t.id);
                 const userProg = db.progress.filter(p => db.words.find(w => w.id === p.word_id && langTopics.includes(w.topic_id)));
                 
@@ -938,7 +914,6 @@
             } else {
                 words = db.words.filter(w => w.topic_id === topicId);
                 if(mode === 'review') {
-                    // Solo palabras ya vistas
                     words = words.filter(w => {
                         const p = db.progress.find(pr => pr.word_id === w.id);
                         return p && p.attempts > 0;
@@ -948,7 +923,6 @@
             
             if(words.length === 0) return alert("No hay palabras disponibles para este modo.");
             
-            // Mezclar un poco
             game.data = words.sort(() => Math.random() - 0.5).slice(0, 10);
             game.index = 0;
             app.switchView('view-game');
@@ -957,7 +931,6 @@
         },
         
         updateAvatar: () => {
-            // Actualizar imagen del avatar (boca cerrada por defecto)
             const containers = document.querySelectorAll('.avatar-container');
             containers.forEach(c => {
                 c.innerHTML = '';
@@ -989,7 +962,6 @@
             document.getElementById('word-display').innerText = item.spanish;
             document.getElementById('sentence-translation').innerText = item.sentence_es;
             
-            // Link YouGlish dinámico según idioma
             const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
@@ -1040,37 +1012,30 @@
             const u = new SpeechSynthesisUtterance(text);
             
             u.rate = rate;
-            // Configurar idioma TTS
             let langCode = 'en-US';
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
             if(currentLang === 'zh') langCode = 'zh-CN';
-            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback para Euskera (no suele haber TTS nativo fácil)
+            if(currentLang === 'eu') langCode = 'es-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
             if(currentLang === 'ca') langCode = 'ca-ES';
-            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback Gallego
+            if(currentLang === 'gl') langCode = 'es-ES';
             if(currentLang === 'ko') langCode = 'ko-KR';
             
             u.lang = langCode;
             
             const voices = window.speechSynthesis.getVoices();
-            
-            // Lista ampliada de nombres femeninos comunes en TTS para asegurar voz de mujer
             const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
-            
-            // Buscar voz femenina que coincida con el idioma y no sea explícitamente masculina
             const f = voices.find(v => v.lang.includes(langCode.split('-')[0]) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
             
             if(f) u.voice = f;
             
-            // Animación boca
             u.onstart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
                 
                 game.talkInterval = setInterval(() => {
-                    // Animación aleatoria más natural (más 'open' y 'half', menos 'closed')
                     const rand = Math.random();
                     const state = rand < 0.1 ? 'closed' : (rand < 0.55 ? 'half' : 'open');
                     
@@ -1082,7 +1047,6 @@
             u.onend = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
                 if (game.talkInterval) clearInterval(game.talkInterval);
-                // Reset a closed
                 document.querySelectorAll('.avatar-img').forEach(img => {
                     img.src = img.src.replace(/_(half|open)\.(png|jpg)/, '_closed.$2');
                 });
@@ -1098,7 +1062,6 @@
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
                 game.recognition = new SpeechRecognition();
                 
-                // Idioma reconocimiento
                 let langCode = 'en-US';
                 if(currentLang === 'de') langCode = 'de-DE';
                 if(currentLang === 'fr') langCode = 'fr-FR';
@@ -1118,7 +1081,6 @@
                     game.stopTimer();
                 };
             }
-            // Actualizar lang por si cambió
             let langCode = 'en-US';
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
@@ -1148,10 +1110,8 @@
             const clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
             const correct = game.isCloseMatch(target, clean);
             
-            //const score = parseInt(document.getElementById('spoken-text').dataset.score) || 10;
             const fb = document.getElementById('feedback-msg');
             
-            // Guardar progreso
             const wId = game.data[game.index].id;
             let prog = db.progress.find(p => p.word_id === wId);
             if(!prog) {
@@ -1180,7 +1140,6 @@
          stopMic: () => {
             if(game.recognition) {
                 try { game.recognition.stop(); } catch(e) {}
-                // Forzar limpieza de UI por si onend falla (Safari)
                 document.getElementById('mic-btn').classList.remove('listening');
                 game.stopTimer();
             }
@@ -1194,7 +1153,7 @@
             bar.style.backgroundColor = '#28a745';
             
             let startTime = Date.now();
-            const duration = 5000; // 5 segundos
+            const duration = 5000;
             
             if (game.timerInterval) clearInterval(game.timerInterval);
             
@@ -1204,8 +1163,8 @@
                 
                 bar.style.width = pct + '%';
                 
-                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107'; // Amarillo
-                else if (pct >= 80) bar.style.backgroundColor = '#dc3545'; // Rojo
+                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
+                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
                 
                 if (elapsed >= duration) game.stopMic();
             }, 50);
@@ -1235,7 +1194,6 @@
         }
     };
 
-    // INICIO
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     
     window.addEventListener('beforeinstallprompt', (e) => {
