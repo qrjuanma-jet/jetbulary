@@ -96,6 +96,7 @@
     <div id="view-login" class="container">
         <header style="margin-bottom: 40px;">
             <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
+            <h2 style="color: #007AFF; margin-bottom: 10px;">VUELA MÁS ALTO, APRENDE MÁS</h2>
             <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">Jetbulary: Aprende y diviértete como un nativo, úsalo todos los días de forma gratuita. El primer paso es conseguir <a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">tu llave</a> personal para empezar, cópiala y pégala en el siguiente recuadro.</p>
             
             <div style="position: relative; max-width: 400px; margin: 0 auto;">
@@ -239,13 +240,13 @@
             <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
         </div>
 
-        <div id="topic-list"></div>
-        <hr>
-        <h3>Nuevo Tema</h3>
+        <h3>Añade Tema</h3>
         <button id="install-btn" onclick="app.installApp()" class="success hidden" style="margin-bottom: 10px; background: #007AFF;">📲 Añadir a Inicio</button>
         <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
-        <br><br>
+        
+        <div id="topic-list" style="margin-top: 20px;"></div>
+        
         <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
         <!-- SECCIÓN PREMIUM / SOPORTE -->
@@ -347,6 +348,13 @@
     <div id="view-resources" class="container hidden">
         <h2>Recursos Extra</h2>
         <div id="resources-content" style="text-align: left;"></div>
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Volver</button>
+    </div>
+
+    <!-- VISTA CULTURA -->
+    <div id="view-culture" class="container hidden">
+        <h2 id="culture-title">Cultura</h2>
+        <div id="culture-content" style="text-align: left; line-height: 1.6;"></div>
         <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Volver</button>
     </div>
 
@@ -575,6 +583,7 @@
                             </div>
                             <div class="topic-actions">
                                 <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
+                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">🌍 Cultura</button>
                                 <button onclick="app.deleteTopic(${t.id})" class="danger">Borrar</button>
                             </div>
                         </div>
@@ -630,6 +639,20 @@
                 app.saveDB();
                 alert("Tema ampliado.");
             }, `NO repitas estas palabras: ${existing}.`);
+        },
+        
+        showTopicCulture: async (id) => {
+            const topic = db.topics.find(t => t.id === id);
+            app.switchView('view-culture');
+            document.getElementById('culture-title').innerText = `Cultura: ${topic.name}`;
+            const container = document.getElementById('culture-content');
+            container.innerHTML = '<p>Buscando datos culturales...</p>';
+            
+            const langName = app.getLangName();
+            const prompt = `Actúa como un experto cultural. Genera 3 curiosidades, datos culturales o costumbres interesantes sobre el tema "${topic.name}" relacionados específicamente con países donde se habla ${langName}. 
+            Usa formato HTML limpio (<h3>, <p>, <ul>). Sé breve y entretenido.`;
+            
+            await app.callAI_Text(prompt, null, (text) => { container.innerHTML = text; });
         },
         
         showAlphabet: async () => {
