@@ -245,7 +245,11 @@
         </div>
 
         <h3>Añade Tema</h3>
-        <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
+        <div style="position: relative; margin-bottom: 15px;">
+            <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." style="margin-bottom: 0; padding-right: 50px;">
+            <span onclick="app.listenTopic(this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
+            <span onclick="app.listenTopic(this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
+        </div>
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         
         <details style="margin-top: 15px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
@@ -506,6 +510,23 @@
         toggleApiKeyVisibility: () => {
             const input = document.getElementById('api-key-input');
             input.type = input.type === 'password' ? 'text' : 'password';
+        },
+        
+        listenTopic: (btn) => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Tu navegador no soporta voz.");
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'es-ES';
+            
+            btn.innerText = "👂";
+            
+            recognition.onresult = (e) => {
+                document.getElementById('new-topic-input').value = e.results[0][0].transcript;
+            };
+            
+            recognition.onend = () => { btn.innerText = "🎤"; };
+            recognition.start();
         },
         
         installApp: () => {
