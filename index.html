@@ -89,12 +89,11 @@
         #cookie-banner button { width: auto; padding: 8px 20px; margin: 0; font-size: 0.9rem; }
         
         /* Install Button */
-        #install-btn { position: fixed; top: 15px; right: 15px; width: auto; padding: 8px 15px; font-size: 0.85rem; z-index: 1000; background: #007AFF; color: white; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; cursor: pointer; }
+        #install-btn { margin: 30px auto 40px auto; padding: 12px 24px; font-size: 1rem; background: #007AFF; color: white; border-radius: 30px; border: none; cursor: pointer; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
 <body>
-    <button id="install-btn" onclick="app.installApp()">📲 Añadir a Inicio</button>
 
     <!-- VISTA LOGIN -->
     <div id="view-login" class="container">
@@ -388,6 +387,8 @@
         <button onclick="app.acceptCookies()" class="success">Aceptar</button>
     </div>
 
+    <button id="install-btn" onclick="app.installApp()">📲 Instalar App</button>
+
 <script>
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
@@ -509,7 +510,7 @@
                     document.getElementById('install-btn').classList.add('hidden');
                 });
             } else {
-                alert("Para instalar:\niOS: Pulsa botón 'Compartir' y luego 'Añadir a Inicio'.\nAndroid: Pulsa menú (3 puntos) y 'Instalar aplicación' o 'Añadir a pantalla de inicio'.");
+                alert("Para instalar:\niOS: Pulsa botón 'Compartir' y luego 'Añadir a Inicio'.\nAndroid: Pulsa menú (3 puntos) y 'Instalar aplicación'.\nWindows: Pulsa el icono (+) en la barra de direcciones o ve al menú y 'Instalar Jetbulary'.");
             }
         },
         
