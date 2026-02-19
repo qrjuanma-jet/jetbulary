@@ -248,6 +248,11 @@
         <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
         
+        <details style="margin-top: 15px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <summary style="font-size: 0.9rem; color: #007AFF;">💡 Sugerencias de Temas</summary>
+            <div id="suggestions-container" style="padding: 15px;"></div>
+        </details>
+        
         <div id="topic-list" style="margin-top: 20px;"></div>
         
         <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
@@ -437,6 +442,7 @@
             document.getElementById('lang-selector').value = currentLang;
             game.updateAvatar();
             app.renderTopics();
+            app.renderSuggestions();
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
@@ -615,6 +621,45 @@
             db.progress = db.progress.filter(p => validWordIds.includes(p.word_id));
             app.saveDB();
             app.renderTopics();
+        },
+        
+        renderSuggestions: () => {
+            const dailyTopics = [
+                "Inteligencia Artificial", "Cambio Climático", "Exploración de Marte", 
+                "Teletrabajo", "Salud Mental", "Criptomonedas", "Ciberseguridad", 
+                "Minimalismo", "Ciudades del Futuro", "Energías Renovables", 
+                "Redes Sociales", "Globalización", "Avances Médicos", "Turismo Espacial", 
+                "Economía Circular", "Derechos Humanos", "Biodiversidad", "Educación Online", 
+                "Realidad Virtual", "Coches Eléctricos"
+            ];
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const day = Math.floor(diff / oneDay);
+            const dailyTopic = dailyTopics[day % dailyTopics.length];
+            
+            const container = document.getElementById('suggestions-container');
+            if(container) {
+                container.innerHTML = `
+                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="secondary" style="background: #E3F2FD; color: #007AFF; border: 1px solid #BBDEFB; width: 100%; font-weight: bold; margin-bottom: 10px;">📅 Tema del Día: ${dailyTopic}</button>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary" style="flex: 1 1 auto; width: auto;">👨‍👩‍👧‍👦 Familia</button>
+                        <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary" style="flex: 1 1 auto; width: auto;">🍔 Comida</button>
+                        <button onclick="app.createTopicFromSuggestion('Viajes y Aeropuerto')" class="secondary" style="flex: 1 1 auto; width: auto;">✈️ Viajes</button>
+                        <button onclick="app.createTopicFromSuggestion('Trabajo y Negocios')" class="secondary" style="flex: 1 1 auto; width: auto;">💼 Trabajo</button>
+                        <button onclick="app.createTopicFromSuggestion('Rutina Diaria')" class="secondary" style="flex: 1 1 auto; width: auto;">⏰ Rutina</button>
+                        <button onclick="app.createTopicFromSuggestion('Compras y Ropa')" class="secondary" style="flex: 1 1 auto; width: auto;">🛍️ Compras</button>
+                        <button onclick="app.createTopicFromSuggestion('Salud y Cuerpo')" class="secondary" style="flex: 1 1 auto; width: auto;">🏥 Salud</button>
+                        <button onclick="app.createTopicFromSuggestion('Tecnología')" class="secondary" style="flex: 1 1 auto; width: auto;">💻 Tecnología</button>
+                    </div>
+                `;
+            }
+        },
+        
+        createTopicFromSuggestion: (topic) => {
+            document.getElementById('new-topic-input').value = topic;
+            app.createTopic();
         },
         
         createTopic: async () => {
