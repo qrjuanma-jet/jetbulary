@@ -245,8 +245,17 @@
         </div>
 
         <h3>Añade Tema</h3>
-        <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo...">
+        <div style="position: relative; margin-bottom: 15px;">
+            <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." style="margin-bottom: 0; padding-right: 50px;">
+            <span onclick="app.listenTopic(this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
+        </div>
         <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
+        
+        <details open style="margin-top: 15px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <details open style="margin-top: 15px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <summary style="font-size: 0.9rem; color: #007AFF;">💡 Sugerencias de Temas</summary>
+            <div id="suggestions-container" style="padding: 15px;"></div>
+        </details>
         
         <div id="topic-list" style="margin-top: 20px;"></div>
         
@@ -437,6 +446,7 @@
             document.getElementById('lang-selector').value = currentLang;
             game.updateAvatar();
             app.renderTopics();
+            app.renderSuggestions();
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
@@ -500,6 +510,23 @@
         toggleApiKeyVisibility: () => {
             const input = document.getElementById('api-key-input');
             input.type = input.type === 'password' ? 'text' : 'password';
+        },
+        
+        listenTopic: (btn) => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Tu navegador no soporta voz.");
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'es-ES';
+            
+            btn.innerText = "👂";
+            
+            recognition.onresult = (e) => {
+                document.getElementById('new-topic-input').value = e.results[0][0].transcript;
+            };
+            
+            recognition.onend = () => { btn.innerText = "🎤"; };
+            recognition.start();
         },
         
         installApp: () => {
@@ -615,6 +642,45 @@
             db.progress = db.progress.filter(p => validWordIds.includes(p.word_id));
             app.saveDB();
             app.renderTopics();
+        },
+        
+        renderSuggestions: () => {
+            const dailyTopics = [
+                "Inteligencia Artificial", "Cambio Climático", "Exploración de Marte", 
+                "Teletrabajo", "Salud Mental", "Criptomonedas", "Ciberseguridad", 
+                "Minimalismo", "Ciudades del Futuro", "Energías Renovables", 
+                "Redes Sociales", "Globalización", "Avances Médicos", "Turismo Espacial", 
+                "Economía Circular", "Derechos Humanos", "Biodiversidad", "Educación Online", 
+                "Realidad Virtual", "Coches Eléctricos"
+            ];
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const day = Math.floor(diff / oneDay);
+            const dailyTopic = dailyTopics[day % dailyTopics.length];
+            
+            const container = document.getElementById('suggestions-container');
+            if(container) {
+                container.innerHTML = `
+                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="secondary" style="background: #E3F2FD; color: #007AFF; border: 1px solid #BBDEFB; width: 100%; font-weight: bold; margin-bottom: 10px;">📅 Tema del Día: ${dailyTopic}</button>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary" style="flex: 1 1 auto; width: auto;">👨‍👩‍👧‍👦 Familia</button>
+                        <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary" style="flex: 1 1 auto; width: auto;">🍔 Comida</button>
+                        <button onclick="app.createTopicFromSuggestion('Viajes y Aeropuerto')" class="secondary" style="flex: 1 1 auto; width: auto;">✈️ Viajes</button>
+                        <button onclick="app.createTopicFromSuggestion('Trabajo y Negocios')" class="secondary" style="flex: 1 1 auto; width: auto;">💼 Trabajo</button>
+                        <button onclick="app.createTopicFromSuggestion('Rutina Diaria')" class="secondary" style="flex: 1 1 auto; width: auto;">⏰ Rutina</button>
+                        <button onclick="app.createTopicFromSuggestion('Compras y Ropa')" class="secondary" style="flex: 1 1 auto; width: auto;">🛍️ Compras</button>
+                        <button onclick="app.createTopicFromSuggestion('Salud y Cuerpo')" class="secondary" style="flex: 1 1 auto; width: auto;">🏥 Salud</button>
+                        <button onclick="app.createTopicFromSuggestion('Tecnología')" class="secondary" style="flex: 1 1 auto; width: auto;">💻 Tecnología</button>
+                    </div>
+                `;
+            }
+        },
+        
+        createTopicFromSuggestion: (topic) => {
+            document.getElementById('new-topic-input').value = topic;
+            app.createTopic();
         },
         
         createTopic: async () => {
@@ -785,7 +851,9 @@
             
             const langName = app.getLangName();
             const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
-            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english".
+            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english". Para Chino: Solo Hanzi.
+            En el campo "english" pon SOLO la palabra en ${langName} (sin pinyin, sin paréntesis, sin pronunciación).
+            En el campo "english" pon SOLO la palabra en ${langName} (sin pinyin, sin paréntesis, sin pronunciación). Para Chino: Solo Hanzi.
             Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
@@ -969,11 +1037,19 @@
                 return;
             }
             const item = game.data[game.index];
-            const html = item.sentence_en.replace(new RegExp(`\\b${item.english}\\b`, 'gi'), `<strong>${item.english}</strong>`);
+            
+            // Fix: Escapar caracteres especiales y ajustar regex para idiomas asiáticos
+            const escapedWord = item.english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const isAsian = ['zh', 'ja', 'ko', 'th'].includes(currentLang);
+            const boundary = isAsian ? '' : '\\b';
+            const regex = new RegExp(`${boundary}${escapedWord}${boundary}`, 'gi');
+            
+            const html = item.sentence_en.replace(regex, `<strong>${item.english}</strong>`);
             document.getElementById('sentence-display').innerHTML = html;
             document.getElementById('word-display').innerText = item.spanish;
             document.getElementById('sentence-translation').innerText = item.sentence_es;
             
+            // Link YouGlish dinámico según idioma
             const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
@@ -1038,11 +1114,19 @@
             
             u.lang = langCode;
             
-            const voices = window.speechSynthesis.getVoices();
+            let voices = window.speec(hSynth === .angCoet || v.lang.startVWithoices();)'male));
+            
+            // Fallback: Si no encuentra voz femenina específica, usar cualquiera del idioa
+            if (!f) f = voices.find(v => v.lang === langCode || v.lang.strtsWith(angCod.split('-)[0]
             const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
-            const f = voices.find(v => v.lang.includes(langCode.split('-')[0]) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
+            co nst f = voices.find(v => v.lang.includes(langCode.split('-')[0]) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
+            let f = voices.find(v => (v.lang === langCode || v.lang.startsWith(langCode.split('-')[0])) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
             
             if(f) u.voice = f;
+            // Fallback: Si no encuentra voz femenina específica, usar cualquiera del idioma
+            if (!f) f = voices.find(v => v.lang === langCode || v.lang.startsWith(langCode.split('-')[0]));
+            
+            if (f) u.voice = f;
             
             u.onstart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
