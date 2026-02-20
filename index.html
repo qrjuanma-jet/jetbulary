@@ -402,7 +402,7 @@
         <button onclick="app.acceptCookies()" class="success">Aceptar</button>
     </div>
 
-    <button id="install-btn" onclick="app.installApp()">📲 Instalar App</button>
+    <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
 
 <script>
     // --- BASE DE DATOS LOCAL ---
@@ -1330,12 +1330,6 @@
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html> if(btn) btn.classList.add('hidden');
     }
     
     app.init();
