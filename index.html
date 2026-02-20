@@ -280,14 +280,13 @@
         <!-- SECCIÓN PREMIUM / SOPORTE -->
         <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
             <h3 style="margin-top: 0; color: #007AFF;">Sincronización y Apoyo</h3>
-            <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Apoya este proyecto y desbloquea la función de guardar y exportar avance. Te permitirá usar Jetbulary en cualquier dispositivo sincronizando temas y resultados.</p>
+            <button onclick="app.exportDB()" class="secondary" style="margin-bottom: 15px;">💾 Guardar Avance</button>
             <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Guardar Avances ahora es GRATIS, sólo pulsa en la tacita de café y vuelve a la página, verás el botón de Exportar Avance, sólo si TÚ QUIERES, PUEDES APORTAR AL PROYECTO, ¡Gracias por usar Jetbulary!</p>
             <p style="font-weight: bold; margin-bottom: 5px;">Apoya el proyecto, pulsando Tip</p>
             <div onclick="app.unlockSync()" style="margin-bottom: 15px; cursor: pointer; display: inline-block;">
                 <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'X8X61UAY6L');kofiwidget2.draw();</script>
             </div>
             <div id="sync-buttons" class="hidden" style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="app.exportDB()" class="secondary">⬇️ Exportar Avance</button>
                 <button onclick="app.importDB()" class="secondary">⬆️ Importar Avance</button>
             </div>
         </div>
@@ -623,7 +622,7 @@
                             </div>
                             <div class="topic-actions">
                                 <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
-                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">🌍 Cultura</button>
+                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">🌍 Curiosidades</button>
                                 <button onclick="app.deleteTopic(${t.id})" class="danger">Borrar</button>
                             </div>
                         </div>
@@ -721,13 +720,14 @@
         showTopicCulture: async (id) => {
             const topic = db.topics.find(t => t.id === id);
             app.switchView('view-culture');
-            document.getElementById('culture-title').innerText = `Cultura: ${topic.name}`;
+            document.getElementById('culture-title').innerText = `Curiosidades: ${topic.name}`;
             const container = document.getElementById('culture-content');
-            container.innerHTML = '<p>Buscando datos culturales...</p>';
+            container.innerHTML = '<p>Buscando curiosidades y expresiones...</p>';
             
             const langName = app.getLangName();
-            const prompt = `Actúa como un experto cultural. Genera 3 curiosidades, datos culturales o costumbres interesantes sobre el tema "${topic.name}" relacionados específicamente con países donde se habla ${langName}. 
-            Usa formato HTML limpio (<h3>, <p>, <ul>). Sé breve y entretenido.`;
+            const prompt = `Actúa como un experto cultural y lingüístico. Genera 3 curiosidades o datos culturales interesantes sobre el tema "${topic.name}" en países de habla ${langName}. 
+            ADEMÁS, incluye 3 expresiones idiomáticas o frases hechas relacionadas con este tema que se digan de forma muy diferente en ${langName} respecto al español. Para cada expresión, explica su significado, su traducción literal (si es curiosa) y cómo se diría en español.
+            Usa formato HTML limpio (<h3>, <p>, <ul>, <li>, <strong>). Sé entretenido.`;
             
             await app.callAI_Text(prompt, null, (text) => { container.innerHTML = text; });
         },
@@ -1329,6 +1329,12 @@
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html> if(btn) btn.classList.add('hidden');
     }
     
     app.init();
