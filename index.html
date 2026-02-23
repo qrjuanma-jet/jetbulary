@@ -310,7 +310,7 @@
 
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
         <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
-        <button id="btn-auto-mic" onclick="game.toggleAutoMic()" class="secondary" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: OFF</button>
+        <button id="btn-auto-mic" onclick="game.toggleAutoMic()" class="auto-mic-on" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: ON</button>
         <button onclick="game.next()" class="secondary" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; background: #f0f0f0; color: #555;">⏭️ Saltar Palabra</button>
         
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
@@ -968,7 +968,8 @@
         data: [],
         index: 0,
         recognition: null,
-        autoMic: false,
+        autoMic: true,
+        currentRetries: 0,
         talkInterval: null,
         timerInterval: null,
         
@@ -1052,7 +1053,7 @@
 
         loadCard: () => {
             if(game.index >= game.data.length) {
-                alert("Sesión terminada");
+                alert("Lo has hecho muy bien, sigue practicando, es la mejor forma de aprender un idioma.");
                 app.showDashboard();
                 return;
             }
@@ -1060,6 +1061,7 @@
             const item = game.data[game.index];
             
             // Fix: Escapar caracteres especiales y ajustar regex para idiomas asiáticos
+            game.currentRetries = 0;
             const escapedWord = item.english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const isAsian = ['zh', 'ja', 'ko', 'th'].includes(currentLang);
             const boundary = isAsian ? '' : '\\b';
@@ -1251,10 +1253,22 @@
                 setTimeout(game.next, 1500);
 
             } else {
-                fb.innerText = `Casi... era "${target}"`;
-                fb.className = "feedback incorrect";
-                document.getElementById('next-btn').classList.remove('hidden');
-                game.getPronunciationAdvice(target, transcript);
+                game.currentRetries++;
+                if (game.currentRetries === 1) {
+                    fb.innerText = "Incorrecto. Tienes 2 intentos más.";
+                    fb.className = "feedback incorrect";
+                    if(game.autoMic) setTimeout(() => game.toggleMic(), 1500);
+                } else if (game.currentRetries === 2) {
+                    fb.innerText = "Incorrecto. 1 intento más.";
+                    fb.className = "feedback incorrect";
+                    game.getMouthAdvice(game.data[game.index].english);
+                } else {
+                    fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
+                    fb.className = "feedback incorrect";
+                    document.getElementById('mic-btn').classList.add('hidden');
+                    document.getElementById('ai-advice').classList.add('hidden');
+                    setTimeout(game.next, 4000);
+                }
             }
         },
 
@@ -1301,13 +1315,13 @@
             game.loadCard();
         },
         
-        getPronunciationAdvice: async (target, spoken) => {
+        getMouthAdvice: async (word) => {
             const container = document.getElementById('ai-advice');
-            container.innerHTML = "🤔 Analizando tu pronunciación...";
+            container.innerHTML = "🤔 Buscando consejo de pronunciación...";
             container.classList.remove('hidden');
             
             const langName = app.getLangName();
-            const prompt = `El usuario dijo "${spoken}" intentando decir "${target}" en ${langName}. Dime 2 o 3 palabras simples en ${langName} que suenen parecido. Para cada una genera un botón HTML así: <button onclick="game.speakText('palabra', 0.5)" class="secondary" style="padding:5px; margin:2px; font-size:0.9rem; width:auto; display:inline-block;">🐢 palabra</button>. Sé muy breve. NO repitas texto.`;
+            const prompt = `Dame un consejo breve (máx 20 palabras) sobre cómo colocar la boca, lengua o dientes para pronunciar correctamente la palabra "${word}" en ${langName}.`;
             
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = text;
