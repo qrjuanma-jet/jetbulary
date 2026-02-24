@@ -425,6 +425,7 @@
             if(savedLang) {
                 currentLang = savedLang;
                 document.body.className = `lang-${currentLang}`;
+                document.documentElement.lang = currentLang;
             }
             
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
@@ -467,6 +468,7 @@
             currentLang = document.getElementById('lang-selector').value;
             localStorage.setItem('jetbulary_lang', currentLang);
             document.body.className = `lang-${currentLang}`;
+            document.documentElement.lang = currentLang;
             game.updateAvatar();
             app.renderTopics();
         },
@@ -886,6 +888,9 @@
                 zh: "Usa SOLO Hanzi (Caracteres chinos simplificados). NO incluyas Pinyin ni paréntesis.",
                 ko: "Usa SOLO Hangul (alfabeto coreano). NO incluyas Romanización ni paréntesis.",
                 ja: "Usa escritura japonesa estándar (Kanji/Kana). NO incluyas Romaji ni paréntesis.",
+                zh: "STRICTLY OUTPUT ONLY HANZI (Simplified Chinese). DO NOT include Pinyin, English, or parentheses.",
+                ko: "STRICTLY OUTPUT ONLY HANGUL (Korean). DO NOT include Romanization, English, or parentheses.",
+                ja: "STRICTLY OUTPUT ONLY KANJI/KANA. DO NOT include Romaji, English, or parentheses.",
                 ru: "Usa alfabeto Cirílico. NO incluyas transliteración.",
                 ar: "Usa escritura Árabe estándar. NO incluyas transliteración.",
                 he: "Usa escritura Hebrea estándar. NO incluyas transliteración."
@@ -1040,6 +1045,7 @@
                 if(topic && topic.lang) {
                     currentLang = topic.lang;
                     document.body.className = `lang-${currentLang}`;
+                    document.documentElement.lang = currentLang;
                 }
                 words = db.words.filter(w => w.topic_id === topicId);
                 if(mode === 'review') {
