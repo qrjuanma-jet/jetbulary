@@ -885,9 +885,6 @@
             
             // Restricciones específicas por idioma para evitar romanización
             const constraints = {
-                zh: "Usa SOLO Hanzi (Caracteres chinos simplificados). NO incluyas Pinyin ni paréntesis.",
-                ko: "Usa SOLO Hangul (alfabeto coreano). NO incluyas Romanización ni paréntesis.",
-                ja: "Usa escritura japonesa estándar (Kanji/Kana). NO incluyas Romaji ni paréntesis.",
                 zh: "STRICTLY OUTPUT ONLY HANZI (Simplified Chinese). DO NOT include Pinyin, English, or parentheses.",
                 ko: "STRICTLY OUTPUT ONLY HANGUL (Korean). DO NOT include Romanization, English, or parentheses.",
                 ja: "STRICTLY OUTPUT ONLY KANJI/KANA. DO NOT include Romaji, English, or parentheses.",
@@ -1177,7 +1174,6 @@
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
             if(currentLang === 'zh') {
-                // Detectar voz china disponible para ajustar el langCode
                 const zhVoice = voices.find(v => v.lang.toLowerCase().includes('zh') || v.lang.toLowerCase().includes('cmn'));
                 langCode = zhVoice ? zhVoice.lang : 'zh-CN';
             }
@@ -1393,29 +1389,6 @@
             
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = text;
-            }, 300);
-        }
-    };
-
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html>         container.innerHTML = text;
             }, 300);
         }
     };
