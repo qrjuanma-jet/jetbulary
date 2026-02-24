@@ -94,8 +94,6 @@
         #install-btn { margin: 30px auto 40px auto; padding: 12px 24px; font-size: 1rem; background: #007AFF; color: white; border-radius: 30px; border: none; cursor: pointer; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* Chinese Font Adjustment */
-        .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; font-size: 1.4em; }
-        .lang-ko .sentence, .lang-ko .word-target { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; font-size: 1.3em; }
         .lang-ja .sentence, .lang-ja .word-target { font-family: "Hiragino Kaku Gothic Pro", "Meiryo", "Noto Sans JP", sans-serif; font-size: 1.3em; }
         
         .auto-mic-on { background-color: #34C759 !important; color: white !important; border: 1px solid #28a745 !important; }
@@ -235,12 +233,10 @@
             <option value="fr">🇫🇷 Francés (Français)</option>
             <option value="it">🇮🇹 Italiano (Italiano)</option>
             <option value="eu">🟢⚪🔴 Euskera (Euskara)</option>
-            <option value="zh">🇨🇳 Chino (中文)</option>
             <option value="ru">🇷🇺 Ruso (Русский)</option>
             <option value="pt">🇵🇹 Portugués (Português)</option>
             <option value="ca">🟡🔴 Catalán (Català)</option>
             <option value="gl">⚪🔵 Gallego (Galego)</option>
-            <option value="ko">🇰🇷 Coreano (한국어)</option>
         </select>
 
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
@@ -492,7 +488,7 @@
         },
         showGrammar: () => {
             app.switchView('view-grammar');
-            const specialLangs = ['zh', 'ru', 'ko', 'ja', 'el'];
+            const specialLangs = ['ru', 'ja', 'el'];
             if(specialLangs.includes(currentLang)) document.getElementById('btn-alphabet').classList.remove('hidden');
             else document.getElementById('btn-alphabet').classList.add('hidden');
             
@@ -869,7 +865,7 @@
         },
         
         getLangName: () => {
-            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', zh: 'Chino', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego', ko: 'Coreano' };
+            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego' };
             return map[currentLang] || 'Inglés';
         },
 
@@ -885,8 +881,6 @@
             
             // Restricciones específicas por idioma para evitar romanización
             const constraints = {
-                zh: "STRICTLY OUTPUT ONLY HANZI (Simplified Chinese). DO NOT include Pinyin, English, or parentheses.",
-                ko: "STRICTLY OUTPUT ONLY HANGUL (Korean). DO NOT include Romanization, English, or parentheses.",
                 ja: "STRICTLY OUTPUT ONLY KANJI/KANA. DO NOT include Romaji, English, or parentheses.",
                 ru: "Usa alfabeto Cirílico. NO incluyas transliteración.",
                 ar: "Usa escritura Árabe estándar. NO incluyas transliteración.",
@@ -1108,7 +1102,7 @@
             // Fix: Escapar caracteres especiales y ajustar regex para idiomas asiáticos
             game.currentRetries = 0;
             const escapedWord = item.english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const isAsian = ['zh', 'ja', 'ko', 'th'].includes(currentLang);
+            const isAsian = ['ja', 'th'].includes(currentLang);
             const boundary = isAsian ? '' : '\\b';
             const regex = new RegExp(`${boundary}${escapedWord}${boundary}`, 'gi');
             
@@ -1118,7 +1112,7 @@
             document.getElementById('sentence-translation').innerText = item.sentence_es;
             
             // Link YouGlish dinámico según idioma
-            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', zh: 'chinese', pt: 'portuguese', ru: 'russian', ko: 'korean' };
+            const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', pt: 'portuguese', ru: 'russian' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
 
@@ -1173,16 +1167,11 @@
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'zh') {
-                const zhVoice = voices.find(v => v.lang.toLowerCase().includes('zh') || v.lang.toLowerCase().includes('cmn'));
-                langCode = zhVoice ? zhVoice.lang : 'zh-CN';
-            }
             if(currentLang === 'eu') langCode = 'es-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
             if(currentLang === 'ca') langCode = 'ca-ES';
             if(currentLang === 'gl') langCode = 'es-ES';
-            if(currentLang === 'ko') langCode = 'ko-KR';
             
             u.lang = langCode;
             
@@ -1193,9 +1182,6 @@
             
             // Fallback: Si no encuentra voz femenina específica, usar cualquiera del idioma
             if (!f) f = voices.find(v => v.lang === langCode || v.lang.replace('_', '-').startsWith(langCode.split('-')[0]));
-            
-            // Fallback específico para chino si no encuentra zh-CN exacto (ej: zh-HK, zh-TW o zh_CN)
-            if (!f && currentLang === 'zh') f = voices.find(v => v.lang.toLowerCase().includes('zh') || v.lang.toLowerCase().includes('cmn'));
             
             if (f) u.voice = f;
             
@@ -1238,19 +1224,6 @@
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
                 game.recognition = new SpeechRecognition();
                 
-                let langCode = 'en-US';
-                if(currentLang === 'de') langCode = 'de-DE';
-                if(currentLang === 'fr') langCode = 'fr-FR';
-                if(currentLang === 'it') langCode = 'it-IT';
-                if(currentLang === 'zh') langCode = 'zh-CN';
-                if(currentLang === 'eu') langCode = 'eu-ES';
-                if(currentLang === 'ru') langCode = 'ru-RU';
-                if(currentLang === 'pt') langCode = 'pt-PT';
-                if(currentLang === 'ca') langCode = 'ca-ES';
-                if(currentLang === 'gl') langCode = 'gl-ES';
-                if(currentLang === 'ko') langCode = 'ko-KR';
-                
-                game.recognition.lang = langCode;
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
                 game.recognition.onend = () => {
                     document.getElementById('mic-btn').classList.remove('listening');
@@ -1261,13 +1234,11 @@
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'zh') langCode = 'zh-CN';
             if(currentLang === 'eu') langCode = 'eu-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
             if(currentLang === 'ca') langCode = 'ca-ES';
             if(currentLang === 'gl') langCode = 'gl-ES';
-            if(currentLang === 'ko') langCode = 'ko-KR';
             game.recognition.lang = langCode;
             
             try {
@@ -1286,7 +1257,7 @@
             let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
             
             // Para idiomas asiáticos, eliminar espacios para mejorar la comparación
-            if (['zh', 'ja', 'ko', 'th'].includes(currentLang)) {
+            if (['ja', 'th'].includes(currentLang)) {
                 target = target.replace(/\s/g, '');
                 clean = clean.replace(/\s/g, '');
             }
@@ -1318,13 +1289,11 @@
                 if (game.currentRetries === 1) {
                     fb.innerText = "Incorrecto. Tienes 2 intentos más.";
                     fb.className = "feedback incorrect";
-                    if(game.autoMic) setTimeout(() => game.toggleMic(), 1500);
                     if(game.autoMic) setTimeout(() => game.toggleMic(), 2000);
                 } else if (game.currentRetries === 2) {
                     fb.innerText = "Incorrecto. 1 intento más.";
                     fb.className = "feedback incorrect";
                     game.getMouthAdvice(game.data[game.index].english);
-                    if(game.autoMic) setTimeout(() => game.toggleMic(), 4000);
                     if(game.autoMic) setTimeout(() => game.toggleMic(), 5000);
                 } else {
                     fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
