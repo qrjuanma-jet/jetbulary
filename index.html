@@ -95,6 +95,9 @@
         
         /* Chinese Font Adjustment */
         .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 1.4em; }
+        .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; font-size: 1.4em; }
+        .lang-ko .sentence, .lang-ko .word-target { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; font-size: 1.3em; }
+        .lang-ja .sentence, .lang-ja .word-target { font-family: "Hiragino Kaku Gothic Pro", "Meiryo", "Noto Sans JP", sans-serif; font-size: 1.3em; }
         
         .auto-mic-on { background-color: #34C759 !important; color: white !important; border: 1px solid #28a745 !important; }
     </style>
@@ -419,6 +422,12 @@
             } catch(e) { console.error("Error DB", e); }
             if (!db.grammar_courses) db.grammar_courses = {};
             
+            const savedLang = localStorage.getItem('jetbulary_lang');
+            if(savedLang) {
+                currentLang = savedLang;
+                document.body.className = `lang-${currentLang}`;
+            }
+            
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if(savedKey) document.getElementById('api-key-input').value = savedKey;
             else document.getElementById('api-key-input').value = "";
@@ -457,6 +466,7 @@
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
+            localStorage.setItem('jetbulary_lang', currentLang);
             document.body.className = `lang-${currentLang}`;
             game.updateAvatar();
             app.renderTopics();
@@ -1015,6 +1025,11 @@
                 userProg.sort((a,b) => (a.successes/a.attempts) - (b.successes/b.attempts));
                 words = userProg.slice(0, 10).map(p => db.words.find(w => w.id === p.word_id)).filter(w=>w);
             } else {
+                const topic = db.topics.find(t => t.id === topicId);
+                if(topic && topic.lang) {
+                    currentLang = topic.lang;
+                    document.body.className = `lang-${currentLang}`;
+                }
                 words = db.words.filter(w => w.topic_id === topicId);
                 if(mode === 'review') {
                     words = words.filter(w => {
