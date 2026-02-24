@@ -1261,6 +1261,7 @@
                 fb.innerText = "¡Correcto! 🎉";
                 fb.className = "feedback correct";
                 document.getElementById('mic-btn').classList.add('hidden');
+                document.getElementById('ai-advice').classList.add('hidden');
                 setTimeout(game.next, 1500);
 
             } else {
@@ -1269,10 +1270,13 @@
                     fb.innerText = "Incorrecto. Tienes 2 intentos más.";
                     fb.className = "feedback incorrect";
                     if(game.autoMic) setTimeout(() => game.toggleMic(), 1500);
+                    if(game.autoMic) setTimeout(() => game.toggleMic(), 2000);
                 } else if (game.currentRetries === 2) {
                     fb.innerText = "Incorrecto. 1 intento más.";
                     fb.className = "feedback incorrect";
                     game.getMouthAdvice(game.data[game.index].english);
+                    if(game.autoMic) setTimeout(() => game.toggleMic(), 4000);
+                    if(game.autoMic) setTimeout(() => game.toggleMic(), 5000);
                 } else {
                     fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
                     fb.className = "feedback incorrect";
