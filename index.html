@@ -94,7 +94,6 @@
         #install-btn { margin: 30px auto 40px auto; padding: 12px 24px; font-size: 1rem; background: #007AFF; color: white; border-radius: 30px; border: none; cursor: pointer; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* Chinese Font Adjustment */
-        .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 1.4em; }
         .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; font-size: 1.4em; }
         .lang-ko .sentence, .lang-ko .word-target { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; font-size: 1.3em; }
         .lang-ja .sentence, .lang-ja .word-target { font-family: "Hiragino Kaku Gothic Pro", "Meiryo", "Noto Sans JP", sans-serif; font-size: 1.3em; }
@@ -881,10 +880,22 @@
             btn.innerText = "Generando...";
             
             const langName = app.getLangName();
+            
+            // Restricciones específicas por idioma para evitar romanización
+            const constraints = {
+                zh: "Usa SOLO Hanzi (Caracteres chinos simplificados). NO incluyas Pinyin ni paréntesis.",
+                ko: "Usa SOLO Hangul (alfabeto coreano). NO incluyas Romanización ni paréntesis.",
+                ja: "Usa escritura japonesa estándar (Kanji/Kana). NO incluyas Romaji ni paréntesis.",
+                ru: "Usa alfabeto Cirílico. NO incluyas transliteración.",
+                ar: "Usa escritura Árabe estándar. NO incluyas transliteración.",
+                he: "Usa escritura Hebrea estándar. NO incluyas transliteración."
+            };
+            const constraint = constraints[currentLang] || "";
+
             const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
             IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english". 
-            Para Chino (zh): Usa SOLO Hanzi (Caracteres chinos simplificados) en los campos "english" y "sentence_en". NO incluyas Pinyin ni paréntesis.
-            En el campo "english" pon SOLO la palabra en ${langName}.
+            ${constraint}
+            En el campo "english" pon SOLO la palabra en ${langName} (sin pronunciación entre paréntesis).
             Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
@@ -1269,8 +1280,15 @@
         
         check: (transcript) => {
             document.getElementById('spoken-text').innerText = `Dijiste: "${transcript}"`;
-            const target = game.data[game.index].english.toLowerCase();
-            const clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
+            let target = game.data[game.index].english.toLowerCase();
+            let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
+            
+            // Para idiomas asiáticos, eliminar espacios para mejorar la comparación
+            if (['zh', 'ja', 'ko', 'th'].includes(currentLang)) {
+                target = target.replace(/\s/g, '');
+                clean = clean.replace(/\s/g, '');
+            }
+            
             const correct = game.isCloseMatch(target, clean);
             
             const fb = document.getElementById('feedback-msg');
@@ -1369,6 +1387,29 @@
             
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = text;
+            }, 300);
+        }
+    };
+
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html>         container.innerHTML = text;
             }, 300);
         }
     };
