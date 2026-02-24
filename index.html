@@ -1137,13 +1137,18 @@
             window.speechSynthesis.cancel();
             if (game.talkInterval) clearInterval(game.talkInterval);
             const u = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
             
             u.rate = rate;
             let langCode = 'en-US';
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'zh') langCode = 'zh-CN'; // Intentar mandarín estándar
+            if(currentLang === 'zh') {
+                // Detectar voz china disponible para ajustar el langCode
+                const zhVoice = voices.find(v => v.lang.toLowerCase().includes('zh') || v.lang.toLowerCase().includes('cmn'));
+                langCode = zhVoice ? zhVoice.lang : 'zh-CN';
+            }
             if(currentLang === 'eu') langCode = 'es-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
@@ -1153,7 +1158,6 @@
             
             u.lang = langCode;
             
-            const voices = window.speechSynthesis.getVoices();
             const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
             
             // Búsqueda de voz mejorada
@@ -1163,7 +1167,7 @@
             if (!f) f = voices.find(v => v.lang === langCode || v.lang.replace('_', '-').startsWith(langCode.split('-')[0]));
             
             // Fallback específico para chino si no encuentra zh-CN exacto (ej: zh-HK, zh-TW o zh_CN)
-            if (!f && currentLang === 'zh') f = voices.find(v => v.lang.toLowerCase().includes('zh'));
+            if (!f && currentLang === 'zh') f = voices.find(v => v.lang.toLowerCase().includes('zh') || v.lang.toLowerCase().includes('cmn'));
             
             if (f) u.voice = f;
             
@@ -1357,22 +1361,6 @@
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     
     window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html>dow.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
