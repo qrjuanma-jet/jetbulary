@@ -103,8 +103,8 @@
     <div id="view-login" class="container">
         <header style="margin-bottom: 40px;">
             <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
-            <h2 style="color: #007AFF; margin-bottom: 10px;">VUELA MÁS ALTO, APRENDE MÁS</h2>
-            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">Jetbulary: Aprende y diviértete como un nativo, úsalo todos los días de forma gratuita. El primer paso es conseguir tu <a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">🔑 llave personal</a> para empezar, cópiala y pégala en el siguiente recuadro.</p>
+            <h2 style="color: #007AFF; margin-bottom: 10px;">VUELA ALTO, APRENDE MÁS</h2>
+            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">Jetbulary: Aprende idiomas como un nativo de forma gratuita. Tu <a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">🔑 llave personal</a>, en groq, entra con tu cuenta de google y pulsa en create API KEY, cópiala y pégala en el siguiente recuadro (no guardamos tus datos)</p>
             
             <div style="position: relative; max-width: 400px; margin: 0 auto;">
                 <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq..." style="margin-bottom: 15px; padding-right: 40px;">
@@ -113,7 +113,7 @@
             <div style="max-width: 400px; margin: 0 auto;">
                 <button onclick="app.saveApiKey()" class="success">Entrar a Jetbulary</button>
                 <p style="font-size: 0.85rem; color: #666; margin-top: 15px; margin-bottom: 5px;">¿Ya tienes tu API Key y guardaste tu avance?</p>
-                <button onclick="app.importDB()" class="secondary">📂 Restaurar Copia de Seguridad (.json)</button>
+                <button onclick="app.importDB()" class="secondary">📂 Restaurar Avance</button>
             </div>
         </header>
 
@@ -556,7 +556,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "jetbulary_backup.json");
+            downloadAnchorNode.setAttribute("download", "Avance_Jetbulary.json");
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
