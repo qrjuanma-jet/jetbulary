@@ -93,6 +93,9 @@
         /* Install Button */
         #install-btn { margin: 30px auto 40px auto; padding: 12px 24px; font-size: 1rem; background: #007AFF; color: white; border-radius: 30px; border: none; cursor: pointer; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
+        /* Chinese Font Adjustment */
+        .lang-zh .sentence, .lang-zh .word-target { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 1.4em; }
+        
         .auto-mic-on { background-color: #34C759 !important; color: white !important; border: 1px solid #28a745 !important; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
@@ -447,12 +450,14 @@
         showDashboard: (h) => {
             app.switchView('view-dashboard', h);
             document.getElementById('lang-selector').value = currentLang;
+            document.body.className = `lang-${currentLang}`;
             game.updateAvatar();
             app.renderTopics();
             app.renderSuggestions();
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
+            document.body.className = `lang-${currentLang}`;
             game.updateAvatar();
             app.renderTopics();
         },
@@ -867,9 +872,9 @@
             
             const langName = app.getLangName();
             const prompt = `Genera un JSON con 10 palabras en el idioma ${langName} sobre: "${topicName}". ${extraPrompt} 
-            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english". Para Chino: Solo Hanzi.
-            En el campo "english" pon SOLO la palabra en ${langName} (sin pinyin, sin paréntesis, sin pronunciación).
-            En el campo "english" pon SOLO la palabra en ${langName} (sin pinyin, sin paréntesis, sin pronunciación). Para Chino: Solo Hanzi.
+            IMPORTANTE: El contenido debe estar en ${langName}, aunque las claves del JSON se llamen "english". 
+            Para Chino (zh): Usa SOLO Hanzi (Caracteres chinos simplificados) en los campos "english" y "sentence_en". NO incluyas Pinyin ni paréntesis.
+            En el campo "english" pon SOLO la palabra en ${langName}.
             Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
@@ -1138,7 +1143,7 @@
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'zh') langCode = 'zh-CN';
+            if(currentLang === 'zh') langCode = 'zh-CN'; // Intentar mandarín estándar
             if(currentLang === 'eu') langCode = 'es-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
@@ -1150,10 +1155,15 @@
             
             const voices = window.speechSynthesis.getVoices();
             const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
-            let f = voices.find(v => (v.lang === langCode || v.lang.startsWith(langCode.split('-')[0])) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
+            
+            // Búsqueda de voz mejorada
+            let f = voices.find(v => (v.lang === langCode || v.lang.replace('_', '-').startsWith(langCode.split('-')[0])) && femaleNames.some(name => v.name.toLowerCase().includes(name)) && !v.name.toLowerCase().includes('male'));
             
             // Fallback: Si no encuentra voz femenina específica, usar cualquiera del idioma
-            if (!f) f = voices.find(v => v.lang === langCode || v.lang.startsWith(langCode.split('-')[0]));
+            if (!f) f = voices.find(v => v.lang === langCode || v.lang.replace('_', '-').startsWith(langCode.split('-')[0]));
+            
+            // Fallback específico para chino si no encuentra zh-CN exacto (ej: zh-HK, zh-TW o zh_CN)
+            if (!f && currentLang === 'zh') f = voices.find(v => v.lang.toLowerCase().includes('zh'));
             
             if (f) u.voice = f;
             
@@ -1347,6 +1357,22 @@
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     
     window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html>dow.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
