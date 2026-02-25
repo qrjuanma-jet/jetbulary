@@ -97,6 +97,14 @@
         .lang-ja .sentence, .lang-ja .word-target { font-family: "Hiragino Kaku Gothic Pro", "Meiryo", "Noto Sans JP", sans-serif; font-size: 1.3em; }
         
         .auto-mic-on { background-color: #34C759 !important; color: white !important; border: 1px solid #28a745 !important; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #diploma-preview, #diploma-preview * { visibility: visible; }
+            #diploma-preview { position: fixed; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: 5px solid #007AFF !important; }
+            @page { size: auto; margin: 0mm; }
+            body { background: white; }
+        }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -724,28 +732,7 @@
         printDiploma: () => {
             const name = document.getElementById('diploma-name').value;
             if(!name) return alert("Por favor, escribe tu nombre para el diploma.");
-            
-            const content = document.getElementById('diploma-preview').outerHTML;
-            const win = window.open('', '_blank');
-            win.document.write(`
-                <html>
-                <head>
-                    <title>Diploma Jetbulary - ${name}</title>
-                    <base href="${location.href}">
-                    <style>
-                        body { margin: 0; padding: 40px; font-family: 'Georgia', serif; text-align: center; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-                        #diploma-preview { width: 100%; max-width: 800px; box-shadow: none !important; border: 10px solid #007AFF !important; }
-                    </style>
-                </head>
-                <body>
-                    ${content}
-                    <script>
-                        window.onload = () => { window.print(); window.close(); };
-                    <\/script>
-                </body>
-                </html>
-            `);
-            win.document.close();
+            window.print();
         },
         importDB: () => {
             const input = document.createElement('input');
@@ -1555,153 +1542,6 @@
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html> if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html>         } else if (game.currentRetries === 2) {
-                    fb.innerText = "Incorrecto. 1 intento más.";
-                    fb.className = "feedback incorrect";
-                    game.getMouthAdvice(game.data[game.index].english);
-                    if(game.autoMic) setTimeout(() => game.toggleMic(), 5000);
-                } else {
-                    fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
-                    fb.className = "feedback incorrect";
-                    document.getElementById('mic-btn').classList.add('hidden');
-                    document.getElementById('ai-advice').classList.add('hidden');
-                    setTimeout(game.next, 4000);
-                }
-            }
-        },
-
-         stopMic: () => {
-            if(game.recognition) {
-                try { game.recognition.stop(); } catch(e) {}
-                document.getElementById('mic-btn').classList.remove('listening');
-                game.stopTimer();
-            }
-        },
-        
-        startTimer: () => {
-            const bar = document.getElementById('timer-bar');
-            const container = document.getElementById('timer-container');
-            container.classList.remove('hidden');
-            bar.style.width = '0%';
-            bar.style.backgroundColor = '#28a745';
-            
-            let startTime = Date.now();
-            const duration = 5000;
-            
-            if (game.timerInterval) clearInterval(game.timerInterval);
-            
-            game.timerInterval = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const pct = Math.min((elapsed / duration) * 100, 100);
-                
-                bar.style.width = pct + '%';
-                
-                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
-                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
-                
-                if (elapsed >= duration) game.stopMic();
-            }, 50);
-        },
-        
-        stopTimer: () => {
-            if (game.timerInterval) clearInterval(game.timerInterval);
-            document.getElementById('timer-container').classList.add('hidden');
-        },
-        
-        next: () => {
-            game.index++;
-            game.loadCard();
-        },
-        
-        getMouthAdvice: async (word) => {
-            const container = document.getElementById('ai-advice');
-            container.innerHTML = "🤔 Buscando consejo de pronunciación...";
-            container.classList.remove('hidden');
-            
-            const langName = app.getLangName();
-            const prompt = `Dame un consejo breve (máx 20 palabras) sobre cómo colocar la boca, lengua o dientes para pronunciar correctamente la palabra "${word}" en ${langName}.`;
-            
-            await app.callAI_Text(prompt, null, (text) => {
-                container.innerHTML = text;
-            }, 300);
-        }
-    };
-
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html> if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html> }
-    };
-
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html> if(btn) btn.classList.remove('hidden');
     });
     
     // Ocultar botón si ya está en modo app (instalada)
