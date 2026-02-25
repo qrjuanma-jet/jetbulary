@@ -620,18 +620,32 @@
             document.body.appendChild(div);
         },
         cheat: (amount) => {
+            const topicId = Date.now();
+            db.topics.push({ id: topicId, name: "Admin Cheat", lang: currentLang });
             for(let i=0; i<amount; i++) {
-                db.progress.push({ word_id: `cheat_${Date.now()}_${i}`, attempts: 1, successes: 1 });
+                const wId = topicId + i + 1;
+                db.words.push({ id: wId, topic_id: topicId, english: "cheat", spanish: "cheat", sentence_en: "cheat", sentence_es: "cheat" });
+                db.progress.push({ word_id: wId, attempts: 1, successes: 1 });
             }
             app.saveDB();
-            alert(`Añadidas ${amount} palabras.`);
+            alert(`Añadidas ${amount} palabras a ${app.getLangName()}.`);
             document.body.removeChild(document.getElementById('admin-panel'));
             app.showDashboard();
         },
         
+        getCorrectCount: () => {
+            return db.progress.filter(p => {
+                if (p.successes <= 0) return false;
+                const w = db.words.find(w => w.id === p.word_id);
+                if (!w) return false;
+                const t = db.topics.find(t => t.id === w.topic_id);
+                return t && (t.lang || 'en') === currentLang;
+            }).length;
+        },
+        
         checkDiploma: () => {
             app.switchView('view-diploma');
-            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            const correctCount = app.getCorrectCount();
             
             const container = document.getElementById('diploma-content');
             
@@ -651,7 +665,7 @@
 
         showDiplomas: () => {
             app.switchView('view-diploma');
-            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            const correctCount = app.getCorrectCount();
             const levels = [100, 500, 1000, 5000];
             const achieved = levels.filter(l => correctCount >= l);
             
@@ -1302,7 +1316,7 @@
             document.getElementById('ai-advice').classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
             
-            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            const correctCount = app.getCorrectCount();
             let nextThreshold = 100;
             if (correctCount >= 100) nextThreshold = 500;
             if (correctCount >= 500) nextThreshold = 1000;
