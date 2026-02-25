@@ -54,8 +54,8 @@
         .topic-actions button { flex: 1; font-size: 15px; padding: 12px; margin: 0; border-radius: 10px; }
 
         /* Image Avatar CSS */
-        .avatar-container { width: 280px; height: 340px; margin: 0 auto 10px; position: relative; }
-        .avatar-img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+        .avatar-container { width: 100%; margin: 0 auto 15px; position: relative; }
+        .avatar-img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; border-radius: 12px; }
         
         /* Vocab List */
         .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; margin-bottom: 1px; text-align: left; }
@@ -279,9 +279,11 @@
         <!-- SECCIÓN PREMIUM / SOPORTE -->
         <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
             <h3 style="margin-top: 0; color: #007AFF;">Sincronización y Apoyo</h3>
-            <button onclick="app.exportDB()" class="secondary" style="margin-bottom: 15px;">💾 Guardar Avance</button>
+            <button onclick="app.exportDB()" class="secondary" style="margin-bottom: 15px;">1. Guardar Avance</button>
+            <button onclick="app.checkDiploma()" class="secondary" style="margin-bottom: 15px; background: #E3F2FD; color: #0277BD; border: 1px solid #81D4FA;">2. Consigue Diploma Jetbulary</button>
+            <button onclick="app.showDiplomas()" class="secondary" style="margin-bottom: 15px; background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7;">3. Diplomas conseguidos</button>
             <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Guardar Avance e Importar Avance es GRATIS, pulsa en la tacita de café y vuelve a la página, verás el botón de Importar Avance, sólo SI QUIERES, PUEDES APORTAR AL PROYECTO, VUELA ALTO, APRENDE MÁS, ¡Gracias por usar Jetbulary!</p>
-            <p style="font-weight: bold; margin-bottom: 5px;">Apoya el proyecto, pulsando Tip</p>
+            <p style="font-weight: bold; margin-bottom: 5px;">Apoya el proyecto, pulsando Tip <span onclick="app.secretAdmin()" style="color: #007AFF; cursor: pointer;">.</span></p>
             <div onclick="app.unlockSync()" style="margin-bottom: 15px; cursor: pointer; display: inline-block;">
                 <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'X8X61UAY6L');kofiwidget2.draw();</script>
             </div>
@@ -301,26 +303,32 @@
         <p class="sentence" id="sentence-display"></p>
         <small id="sentence-translation" style="display:block; margin-bottom: 20px; color: #666; font-size: 16px;">Traducción</small>
         
+        <div class="word-target" id="word-display"></div>
+
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
              <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
              <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Lento</button>
+             <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
         </div>
 
-        <div class="word-target" id="word-display"></div>
-
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
-        <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
         <button id="btn-auto-mic" onclick="game.toggleAutoMic()" class="auto-mic-on" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: ON</button>
-        <button onclick="game.next()" class="secondary" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; background: #f0f0f0; color: #555;">⏭️ Saltar Palabra</button>
+        <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
         
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
         
         <p id="spoken-text" style="color:#333; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
         <div id="feedback-msg" class="feedback"></div>
         
+        <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
+            <button onclick="game.toggleMic()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
+            <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos</button>
+            <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">⏭️ Saltar</button>
+        </div>
+        
         <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #333; font-size: 17px;"></div>
         
-        <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px 0; color:#007AFF; text-decoration:none; font-weight: 500;">Ver ejemplos nativos ↗</a>
+        <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px auto; background: #FF9500; color: white; text-decoration: none; font-weight: 600; padding: 12px 24px; border-radius: 14px; width: fit-content; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">NATIVOS (YouGlish)</a>
 
         <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
     </div>
@@ -392,6 +400,11 @@
         <div class="stat-card"><span>Palabras:</span> <strong id="stat-total">0</strong></div>
         <div class="stat-card"><span>Precisión:</span> <strong id="stat-acc">0%</strong></div>
         <button onclick="app.showDashboard()" class="secondary">Volver</button>
+    </div>
+
+    <!-- VISTA DIPLOMA -->
+    <div id="view-diploma" class="container hidden">
+        <div id="diploma-content"></div>
     </div>
 
     <!-- COOKIE BANNER -->
@@ -471,6 +484,7 @@
         showStats: () => {
             app.switchView('view-stats');
             const prog = db.progress;
+            if(!prog) return;
             const total = prog.length;
             const succ = prog.reduce((a,b) => a + b.successes, 0);
             const att = prog.reduce((a,b) => a + b.attempts, 0);
@@ -572,6 +586,166 @@
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
+        },
+        
+        secretClicks: 0,
+        secretTimer: null,
+        secretAdmin: () => {
+            app.secretClicks++;
+            if(app.secretTimer) clearTimeout(app.secretTimer);
+            app.secretTimer = setTimeout(() => { app.secretClicks = 0; }, 2000);
+            
+            if (app.secretClicks === 7) {
+                app.secretClicks = 0;
+                const pass = prompt("Contraseña de Administrador:");
+                if (pass === "2002") {
+                    app.showAdminPanel();
+                }
+            }
+        },
+        showAdminPanel: () => {
+            const div = document.createElement('div');
+            div.id = 'admin-panel';
+            div.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; justify-content:center; align-items:center;";
+            div.innerHTML = `<div style="background:white; padding:20px; border-radius:12px; width:90%; max-width:300px; text-align:center;"><h3 style="margin-top:0;">Admin: ${app.getLangName()}</h3><p>Añadir palabras dominadas:</p><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><button onclick="app.cheat(100)" class="success">+100</button><button onclick="app.cheat(500)" class="success">+500</button><button onclick="app.cheat(1000)" class="success">+1000</button><button onclick="app.cheat(5000)" class="success">+5000</button></div><button onclick="document.body.removeChild(document.getElementById('admin-panel'))" class="secondary">Cerrar</button></div>`;
+            document.body.appendChild(div);
+        },
+        cheat: (amount) => {
+            for(let i=0; i<amount; i++) {
+                db.progress.push({ word_id: `cheat_${Date.now()}_${i}`, attempts: 1, successes: 1 });
+            }
+            app.saveDB();
+            alert(`Añadidas ${amount} palabras.`);
+            document.body.removeChild(document.getElementById('admin-panel'));
+            app.showDashboard();
+        },
+        
+        checkDiploma: () => {
+            app.switchView('view-diploma');
+            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            
+            const container = document.getElementById('diploma-content');
+            
+            container.innerHTML = `
+                <h2 style="color:#007AFF">🎓 Diplomas Jetbulary</h2>
+                <p>Demuestra tu dominio del idioma. Pronuncia correctamente palabras habituales para conseguir tu certificado.</p>
+                <div style="background:white; padding:20px; border-radius:12px; text-align:left; margin:20px 0; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                    <p style="margin:10px 0; color:${correctCount>=100?'#34C759':'#666'}">🥉 <strong>Diploma 100:</strong> 100 palabras (${Math.min(correctCount, 100)}/100) ${correctCount>=100 ? '✅' : ''}</p>
+                    <p style="margin:10px 0; color:${correctCount>=500?'#34C759':'#666'}">🥈 <strong>Diploma 500:</strong> 500 palabras (${Math.min(correctCount, 500)}/500) ${correctCount>=500 ? '✅' : ''}</p>
+                    <p style="margin:10px 0; color:${correctCount>=1000?'#34C759':'#666'}">🥇 <strong>Diploma 1000:</strong> 1000 palabras (${Math.min(correctCount, 1000)}/1000) ${correctCount>=1000 ? '✅' : ''}</p>
+                    <p style="margin:10px 0; color:${correctCount>=5000?'#34C759':'#666'}">🏆 <strong>Diploma NATIVO:</strong> 5000 palabras (${Math.min(correctCount, 5000)}/5000) ${correctCount>=5000 ? '✅' : ''}</p>
+                </div>
+                <p>¡Sigue practicando para desbloquear el siguiente nivel!</p>
+                <button onclick="app.showDashboard()" class="secondary">Volver</button>
+            `;
+        },
+
+        showDiplomas: () => {
+            app.switchView('view-diploma');
+            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            const levels = [100, 500, 1000, 5000];
+            const achieved = levels.filter(l => correctCount >= l);
+            
+            const container = document.getElementById('diploma-content');
+            
+            if (achieved.length === 0) {
+                container.innerHTML = `
+                    <h2 style="color:#007AFF">🎓 Diplomas Conseguidos</h2>
+                    <p>Aún no has conseguido ningún diploma. ¡Sigue practicando!</p>
+                    <button onclick="app.showDashboard()" class="secondary">Volver</button>
+                `;
+            } else {
+                let html = `<h2 style="color:#007AFF">🎓 Tus Diplomas</h2><p>Selecciona uno para ver y descargar:</p><div style="display:flex; flex-direction:column; gap:10px; margin:20px 0;">`;
+                achieved.forEach(l => {
+                    let title = `Diploma Jetbulary ${l}`;
+                    if (l === 5000) title = "Diploma Jetbulary NATIVO";
+                    html += `<button onclick="app.renderDiploma(${l})" class="success">${title}</button>`;
+                });
+                html += `</div><button onclick="app.showDashboard()" class="secondary">Volver</button>`;
+                container.innerHTML = html;
+            }
+        },
+
+        renderDiploma: (level) => {
+            const container = document.getElementById('diploma-content');
+            const certTranslations = {
+                en: { title: "Certificate of Achievement", awarded: "This certificate is awarded to", reason: "For mastering pronunciation of", words: "Words", in: "in", date: "Date" },
+                de: { title: "Urkunde", awarded: "Dieses Zertifikat wird verliehen an", reason: "Für die Beherrschung der Aussprache von", words: "Wörter", in: "auf", date: "Datum" },
+                fr: { title: "Certificat de Réussite", awarded: "Ce certificat est décerné à", reason: "Pour la maîtrise de la prononciation de", words: "Mots", in: "en", date: "Date" },
+                it: { title: "Certificato di Risultato", awarded: "Questo certificato è assegnato a", reason: "Per aver padroneggiato la pronuncia di", words: "Parole", in: "in", date: "Data" },
+                pt: { title: "Certificado de Conquista", awarded: "Este certificado é concedido a", reason: "Por dominar a pronúncia de", words: "Palavras", in: "em", date: "Data" },
+                ca: { title: "Certificat d'Assoliment", awarded: "Aquest certificat s'atorga a", reason: "Per dominar la pronunciació de", words: "Paraules", in: "en", date: "Data" },
+                gl: { title: "Certificado de Logro", awarded: "Este certificado outórgase a", reason: "Por dominar a pronuncia de", words: "Palabras", in: "en", date: "Data" },
+                eu: { title: "Lorpen Ziurtagiria", awarded: "Ziurtagiri hau honakoari ematen zaio", reason: "Ahoskera menperatzeagatik", words: "Hitz", in: "hizkuntzan", date: "Data" },
+                ru: { title: "Сертификат Достижений", awarded: "Этот сертификат вручается", reason: "За овладение произношением", words: "Слов", in: "на", date: "Дата" }
+            };
+            const t = certTranslations[currentLang] || certTranslations['en'];
+            const titleText = level === 5000 ? "Diploma Jetbulary NATIVO" : `Diploma Jetbulary ${level}`;
+            
+            container.innerHTML = `
+                    <h2 style="color:#34C759">🎉 ¡Felicidades!</h2>
+                    <p>Has desbloqueado el <strong>${titleText}</strong>.</p>
+                    <p style="font-size:0.9rem; color:#666; background:#fff3cd; padding:10px; border-radius:8px;">⚠️ Jetbulary no almacena tus datos. Este diploma se genera ahora y debes guardarlo tú mismo.</p>
+                    
+                    <div style="margin:20px 0;">
+                        <label style="display:block; text-align:left; margin-bottom:5px; font-weight:bold;">Nombre para el Diploma:</label>
+                        <input type="text" id="diploma-name" placeholder="Tu Nombre Completo" oninput="document.getElementById('cert-name').innerText = this.value || 'Tu Nombre'">
+                    </div>
+                    
+                    <div id="diploma-preview" style="border: 10px solid #007AFF; padding: 40px; margin: 20px 0; background: white; color: #333; font-family: 'Georgia', serif; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.05; background-image: url('logo.jpg'); background-size: cover; pointer-events:none;"></div>
+                        <div style="position: relative; z-index: 1;">
+                            <h1 style="color: #007AFF; margin: 0 0 10px 0; font-size: 2.5rem;">${titleText}</h1>
+                            <div style="width: 100px; height: 2px; background: #007AFF; margin: 10px auto;"></div>
+                            <p style="font-size: 1.2rem; margin: 20px 0;">Se otorga el presente reconocimiento a:<br><span style="font-size: 0.9rem; color: #666; font-style: italic;">${t.awarded}:</span></p>
+                            <h2 id="cert-name" style="font-size: 2.2rem; margin: 10px 0; color: #000; font-style: italic;">Tu Nombre</h2>
+                            <p style="font-size: 1.2rem; margin: 20px 0;">Por haber demostrado su competencia pronunciando correctamente<br><span style="font-size: 0.9rem; color: #666; font-style: italic;">${t.reason}:</span></p>
+                            <h3 style="font-size: 3rem; color: #34C759; margin: 10px 0; line-height:1;">${level} Palabras / ${t.words}</h3>
+                            <p style="font-size: 1.4rem;">en el idioma / ${t.in} <strong>${app.getLangName()}</strong></p>
+                            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: end;">
+                                <div style="text-align: center;">
+                                    <div style="border-bottom: 1px solid #333; width: 150px; margin: 0 auto;"></div>
+                                    <p style="font-size: 0.9rem; margin-top: 5px;">Fecha / ${t.date}: ${new Date().toLocaleDateString()}</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <img src="logo.jpg" style="width: 60px; mix-blend-mode: multiply;">
+                                    <p style="font-size: 0.9rem; font-weight: bold; color: #007AFF;">Jetbulary.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size:0.9rem; color:#555;">Instrucciones: Pulsa el botón, y en la ventana de impresión elige "Guardar como PDF".</p>
+                    <button onclick="app.printDiploma()" class="success">🖨️ Imprimir / Guardar PDF</button>
+                    <button onclick="app.showDiplomas()" class="secondary">Volver</button>
+                `;
+        },
+        
+        printDiploma: () => {
+            const name = document.getElementById('diploma-name').value;
+            if(!name) return alert("Por favor, escribe tu nombre para el diploma.");
+            
+            const content = document.getElementById('diploma-preview').outerHTML;
+            const win = window.open('', '_blank');
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Diploma Jetbulary - ${name}</title>
+                    <base href="${location.href}">
+                    <style>
+                        body { margin: 0; padding: 40px; font-family: 'Georgia', serif; text-align: center; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+                        #diploma-preview { width: 100%; max-width: 800px; box-shadow: none !important; border: 10px solid #007AFF !important; }
+                    </style>
+                </head>
+                <body>
+                    ${content}
+                    <script>
+                        window.onload = () => { window.print(); window.close(); };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            win.document.close();
         },
         importDB: () => {
             const input = document.createElement('input');
@@ -1116,7 +1290,7 @@
 
             if (ygLang) {
                 ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(item.english)}/${ygLang}`;
-                ygLink.innerText = "Ver ejemplos nativos (YouGlish) ↗";
+                ygLink.innerText = "NATIVOS (YouGlish)";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'eu') {
                 ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
@@ -1138,10 +1312,22 @@
             document.getElementById('feedback-msg').innerText = "";
             document.getElementById('ai-advice').classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
-            document.getElementById('spoken-text').dataset.score = 10;
-            document.getElementById('spoken-text').innerText = `Puntuación: 10`;
+            
+            const correctCount = db.progress.filter(p => p.successes > 0).length;
+            let nextThreshold = 100;
+            if (correctCount >= 100) nextThreshold = 500;
+            if (correctCount >= 500) nextThreshold = 1000;
+            if (correctCount >= 1000) nextThreshold = 5000;
+            if (correctCount >= 5000) nextThreshold = null;
+            
+            let scoreText = `Palabras dominadas: ${correctCount}`;
+            if (nextThreshold) scoreText += ` | Te quedan ${nextThreshold - correctCount} para Diploma`;
+            else scoreText += ` | ¡Nivel Nativo Alcanzado!`;
+            document.getElementById('spoken-text').innerText = scoreText;
+            
             document.getElementById('next-btn').classList.add('hidden');
             document.getElementById('mic-btn').classList.remove('hidden');
+            document.getElementById('fail-options').classList.add('hidden');
             
             setTimeout(game.speak, 500);
         },
@@ -1280,9 +1466,11 @@
                 fb.className = "feedback correct";
                 document.getElementById('mic-btn').classList.add('hidden');
                 document.getElementById('ai-advice').classList.add('hidden');
+                document.getElementById('fail-options').classList.add('hidden');
                 setTimeout(game.next, 1500);
 
             } else {
+                document.getElementById('fail-options').classList.remove('hidden');
                 game.currentRetries++;
                 if (game.currentRetries === 1) {
                     fb.innerText = "Incorrecto. Tienes 2 intentos más.";
@@ -1367,6 +1555,153 @@
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html> if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html>         } else if (game.currentRetries === 2) {
+                    fb.innerText = "Incorrecto. 1 intento más.";
+                    fb.className = "feedback incorrect";
+                    game.getMouthAdvice(game.data[game.index].english);
+                    if(game.autoMic) setTimeout(() => game.toggleMic(), 5000);
+                } else {
+                    fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
+                    fb.className = "feedback incorrect";
+                    document.getElementById('mic-btn').classList.add('hidden');
+                    document.getElementById('ai-advice').classList.add('hidden');
+                    setTimeout(game.next, 4000);
+                }
+            }
+        },
+
+         stopMic: () => {
+            if(game.recognition) {
+                try { game.recognition.stop(); } catch(e) {}
+                document.getElementById('mic-btn').classList.remove('listening');
+                game.stopTimer();
+            }
+        },
+        
+        startTimer: () => {
+            const bar = document.getElementById('timer-bar');
+            const container = document.getElementById('timer-container');
+            container.classList.remove('hidden');
+            bar.style.width = '0%';
+            bar.style.backgroundColor = '#28a745';
+            
+            let startTime = Date.now();
+            const duration = 5000;
+            
+            if (game.timerInterval) clearInterval(game.timerInterval);
+            
+            game.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min((elapsed / duration) * 100, 100);
+                
+                bar.style.width = pct + '%';
+                
+                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
+                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                
+                if (elapsed >= duration) game.stopMic();
+            }, 50);
+        },
+        
+        stopTimer: () => {
+            if (game.timerInterval) clearInterval(game.timerInterval);
+            document.getElementById('timer-container').classList.add('hidden');
+        },
+        
+        next: () => {
+            game.index++;
+            game.loadCard();
+        },
+        
+        getMouthAdvice: async (word) => {
+            const container = document.getElementById('ai-advice');
+            container.innerHTML = "🤔 Buscando consejo de pronunciación...";
+            container.classList.remove('hidden');
+            
+            const langName = app.getLangName();
+            const prompt = `Dame un consejo breve (máx 20 palabras) sobre cómo colocar la boca, lengua o dientes para pronunciar correctamente la palabra "${word}" en ${langName}.`;
+            
+            await app.callAI_Text(prompt, null, (text) => {
+                container.innerHTML = text;
+            }, 300);
+        }
+    };
+
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html> if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html> }
+    };
+
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html> if(btn) btn.classList.remove('hidden');
     });
     
     // Ocultar botón si ya está en modo app (instalada)
