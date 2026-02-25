@@ -330,15 +330,13 @@
         <div id="feedback-msg" class="feedback"></div>
         
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
-            <button onclick="game.toggleMic()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
-            <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos</button>
+            <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
             <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
             <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">⏭️ Saltar</button>
         </div>
         
         <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #333; font-size: 17px;"></div>
         
-        <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px auto; background: #FF9500; color: white; text-decoration: none; font-weight: 600; padding: 12px 24px; border-radius: 14px; width: fit-content; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">NATIVOS (YouGlish)</a>
         <a id="youglish-link" href="#" target="_blank" style="display:none;">NATIVOS (YouGlish)</a>
 
         <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
@@ -1169,6 +1167,7 @@
         currentRetries: 0,
         talkInterval: null,
         timerInterval: null,
+        wasAutoMic: false,
         
         isCloseMatch: (target, spoken) => {
             if (spoken.includes(target)) return true;
@@ -1461,22 +1460,9 @@
 
             } else {
                 document.getElementById('fail-options').classList.remove('hidden');
-                game.currentRetries++;
-                if (game.currentRetries === 1) {
-                    fb.innerText = "Incorrecto. Tienes 2 intentos más.";
-                    fb.className = "feedback incorrect";
-                    if(game.autoMic) setTimeout(() => game.toggleMic(), 2000);
-                } else if (game.currentRetries === 2) {
-                    fb.innerText = "Incorrecto. 1 intento más.";
-                    fb.className = "feedback incorrect";
-                    game.getMouthAdvice(game.data[game.index].english);
-                    if(game.autoMic) setTimeout(() => game.toggleMic(), 5000);
-                } else {
-                    fb.innerText = `Tranquilo, puedes seguir practicando, busca la palabra "${game.data[game.index].english}" en tu lista de vocabulario...`;
-                    fb.className = "feedback incorrect";
-                    document.getElementById('mic-btn').classList.add('hidden');
-                    document.getElementById('ai-advice').classList.add('hidden');
-                    setTimeout(game.next, 4000);
+                if (game.autoMic) {
+                    game.wasAutoMic = true;
+                    game.toggleAutoMic();
                 }
                 fb.innerText = "Incorrecto. Inténtalo de nuevo.";
                 fb.className = "feedback incorrect";
@@ -1489,6 +1475,16 @@
                 document.getElementById('mic-btn').classList.remove('listening');
                 game.stopTimer();
             }
+        },
+        
+        retry: () => {
+            if (game.wasAutoMic && !game.autoMic) {
+                game.toggleAutoMic();
+            }
+            game.wasAutoMic = false;
+            document.getElementById('fail-options').classList.add('hidden');
+            document.getElementById('feedback-msg').innerText = "";
+            game.toggleMic();
         },
         
         startTimer: () => {
