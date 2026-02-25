@@ -1079,13 +1079,11 @@
                 img.alt = 'Avatar';
                 
                 const fallbacks = [
-                    `avatar_${currentLang}_closed.jpg`,
-                    'avatar_en_closed.png',
-                    'avatar_en_closed.jpg'
+                    'real_en.jpg'
                 ];
                 
                 img.onerror = function() { if(fallbacks.length) this.src = fallbacks.shift(); };
-                img.src = `avatar_${currentLang}_closed.png`;
+                img.src = `real_${currentLang}.jpg`;
                 c.appendChild(img);
             });
         },
