@@ -481,6 +481,7 @@
             game.updateAvatar();
             app.renderTopics();
             app.renderSuggestions();
+            app.updateLangCounts();
         },
         changeLanguage: () => {
             currentLang = document.getElementById('lang-selector').value;
@@ -634,13 +635,27 @@
         },
         
         getCorrectCount: () => {
+            return app.getCorrectCountForLang(currentLang);
+        },
+        
+        getCorrectCountForLang: (lang) => {
             return db.progress.filter(p => {
                 if (p.successes <= 0) return false;
                 const w = db.words.find(w => w.id === p.word_id);
                 if (!w) return false;
                 const t = db.topics.find(t => t.id === w.topic_id);
-                return t && (t.lang || 'en') === currentLang;
+                return t && (t.lang || 'en') === lang;
             }).length;
+        },
+        
+        updateLangCounts: () => {
+            const selector = document.getElementById('lang-selector');
+            if (!selector) return;
+            Array.from(selector.options).forEach(opt => {
+                if (!opt.getAttribute('data-original')) opt.setAttribute('data-original', opt.text);
+                const count = app.getCorrectCountForLang(opt.value);
+                opt.text = `${opt.getAttribute('data-original')} (${count})`;
+            });
         },
         
         checkDiploma: () => {
@@ -1553,6 +1568,22 @@
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     
     window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        window.deferredPrompt = e;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+    });
+    
+    // Ocultar botón si ya está en modo app (instalada)
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html>dow.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
