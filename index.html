@@ -317,7 +317,6 @@
 
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
              <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
-             <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Lento</button>
              <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
         </div>
 
@@ -333,12 +332,14 @@
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
             <button onclick="game.toggleMic()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
             <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos</button>
+            <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
             <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">⏭️ Saltar</button>
         </div>
         
         <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #333; font-size: 17px;"></div>
         
         <a id="youglish-link" href="#" target="_blank" style="display:block; margin: 20px auto; background: #FF9500; color: white; text-decoration: none; font-weight: 600; padding: 12px 24px; border-radius: 14px; width: fit-content; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">NATIVOS (YouGlish)</a>
+        <a id="youglish-link" href="#" target="_blank" style="display:none;">NATIVOS (YouGlish)</a>
 
         <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
     </div>
@@ -1477,6 +1478,8 @@
                     document.getElementById('ai-advice').classList.add('hidden');
                     setTimeout(game.next, 4000);
                 }
+                fb.innerText = "Incorrecto. Inténtalo de nuevo.";
+                fb.className = "feedback incorrect";
             }
         },
 
