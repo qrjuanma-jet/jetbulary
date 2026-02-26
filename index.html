@@ -168,6 +168,7 @@
                 <li><strong>Reconocimiento de Voz Avanzado:</strong> Evaluación de pronunciación en tiempo real.</li>
                 <li><strong>Sistema de Repaso Espaciado:</strong> Algoritmos inteligentes que detectan tus fallos y programan repasos automáticos.</li>
                 <li><strong>Soporte Multi-idioma:</strong> Aprende Inglés, Francés, Alemán, Chino, y más.</li>
+                <li><strong>Soporte Multi-idioma:</strong> Aprende Inglés, Francés, Alemán, Italiano, y más.</li>
                 <li><strong>Integración Multimedia:</strong> Enlaces directos a YouGlish y diccionarios contextuales.</li>
             </ul>
         </section>
@@ -191,6 +192,7 @@
             <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
                 <summary style="font-weight: bold; cursor: pointer;">¿Qué idiomas puedo aprender?</summary>
                 <p style="margin-top: 10px;">Actualmente soportamos Inglés, Alemán, Francés, Italiano, Euskera, Chino, Ruso, Portugués, Catalán, Gallego y Coreano.</p>
+                <p style="margin-top: 10px;">Actualmente soportamos Inglés, Alemán, Francés, Italiano, Euskera, Ruso, Portugués, Catalán y Gallego.</p>
             </details>
             <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
                 <summary style="font-weight: bold; cursor: pointer;">¿Necesito registrarme?</summary>
@@ -1325,14 +1327,19 @@
             const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', pt: 'portuguese', ru: 'russian' };
             const ygLang = ygMap[currentLang];
             const ygLink = document.getElementById('youglish-link');
+            const nativeBtn = document.querySelector('#fail-options button:nth-child(2)');
 
             if (ygLang) {
                 ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(item.english)}/${ygLang}`;
                 ygLink.innerText = "NATIVOS (YouGlish)";
+                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (YouGlish)";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'eu') {
                 ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
                 ygLink.innerText = "Ver en Elhuyar (Diccionario/Contexto) ↗";
+                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=eu`;
+                ygLink.innerText = "NATIVOS (Filmot)";
+                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'ca') {
                 ygLink.href = `https://www.diccionari.cat/gdlc/${encodeURIComponent(item.english)}`;
