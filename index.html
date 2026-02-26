@@ -234,17 +234,14 @@
             </a>
         </h2>
         
-        <select id="lang-selector" onchange="app.changeLanguage()">
-            <option value="en">🇬🇧 Inglés (English)</option>
-            <option value="de">🇩🇪 Alemán (Deutsch)</option>
-            <option value="fr">🇫🇷 Francés (Français)</option>
-            <option value="it">🇮🇹 Italiano (Italiano)</option>
-            <option value="eu">🏴󠁥󠁳󠁰󠁶󠁿 Euskera (Euskara)</option>
-            <option value="ru">🇷🇺 Ruso (Русский)</option>
-            <option value="pt">🇵🇹 Portugués (Português)</option>
-            <option value="ca">🏴󠁥󠁳󠁣󠁴󠁿 Catalán (Català)</option>
-            <option value="gl">🏴󠁥󠁳󠁧󠁡󠁿 Gallego (Galego)</option>
-        </select>
+        <!-- Custom Language Selector -->
+        <div id="custom-lang-selector" style="position: relative; margin-bottom: 15px; z-index: 100;">
+            <button onclick="app.toggleLangMenu()" id="lang-btn" style="background: #fff; color: #333; width: 100%; padding: 16px; border-radius: 12px; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; font-size: 17px;">
+                <span id="current-lang-display" style="display: flex; align-items: center; gap: 10px;"></span>
+                <span>▼</span>
+            </button>
+            <div id="lang-menu" class="hidden" style="position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; margin-top: 5px; max-height: 300px; overflow-y: auto;"></div>
+        </div>
         
         <!-- AVATAR DASHBOARD -->
         <div class="avatar-container" id="avatar-dash">
