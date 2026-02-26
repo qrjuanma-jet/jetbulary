@@ -1333,6 +1333,7 @@
                 ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(item.english)}/${ygLang}`;
                 ygLink.innerText = "NATIVOS (YouGlish)";
                 if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (YouGlish)";
+                if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'eu') {
                 ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
@@ -1340,17 +1341,29 @@
                 ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=eu`;
                 ygLink.innerText = "NATIVOS (Filmot)";
                 if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
+                if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'ca') {
                 ygLink.href = `https://www.diccionari.cat/gdlc/${encodeURIComponent(item.english)}`;
                 ygLink.innerText = "Ver en Diccionari.cat ↗";
+                if(nativeBtn) nativeBtn.style.display = "none";
+                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=ca`;
+                ygLink.innerText = "NATIVOS (Filmot)";
+                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
+                if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
             } else if (currentLang === 'gl') {
                 ygLink.href = `https://academia.gal/dicionario/-/termo/${encodeURIComponent(item.english)}`;
                 ygLink.innerText = "Ver en Academia Galega ↗";
+                if(nativeBtn) nativeBtn.style.display = "none";
+                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=gl`;
+                ygLink.innerText = "NATIVOS (Filmot)";
+                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
+                if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
             } else {
                 ygLink.classList.add('hidden');
+                if(nativeBtn) nativeBtn.style.display = "none";
             }
             document.getElementById('prompt-pronounce').innerText = `Pulsa y pronuncia en ${app.getLangName()}`;
             
