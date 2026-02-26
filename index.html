@@ -1583,20 +1583,4 @@
     app.init();
 </script>
 </body>
-</html>dow.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-    });
-    
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
 </html>
