@@ -1399,6 +1399,7 @@
         },
         
         speakText: (text, rate = 1) => {
+            game.stopMic();
             window.speechSynthesis.cancel();
             if (game.talkInterval) clearInterval(game.talkInterval);
             const u = new SpeechSynthesisUtterance(text);
