@@ -1593,13 +1593,3 @@
 </script>
 </body>
 </html>
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html>
