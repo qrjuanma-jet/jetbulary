@@ -242,10 +242,6 @@
             </a>
         </h2>
         
-        <!-- AVATAR DASHBOARD -->
-        <div class="avatar-container" id="avatar-dash">
-        </div>
-        
         <select id="lang-selector" onchange="app.changeLanguage()">
             <option value="en">🇬🇧 Inglés (English)</option>
             <option value="de">🇩🇪 Alemán (Deutsch)</option>
@@ -257,7 +253,11 @@
             <option value="ca">🟡🔴 Catalán (Català)</option>
             <option value="gl">⚪🔵 Gallego (Galego)</option>
         </select>
-
+        
+        <!-- AVATAR DASHBOARD -->
+        <div class="avatar-container" id="avatar-dash">
+        </div>
+        
         <div style="display: flex; gap: 5px; margin-bottom: 15px;">
             <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
             <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
@@ -1619,6 +1619,11 @@
         if(btn) btn.classList.add('hidden');
     }
     
+    app.init();
+</script>
+</body>
+</html>
+</html>
     app.init();
 </script>
 </body>
