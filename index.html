@@ -1311,13 +1311,33 @@
                 const img = new Image();
                 img.className = 'avatar-img';
                 img.alt = 'Avatar';
+                img.style.cursor = 'pointer';
+                img.dataset.mode = 'bebe';
                 
                 const fallbacks = [
                     'real_en.jpg'
+                    'bebe_en.jpg'
                 ];
+                
+                img.onclick = () => {
+                    if (img.dataset.mode === 'bebe') {
+                        img.src = `real_${currentLang}.jpg`;
+                        img.dataset.mode = 'real';
+                    } else if (img.dataset.mode === 'real') {
+                        img.src = `50_${currentLang}.jpg`;
+                        img.dataset.mode = '50';
+                    } else if (img.dataset.mode === '50') {
+                        img.src = `avatar_${currentLang}_closed.jpg`;
+                        img.dataset.mode = 'avatar';
+                    } else {
+                        img.src = `bebe_${currentLang}.jpg`;
+                        img.dataset.mode = 'bebe';
+                    }
+                };
                 
                 img.onerror = function() { if(fallbacks.length) this.src = fallbacks.shift(); };
                 img.src = `real_${currentLang}.jpg`;
+                img.src = `bebe_${currentLang}.jpg`;
                 c.appendChild(img);
             });
         },
