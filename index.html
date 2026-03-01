@@ -263,16 +263,20 @@
             <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
         </div>
 
-        <h3>Añade Tema</h3>
-        <div style="position: relative; margin-bottom: 15px;">
-            <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." style="margin-bottom: 0; padding-right: 50px;">
-            <span onclick="app.listenTopic(this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
-        </div>
-        <button onclick="app.createTopic()" id="btn-create">Generar con IA</button>
+        <details open style="margin: 20px 0; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #f0f0f0;">
+            <summary style="font-size: 1.2rem; color: #007AFF; padding: 20px;">✨ Añade tu Propio Tema</summary>
+            <div style="padding: 20px; padding-top: 0;">
+                <div style="position: relative; margin-bottom: 15px;">
+                    <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." style="margin-bottom: 0; padding-right: 50px; background: #f9f9f9; border: 1px solid #eee;">
+                    <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
+                </div>
+                <button onclick="app.createTopic()" id="btn-create" style="margin: 0;">Generar con IA</button>
+            </div>
+        </details>
         
-        <details open style="margin-top: 15px; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            <summary style="font-size: 0.9rem; color: #007AFF;">💡 Sugerencias de Temas</summary>
-            <div id="suggestions-container" style="padding: 15px;"></div>
+        <details open style="margin: 20px 0; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #f0f0f0;">
+            <summary style="font-size: 1.2rem; color: #007AFF; padding: 20px;">💡 Sugerencias de Temas</summary>
+            <div id="suggestions-container" style="padding: 20px; padding-top: 0;"></div>
         </details>
         
         <div id="topic-list" style="margin-top: 20px;"></div>
