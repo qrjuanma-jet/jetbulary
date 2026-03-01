@@ -105,6 +105,11 @@
             @page { size: auto; margin: 0mm; }
             body { background: white; }
         }
+        
+        /* Back to Top */
+        #back-to-top { position: fixed; bottom: 30px; right: 30px; background: #007AFF; color: white; width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; align-items: center; justify-content: center; transition: opacity 0.3s, transform 0.3s; }
+        #back-to-top:active { transform: scale(0.9); }
+        #back-to-top.visible { display: flex; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -440,6 +445,7 @@
     </footer>
 
     <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
 <script>
     // --- BASE DE DATOS LOCAL ---
@@ -489,6 +495,12 @@
                 app.showLogin('replace');
             }
             app.checkCookies();
+            
+            window.addEventListener('scroll', () => {
+                const btn = document.getElementById('back-to-top');
+                if (window.scrollY > 300) btn.classList.add('visible');
+                else btn.classList.remove('visible');
+            });
             
             window.onpopstate = (event) => {
                 if (event.state && event.state.view) {
