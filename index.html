@@ -616,6 +616,7 @@
         },
         
         listenTopic: (btn) => {
+            window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return alert("Tu navegador no soporta voz.");
             
@@ -629,6 +630,7 @@
             };
             
             recognition.onend = () => { btn.innerText = "🎤"; };
+            recognition.onerror = (e) => { btn.innerText = "🎤"; if(e.error !== 'no-speech') alert("Error micro: " + e.error); };
             recognition.start();
         },
         
@@ -1525,15 +1527,26 @@
         },
         
         toggleMic: () => {
+            window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
+
             if(!game.recognition) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
+                if(!SpeechRecognition) return alert("Tu navegador no soporta voz. En iPhone usa Safari.");
                 game.recognition = new SpeechRecognition();
+                game.recognition.continuous = false;
+                game.recognition.interimResults = false;
                 
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
                 game.recognition.onend = () => {
                     document.getElementById('mic-btn').classList.remove('listening');
                     game.stopTimer();
+                };
+                game.recognition.onerror = (e) => {
+                    document.getElementById('mic-btn').classList.remove('listening');
+                    game.stopTimer();
+                    if(e.error === 'not-allowed') alert("Acceso al micrófono denegado. Revisa la configuración de Safari.");
+                    else if(e.error !== 'no-speech') console.error("Speech error:", e.error);
                 };
             }
             let langCode = 'en-US';
