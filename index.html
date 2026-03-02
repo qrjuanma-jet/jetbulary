@@ -1518,7 +1518,6 @@
                         if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
                             game.toggleMic();
                         }
-                    }, 300);
                     }, 600);
                 }
             };
@@ -1533,7 +1532,6 @@
             if(!game.recognition) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
-                if(!SpeechRecognition) return alert("Tu navegador no soporta voz. En iPhone usa Safari.");
                 game.recognition = new SpeechRecognition();
                 game.recognition.continuous = false;
                 game.recognition.interimResults = false;
