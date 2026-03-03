@@ -105,11 +105,6 @@
             @page { size: auto; margin: 0mm; }
             body { background: white; }
         }
-        
-        /* Back to Top */
-        #back-to-top { position: fixed; bottom: 30px; right: 30px; background: #007AFF; color: white; width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; align-items: center; justify-content: center; transition: opacity 0.3s, transform 0.3s; }
-        #back-to-top:active { transform: scale(0.9); }
-        #back-to-top.visible { display: flex; }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -331,7 +326,7 @@
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
              <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
              <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
-             <button onclick="window.open(document.getElementById('youglish-link').href, '_blank')" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
+             <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
         </div>
 
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
@@ -345,7 +340,7 @@
         
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
             <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
-            <button onclick="window.open(document.getElementById('youglish-link').href, '_blank')" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
+            <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
             <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">⏭️ Saltar</button>
         </div>
         
@@ -445,10 +440,6 @@
     </footer>
 
     <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
-    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
-
-    <!-- Hidden File Input for Import -->
-    <input type="file" id="import-file" style="visibility:hidden; position:absolute; top:-9999px;" accept=".json,application/json" onchange="app.handleFileImport(this)">
 
 <script>
     // --- BASE DE DATOS LOCAL ---
@@ -498,12 +489,6 @@
                 app.showLogin('replace');
             }
             app.checkCookies();
-            
-            window.addEventListener('scroll', () => {
-                const btn = document.getElementById('back-to-top');
-                if (window.scrollY > 300) btn.classList.add('visible');
-                else btn.classList.remove('visible');
-            });
             
             window.onpopstate = (event) => {
                 if (event.state && event.state.view) {
@@ -619,7 +604,6 @@
         },
         
         listenTopic: (btn) => {
-            window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return alert("Tu navegador no soporta voz.");
             
@@ -633,7 +617,6 @@
             };
             
             recognition.onend = () => { btn.innerText = "🎤"; };
-            recognition.onerror = (e) => { btn.innerText = "🎤"; if(e.error !== 'no-speech') alert("Error micro: " + e.error); };
             recognition.start();
         },
         
@@ -846,38 +829,14 @@
                                 app.saveDB();
                                 alert("Datos importados correctamente. La página se recargará.");
                                 location.reload();
-            document.getElementById('import-file').click();
-        },
-        
-        handleFileImport: (input) => {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = event => {
-                try {
-                    const data = JSON.parse(event.target.result);
-                    if(data.topics && data.words) {
-                        if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
-                            if(data.apiKey) {
-                                localStorage.setItem(API_KEY_STORAGE, data.apiKey);
-                                delete data.apiKey;
                             }
                         } else alert("Archivo inválido.");
                     } catch(err) { alert("Error al leer el archivo."); }
                     document.body.removeChild(input);
                 };
                 reader.readAsText(file);
-                            db = data;
-                            app.saveDB();
-                            alert("Datos importados correctamente. La página se recargará.");
-                            location.reload();
-                        }
-                    } else alert("Archivo inválido.");
-                } catch(err) { alert("Error al leer el archivo."); }
-                input.value = ''; // Reset
             };
             input.click();
-            reader.readAsText(file);
         },
         
         checkCookies: () => {
@@ -1287,8 +1246,7 @@
         data: [],
         index: 0,
         recognition: null,
-        // Desactivar Auto-Mic por defecto en iOS porque Apple bloquea el inicio automático sin clic
-        autoMic: !(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)),
+        autoMic: true,
         currentRetries: 0,
         talkInterval: null,
         timerInterval: null,
@@ -1344,15 +1302,7 @@
             game.loadCard();
         },
         
-        isIOS: () => {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        },
-
         toggleAutoMic: () => {
-            if (game.isIOS()) {
-                alert("El modo Auto-Mic no está disponible en iPhone/iPad debido a restricciones de seguridad de Apple (requiere pulsar la pantalla para activar el micro).");
-                return;
-            }
             game.autoMic = !game.autoMic;
             const btn = document.getElementById('btn-auto-mic');
             if(game.autoMic) {
@@ -1549,12 +1499,12 @@
                 });
                 
                 // Auto Mic Trigger
-                if (game.autoMic && !game.isIOS() && !document.getElementById('view-game').classList.contains('hidden')) {
+                if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
                     setTimeout(() => {
                         if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
                             game.toggleMic();
                         }
-                    }, 600);
+                    }, 300);
                 }
             };
             
@@ -1563,110 +1513,35 @@
         },
         
         toggleMic: () => {
-            // Fix Android: Si ya está escuchando, parar en lugar de reiniciar
-            if (document.getElementById('mic-btn').classList.contains('listening')) {
-                game.stopMic();
-                return;
+            if(!game.recognition) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if(!SpeechRecognition) return alert("Navegador no soporta voz.");
+                game.recognition = new SpeechRecognition();
+                
+                game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
+                game.recognition.onend = () => {
+                    document.getElementById('mic-btn').classList.remove('listening');
+                    game.stopTimer();
+                };
             }
-
-            // 1. Detener cualquier audio saliente
-            try { window.speechSynthesis.cancel(); } catch(e) {}
-            
-            // Verificación de seguridad para móviles (HTTPS requerido)
-            if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && !window.location.hostname.startsWith('127.0.0.')) {
-                return alert("⚠️ El micrófono requiere conexión segura (HTTPS). En móviles no funciona con http:// (IP local). Usa GitHub Pages o ngrok.");
-            }
-
-            // 2. HACK IOS PROFUNDO: "Calentar" el AudioContext
-            // Esto fuerza a Safari a reiniciar la sesión de audio, desbloqueando el micrófono si estaba atascado por el TTS.
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) {
-                    const ctx = new AudioContext();
-                    if (ctx.state === 'suspended') {
-                        ctx.resume();
-                    }
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    gain.gain.value = 0; // Silencio absoluto
-                    osc.start(0);
-                    osc.stop(0.001); // Duración insignificante
-                }
-            } catch(e) { console.log("Audio warmup skipped"); }
-            
-            // Fix iOS Safari: Siempre recrear la instancia. Reutilizarla causa bloqueos.
-            if (game.recognition) {
-                try { game.recognition.abort(); } catch(e) {}
-                game.recognition = null;
-            }
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!SpeechRecognition) return alert("Tu navegador no soporta reconocimiento de voz. En iPhone usa Safari.");
-            
-            const recognition = new SpeechRecognition();
-            game.recognition = recognition;
-            
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            // Configurar idioma ANTES de iniciar (Mejor para Safari)
             let langCode = 'en-US';
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback iOS
+            if(currentLang === 'eu') langCode = 'eu-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
             if(currentLang === 'ca') langCode = 'ca-ES';
-            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback iOS
-            recognition.lang = langCode;
+            if(currentLang === 'gl') langCode = 'gl-ES';
+            game.recognition.lang = langCode;
             
-            recognition.onstart = () => {
+            try {
                 document.getElementById('mic-btn').classList.add('listening');
+                game.recognition.start();
                 game.startTimer();
-            };
-
-            recognition.onresult = (e) => {
-                if (e.results.length > 0) {
-                    game.check(e.results[0][0].transcript);
-                }
-            };
-            
-            recognition.onend = () => {
-                document.getElementById('mic-btn').classList.remove('listening');
-                game.stopTimer();
-            };
-            
-            recognition.onerror = (e) => {
-                document.getElementById('mic-btn').classList.remove('listening');
-                game.stopTimer();
-                if(e.error === 'not-allowed') {
-                    alert("Acceso al micrófono denegado. Ve a Ajustes > Safari > Micrófono y permite el acceso.");
-                } else if(e.error !== 'no-speech' && e.error !== 'aborted') {
-                    console.error("Speech error:", e.error);
-                }
-            };
-
-            let langCode = 'en-US';
-            if(currentLang === 'de') langCode = 'de-DE';
-            if(currentLang === 'fr') langCode = 'fr-FR';
-            if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback iOS
-            if(currentLang === 'ru') langCode = 'ru-RU';
-            if(currentLang === 'pt') langCode = 'pt-PT';
-            if(currentLang === 'ca') langCode = 'ca-ES';
-            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback iOS
-            
-            recognition.lang = langCode;
-            
-            try {
-                recognition.start();
             } catch(e) {
                 console.error(e);
-                if (!e.message || !e.message.includes('already started')) alert("Error al iniciar: " + e.message);
+                document.getElementById('mic-btn').classList.remove('listening');
             }
         },
         
@@ -1717,7 +1592,7 @@
 
          stopMic: () => {
             if(game.recognition) {
-                try { game.recognition.abort(); } catch(e) {} // abort() es más seguro en iOS que stop()
+                try { game.recognition.stop(); } catch(e) {}
                 document.getElementById('mic-btn').classList.remove('listening');
                 game.stopTimer();
             }
