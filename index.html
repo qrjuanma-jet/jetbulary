@@ -1536,6 +1536,12 @@
         },
         
         toggleMic: () => {
+            // Fix Android: Si ya está escuchando, parar en lugar de reiniciar
+            if (document.getElementById('mic-btn').classList.contains('listening')) {
+                game.stopMic();
+                return;
+            }
+
             window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
             
             // Verificación de seguridad para móviles (HTTPS requerido)
@@ -1602,6 +1608,9 @@
             } catch(e) {
                 console.error(e);
                 alert("Error al iniciar: " + e.message);
+                if (!e.message || !e.message.includes('already started')) {
+                    alert("Error al iniciar: " + e.message);
+                }
             }
         },
         
