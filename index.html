@@ -846,14 +846,38 @@
                                 app.saveDB();
                                 alert("Datos importados correctamente. La página se recargará.");
                                 location.reload();
+            document.getElementById('import-file').click();
+        },
+        
+        handleFileImport: (input) => {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = event => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if(data.topics && data.words) {
+                        if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
+                            if(data.apiKey) {
+                                localStorage.setItem(API_KEY_STORAGE, data.apiKey);
+                                delete data.apiKey;
                             }
                         } else alert("Archivo inválido.");
                     } catch(err) { alert("Error al leer el archivo."); }
                     document.body.removeChild(input);
                 };
                 reader.readAsText(file);
+                            db = data;
+                            app.saveDB();
+                            alert("Datos importados correctamente. La página se recargará.");
+                            location.reload();
+                        }
+                    } else alert("Archivo inválido.");
+                } catch(err) { alert("Error al leer el archivo."); }
+                input.value = ''; // Reset
             };
             input.click();
+            reader.readAsText(file);
         },
         
         checkCookies: () => {
