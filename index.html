@@ -1538,6 +1538,11 @@
         toggleMic: () => {
             window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
             
+            // Verificación de seguridad para móviles (HTTPS requerido)
+            if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && !window.location.hostname.startsWith('127.0.0.')) {
+                return alert("⚠️ El micrófono requiere conexión segura (HTTPS). En móviles no funciona con http:// (IP local). Usa GitHub Pages o ngrok.");
+            }
+            
             // Fix iOS Safari: Siempre recrear la instancia. Reutilizarla causa bloqueos.
             if (game.recognition) {
                 try { game.recognition.abort(); } catch(e) {}
@@ -1554,6 +1559,11 @@
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
             
+            recognition.onstart = () => {
+                document.getElementById('mic-btn').classList.add('listening');
+                game.startTimer();
+            };
+
             recognition.onresult = (e) => {
                 if (e.results.length > 0) {
                     game.check(e.results[0][0].transcript);
@@ -1595,6 +1605,15 @@
                 console.error(e);
                 document.getElementById('mic-btn').classList.remove('listening');
             }
+            // Pequeño delay para dar tiempo a iOS a liberar el audio del TTS
+            setTimeout(() => {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.error(e);
+                    alert("Error al iniciar: " + e.message);
+                }
+            }, 100);
         },
         
         check: (transcript) => {
