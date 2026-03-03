@@ -1260,7 +1260,8 @@
         data: [],
         index: 0,
         recognition: null,
-        autoMic: true,
+        // Desactivar Auto-Mic por defecto en iOS porque Apple bloquea el inicio automático sin clic
+        autoMic: !(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)),
         currentRetries: 0,
         talkInterval: null,
         timerInterval: null,
@@ -1316,7 +1317,15 @@
             game.loadCard();
         },
         
+        isIOS: () => {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        },
+
         toggleAutoMic: () => {
+            if (game.isIOS()) {
+                alert("El modo Auto-Mic no está disponible en iPhone/iPad debido a restricciones de seguridad de Apple (requiere pulsar la pantalla para activar el micro).");
+                return;
+            }
             game.autoMic = !game.autoMic;
             const btn = document.getElementById('btn-auto-mic');
             if(game.autoMic) {
@@ -1513,7 +1522,7 @@
                 });
                 
                 // Auto Mic Trigger
-                if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
+                if (game.autoMic && !game.isIOS() && !document.getElementById('view-game').classList.contains('hidden')) {
                     setTimeout(() => {
                         if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
                             game.toggleMic();
@@ -1528,40 +1537,59 @@
         
         toggleMic: () => {
             window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
-
-            if(!game.recognition) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(!SpeechRecognition) return alert("Navegador no soporta voz.");
-                game.recognition = new SpeechRecognition();
-                game.recognition.continuous = false;
-                game.recognition.interimResults = false;
-                
-                game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
-                game.recognition.onend = () => {
-                    document.getElementById('mic-btn').classList.remove('listening');
-                    game.stopTimer();
-                };
-                game.recognition.onerror = (e) => {
-                    document.getElementById('mic-btn').classList.remove('listening');
-                    game.stopTimer();
-                    if(e.error === 'not-allowed') alert("Acceso al micrófono denegado. Revisa la configuración de Safari.");
-                    else if(e.error !== 'no-speech') console.error("Speech error:", e.error);
-                };
+            
+            // Fix iOS Safari: Siempre recrear la instancia. Reutilizarla causa bloqueos.
+            if (game.recognition) {
+                try { game.recognition.abort(); } catch(e) {}
+                game.recognition = null;
             }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRecognition) return alert("Tu navegador no soporta reconocimiento de voz. En iPhone usa Safari.");
+            
+            const recognition = new SpeechRecognition();
+            game.recognition = recognition;
+            
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onresult = (e) => {
+                if (e.results.length > 0) {
+                    game.check(e.results[0][0].transcript);
+                }
+            };
+            
+            recognition.onend = () => {
+                document.getElementById('mic-btn').classList.remove('listening');
+                game.stopTimer();
+            };
+            
+            recognition.onerror = (e) => {
+                document.getElementById('mic-btn').classList.remove('listening');
+                game.stopTimer();
+                if(e.error === 'not-allowed') {
+                    alert("Acceso al micrófono denegado. Ve a Ajustes > Safari > Micrófono y permite el acceso.");
+                } else if(e.error !== 'no-speech' && e.error !== 'aborted') {
+                    console.error("Speech error:", e.error);
+                }
+            };
+
             let langCode = 'en-US';
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'eu') langCode = 'eu-ES';
+            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback iOS
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
             if(currentLang === 'ca') langCode = 'ca-ES';
-            if(currentLang === 'gl') langCode = 'gl-ES';
-            game.recognition.lang = langCode;
+            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback iOS
+            
+            recognition.lang = langCode;
             
             try {
                 document.getElementById('mic-btn').classList.add('listening');
-                game.recognition.start();
+                recognition.start();
                 game.startTimer();
             } catch(e) {
                 console.error(e);
