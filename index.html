@@ -447,6 +447,9 @@
     <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
     <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
 
+    <!-- Hidden File Input for Import -->
+    <input type="file" id="import-file" style="visibility:hidden; position:absolute; top:-9999px;" accept=".json,application/json" onchange="app.handleFileImport(this)">
+
 <script>
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
@@ -1556,6 +1559,9 @@
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (AudioContext) {
                     const ctx = new AudioContext();
+                    if (ctx.state === 'suspended') {
+                        ctx.resume();
+                    }
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
                     osc.connect(gain);
