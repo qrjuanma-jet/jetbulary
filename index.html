@@ -331,7 +331,7 @@
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
              <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
              <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
-             <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
+             <button onclick="window.open(document.getElementById('youglish-link').href, '_blank')" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
         </div>
 
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
@@ -345,7 +345,7 @@
         
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
             <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;">🔄 Reintentar</button>
-            <button onclick="document.getElementById('youglish-link').click()" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
+            <button onclick="window.open(document.getElementById('youglish-link').href, '_blank')" class="secondary" style="width: auto; flex: 1;">👂 Oír Nativos (YouGlish)</button>
             <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">⏭️ Saltar</button>
         </div>
         
@@ -1598,22 +1598,11 @@
             recognition.lang = langCode;
             
             try {
-                document.getElementById('mic-btn').classList.add('listening');
                 recognition.start();
-                game.startTimer();
             } catch(e) {
                 console.error(e);
-                document.getElementById('mic-btn').classList.remove('listening');
+                alert("Error al iniciar: " + e.message);
             }
-            // Pequeño delay para dar tiempo a iOS a liberar el audio del TTS
-            setTimeout(() => {
-                try {
-                    recognition.start();
-                } catch(e) {
-                    console.error(e);
-                    alert("Error al iniciar: " + e.message);
-                }
-            }, 100);
         },
         
         check: (transcript) => {
