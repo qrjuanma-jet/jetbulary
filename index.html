@@ -1542,12 +1542,29 @@
                 return;
             }
 
-            window.speechSynthesis.cancel(); // Fix iOS: Detener audio antes de escuchar
+            // 1. Detener cualquier audio saliente
+            try { window.speechSynthesis.cancel(); } catch(e) {}
             
             // Verificación de seguridad para móviles (HTTPS requerido)
             if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && !window.location.hostname.startsWith('127.0.0.')) {
                 return alert("⚠️ El micrófono requiere conexión segura (HTTPS). En móviles no funciona con http:// (IP local). Usa GitHub Pages o ngrok.");
             }
+
+            // 2. HACK IOS PROFUNDO: "Calentar" el AudioContext
+            // Esto fuerza a Safari a reiniciar la sesión de audio, desbloqueando el micrófono si estaba atascado por el TTS.
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const ctx = new AudioContext();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    gain.gain.value = 0; // Silencio absoluto
+                    osc.start(0);
+                    osc.stop(0.001); // Duración insignificante
+                }
+            } catch(e) { console.log("Audio warmup skipped"); }
             
             // Fix iOS Safari: Siempre recrear la instancia. Reutilizarla causa bloqueos.
             if (game.recognition) {
@@ -1564,6 +1581,18 @@
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
+
+            // Configurar idioma ANTES de iniciar (Mejor para Safari)
+            let langCode = 'en-US';
+            if(currentLang === 'de') langCode = 'de-DE';
+            if(currentLang === 'fr') langCode = 'fr-FR';
+            if(currentLang === 'it') langCode = 'it-IT';
+            if(currentLang === 'eu') langCode = 'es-ES'; // Fallback iOS
+            if(currentLang === 'ru') langCode = 'ru-RU';
+            if(currentLang === 'pt') langCode = 'pt-PT';
+            if(currentLang === 'ca') langCode = 'ca-ES';
+            if(currentLang === 'gl') langCode = 'es-ES'; // Fallback iOS
+            recognition.lang = langCode;
             
             recognition.onstart = () => {
                 document.getElementById('mic-btn').classList.add('listening');
@@ -1607,10 +1636,7 @@
                 recognition.start();
             } catch(e) {
                 console.error(e);
-                alert("Error al iniciar: " + e.message);
-                if (!e.message || !e.message.includes('already started')) {
-                    alert("Error al iniciar: " + e.message);
-                }
+                if (!e.message || !e.message.includes('already started')) alert("Error al iniciar: " + e.message);
             }
         },
         
@@ -1661,7 +1687,7 @@
 
          stopMic: () => {
             if(game.recognition) {
-                try { game.recognition.stop(); } catch(e) {}
+                try { game.recognition.abort(); } catch(e) {} // abort() es más seguro en iOS que stop()
                 document.getElementById('mic-btn').classList.remove('listening');
                 game.stopTimer();
             }
