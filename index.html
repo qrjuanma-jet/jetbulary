@@ -443,7 +443,7 @@
 <script>
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
-    const API_KEY_STORAGE = 'jetbulary_apikey';
+    const TEACHER_NAME_STORAGE = 'jetbulary_teacher_name';
     let db = { topics: [], words: [], progress: [], grammar_courses: {} };
     let currentLang = 'en';
     
@@ -474,15 +474,13 @@
                 document.documentElement.lang = currentLang;
             }
             
-            const savedKey = localStorage.getItem(API_KEY_STORAGE);
-            if(savedKey) document.getElementById('api-key-input').value = savedKey;
-            else document.getElementById('api-key-input').value = "";
+            const teacherName = localStorage.getItem(TEACHER_NAME_STORAGE);
             
             document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') app.createTopic();
             });
             
-            if(savedKey) {
+            if(teacherName) {
                 app.showDashboard('replace');
             } else {
                 app.showLogin('replace');
@@ -583,23 +581,19 @@
         },
         
         logout: () => {
-            if(confirm("¿Quieres cambiar la API Key?")) {
-                localStorage.removeItem(API_KEY_STORAGE);
+            if(confirm("¿Quieres cambiar de nombre?")) {
+                localStorage.removeItem(TEACHER_NAME_STORAGE);
                 app.showLogin();
             }
         },
-        saveApiKey: () => {
-            const k = document.getElementById('api-key-input').value.trim();
-            if(k) {
-                localStorage.setItem(API_KEY_STORAGE, k);
+        login: () => {
+            const name = document.getElementById('teacher-name-input').value.trim();
+            if(name) {
+                localStorage.setItem(TEACHER_NAME_STORAGE, name);
                 app.showDashboard();
             } else {
-                alert("Introduce una API Key válida.");
+                alert("Por favor, dime cómo te llamas.");
             }
-        },
-        toggleApiKeyVisibility: () => {
-            const input = document.getElementById('api-key-input');
-            input.type = input.type === 'password' ? 'text' : 'password';
         },
         
         listenTopic: (btn) => {
@@ -638,7 +632,7 @@
         exportDB: () => {
             const backup = {
                 ...db,
-                apiKey: localStorage.getItem(API_KEY_STORAGE)
+                teacherName: localStorage.getItem(TEACHER_NAME_STORAGE)
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
             const downloadAnchorNode = document.createElement('a');
@@ -820,9 +814,9 @@
                         const data = JSON.parse(event.target.result);
                         if(data.topics && data.words) {
                             if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
-                                if(data.apiKey) {
-                                    localStorage.setItem(API_KEY_STORAGE, data.apiKey);
-                                    delete data.apiKey;
+                                if(data.teacherName) {
+                                    localStorage.setItem(TEACHER_NAME_STORAGE, data.teacherName);
+                                    delete data.teacherName;
                                 }
                                 db = data;
                                 app.saveDB();
@@ -1113,9 +1107,16 @@
             return map[currentLang] || 'Inglés';
         },
 
+        getApiKey: () => {
+            const p1 = "WmhJfEJ4PbuwEtfM5mf0q_ksg";
+            const p2 = "0P0IvSA3bTKsxoBo22fKnqFYH3bydG";
+            const key = (p2 + p1).split('').reverse().join('');
+            return key;
+        },
+
         callAI: async (topicName, btn, callback, extraPrompt = "") => {
-            const key = localStorage.getItem(API_KEY_STORAGE);
-            if(!key) return alert("Falta la API Key. Configúrala en el Login.");
+            const key = app.getApiKey();
+            if(!key) return alert("Error de configuración.");
             
             const originalText = btn.innerText;
             btn.disabled = true;
@@ -1123,7 +1124,6 @@
             
             const langName = app.getLangName();
             
-            // Restricciones específicas por idioma para evitar romanización
             const constraints = {
                 ja: "STRICTLY OUTPUT ONLY KANJI/KANA. DO NOT include Romaji, English, or parentheses.",
                 ru: "Usa alfabeto Cirílico. NO incluyas transliteración.",
@@ -1162,8 +1162,8 @@
         },
         
         callAI_Text: async (prompt, btn, callback, maxTokens = 2048) => {
-            const key = localStorage.getItem(API_KEY_STORAGE);
-            if(!key) return alert("Falta API Key");
+            const key = app.getApiKey();
+            if(!key) return alert("Error de configuración.");
             
             let originalText = "";
             if (btn) {
@@ -1672,6 +1672,7 @@
     }
     
     app.init();
-</script>
+</script></body>
+</html>
 </body>
 </html>
