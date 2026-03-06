@@ -2,20 +2,23 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jetbulary.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Jetbulary Mobile</title>
     <meta name="description" content="Aprende vocabulario inmersivo en inglés y otros idiomas con IA. Jetbulary te ayuda a aprender sin memorizar listas, usando frases en contexto y pronunciación nativa.">
     <meta name="keywords" content="vocabulario inmersivo, vocabulario sin memorizar, aprender inglés con IA, vocabulario en contexto, app de idiomas gratuita, aprender idiomas online">
     <style>
-        /* iOS Style Reset */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #FDFBF7; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c5b0' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #333; -webkit-font-smoothing: antialiased; }
+        /* iOS Style Reset & Optimization */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #FDFBF7; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c5b0' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #333; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
         .container { width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; text-align: center; }
         
         h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 20px 0; color: #000; }
         h2 { font-size: 22px; font-weight: 600; margin: 15px 0; color: #000; }
         p { font-size: 17px; line-height: 1.4; color: #333; }
         
-        button { background: #007AFF; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin: 8px 0; width: 100%; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button { background: #007AFF; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin: 8px 0; width: 100%; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); touch-action: manipulation; }
         button:active { opacity: 0.7; }
         button:disabled { background: #8E8E93; cursor: not-allowed; }
         button.secondary { background: #E5E5EA; color: #000; }
@@ -31,7 +34,7 @@
         /* Game Styles */
         .sentence { font-size: 20px; color: #333; font-weight: 500; margin-bottom: 20px; line-height: 1.4; }
         .word-target { font-size: 42px; color: #007AFF; font-weight: 800; margin: 20px 0; letter-spacing: -1px; }
-        .mic-btn { width: 90px !important; height: 90px; border-radius: 50%; background: #FF3B30; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); transition: transform 0.1s; }
+        .mic-btn { width: 90px !important; height: 90px; border-radius: 50%; background: #FF3B30; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); transition: transform 0.1s; touch-action: manipulation; }
         .mic-btn:active { transform: scale(0.95); }
         .mic-btn.listening { background: #ff0000; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -44,7 +47,7 @@
         
         /* Accordion Topics */
         details { background: #fff; margin: 10px 0; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: left; }
-        summary { padding: 18px; cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        summary { padding: 18px; cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; touch-action: manipulation; }
         summary::-webkit-details-marker { display: none; }
         summary::after { content: '+'; font-size: 20px; color: #007AFF; font-weight: 300; }
         details[open] summary::after { content: '−'; color: #FF3B30; }
@@ -122,14 +125,15 @@
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#0088cc"/></svg>
                 </a>
             </h2>
-            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">¡Hola! Para empezar, dime cómo te llamas y pulsa Entrar.</p>
+            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">Jetbulary: Aprende idiomas como un nativo de forma gratuita. Navega en Jetbulary.com para encontrar tu propio tesoro. Tu <a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">🔑 llave personal</a>, en groq, entra con tu cuenta de google y pulsa en create API KEY, cópiala y pégala en el siguiente recuadro (no guardamos tus datos)</p>
             
             <div style="position: relative; max-width: 400px; margin: 0 auto;">
-                <input type="text" id="teacher-name-input" placeholder="¿Cómo quieres que te llame la Profesora?" style="margin-bottom: 15px; padding-right: 40px;">
+                <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq..." style="margin-bottom: 15px; padding-right: 40px;">
+                <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 15px; cursor: pointer; font-size: 1.2rem;">👁️</span>
             </div>
             <div style="max-width: 400px; margin: 0 auto;">
-                <button onclick="app.login()" class="success">Entrar a Jetbulary</button>
-                <p style="font-size: 0.85rem; color: #666; margin-top: 15px; margin-bottom: 5px;">¿Guardaste tu avance?</p>
+                <button onclick="app.saveApiKey()" class="success">Entrar a Jetbulary</button>
+                <p style="font-size: 0.85rem; color: #666; margin-top: 15px; margin-bottom: 5px;">¿Ya tienes tu API Key y guardaste tu avance?</p>
                 <button onclick="app.importDB()" class="secondary">📂 Restaurar Avance</button>
             </div>
         </header>
@@ -156,7 +160,7 @@
                 </div>
                 <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                     <h4 style="margin-top: 0;">2. Generación IA</h4>
-                    <p style="font-size: 0.95rem;">Nuestra tecnología se conecta a un modelo de IA para crear vocabulario relevante, frases de ejemplo y traducciones precisas en segundos.</p>
+                    <p style="font-size: 0.95rem;">Nuestra tecnología conecta con Groq para crear vocabulario relevante, frases de ejemplo y traducciones precisas en segundos.</p>
                 </div>
                 <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                     <h4 style="margin-top: 0;">3. Práctica Activa</h4>
@@ -188,7 +192,7 @@
             <h2 style="color: #007AFF;">Preguntas Frecuentes (FAQ)</h2>
             <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
                 <summary style="font-weight: bold; cursor: pointer;">¿Es realmente gratis?</summary>
-                <p style="margin-top: 10px;">Sí, Jetbulary es una herramienta gratuita. Funciona gracias a la generosidad de modelos de IA que ofrecen acceso para estudiantes y desarrolladores.</p>
+                <p style="margin-top: 10px;">Sí, Jetbulary es una herramienta gratuita. Utilizamos la API de Groq que ofrece un plan gratuito generoso para desarrolladores y estudiantes.</p>
             </details>
             <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
                 <summary style="font-weight: bold; cursor: pointer;">¿Qué idiomas puedo aprender?</summary>
@@ -196,7 +200,7 @@
             </details>
             <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
                 <summary style="font-weight: bold; cursor: pointer;">¿Necesito registrarme?</summary>
-                <p style="margin-top: 10px;">No necesitas crear una cuenta con email. Tu progreso se guarda localmente en tu dispositivo. ¡Así de fácil!</p>
+                <p style="margin-top: 10px;">No necesitas crear una cuenta con email. Tu progreso se guarda localmente en tu dispositivo. Solo necesitas una API Key para activar la inteligencia artificial.</p>
             </details>
         </section>
     </div>
@@ -208,7 +212,7 @@
         <h3>Recopilación de Datos</h3>
         <p>No almacenamos sus datos personales en servidores externos. Su progreso, vocabulario y configuraciones se guardan localmente en su dispositivo utilizando `localStorage`.</p>
         <h3>Uso de API de Terceros</h3>
-        <p>Para generar contenido, la aplicación se conecta con un modelo de IA de forma segura, sin compartir datos personales.</p>
+        <p>Para generar contenido, la aplicación envía solicitudes a la API de Groq. Su API Key se almacena localmente en su dispositivo y solo se utiliza para autenticar estas solicitudes.</p>
         <h3>Cookies</h3>
         <p>Utilizamos cookies técnicas esenciales para el funcionamiento de la aplicación y cookies de Google AdSense para mostrar publicidad personalizada.</p>
         <button onclick="app.showLogin()" class="secondary" style="margin-top: 20px;">Volver</button>
@@ -280,7 +284,7 @@
         
         <div id="topic-list" style="margin-top: 20px;"></div>
         
-        <button onclick="app.logout()" class="secondary">Cambiar Nombre</button>
+        <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
         <!-- PUBLICIDAD ADSENSE -->
         <div style="margin: 20px 0; text-align: center; min-height: 90px; background: #f4f4f4; border-radius: 8px; overflow: hidden;">
@@ -443,7 +447,7 @@
 <script>
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
-    const TEACHER_NAME_STORAGE = 'jetbulary_teacher_name';
+    const API_KEY_STORAGE = 'jetbulary_apikey';
     let db = { topics: [], words: [], progress: [], grammar_courses: {} };
     let currentLang = 'en';
     
@@ -474,13 +478,15 @@
                 document.documentElement.lang = currentLang;
             }
             
-            const teacherName = localStorage.getItem(TEACHER_NAME_STORAGE);
+            const savedKey = localStorage.getItem(API_KEY_STORAGE);
+            if(savedKey) document.getElementById('api-key-input').value = savedKey;
+            else document.getElementById('api-key-input').value = "";
             
             document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') app.createTopic();
             });
             
-            if(teacherName) {
+            if(savedKey) {
                 app.showDashboard('replace');
             } else {
                 app.showLogin('replace');
@@ -514,9 +520,11 @@
             const menu = document.getElementById('lang-menu');
             const cur = languages.find(l => l.code === currentLang) || languages[0];
             
+            // Botón principal
             const count = app.getCorrectCountForLang(currentLang);
             btnDisplay.innerHTML = `<img src="flag_${currentLang}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px;"><span style="display:none; font-size: 1.2rem; margin-right: 5px;">${cur.emoji}</span> ${cur.name} <span style="font-size:0.8rem; opacity:0.7; margin-left:5px;">(${count})</span>`;
             
+            // Menú desplegable
             menu.innerHTML = languages.map(l => {
                 const c = app.getCorrectCountForLang(l.code);
                 return `
@@ -579,19 +587,23 @@
         },
         
         logout: () => {
-            if(confirm("¿Quieres cambiar de nombre?")) {
-                localStorage.removeItem(TEACHER_NAME_STORAGE);
+            if(confirm("¿Quieres cambiar la API Key?")) {
+                localStorage.removeItem(API_KEY_STORAGE);
                 app.showLogin();
             }
         },
-        login: () => {
-            const name = document.getElementById('teacher-name-input').value.trim();
-            if(name) {
-                localStorage.setItem(TEACHER_NAME_STORAGE, name);
+        saveApiKey: () => {
+            const k = document.getElementById('api-key-input').value.trim();
+            if(k) {
+                localStorage.setItem(API_KEY_STORAGE, k);
                 app.showDashboard();
             } else {
-                alert("Por favor, dime cómo te llamas.");
+                alert("Introduce una API Key válida.");
             }
+        },
+        toggleApiKeyVisibility: () => {
+            const input = document.getElementById('api-key-input');
+            input.type = input.type === 'password' ? 'text' : 'password';
         },
         
         listenTopic: (btn) => {
@@ -630,7 +642,7 @@
         exportDB: () => {
             const backup = {
                 ...db,
-                teacherName: localStorage.getItem(TEACHER_NAME_STORAGE)
+                apiKey: localStorage.getItem(API_KEY_STORAGE)
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup));
             const downloadAnchorNode = document.createElement('a');
@@ -639,39 +651,6 @@
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
-        },
-        
-        importDB: () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json,application/json';
-            input.style.position = 'fixed';
-            input.style.top = '-1000px';
-            document.body.appendChild(input);
-            input.onchange = e => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = event => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        if(data.topics && data.words) {
-                            if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
-                                if(data.teacherName) {
-                                    localStorage.setItem(TEACHER_NAME_STORAGE, data.teacherName);
-                                    delete data.teacherName;
-                                }
-                                db = data;
-                                app.saveDB();
-                                alert("Datos importados correctamente. La página se recargará.");
-                                location.reload();
-                            }
-                        } else alert("Archivo inválido.");
-                    } catch(err) { alert("Error al leer el archivo."); }
-                    document.body.removeChild(input);
-                };
-                reader.readAsText(file);
-            };
-            input.click();
         },
         
         secretClicks: 0,
@@ -830,16 +809,331 @@
             if(!name) return alert("Por favor, escribe tu nombre para el diploma.");
             window.print();
         },
+        importDB: () => {
+            let input = document.getElementById('import-db-input');
+            if (!input) {
+                input = document.createElement('input');
+                input.id = 'import-db-input';
+                input.type = 'file';
+                input.accept = '.json,application/json';
+                input.style.position = 'fixed';
+                input.style.top = '-1000px';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = event => {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            if(data.topics && data.words) {
+                                if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
+                                    if(data.apiKey) {
+                                        localStorage.setItem(API_KEY_STORAGE, data.apiKey);
+                                        delete data.apiKey;
+                                    }
+                                    db = data;
+                                    app.saveDB();
+                                    alert("Datos importados correctamente. La página se recargará.");
+                                    location.reload();
+                                }
+                            } else alert("Archivo inválido.");
+                        } catch(err) { alert("Error al leer el archivo."); }
+                        input.value = ''; // Reset
+                    };
+                    reader.readAsText(file);
+                };
+            }
+            setTimeout(() => input.click(), 10);
+        },
         
+        checkCookies: () => {
+            if(!localStorage.getItem('jetbulary_cookies_accepted')) {
+                document.getElementById('cookie-banner').classList.remove('hidden');
+            }
+        },
+        acceptCookies: () => {
+            localStorage.setItem('jetbulary_cookies_accepted', 'true');
+            document.getElementById('cookie-banner').classList.add('hidden');
+        },
+        
+        renderTopics: () => {
+            const list = document.getElementById('topic-list');
+            const myTopics = db.topics.filter(t => (t.lang || 'en') === currentLang);
+            
+            if(myTopics.length === 0) list.innerHTML = `<p>No hay temas en ${app.getLangName()}. Crea uno nuevo.</p>`;
+            else {
+                const reversed = [...myTopics].reverse();
+                list.innerHTML = reversed.map((t, index) => `
+                    <details ${index === 0 ? 'open' : ''} onclick="app.closeOthers(this)">
+                        <summary>${t.name}</summary>
+                        <div class="topic-content">
+                            <div class="topic-actions">
+                                <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
+                                <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
+                            </div>
+                            <div class="topic-actions">
+                                <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
+                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">🌍 Curiosidades</button>
+                                <button onclick="app.deleteTopic(${t.id})" class="danger">Borrar</button>
+                            </div>
+                        </div>
+                    </details>
+                `).join('');
+            }
+        },
+        
+        closeOthers: (details) => {
+            if(!details.open) {
+                document.querySelectorAll('details').forEach(d => {
+                    if(d !== details) d.removeAttribute('open');
+                });
+            }
+        },
+        
+        deleteTopic: (id) => {
+            if(!confirm("¿Borrar este tema y todo su vocabulario?")) return;
+            db.topics = db.topics.filter(t => t.id !== id);
+            db.words = db.words.filter(w => w.topic_id !== id);
+            const validWordIds = db.words.map(w => w.id);
+            db.progress = db.progress.filter(p => validWordIds.includes(p.word_id));
+            app.saveDB();
+            app.renderTopics();
+        },
+        
+        renderSuggestions: () => {
+            const dailyTopics = [
+                "Inteligencia Artificial", "Cambio Climático", "Exploración de Marte", 
+                "Teletrabajo", "Salud Mental", "Criptomonedas", "Ciberseguridad", 
+                "Minimalismo", "Ciudades del Futuro", "Energías Renovables", 
+                "Redes Sociales", "Globalización", "Avances Médicos", "Turismo Espacial", 
+                "Economía Circular", "Derechos Humanos", "Biodiversidad", "Educación Online", 
+                "Realidad Virtual", "Coches Eléctricos"
+            ];
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const day = Math.floor(diff / oneDay);
+            const dailyTopic = dailyTopics[day % dailyTopics.length];
+            
+            let prevHtml = '';
+            for(let i=1; i<=6; i++) {
+                let idx = (day - i) % dailyTopics.length;
+                if (idx < 0) idx += dailyTopics.length;
+                const t = dailyTopics[idx];
+                prevHtml += `<button onclick="app.createTopicFromSuggestion('${t}')" class="secondary" style="width:100%; text-align:left; margin:2px 0; font-size:0.9rem; background:#fff; border:1px solid #eee;">📅 Hace ${i} día${i>1?'s':''}: ${t}</button>`;
+            }
+            
+            const container = document.getElementById('suggestions-container');
+            if(container) {
+                container.innerHTML = `
+                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="secondary" style="background: #E3F2FD; color: #007AFF; border: 1px solid #BBDEFB; width: 100%; font-weight: bold; margin-bottom: 5px;">📅 Tema del Día: ${dailyTopic}</button>
+                    <details style="margin-bottom: 15px; border:none; background:transparent; box-shadow:none;">
+                        <summary style="font-size: 0.85rem; color: #888; padding: 5px;">Ver temas anteriores (6 días)...</summary>
+                        <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">${prevHtml}</div>
+                    </details>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary" style="flex: 1 1 auto; width: auto;">👨‍👩‍👧‍👦 Familia</button>
+                        <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary" style="flex: 1 1 auto; width: auto;">🍔 Comida</button>
+                        <button onclick="app.createTopicFromSuggestion('Viajes y Aeropuerto')" class="secondary" style="flex: 1 1 auto; width: auto;">✈️ Viajes</button>
+                        <button onclick="app.createTopicFromSuggestion('Trabajo y Negocios')" class="secondary" style="flex: 1 1 auto; width: auto;">💼 Trabajo</button>
+                        <button onclick="app.createTopicFromSuggestion('Rutina Diaria')" class="secondary" style="flex: 1 1 auto; width: auto;">⏰ Rutina</button>
+                        <button onclick="app.createTopicFromSuggestion('Compras y Ropa')" class="secondary" style="flex: 1 1 auto; width: auto;">🛍️ Compras</button>
+                        <button onclick="app.createTopicFromSuggestion('Salud y Cuerpo')" class="secondary" style="flex: 1 1 auto; width: auto;">🏥 Salud</button>
+                        <button onclick="app.createTopicFromSuggestion('Tecnología')" class="secondary" style="flex: 1 1 auto; width: auto;">💻 Tecnología</button>
+                        <button onclick="app.createTopicFromSuggestion('Vocabulario Especializado')" class="secondary" style="flex: 1 1 auto; width: auto;">🎓 Vocabulario Especializado</button>
+                        <button onclick="app.createJobInterviewTopic()" class="secondary" style="flex: 1 1 auto; width: auto;">👔 Tu Profesión / Entrevistas</button>
+                    </div>
+                `;
+            }
+        },
+        
+        createTopicFromSuggestion: (topic) => {
+            document.getElementById('new-topic-input').value = topic;
+            app.createTopic();
+        },
+        
+        createJobInterviewTopic: () => {
+            const profession = prompt("¿Cuál es tu profesión? (ej: Ingeniero, Enfermera, Camarero...)");
+            if (profession) {
+                const topicName = `Entrevista de Trabajo para ${profession}`;
+                document.getElementById('new-topic-input').value = topicName;
+                app.createTopic();
+            }
+        },
+        
+        createTopic: async () => {
+            const name = document.getElementById('new-topic-input').value;
+            if(!name) return;
+            const btn = document.getElementById('btn-create');
+            
+            let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
+            if(topic) return alert("El tema ya existe.");
+            
+            await app.callAI(name, btn, (vocab) => {
+                const newTopic = { id: Date.now(), name: name, lang: currentLang };
+                db.topics.push(newTopic);
+                vocab.forEach((w, i) => db.words.push({ ...w, id: Date.now()+i, topic_id: newTopic.id }));
+                app.saveDB();
+                game.start(newTopic.id, 'learn');
+            });
+        },
+        
+        expandTopic: async (id, btn) => {
+            if(!confirm("¿Añadir 10 palabras nuevas?")) return;
+            const topic = db.topics.find(t => t.id === id);
+            const existing = db.words.filter(w => w.topic_id === id).map(w => w.english).join(', ');
+            
+            await app.callAI(topic.name, btn, (vocab) => {
+                vocab.forEach((w, i) => db.words.push({ ...w, id: Date.now()+i, topic_id: id }));
+                app.saveDB();
+                alert("Tema ampliado.");
+            }, `NO repitas estas palabras: ${existing}.`);
+        },
+        
+        showTopicCulture: async (id) => {
+            const topic = db.topics.find(t => t.id === id);
+            app.switchView('view-culture');
+            document.getElementById('culture-title').innerText = `Curiosidades: ${topic.name}`;
+            const container = document.getElementById('culture-content');
+            container.innerHTML = '<p>Buscando curiosidades y expresiones...</p>';
+            
+            const langName = app.getLangName();
+            const prompt = `Actúa como un experto cultural y lingüístico. Genera 3 curiosidades o datos culturales interesantes sobre el tema "${topic.name}" en países de habla ${langName}. 
+            ADEMÁS, incluye 3 expresiones idiomáticas o frases hechas relacionadas con este tema que se digan de forma muy diferente en ${langName} respecto al español. Para cada expresión, explica su significado, su traducción literal (si es curiosa) y cómo se diría en español.
+            Usa formato HTML limpio (<h3>, <p>, <ul>, <li>, <strong>). Sé entretenido.`;
+            
+            await app.callAI_Text(prompt, null, (text) => { container.innerHTML = text; });
+        },
+        
+        showAlphabet: async () => {
+            app.switchView('view-alphabet');
+            const container = document.getElementById('alphabet-list');
+            container.innerHTML = '<p>Cargando signos...</p>';
+            
+            const langName = app.getLangName();
+            const prompt = `Genera una lista de los 20 caracteres/signos/letras más básicos e importantes del idioma ${langName}. 
+            Para cada uno dame: el signo, la pronunciación aproximada y una palabra de ejemplo.
+            Formato JSON array: [{"sign": "A", "pronunciation": "a", "example": "Apple"}]`;
+            
+            await app.callAI_Text(prompt, null, (text) => {
+                try {
+                    const json = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+                    container.innerHTML = json.map(item => `
+                        <div onclick="game.speakText('${item.example}')" style="background:white; padding:10px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); cursor:pointer;">
+                            <div style="font-size:2rem; font-weight:bold; color:#007AFF;">${item.sign}</div>
+                            <div style="font-size:0.8rem; color:#666;">${item.pronunciation}</div>
+                            <div style="font-size:0.8rem; color:#333;">Ex: ${item.example}</div>
+                        </div>
+                    `).join('');
+                } catch(e) { container.innerHTML = "Error al cargar alfabeto."; }
+            });
+        },
 
+        loadResources: async () => {
+            const container = document.getElementById('resources-content');
+            container.innerHTML = '<p>Generando recursos...</p>';
+            const langName = app.getLangName();
+            
+            const prompt = `Genera una lista útil para estudiantes de ${langName} con:
+            1. 5 Verbos irregulares comunes.
+            2. 5 Conectores de frases útiles.
+            3. 5 Phrasal verbs o expresiones idiomáticas comunes.
+            Usa formato HTML limpio (<h3>, <ul>, <li>, <strong>).`;
+            
+            await app.callAI_Text(prompt, null, (text) => { container.innerHTML = text; });
+        },
+
+        showGrammarCourse: () => {
+            document.getElementById('grammar-qa').classList.add('hidden');
+            const container = document.getElementById('grammar-course-list');
+            container.classList.remove('hidden');
+            
+            const course = db.grammar_courses && db.grammar_courses[currentLang];
+            
+            if (!course) {
+                container.innerHTML = `
+                    <p>No hay un curso creado para ${app.getLangName()}.</p>
+                    <button onclick="app.createGrammarCourse(this)" class="success">✨ Generar Plan de Estudios con IA</button>
+                `;
+            } else {
+                container.innerHTML = course.map(level => `
+                    <div class="level-header">${level.level}</div>
+                    ${level.topics.map(topic => `
+                        <div class="lesson-item" onclick="app.openGrammarLesson('${level.level}', '${topic}')">
+                            📖 ${topic}
+                        </div>
+                    `).join('')}
+                `).join('');
+            }
+        },
+
+        createGrammarCourse: async (btn) => {
+            const langName = app.getLangName();
+            await app.callAI_Text(
+                `Genera un temario de gramática para aprender ${langName} dividido en 3 niveles (Principiante, Intermedio, Avanzado). Para cada nivel dame 5 temas clave. 
+                Responde SOLO con un JSON válido con este formato: [{"level": "Principiante", "topics": ["Tema 1", "Tema 2"]}, ...]`, 
+                btn, 
+                (text) => {
+                    try {
+                        const json = JSON.parse(text.replace(/```json/g, '').replace(/```/g, '').trim());
+                        if(!db.grammar_courses) db.grammar_courses = {};
+                        db.grammar_courses[currentLang] = json;
+                        app.saveDB();
+                        app.showGrammarCourse();
+                    } catch(e) { alert("Error al procesar la respuesta de la IA: " + e.message); }
+                }
+            );
+        },
+
+        openGrammarLesson: async (level, topic) => {
+            const container = document.getElementById('grammar-content');
+            document.getElementById('grammar-qa').classList.remove('hidden'); 
+            document.getElementById('grammar-course-list').classList.add('hidden');
+            document.getElementById('grammar-query').value = topic; 
+            
+            const btn = document.getElementById('btn-grammar');
+            const langName = app.getLangName();
+            const prompt = `Actúa como una profesora de ${langName}. Explica el tema de gramática: "${topic}" (Nivel ${level}). 
+            Incluye: 1. Explicación clara. 2. Ejemplos traducidos. 3. Un pequeño ejercicio al final. Usa formato HTML bonito.`;
+            
+            await app.callAI_Text(prompt, btn, (text) => {
+                container.innerHTML = text;
+            });
+        },
+
+        askGrammar: async () => {
+            const query = document.getElementById('grammar-query').value;
+            if(!query) return;
+            const btn = document.getElementById('btn-grammar');
+            const content = document.getElementById('grammar-content');
+            
+            const langName = app.getLangName();
+            const prompt = `Explica brevemente la gramática de "${query}" en el idioma ${langName}. Usa ejemplos. Formato HTML simple (usa <p>, <ul>, <li>, <strong>).`;
+            
+            await app.callAI_Text(prompt, btn, (text) => {
+                content.innerHTML = text;
+            });
+        },
+        
+        getLangName: () => {
+            const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego' };
+            return map[currentLang] || 'Inglés';
+        },
 
         callAI: async (topicName, btn, callback, extraPrompt = "") => {
+            const key = localStorage.getItem(API_KEY_STORAGE);
+            if(!key) return alert("Falta la API Key. Configúrala en el Login.");
+            
             const originalText = btn.innerText;
             btn.disabled = true;
             btn.innerText = "Generando...";
             
             const langName = app.getLangName();
             
+            // Restricciones específicas por idioma para evitar romanización
             const constraints = {
                 ja: "STRICTLY OUTPUT ONLY KANJI/KANA. DO NOT include Romaji, English, or parentheses.",
                 ru: "Usa alfabeto Cirílico. NO incluyas transliteración.",
@@ -855,20 +1149,16 @@
             Formato JSON array estricto: [{"english": "palabra_en_${langName}", "spanish": "traducción_español", "sentence_en": "Frase ejemplo en ${langName}", "sentence_es": "Frase traducida al español"}] Solo JSON.`;
             
             try {
-                const res = await fetch("/api/generate", {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
-                        prompt: prompt,
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{role:"user", content: prompt}],
                         temperature: 0.3
                     })
                 });
-
-                if(!res.ok) {
-                    const errBody = await res.json();
-                    throw new Error(errBody.error || "Error en la API");
-                }
-
+                if(!res.ok) throw new Error("Error API");
                 const data = await res.json();
                 const jsonStr = data.choices[0].message.content.replace(/```json/g, '').replace(/```/g, '').trim();
                 const vocab = JSON.parse(jsonStr);
@@ -882,6 +1172,9 @@
         },
         
         callAI_Text: async (prompt, btn, callback, maxTokens = 2048) => {
+            const key = localStorage.getItem(API_KEY_STORAGE);
+            if(!key) return alert("Falta API Key");
+            
             let originalText = "";
             if (btn) {
                 originalText = btn.innerText;
@@ -890,27 +1183,20 @@
             }
             
             try {
-                const res = await fetch("/api/generate", {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
-                        prompt: prompt,
-                        model: "llama-3.1-70b-versatile",
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{role:"user", content: prompt}],
                         temperature: 0.5,
                         max_tokens: maxTokens
                     })
                 });
-
-                if(!res.ok) {
-                    const errBody = await res.json();
-                    throw new Error(errBody.error || "Error en la API");
-                }
-
                 const data = await res.json();
                 callback(data.choices[0].message.content);
-            } catch(e) { 
-                alert(e.message); 
-            } finally { 
+            } catch(e) { alert(e.message); }
+            finally { 
                 if (btn) {
                     btn.disabled = false; 
                     btn.innerText = originalText; 
