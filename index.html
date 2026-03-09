@@ -83,6 +83,10 @@
         #timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 20px 0; overflow: hidden; }
         #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
+        /* Convo Timer Bar */
+        #convo-timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+        #convo-timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
+        
         
         .app-logo { width: calc(100% + 40px); margin-left: -20px; margin-top: -20px; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; mix-blend-mode: multiply; }
         
@@ -354,6 +358,34 @@
         <button id="next-btn" class="success hidden" onclick="game.next()">Siguiente ➡</button>
     </div>
 
+    <!-- VISTA CONVERSACIÓN -->
+    <div id="view-conversation" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
+        <h2>Conversación sobre <span id="conversation-topic-title"></span></h2>
+        
+        <div id="conversation-history" style="text-align: left; margin-bottom: 20px; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 12px;">
+            <!-- Chat bubbles will go here -->
+        </div>
+
+        <div id="conversation-suggestions" style="margin-bottom: 10px;">
+            <p style="font-weight: bold;">Vocabulario sugerido:</p>
+            <div id="suggestions-list" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
+        </div>
+        
+        <div id="conversation-phrases" style="margin-bottom: 20px;">
+            <p style="font-weight: bold;">Frases sugeridas:</p>
+            <div id="phrases-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+        </div>
+
+        <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
+        <button id="btn-auto-mic-convo" onclick="conversation.toggleAutoMic()" class="auto-mic-on" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: ON</button>
+        <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
+        
+        <p id="convo-spoken-text" style="color:#333; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
+        
+        <button onclick="app.showDashboard()" class="secondary" style="margin-top: 20px;">Terminar y Salir</button>
+    </div>
+
     <!-- VISTA VOCABULARIO -->
     <div id="view-vocab" class="container hidden">
         <h2>Mi Vocabulario</h2>
@@ -442,6 +474,7 @@
         </p>
     </footer>
 
+    <button onclick="app.showDashboard()" class="secondary" style="margin-top: 20px;">Salir del Juego</button>
     <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
 
 <script>
@@ -480,11 +513,11 @@
             
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if(savedKey) document.getElementById('api-key-input').value = savedKey;
+            // Clave recuperada de tu configuración de servidor
             else document.getElementById('api-key-input').value = "";
-            
-            document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') app.createTopic();
-            });
+
+            // Auto login si hay sesión (simulado)
+            const lastUser = localStorage.getItem('jetbulary_last_user');
             
             if(savedKey) {
                 app.showDashboard('replace');
@@ -513,6 +546,9 @@
             app.renderTopics();
             app.renderSuggestions();
             app.renderLangSelector();
+            document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') app.createTopic();
+            });
         },
         
         renderLangSelector: () => {
@@ -872,6 +908,7 @@
                             <div class="topic-actions">
                                 <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
                                 <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
+                                <button onclick="conversation.start(${t.id})" style="background-color: #5856d6;">Conversación 💬 (New!)</button>
                             </div>
                             <div class="topic-actions">
                                 <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
@@ -934,6 +971,7 @@
                         <summary style="font-size: 0.85rem; color: #888; padding: 5px;">Ver temas anteriores (6 días)...</summary>
                         <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">${prevHtml}</div>
                     </details>
+                    <button onclick="app.createJobInterviewTopic()" class="secondary" style="width: 100%; margin-bottom: 10px; background-color: #f0f9ff; border: 1px solid #b3e5fc; color: #0277bd; font-weight: bold;">👔 Tu Profesión / Entrevistas</button>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                         <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary" style="flex: 1 1 auto; width: auto;">👨‍👩‍👧‍👦 Familia</button>
                         <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary" style="flex: 1 1 auto; width: auto;">🍔 Comida</button>
@@ -944,7 +982,6 @@
                         <button onclick="app.createTopicFromSuggestion('Salud y Cuerpo')" class="secondary" style="flex: 1 1 auto; width: auto;">🏥 Salud</button>
                         <button onclick="app.createTopicFromSuggestion('Tecnología')" class="secondary" style="flex: 1 1 auto; width: auto;">💻 Tecnología</button>
                         <button onclick="app.createTopicFromSuggestion('Vocabulario Especializado')" class="secondary" style="flex: 1 1 auto; width: auto;">🎓 Vocabulario Especializado</button>
-                        <button onclick="app.createJobInterviewTopic()" class="secondary" style="flex: 1 1 auto; width: auto;">👔 Tu Profesión / Entrevistas</button>
                     </div>
                 `;
             }
@@ -1118,6 +1155,30 @@
             });
         },
         
+        callAI_Conversation: async (prompt, btn, callback) => {
+            const key = localStorage.getItem(API_KEY_STORAGE);
+            if(!key) return alert("Falta API Key");
+            
+            if (btn) btn.disabled = true;
+            
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{role:"user", content: prompt}],
+                        temperature: 0.7,
+                        response_format: { type: "json_object" }
+                    })
+                });
+                if(!res.ok) throw new Error("Error en la API de Groq");
+                const data = await res.json();
+                callback(JSON.parse(data.choices[0].message.content));
+            } catch(e) { alert("Error con la IA: " + e.message); app.showDashboard(); }
+            finally { if (btn) btn.disabled = false; }
+        },
+
         getLangName: () => {
             const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego' };
             return map[currentLang] || 'Inglés';
@@ -1249,6 +1310,232 @@
             }).join('');
         },
         sort: (type) => vocab.render(type)
+    };
+
+    const conversation = {
+        topic: null,
+        history: [],
+        turn: 0,
+        maxTurns: 3, // 3-4 user replies
+        recognition: null,
+        autoMic: true,
+        timerInterval: null,
+
+        start: async (topicId) => {
+            conversation.topic = db.topics.find(t => t.id === topicId);
+            if (!conversation.topic) return alert("Tema no encontrado.");
+
+            app.switchView('view-conversation');
+            document.getElementById('conversation-topic-title').innerText = conversation.topic.name;
+            
+            conversation.history = [];
+            conversation.turn = 0;
+            
+            // Resetear Auto Mic a ON al empezar
+            conversation.autoMic = true;
+            const btnAuto = document.getElementById('btn-auto-mic-convo');
+            btnAuto.innerHTML = "🎙️ Auto: ON";
+            btnAuto.classList.add('auto-mic-on');
+            btnAuto.classList.remove('secondary');
+            
+            const historyEl = document.getElementById('conversation-history');
+            historyEl.innerHTML = '<p>Iniciando conversación con la profesora...</p>';
+            document.getElementById('suggestions-list').innerHTML = '';
+            document.getElementById('phrases-list').innerHTML = '';
+            document.getElementById('convo-spoken-text').innerText = '...';
+
+            const langName = app.getLangName();
+            const prompt = `Actúa como una profesora de ${langName} amigable y paciente. Inicia una conversación corta (3-4 turnos de usuario) sobre el tema "${conversation.topic.name}".
+1. Haz una breve introducción y haz una pregunta abierta para empezar. Tu discurso debe estar únicamente en ${langName}.
+2. Sugiere 5-7 palabras y verbos útiles para la respuesta, con su traducción al español.
+3. Sugiere 3 frases cortas completas que el usuario podría usar para responder, en ${langName} con su traducción al español.
+4. Responde únicamente con un objeto JSON válido con este formato: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra_en_idioma", "spanish": "traducción"}], "suggested_phrases": [{"text": "Frase en idioma", "trans": "Traducción"}]}`;
+
+            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+                if (data.speech) {
+                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.renderHistory();
+                    // Leer solo la parte en el idioma objetivo (antes del salto de línea)
+                    const textToSpeak = data.speech;
+                    game.speakText(textToSpeak);
+                }
+                if (data.new_vocab) {
+                    conversation.renderSuggestions(data.new_vocab);
+                    conversation.addWordsToDB(data.new_vocab);
+                }
+                if (data.suggested_phrases) {
+                    conversation.renderPhrases(data.suggested_phrases);
+                }
+            });
+        },
+
+        handleUserReply: async (transcript) => {
+            document.getElementById('convo-spoken-text').innerText = `Tú: "${transcript}"`;
+            conversation.history.push({ role: 'user', content: transcript });
+            conversation.renderHistory();
+            conversation.turn++;
+
+            if (conversation.turn >= conversation.maxTurns) {
+                conversation.end(transcript);
+                return;
+            }
+
+            const historyStr = JSON.stringify(conversation.history);
+            const langName = app.getLangName();
+            const prompt = `Continúa la conversación sobre "${conversation.topic.name}". El historial es: ${historyStr}.
+1. Responde de forma natural al usuario, únicamente en ${langName}.
+2. Haz una nueva pregunta para continuar.
+3. Sugiere 5-7 palabras y verbos nuevos y relevantes que no se hayan sugerido antes.
+4. Sugiere 3 frases cortas nuevas para responder.
+5. Este es el turno ${conversation.turn + 1} de ${conversation.maxTurns + 1}.
+6. Responde únicamente con el mismo formato JSON: {"speech": "Tu respuesta solo en ${langName}", "new_vocab": [...], "suggested_phrases": [...]}`;
+
+            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+                if (data.speech) {
+                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.renderHistory();
+                    const textToSpeak = data.speech;
+                    game.speakText(textToSpeak);
+                }
+                if (data.new_vocab) {
+                    conversation.renderSuggestions(data.new_vocab);
+                    conversation.addWordsToDB(data.new_vocab);
+                }
+                if (data.suggested_phrases) {
+                    conversation.renderPhrases(data.suggested_phrases);
+                }
+            });
+        },
+        
+        end: async (transcript) => {
+            const historyStr = JSON.stringify(conversation.history);
+            const prompt = `Esta es la última respuesta de la conversación. El historial es: ${historyStr}.
+1. Responde amablemente al usuario.
+2. Despídete y finaliza la conversación.
+3. NO hagas más preguntas.
+4. Responde únicamente con un objeto JSON con el formato: {"speech": "..."}`;
+
+            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+                if (data.speech) {
+                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.renderHistory();
+                    conversation.autoMic = false; // Desactivar auto mic al terminar para que no escuche después del adiós
+                    const textToSpeak = data.speech;
+                    game.speakText(textToSpeak);
+                    setTimeout(() => {
+                        alert("Conversación terminada. ¡Buen trabajo!");
+                        app.showDashboard();
+                    }, 5000);
+                }
+            });
+        },
+
+        renderHistory: () => {
+            const container = document.getElementById('conversation-history');
+            container.innerHTML = conversation.history.map(msg => {
+                const isUser = msg.role === 'user';
+                const content = msg.content ? msg.content.replace(/\n/g, '<br>') : '';
+                return `<div style="margin: 10px 0; text-align: ${isUser ? 'right' : 'left'};"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${isUser ? '#007AFF' : '#E5E5EA'}; color: ${isUser ? 'white' : 'black'};">${content}</div></div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        },
+
+        renderSuggestions: (vocab) => document.getElementById('suggestions-list').innerHTML = vocab.map(v => `<span style="background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem;"><strong>${v.english}</strong> (${v.spanish})</span>`).join(''),
+
+        renderPhrases: (phrases) => document.getElementById('phrases-list').innerHTML = phrases.map(p => {
+            if (!p.text) return '';
+            return `<div onclick="game.speakText('${p.text.replace(/'/g, "\\'")}')" style="background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; cursor: pointer;"><strong>${p.text}</strong> <span style="color:#666; font-size:0.8rem;">(${p.trans})</span></div>`;
+        }).join(''),
+
+        addWordsToDB: (vocabList) => {
+            if (!vocabList || !Array.isArray(vocabList)) return;
+            vocabList.forEach(v => {
+                // Defensa contra respuestas malformadas de la IA
+                if (!v || typeof v.english !== 'string' || typeof v.spanish !== 'string') {
+                    console.warn("Saltando item de vocabulario inválido desde la IA:", v);
+                    return; // Salta este item y continúa con el siguiente
+                }
+
+                let word = db.words.find(w => w.english && w.english.toLowerCase() === v.english.toLowerCase() && w.topic_id === conversation.topic.id);
+                if (!word) {
+                    word = { id: Date.now() + Math.random(), topic_id: conversation.topic.id, english: v.english, spanish: v.spanish, sentence_en: `(De conversación: ${conversation.topic.name})`, sentence_es: `(De conversación: ${conversation.topic.name})` };
+                    db.words.push(word);
+                }
+                let prog = db.progress.find(p => p.word_id === word.id);
+                if (!prog) { prog = { word_id: word.id, attempts: 0, successes: 0 }; db.progress.push(prog); }
+                prog.attempts++; prog.successes++;
+            });
+            app.saveDB();
+        },
+        toggleMic: () => { 
+            if(!conversation.recognition) { 
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
+                if(!SpeechRecognition) return alert("Navegador no soporta voz."); 
+                conversation.recognition = new SpeechRecognition(); 
+                conversation.recognition.onresult = (e) => conversation.handleUserReply(e.results[0][0].transcript); 
+                conversation.recognition.onend = () => {
+                    document.getElementById('mic-btn-convo').classList.remove('listening');
+                    conversation.stopTimer();
+                };
+            } 
+            let langCode = 'en-US'; 
+            if(currentLang === 'de') langCode = 'de-DE'; if(currentLang === 'fr') langCode = 'fr-FR'; if(currentLang === 'it') langCode = 'it-IT'; if(currentLang === 'eu') langCode = 'eu-ES'; if(currentLang === 'ru') langCode = 'ru-RU'; if(currentLang === 'pt') langCode = 'pt-PT'; if(currentLang === 'ca') langCode = 'ca-ES'; if(currentLang === 'gl') langCode = 'gl-ES'; 
+            conversation.recognition.lang = langCode; 
+            try { 
+                document.getElementById('mic-btn-convo').classList.add('listening'); 
+                conversation.recognition.start(); 
+                conversation.startTimer();
+            } catch(e) { 
+                console.error(e); 
+                document.getElementById('mic-btn-convo').classList.remove('listening'); 
+            } 
+        },
+        
+        startTimer: () => {
+            const bar = document.getElementById('convo-timer-bar');
+            const container = document.getElementById('convo-timer-container');
+            container.classList.remove('hidden');
+            bar.style.width = '0%';
+            bar.style.backgroundColor = '#28a745';
+            
+            let startTime = Date.now();
+            const duration = 6000; // 5000 * 1.2
+            
+            if (conversation.timerInterval) clearInterval(conversation.timerInterval);
+            
+            conversation.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min((elapsed / duration) * 100, 100);
+                
+                bar.style.width = pct + '%';
+                
+                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
+                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                
+                if (elapsed >= duration) {
+                    if(conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+                }
+            }, 50);
+        },
+        
+        stopTimer: () => {
+            if (conversation.timerInterval) clearInterval(conversation.timerInterval);
+            document.getElementById('convo-timer-container').classList.add('hidden');
+        },
+        
+        toggleAutoMic: () => {
+            conversation.autoMic = !conversation.autoMic;
+            const btn = document.getElementById('btn-auto-mic-convo');
+            if(conversation.autoMic) {
+                btn.innerHTML = "🎙️ Auto: ON";
+                btn.classList.add('auto-mic-on');
+                btn.classList.remove('secondary');
+            } else {
+                btn.innerHTML = "🎙️ Auto: OFF";
+                btn.classList.remove('auto-mic-on');
+                btn.classList.add('secondary');
+            }
+        }
     };
 
     const game = {
@@ -1515,6 +1802,15 @@
                         }
                     }, 300);
                 }
+                
+                // Auto Mic Trigger for Conversation
+                if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                            conversation.toggleMic();
+                        }
+                    }, 300);
+                }
             };
             
             u.onerror = u.onend;
@@ -1559,43 +1855,25 @@
             let target = game.data[game.index].english.toLowerCase();
             let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
             
-            // Para idiomas asiáticos, eliminar espacios para mejorar la comparación
             if (['ja', 'th'].includes(currentLang)) {
                 target = target.replace(/\s/g, '');
                 clean = clean.replace(/\s/g, '');
             }
             
             const correct = game.isCloseMatch(target, clean);
-            
             const fb = document.getElementById('feedback-msg');
-            
             const wId = game.data[game.index].id;
             let prog = db.progress.find(p => p.word_id === wId);
-            if(!prog) {
-                prog = { word_id: wId, attempts: 0, successes: 0 };
-                db.progress.push(prog);
-            }
+            if(!prog) { prog = { word_id: wId, attempts: 0, successes: 0 }; db.progress.push(prog); }
             prog.attempts++;
             if(correct) prog.successes++;
             app.saveDB();
             game.stopMic();
             
             if(correct) {
-                fb.innerText = "¡Correcto! 🎉";
-                fb.className = "feedback correct";
-                document.getElementById('mic-btn').classList.add('hidden');
-                document.getElementById('ai-advice').classList.add('hidden');
-                document.getElementById('fail-options').classList.add('hidden');
-                setTimeout(game.next, 1500);
-
+                game.handleCorrect();
             } else {
-                document.getElementById('fail-options').classList.remove('hidden');
-                if (game.autoMic) {
-                    game.wasAutoMic = true;
-                    game.toggleAutoMic();
-                }
-                fb.innerText = "Incorrecto. Inténtalo de nuevo.";
-                fb.className = "feedback incorrect";
+                game.handleIncorrect(target, clean);
             }
         },
 
@@ -1625,7 +1903,7 @@
             bar.style.backgroundColor = '#28a745';
             
             let startTime = Date.now();
-            const duration = 5000;
+            const duration = 6000; // 5000 * 1.2
             
             if (game.timerInterval) clearInterval(game.timerInterval);
             
@@ -1652,16 +1930,44 @@
             game.loadCard();
         },
         
-        getMouthAdvice: async (word) => {
+        handleCorrect: () => {
+            const fb = document.getElementById('feedback-msg');
+            fb.innerText = "¡Correcto! 🎉";
+            fb.className = "feedback correct";
+            document.getElementById('mic-btn').classList.add('hidden');
+            document.getElementById('ai-advice').classList.add('hidden');
+            document.getElementById('fail-options').classList.add('hidden');
+            setTimeout(game.next, 1500);
+        },
+
+        handleIncorrect: (target, clean) => {
+            game.currentRetries++;
+            document.getElementById('fail-options').classList.remove('hidden');
+            if (game.autoMic) {
+                game.wasAutoMic = true;
+                game.toggleAutoMic();
+            }
+            document.getElementById('feedback-msg').innerText = "Incorrecto. Inténtalo de nuevo.";
+            document.getElementById('feedback-msg').className = "feedback incorrect";
+
+            if (game.currentRetries === 1 && clean.length > 0) {
+                game.getSpecificAdvice(target, clean);
+            }
+        },
+        
+        getSpecificAdvice: async (targetWord, spokenWord) => {
             const container = document.getElementById('ai-advice');
-            container.innerHTML = "🤔 Buscando consejo de pronunciación...";
+            container.innerHTML = "🤔 Analizando tu pronunciación...";
             container.classList.remove('hidden');
             
             const langName = app.getLangName();
-            const prompt = `Dame un consejo breve (máx 20 palabras) sobre cómo colocar la boca, lengua o dientes para pronunciar correctamente la palabra "${word}" en ${langName}.`;
+            const prompt = `Soy un estudiante de ${langName}. He intentado decir "${targetWord}" pero he pronunciado "${spokenWord}". 
+            Analiza la diferencia y dame un consejo muy breve y práctico (1-2 frases) para corregir mi error. 
+            Por ejemplo, si dije "bire" en vez de "bird", dime "Recuerda el sonido 'er' como en 'her'".
+            Si la pronunciación es muy diferente, dame un consejo general sobre la palabra. Sé directo y amigable.`;
             
             await app.callAI_Text(prompt, null, (text) => {
-                container.innerHTML = text;
+                container.innerHTML = `<strong>💡 Consejo:</strong> ${text}`;
             }, 300);
         }
     };
