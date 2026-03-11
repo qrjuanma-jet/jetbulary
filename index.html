@@ -1195,7 +1195,7 @@
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{role:"user", content: prompt}],
+                        messages: messages,
                         temperature: 0.7,
                         response_format: { type: "json_object" }
                     })
@@ -1260,7 +1260,7 @@
             }
         },
         
-        callAI_Text: async (prompt, btn, callback, maxTokens = 2048) => {
+        callAI_Conversation: async (messages, btn, callback) => {
             const key = localStorage.getItem(API_KEY_STORAGE);
             if(!key) return alert("Falta API Key");
             
@@ -1373,17 +1373,24 @@
             document.getElementById('convo-spoken-text').innerText = '...';
 
             const langName = app.getLangName();
-            const prompt = `Actúa como una profesora de ${langName} amigable y paciente. Inicia una conversación corta (3-4 turnos de usuario) sobre el tema "${conversation.topic.name}".
-1. Haz una breve introducción y haz una pregunta abierta para empezar. Tu discurso debe estar únicamente en ${langName}.
-2. Sugiere 5-7 palabras y verbos útiles para la respuesta, con su traducción al español.
-3. Sugiere 3 frases cortas completas que el usuario podría usar para responder, en ${langName} con su traducción al español.
-4. Responde únicamente con un objeto JSON válido con este formato: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra_en_idioma", "spanish": "traducción"}], "suggested_phrases": [{"text": "Frase en idioma", "trans": "Traducción"}]}`;
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                },
+                {
+                    role: 'user',
+                    content: `Inicia una conversación sobre "${conversation.topic.name}".
+1. Haz una breve introducción y una pregunta abierta para empezar.
+2. Sugiere 5-7 palabras/verbos útiles para la respuesta.
+3. Sugiere 3 frases cortas completas que podría usar.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
-                    // Leer solo la parte en el idioma objetivo (antes del salto de línea)
                     const textToSpeak = data.speech;
                     game.speakText(textToSpeak);
                 }
@@ -1408,17 +1415,24 @@
                 return;
             }
 
-            const historyStr = JSON.stringify(conversation.history);
             const langName = app.getLangName();
-            const prompt = `Continúa la conversación sobre "${conversation.topic.name}". El historial es: ${historyStr}.
-1. Responde de forma natural al usuario, únicamente en ${langName}.
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "...", "new_vocab": [...], "suggested_phrases": [...]}`
+                },
+                ...conversation.history,
+                {
+                    role: 'user',
+                    content: `Esa fue mi respuesta. Ahora, por favor:
+1. Responde de forma natural a mi último mensaje.
 2. Haz una nueva pregunta para continuar.
-3. Sugiere 5-7 palabras y verbos nuevos y relevantes que no se hayan sugerido antes.
-4. Sugiere 3 frases cortas nuevas para responder.
-5. Este es el turno ${conversation.turn + 1} de ${conversation.maxTurns + 1}.
-6. Responde únicamente con el mismo formato JSON: {"speech": "Tu respuesta solo en ${langName}", "new_vocab": [...], "suggested_phrases": [...]}`;
+3. Sugiere 5-7 palabras/verbos NUEVOS y relevantes.
+4. Sugiere 3 frases cortas NUEVAS para que yo las use.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
@@ -1436,14 +1450,20 @@
         },
         
         end: async (transcript) => {
-            const historyStr = JSON.stringify(conversation.history);
-            const prompt = `Esta es la última respuesta de la conversación. El historial es: ${historyStr}.
-1. Responde amablemente al usuario.
-2. Despídete y finaliza la conversación.
-3. NO hagas más preguntas.
-4. Responde únicamente con un objeto JSON con el formato: {"speech": "..."}`;
+            const langName = app.getLangName();
+            const messages = [
+                {
+                    role: 'system',
+                    content: `La conversación está terminando. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu mensaje final solo en ${langName}"}. No hagas más preguntas.`
+                },
+                ...conversation.history,
+                {
+                    role: 'user',
+                    content: `Esa fue mi última respuesta. Por favor, despídete amablemente y termina la conversación.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
