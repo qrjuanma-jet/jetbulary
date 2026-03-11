@@ -394,16 +394,17 @@
         </div>
 
         <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
+        <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
+        
+        <div id="user-feedback-container" style="margin: 15px 0; min-height: 60px;">
+            <p id="convo-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
+            <button id="btn-repeat-convo" onclick="conversation.repeatLast()" class="hidden warning" style="width:auto; padding: 10px 20px; font-size: 1rem;">🔄 Repetir mi respuesta</button>
+        </div>
+
         <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
             <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
             <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
             <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
-        </div>
-        <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
-        
-        <div style="display:flex; align-items:center; justify-content:center; gap:10px; min-height: 44px;">
-            <p id="convo-spoken-text" style="color:#333; font-style:italic; margin: 0; flex-grow:1;">...</p>
-            <button id="btn-repeat-convo" onclick="conversation.repeatLast()" class="hidden" style="width:auto; padding: 8px 12px; font-size: 1.2rem; margin:0; background: #ff9500;">🔄</button>
         </div>
     </div>
 
@@ -1440,6 +1441,7 @@
         turn: 0,
         maxTurns: 5, // 5-6 user replies
         recognition: null,
+        isRepeating: false,
         autoMic: true,
         timerInterval: null,
 
@@ -1469,7 +1471,7 @@
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "speech_trans": "Traducción al español", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
                 },
                 {
                     role: 'user',
@@ -1482,7 +1484,7 @@
 
             await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
-                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.history.push({ role: 'assistant', content: data.speech, trans: data.speech_trans });
                     conversation.renderHistory();
                     const textToSpeak = data.speech;
                     game.speakText(textToSpeak, 0.85);
@@ -1498,6 +1500,9 @@
         },
 
         handleUserReply: async (transcript) => {
+            // Resetear el flag de repetición
+            conversation.isRepeating = false;
+
             document.getElementById('convo-spoken-text').innerText = `Tú: "${transcript}"`;
             document.getElementById('btn-repeat-convo').classList.remove('hidden');
             conversation.history.push({ role: 'user', content: transcript });
@@ -1516,12 +1521,12 @@
 
             const langName = app.getLangName();
             // Usamos el historial menos el último mensaje (que acabamos de añadir), para reemplazarlo por uno con instrucciones.
-            const historyContext = conversation.history.slice(0, -1);
+            const historyContext = conversation.history.slice(0, -1).map(m => ({role: m.role, content: m.content}));
             
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu respuesta en ${langName}", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu respuesta en ${langName}", "speech_trans": "Traducción al español", "user_trans": "Traducción de lo que dijo el usuario al español", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
                 },
                 ...historyContext,
                 {
@@ -1532,13 +1537,23 @@
                     1. Responde de forma natural a mi mensaje.
                     2. Haz una nueva pregunta para continuar el tema.
                     3. IMPORTANTE: Genera 'new_vocab' con 5 palabras/verbos nuevos y útiles.
-                    4. IMPORTANTE: Genera 'suggested_phrases' con 3 frases cortas para responderte.`
+                    4. IMPORTANTE: Genera 'suggested_phrases' con 3 frases cortas para responderte.
+                    5. Traduce mi mensaje en 'user_trans'.`
                 }
             ];
 
             await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
+                if (conversation.isRepeating) {
+                    console.log("Respuesta de IA ignorada por repetición.");
+                    return; // Ignorar la respuesta de la IA si el usuario ha pedido repetir
+                }
+
+                if (data.user_trans) {
+                    const lastUserMsg = conversation.history[conversation.history.length - 1];
+                    if(lastUserMsg && lastUserMsg.role === 'user') lastUserMsg.trans = data.user_trans;
+                }
                 if (data.speech) {
-                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.history.push({ role: 'assistant', content: data.speech, trans: data.speech_trans });
                     conversation.renderHistory();
                     const textToSpeak = data.speech;
                     game.speakText(textToSpeak, 0.85);
@@ -1558,9 +1573,9 @@
             const messages = [
                 {
                     role: 'system',
-                    content: `La conversación está terminando. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu mensaje final solo en ${langName}"}. No hagas más preguntas.`
+                    content: `La conversación está terminando. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu mensaje final solo en ${langName}", "speech_trans": "Traducción al español", "user_trans": "Traducción de lo que dijo el usuario"}. No hagas más preguntas.`
                 },
-                ...conversation.history,
+                ...conversation.history.map(m => ({role: m.role, content: m.content})),
                 {
                     role: 'user',
                     content: `Esa fue mi última respuesta. Por favor, despídete amablemente y termina la conversación.`
@@ -1569,7 +1584,7 @@
 
             await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
-                    conversation.history.push({ role: 'assistant', content: data.speech });
+                    conversation.history.push({ role: 'assistant', content: data.speech, trans: data.speech_trans });
                     conversation.renderHistory();
                     conversation.setAutoMic(false); // Desactivar auto mic al terminar
                     const textToSpeak = data.speech;
@@ -1583,17 +1598,21 @@
         },
 
         repeatLast: () => {
-            if (conversation.history.length < 2) return;
+            // Asegurarse de que hay algo que repetir y que lo último fue del usuario
+            if (conversation.history.length === 0 || conversation.history[conversation.history.length - 1].role !== 'user') {
+                return;
+            }
 
-            conversation.history.pop(); // remove assistant
-            conversation.history.pop(); // remove user
+            conversation.isRepeating = true; // Activar el flag para ignorar la respuesta de la IA en curso
+
+            conversation.history.pop(); // Quitar el mensaje incorrecto del usuario
             conversation.turn--;
             
             conversation.renderHistory();
             
             document.getElementById('suggestions-list').innerHTML = '';
             document.getElementById('phrases-list').innerHTML = '';
-            document.getElementById('convo-spoken-text').innerText = 'Repite tu respuesta...';
+            document.getElementById('convo-spoken-text').innerText = 'Vale, repite tu respuesta...';
             document.getElementById('btn-repeat-convo').classList.add('hidden');
 
             // Trigger mic
@@ -1605,7 +1624,8 @@
             container.innerHTML = conversation.history.map(msg => {
                 const isUser = msg.role === 'user';
                 const content = msg.content ? msg.content.replace(/\n/g, '<br>') : '';
-                return `<div style="margin: 10px 0; text-align: ${isUser ? 'right' : 'left'};"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${isUser ? '#007AFF' : '#E5E5EA'}; color: ${isUser ? 'white' : 'black'};">${content}</div></div>`;
+                const trans = msg.trans ? `<div style="font-size: 0.85rem; color: ${isUser ? 'rgba(255,255,255,0.8)' : '#666'}; margin-top: 4px; font-style: italic;">(${msg.trans})</div>` : '';
+                return `<div style="margin: 10px 0; text-align: ${isUser ? 'right' : 'left'};"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${isUser ? '#007AFF' : '#E5E5EA'}; color: ${isUser ? 'white' : 'black'};">${content}${trans}</div></div>`;
             }).join('');
             container.scrollTop = container.scrollHeight;
         },
