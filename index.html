@@ -401,7 +401,10 @@
         </div>
         <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
         
-        <p id="convo-spoken-text" style="color:#333; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
+        <div style="display:flex; align-items:center; justify-content:center; gap:10px; min-height: 44px;">
+            <p id="convo-spoken-text" style="color:#333; font-style:italic; margin: 0; flex-grow:1;">...</p>
+            <button id="btn-repeat-convo" onclick="conversation.repeatLast()" class="hidden" style="width:auto; padding: 8px 12px; font-size: 1.2rem; margin:0; background: #ff9500;">🔄</button>
+        </div>
     </div>
 
     <!-- VISTA VOCABULARIO -->
@@ -500,8 +503,6 @@
         </p>
     </footer>
 
-    <button onclick="app.showDashboard()" class="secondary" style="margin-top: 20px;">Salir del Juego</button>
-    <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
     <button id="install-btn" onclick="app.installApp()" class="hidden">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
 
 <script>
@@ -1113,7 +1114,10 @@
             const btn = document.getElementById('btn-create');
             
             let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
-            if(topic) return alert("El tema ya existe.");
+            if(topic) {
+                game.start(topic.id, 'learn');
+                return;
+            }
             
             await app.callAI(name, btn, (vocab) => {
                 const newTopic = { id: Date.now(), name: name, lang: currentLang };
@@ -1261,11 +1265,16 @@
             });
         },
         
-        callAI_Conversation: async (prompt, btn, callback) => {
+        callAI_Text: async (prompt, btn, callback) => {
             const key = localStorage.getItem(API_KEY_STORAGE);
             if(!key) return alert("Falta API Key");
             
-            if (btn) btn.disabled = true;
+            let originalText = "";
+            if (btn) {
+                originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = "...";
+            }
             
             try {
                 const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -1273,16 +1282,21 @@
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: messages,
+                        messages: [{role:"user", content: prompt}],
                         temperature: 0.7,
-                        response_format: { type: "json_object" }
                     })
                 });
                 if(!res.ok) throw new Error("Error en la API de Groq");
                 const data = await res.json();
-                callback(JSON.parse(data.choices[0].message.content));
-            } catch(e) { alert("Error con la IA: " + e.message); app.showDashboard(); }
-            finally { if (btn) btn.disabled = false; }
+                callback(data.choices[0].message.content);
+            } catch(e) { 
+                alert("Error con la IA: " + e.message); 
+            } finally { 
+                if (btn) {
+                    btn.disabled = false; 
+                    btn.innerText = originalText; 
+                }
+            }
         },
 
         getLangName: () => {
@@ -1424,7 +1438,7 @@
         topic: null,
         history: [],
         turn: 0,
-        maxTurns: 3, // 3-4 user replies
+        maxTurns: 5, // 5-6 user replies
         recognition: null,
         autoMic: true,
         timerInterval: null,
@@ -1449,6 +1463,7 @@
             document.getElementById('suggestions-list').innerHTML = '';
             document.getElementById('phrases-list').innerHTML = '';
             document.getElementById('convo-spoken-text').innerText = '...';
+            document.getElementById('btn-repeat-convo').classList.add('hidden');
 
             const langName = app.getLangName();
             const messages = [
@@ -1470,7 +1485,7 @@
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
                     const textToSpeak = data.speech;
-                    game.speakText(textToSpeak);
+                    game.speakText(textToSpeak, 0.85);
                 }
                 if (data.new_vocab) {
                     conversation.renderSuggestions(data.new_vocab);
@@ -1484,8 +1499,14 @@
 
         handleUserReply: async (transcript) => {
             document.getElementById('convo-spoken-text').innerText = `Tú: "${transcript}"`;
+            document.getElementById('btn-repeat-convo').classList.remove('hidden');
             conversation.history.push({ role: 'user', content: transcript });
             conversation.renderHistory();
+            
+            // Limpiar sugerencias anteriores para indicar carga
+            document.getElementById('suggestions-list').innerHTML = '';
+            document.getElementById('phrases-list').innerHTML = '';
+            
             conversation.turn++;
 
             if (conversation.turn >= conversation.maxTurns) {
@@ -1494,19 +1515,24 @@
             }
 
             const langName = app.getLangName();
+            // Usamos el historial menos el último mensaje (que acabamos de añadir), para reemplazarlo por uno con instrucciones.
+            const historyContext = conversation.history.slice(0, -1);
+            
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "...", "new_vocab": [...], "suggested_phrases": [...]}`
+                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu respuesta en ${langName}", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
                 },
-                ...conversation.history,
+                ...historyContext,
                 {
                     role: 'user',
-                    content: `Esa fue mi respuesta. Ahora, por favor:
-1. Responde de forma natural a mi último mensaje.
-2. Haz una nueva pregunta para continuar.
-3. Sugiere 5-7 palabras/verbos NUEVOS y relevantes.
-4. Sugiere 3 frases cortas NUEVAS para que yo las use.`
+                    content: `He dicho: "${transcript}".
+                    
+                    Por favor:
+                    1. Responde de forma natural a mi mensaje.
+                    2. Haz una nueva pregunta para continuar el tema.
+                    3. IMPORTANTE: Genera 'new_vocab' con 5 palabras/verbos nuevos y útiles.
+                    4. IMPORTANTE: Genera 'suggested_phrases' con 3 frases cortas para responderte.`
                 }
             ];
 
@@ -1515,7 +1541,7 @@
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
                     const textToSpeak = data.speech;
-                    game.speakText(textToSpeak);
+                    game.speakText(textToSpeak, 0.85);
                 }
                 if (data.new_vocab) {
                     conversation.renderSuggestions(data.new_vocab);
@@ -1547,13 +1573,31 @@
                     conversation.renderHistory();
                     conversation.setAutoMic(false); // Desactivar auto mic al terminar
                     const textToSpeak = data.speech;
-                    game.speakText(textToSpeak);
+                    game.speakText(textToSpeak, 0.85);
                     setTimeout(() => {
                         alert("Conversación terminada. ¡Buen trabajo!");
                         app.showDashboard();
                     }, 5000);
                 }
             });
+        },
+
+        repeatLast: () => {
+            if (conversation.history.length < 2) return;
+
+            conversation.history.pop(); // remove assistant
+            conversation.history.pop(); // remove user
+            conversation.turn--;
+            
+            conversation.renderHistory();
+            
+            document.getElementById('suggestions-list').innerHTML = '';
+            document.getElementById('phrases-list').innerHTML = '';
+            document.getElementById('convo-spoken-text').innerText = 'Repite tu respuesta...';
+            document.getElementById('btn-repeat-convo').classList.add('hidden');
+
+            // Trigger mic
+            conversation.toggleMic();
         },
 
         renderHistory: () => {
