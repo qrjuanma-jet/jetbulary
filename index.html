@@ -398,7 +398,6 @@
         
         <div id="user-feedback-container" style="margin: 15px 0; min-height: 60px;">
             <p id="convo-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
-            <button id="btn-repeat-convo" onclick="conversation.repeatLast()" class="hidden warning" style="width:auto; padding: 10px 20px; font-size: 1rem;">🔄 Repetir mi respuesta</button>
         </div>
 
         <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
@@ -1465,7 +1464,6 @@
             document.getElementById('suggestions-list').innerHTML = '';
             document.getElementById('phrases-list').innerHTML = '';
             document.getElementById('convo-spoken-text').innerText = '...';
-            document.getElementById('btn-repeat-convo').classList.add('hidden');
 
             const langName = app.getLangName();
             const messages = [
@@ -1504,7 +1502,6 @@
             conversation.isRepeating = false;
 
             document.getElementById('convo-spoken-text').innerText = `Tú: "${transcript}"`;
-            document.getElementById('btn-repeat-convo').classList.remove('hidden');
             conversation.history.push({ role: 'user', content: transcript });
             conversation.renderHistory();
             
@@ -1597,35 +1594,46 @@
             });
         },
 
-        repeatLast: () => {
-            // Asegurarse de que hay algo que repetir y que lo último fue del usuario
-            if (conversation.history.length === 0 || conversation.history[conversation.history.length - 1].role !== 'user') {
-                return;
-            }
+        rewind: (index) => {
+            // Cancelar TTS y reconocimiento si están activos
+            window.speechSynthesis.cancel();
+            if(conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+            conversation.stopTimer();
 
-            conversation.isRepeating = true; // Activar el flag para ignorar la respuesta de la IA en curso
+            // Flag para ignorar respuestas pendientes de la IA si las hubiera
+            conversation.isRepeating = true;
 
-            conversation.history.pop(); // Quitar el mensaje incorrecto del usuario
-            conversation.turn--;
+            // Cortar historial: quedarse con todo ANTES del mensaje del usuario en 'index'
+            conversation.history = conversation.history.slice(0, index);
+            
+            // Recalcular turno
+            conversation.turn = conversation.history.filter(m => m.role === 'user').length;
             
             conversation.renderHistory();
             
             document.getElementById('suggestions-list').innerHTML = '';
             document.getElementById('phrases-list').innerHTML = '';
             document.getElementById('convo-spoken-text').innerText = 'Vale, repite tu respuesta...';
-            document.getElementById('btn-repeat-convo').classList.add('hidden');
-
-            // Trigger mic
-            conversation.toggleMic();
+            
+            // Iniciar micro tras un pequeño delay
+            setTimeout(() => conversation.toggleMic(), 300);
         },
 
         renderHistory: () => {
             const container = document.getElementById('conversation-history');
-            container.innerHTML = conversation.history.map(msg => {
+            container.innerHTML = conversation.history.map((msg, index) => {
                 const isUser = msg.role === 'user';
                 const content = msg.content ? msg.content.replace(/\n/g, '<br>') : '';
                 const trans = msg.trans ? `<div style="font-size: 0.85rem; color: ${isUser ? 'rgba(255,255,255,0.8)' : '#666'}; margin-top: 4px; font-style: italic;">(${msg.trans})</div>` : '';
-                return `<div style="margin: 10px 0; text-align: ${isUser ? 'right' : 'left'};"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${isUser ? '#007AFF' : '#E5E5EA'}; color: ${isUser ? 'white' : 'black'};">${content}${trans}</div></div>`;
+                
+                if (isUser) {
+                    return `<div style="margin: 10px 0; display: flex; justify-content: flex-end; align-items: center;">
+                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #007AFF; color: white;">${content}${trans}</div>
+                                <button onclick="conversation.rewind(${index})" style="background: #E5E5EA; border: none; color: #333; padding: 0; font-size: 1.2rem; border-radius: 50%; margin-left: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">🔄</button>
+                            </div>`;
+                } else {
+                    return `<div style="margin: 10px 0; text-align: left;"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #E5E5EA; color: black;">${content}${trans}</div></div>`;
+                }
             }).join('');
             container.scrollTop = container.scrollHeight;
         },
@@ -1689,7 +1697,7 @@
             bar.style.backgroundColor = '#28a745';
             
             let startTime = Date.now();
-            const duration = 6000; // 5000 * 1.2
+            const duration = 20000; // Aumentado a 20 segundos
             
             if (conversation.timerInterval) clearInterval(conversation.timerInterval);
             
