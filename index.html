@@ -393,6 +393,17 @@
             <div id="phrases-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
         </div>
 
+        <!-- Quick Translator -->
+        <div style="margin: 10px 0; border-top: 1px solid #eee; padding-top: 10px;">
+            <button onclick="conversation.startTranslator()" class="secondary" style="font-size: 0.9rem; width: auto; padding: 8px 16px; background: #fff; border: 1px solid #ddd; box-shadow: none;">🗣️ ¿Cómo se dice...?</button>
+            <div id="translator-result" class="hidden" style="margin-top: 10px; background: #E3F2FD; padding: 15px; border-radius: 12px; border: 1px solid #90CAF9; text-align: left;">
+                <p id="trans-source" style="font-size: 0.9rem; color: #555; margin: 0 0 5px 0; font-style: italic;">...</p>
+                <p id="trans-target" style="font-size: 1.3rem; font-weight: bold; color: #007AFF; margin: 0 0 10px 0;">...</p>
+                <button onclick="game.speakText(document.getElementById('trans-target').innerText)" style="background: #fff; border: 1px solid #007AFF; color: #007AFF; padding: 8px 15px; width: auto; font-size: 0.9rem; border-radius: 20px;">🔊 Escuchar</button>
+                <button onclick="document.getElementById('translator-result').classList.add('hidden')" style="background: none; border: none; color: #666; padding: 8px; width: auto; font-size: 0.9rem;">Cerrar</button>
+            </div>
+        </div>
+
         <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
         <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
         
@@ -1505,10 +1516,6 @@
             conversation.history.push({ role: 'user', content: transcript });
             conversation.renderHistory();
             
-            // Limpiar sugerencias anteriores para indicar carga
-            document.getElementById('suggestions-list').innerHTML = '';
-            document.getElementById('phrases-list').innerHTML = '';
-            
             conversation.turn++;
 
             if (conversation.turn >= conversation.maxTurns) {
@@ -1731,6 +1738,41 @@
             } else {
                 btnOn.className = 'secondary';
                 btnOff.className = 'auto-mic-on';
+            }
+        },
+
+        startTranslator: () => {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Navegador no soporta voz.");
+            
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'es-ES'; // Input siempre en español para preguntar
+            
+            const btn = document.querySelector('button[onclick="conversation.startTranslator()"]');
+            const originalText = btn.innerText;
+            btn.innerText = "👂 Escuchando...";
+            btn.disabled = true;
+            btn.style.backgroundColor = '#ffeb3b';
+
+            recognition.onresult = async (e) => {
+                const text = e.results[0][0].transcript;
+                document.getElementById('translator-result').classList.remove('hidden');
+                document.getElementById('trans-source').innerText = `🇪🇸 "${text}"`;
+                document.getElementById('trans-target').innerText = "⏳ Traduciendo...";
+                
+                const langName = app.getLangName();
+                const prompt = `Traduce al ${langName}: "${text}". Responde SOLAMENTE con la traducción, sin explicaciones.`;
+                
+                await app.callAI_Text(prompt, null, (translated) => {
+                    document.getElementById('trans-target').innerText = translated;
+                    game.speakText(translated);
+                });
+            };
+            
+            recognition.onend = () => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                btn.style.backgroundColor = '#fff';
             }
         }
     };
@@ -2015,6 +2057,11 @@
         },
         
         toggleMic: () => {
+            if (document.getElementById('mic-btn').classList.contains('listening')) {
+                game.stopMic();
+                return;
+            }
+
             if(!game.recognition) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if(!SpeechRecognition) return alert("Navegador no soporta voz.");
