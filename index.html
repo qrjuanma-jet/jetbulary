@@ -345,8 +345,15 @@
              <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
         </div>
 
+        <!-- New Play Video Button -->
+        <button onclick="app.playTeacherVideo()" class="secondary" style="width: auto; padding: 8px 15px; margin: 0 auto 15px auto; display: block; font-size: 0.9rem;">🎥 Ver Video Profesora</button>
+
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
-        <button id="btn-auto-mic" onclick="game.toggleAutoMic()" class="auto-mic-on" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: ON</button>
+        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+            <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+            <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+        </div>
         <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
         
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
@@ -387,12 +394,14 @@
         </div>
 
         <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
-        <button id="btn-auto-mic-convo" onclick="conversation.toggleAutoMic()" class="auto-mic-on" style="width: auto; padding: 8px 15px; margin-top: 5px; font-size: 0.9rem; border-radius: 20px;">🎙️ Auto: ON</button>
+        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+            <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+            <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+        </div>
         <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
         
         <p id="convo-spoken-text" style="color:#333; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
-        
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top: 20px;">Terminar y Salir</button>
     </div>
 
     <!-- VISTA VOCABULARIO -->
@@ -475,6 +484,14 @@
         <button onclick="app.acceptCookies()" class="success">Aceptar</button>
     </div>
 
+    <!-- VIDEO OVERLAY -->
+    <div id="video-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <video id="overlay-video" controls style="width:100%; max-width:600px; border-radius:12px;">
+            <source src="" type="video/mp4">
+        </video>
+        <button onclick="app.closeVideoOverlay()" class="secondary" style="margin-top:20px; width:auto;">Cerrar</button>
+    </div>
+
     <footer style="margin-top: 60px; font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 30px; width: 100%; max-width: 600px; text-align: center;">
         <p>&copy; 2026 Jetbulary. Todos los derechos reservados.</p>
         <p>
@@ -485,8 +502,53 @@
 
     <button onclick="app.showDashboard()" class="secondary" style="margin-top: 20px;">Salir del Juego</button>
     <button id="install-btn" onclick="app.installApp()">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
+    <button id="install-btn" onclick="app.installApp()" class="hidden">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
 
 <script>
+    // --- LÓGICA DEL ASISTENTE ---
+    let currentStep = 0;
+    const helperSteps = [
+        { title: "Bienvenido a Jetbulary", text: "Esta aplicación utiliza Inteligencia Artificial para enseñarte vocabulario en inglés de forma inmersiva y personalizada." },
+        { title: "Paso 1: Elige un Tema", text: "En el menú principal, escribe cualquier tema que te interese (ej: 'Viajes', 'Cocina', 'Negocios') y pulsa 'Generar con IA'. El sistema creará una lección única para ti." },
+        { title: "Paso 2: Escucha y Lee", text: "En el juego, escucharás una frase en inglés y verás la palabra objetivo en español. Intenta entender el contexto." },
+        { title: "Paso 3: Habla", text: "Pulsa el botón del micrófono 🎤 y pronuncia la palabra en inglés en voz alta. El sistema evaluará tu pronunciación al instante." },
+        { title: "Paso 4: Aprende y Repasa", text: "Si fallas, verás la respuesta correcta. Tu progreso se guarda automáticamente para que puedas repasar las palabras difíciles más adelante." }
+    ];
+
+    function startHelper() {
+        currentStep = 0;
+        document.getElementById('helper-overlay').classList.remove('hidden');
+        updateHelper();
+    }
+
+    function closeHelper() {
+        document.getElementById('helper-overlay').classList.add('hidden');
+    }
+
+    function updateHelper() {
+        const step = helperSteps[currentStep];
+        document.getElementById('helper-title').innerText = step.title;
+        document.getElementById('helper-text').innerText = step.text;
+        document.getElementById('helper-prev').disabled = currentStep === 0;
+        document.getElementById('helper-next').innerText = currentStep === helperSteps.length - 1 ? "Finalizar" : "Siguiente";
+    }
+
+    function nextStep() {
+        if (currentStep < helperSteps.length - 1) {
+            currentStep++;
+            updateHelper();
+        } else {
+            closeHelper();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+            updateHelper();
+        }
+    }
+
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
@@ -562,6 +624,22 @@
             video.muted = false;
             video.load();
             video.play();
+        },
+
+        playTeacherVideo: () => {
+            const overlay = document.getElementById('video-overlay');
+            const video = document.getElementById('overlay-video');
+            const source = video.querySelector('source');
+            source.src = `video_${currentLang}.mp4`;
+            video.load();
+            overlay.classList.remove('hidden');
+            video.play();
+        },
+        closeVideoOverlay: () => {
+            const overlay = document.getElementById('video-overlay');
+            const video = document.getElementById('overlay-video');
+            video.pause();
+            overlay.classList.add('hidden');
         },
         
         showLogin: (h) => app.switchView('view-login', h),
@@ -1195,7 +1273,7 @@
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{role:"user", content: prompt}],
+                        messages: messages,
                         temperature: 0.7,
                         response_format: { type: "json_object" }
                     })
@@ -1260,7 +1338,7 @@
             }
         },
         
-        callAI_Text: async (prompt, btn, callback, maxTokens = 2048) => {
+        callAI_Conversation: async (messages, btn, callback) => {
             const key = localStorage.getItem(API_KEY_STORAGE);
             if(!key) return alert("Falta API Key");
             
@@ -1277,15 +1355,17 @@
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{role:"user", content: prompt}],
-                        temperature: 0.5,
-                        max_tokens: maxTokens
+                        messages: messages,
+                        temperature: 0.7,
+                        response_format: { type: "json_object" }
                     })
                 });
+                if(!res.ok) throw new Error("Error en la API de Groq");
                 const data = await res.json();
-                callback(data.choices[0].message.content);
-            } catch(e) { alert(e.message); }
-            finally { 
+                callback(JSON.parse(data.choices[0].message.content));
+            } catch(e) { 
+                alert("Error con la IA: " + e.message); 
+            } finally { 
                 if (btn) {
                     btn.disabled = false; 
                     btn.innerText = originalText; 
@@ -1355,16 +1435,14 @@
 
             app.switchView('view-conversation');
             document.getElementById('conversation-topic-title').innerText = conversation.topic.name;
+            game.updateAvatar(); // Mostrar avatar en conversación
             
             conversation.history = [];
             conversation.turn = 0;
             
             // Resetear Auto Mic a ON al empezar
             conversation.autoMic = true;
-            const btnAuto = document.getElementById('btn-auto-mic-convo');
-            btnAuto.innerHTML = "🎙️ Auto: ON";
-            btnAuto.classList.add('auto-mic-on');
-            btnAuto.classList.remove('secondary');
+            conversation.setAutoMic(true);
             
             const historyEl = document.getElementById('conversation-history');
             historyEl.innerHTML = '<p>Iniciando conversación con la profesora...</p>';
@@ -1373,17 +1451,24 @@
             document.getElementById('convo-spoken-text').innerText = '...';
 
             const langName = app.getLangName();
-            const prompt = `Actúa como una profesora de ${langName} amigable y paciente. Inicia una conversación corta (3-4 turnos de usuario) sobre el tema "${conversation.topic.name}".
-1. Haz una breve introducción y haz una pregunta abierta para empezar. Tu discurso debe estar únicamente en ${langName}.
-2. Sugiere 5-7 palabras y verbos útiles para la respuesta, con su traducción al español.
-3. Sugiere 3 frases cortas completas que el usuario podría usar para responder, en ${langName} con su traducción al español.
-4. Responde únicamente con un objeto JSON válido con este formato: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra_en_idioma", "spanish": "traducción"}], "suggested_phrases": [{"text": "Frase en idioma", "trans": "Traducción"}]}`;
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                },
+                {
+                    role: 'user',
+                    content: `Inicia una conversación sobre "${conversation.topic.name}".
+1. Haz una breve introducción y una pregunta abierta para empezar.
+2. Sugiere 5-7 palabras/verbos útiles para la respuesta.
+3. Sugiere 3 frases cortas completas que podría usar.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
-                    // Leer solo la parte en el idioma objetivo (antes del salto de línea)
                     const textToSpeak = data.speech;
                     game.speakText(textToSpeak);
                 }
@@ -1408,17 +1493,24 @@
                 return;
             }
 
-            const historyStr = JSON.stringify(conversation.history);
             const langName = app.getLangName();
-            const prompt = `Continúa la conversación sobre "${conversation.topic.name}". El historial es: ${historyStr}.
-1. Responde de forma natural al usuario, únicamente en ${langName}.
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "...", "new_vocab": [...], "suggested_phrases": [...]}`
+                },
+                ...conversation.history,
+                {
+                    role: 'user',
+                    content: `Esa fue mi respuesta. Ahora, por favor:
+1. Responde de forma natural a mi último mensaje.
 2. Haz una nueva pregunta para continuar.
-3. Sugiere 5-7 palabras y verbos nuevos y relevantes que no se hayan sugerido antes.
-4. Sugiere 3 frases cortas nuevas para responder.
-5. Este es el turno ${conversation.turn + 1} de ${conversation.maxTurns + 1}.
-6. Responde únicamente con el mismo formato JSON: {"speech": "Tu respuesta solo en ${langName}", "new_vocab": [...], "suggested_phrases": [...]}`;
+3. Sugiere 5-7 palabras/verbos NUEVOS y relevantes.
+4. Sugiere 3 frases cortas NUEVAS para que yo las use.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
@@ -1436,18 +1528,24 @@
         },
         
         end: async (transcript) => {
-            const historyStr = JSON.stringify(conversation.history);
-            const prompt = `Esta es la última respuesta de la conversación. El historial es: ${historyStr}.
-1. Responde amablemente al usuario.
-2. Despídete y finaliza la conversación.
-3. NO hagas más preguntas.
-4. Responde únicamente con un objeto JSON con el formato: {"speech": "..."}`;
+            const langName = app.getLangName();
+            const messages = [
+                {
+                    role: 'system',
+                    content: `La conversación está terminando. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu mensaje final solo en ${langName}"}. No hagas más preguntas.`
+                },
+                ...conversation.history,
+                {
+                    role: 'user',
+                    content: `Esa fue mi última respuesta. Por favor, despídete amablemente y termina la conversación.`
+                }
+            ];
 
-            await app.callAI_Conversation(prompt, document.getElementById('mic-btn-convo'), (data) => {
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
                 if (data.speech) {
                     conversation.history.push({ role: 'assistant', content: data.speech });
                     conversation.renderHistory();
-                    conversation.autoMic = false; // Desactivar auto mic al terminar para que no escuche después del adiós
+                    conversation.setAutoMic(false); // Desactivar auto mic al terminar
                     const textToSpeak = data.speech;
                     game.speakText(textToSpeak);
                     setTimeout(() => {
@@ -1551,17 +1649,16 @@
             document.getElementById('convo-timer-container').classList.add('hidden');
         },
         
-        toggleAutoMic: () => {
-            conversation.autoMic = !conversation.autoMic;
-            const btn = document.getElementById('btn-auto-mic-convo');
-            if(conversation.autoMic) {
-                btn.innerHTML = "🎙️ Auto: ON";
-                btn.classList.add('auto-mic-on');
-                btn.classList.remove('secondary');
+        setAutoMic: (state) => {
+            conversation.autoMic = state;
+            const btnOn = document.getElementById('btn-convo-auto-on');
+            const btnOff = document.getElementById('btn-convo-auto-off');
+            if(state) {
+                btnOn.className = 'auto-mic-on';
+                btnOff.className = 'secondary';
             } else {
-                btn.innerHTML = "🎙️ Auto: OFF";
-                btn.classList.remove('auto-mic-on');
-                btn.classList.add('secondary');
+                btnOn.className = 'secondary';
+                btnOff.className = 'auto-mic-on';
             }
         }
     };
@@ -1622,21 +1719,21 @@
             game.data = words.sort(() => Math.random() - 0.5).slice(0, 10);
             game.index = 0;
             app.switchView('view-game');
+            game.setAutoMic(true); // Reset auto mic to ON at start of game
             game.updateAvatar();
             game.loadCard();
         },
         
-        toggleAutoMic: () => {
-            game.autoMic = !game.autoMic;
-            const btn = document.getElementById('btn-auto-mic');
-            if(game.autoMic) {
-                btn.innerHTML = "🎙️ Auto: ON";
-                btn.classList.add('auto-mic-on');
-                btn.classList.remove('secondary');
+        setAutoMic: (state) => {
+            game.autoMic = state;
+            const btnOn = document.getElementById('btn-game-auto-on');
+            const btnOff = document.getElementById('btn-game-auto-off');
+            if(state) {
+                btnOn.className = 'auto-mic-on';
+                btnOff.className = 'secondary';
             } else {
-                btn.innerHTML = "🎙️ Auto: OFF";
-                btn.classList.remove('auto-mic-on');
-                btn.classList.add('secondary');
+                btnOn.className = 'secondary';
+                btnOff.className = 'auto-mic-on';
             }
         },
         
@@ -1915,7 +2012,7 @@
         
         retry: () => {
             if (game.wasAutoMic && !game.autoMic) {
-                game.toggleAutoMic();
+                game.setAutoMic(true);
             }
             game.wasAutoMic = false;
             document.getElementById('fail-options').classList.add('hidden');
@@ -1973,7 +2070,7 @@
             document.getElementById('fail-options').classList.remove('hidden');
             if (game.autoMic) {
                 game.wasAutoMic = true;
-                game.toggleAutoMic();
+                game.setAutoMic(false);
             }
             document.getElementById('feedback-msg').innerText = "Incorrecto. Inténtalo de nuevo.";
             document.getElementById('feedback-msg').className = "feedback incorrect";
