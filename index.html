@@ -161,6 +161,14 @@
         <section style="text-align: left; margin-bottom: 40px;">
             <h2 style="color: #007AFF; margin-bottom: 20px;">Aprendizaje Inmersivo con IA</h2>
             <p style="margin-bottom: 15px;">Jetbulary no es simplemente otra aplicación de tarjetas de memoria. Utilizamos modelos de lenguaje avanzados (LLMs) para generar contenido educativo personalizado al instante. Olvídate de las listas de palabras estáticas y aburridas; aquí tú eliges el tema y la IA construye la lección para ti.</p>
+            <div style="background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <h3 style="margin-top: 0; font-size: 1rem; color: #555;">Ejemplo Vocabulario: Entrevista de Trabajo</h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/resume/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Resume</a> <span style="color: #999;">(Currículum)</span></li>
+                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/strength/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Strength</a> <span style="color: #999;">(Fortaleza)</span></li>
+                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/background/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Background</a> <span style="color: #999;">(Trayectoria)</span></li>
+                </ul>
+            </div>
             <p>Nuestro enfoque se basa en el <strong>aprendizaje contextual</strong>. No aprendes palabras aisladas, sino que las ves y escuchas dentro de frases completas, lo que ayuda a tu cerebro a retener el significado y el uso gramatical de forma natural.</p>
             <p>Además, practicando podrás conseguir un <strong>Diploma Informativo Jetbulary (no oficial)</strong>.</p>
             <img src="Diplo.jpg" alt="Diploma Jetbulary" style="width: 150px; display: block; margin: 10px auto; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
@@ -2182,6 +2190,14 @@
     
     // Ocultar botón si ya está en modo app (instalada)
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.add('hidden');
+    }
+    
+    app.init();
+</script>
+</body>
+</html>(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.add('hidden');
     }
