@@ -311,17 +311,6 @@
         
         <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
-        <!-- PUBLICIDAD ADSENSE -->
-        <div style="margin: 20px 0; text-align: center; min-height: 90px; background: #f4f4f4; border-radius: 8px; overflow: hidden;">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-3361037839787257"
-                 data-ad-slot="TU_ID_DE_ANUNCIO_AQUI"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
         <!-- SECCIÓN PREMIUM / SOPORTE -->
         <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
             <h3 style="margin-top: 0; color: #007AFF;">Sincronización y Apoyo</h3>
@@ -2194,14 +2183,6 @@
     
     // Ocultar botón si ya está en modo app (instalada)
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-    }
-    
-    app.init();
-</script>
-</body>
-</html>(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.add('hidden');
     }
