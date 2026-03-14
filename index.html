@@ -490,7 +490,7 @@
 
     <!-- VIDEO OVERLAY -->
     <div id="video-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-        <video id="overlay-video" controls style="width:100%; max-width:600px; border-radius:12px;">
+        <video id="overlay-video" controls playsinline webkit-playsinline style="width:100%; max-width:600px; border-radius:12px;">
             <source src="" type="video/mp4">
         </video>
         <button onclick="app.closeVideoOverlay()" class="secondary" style="margin-top:20px; width:auto;">Cerrar</button>
@@ -506,6 +506,9 @@
     </footer>
 
     <button id="install-btn" onclick="app.installApp()" class="hidden">📲 Ponte un Acceso Directo en tu Pantalla a Jetbulary.com</button>
+
+    <!-- INPUT INVISIBLE PARA IMPORTAR DB ESTATICO -->
+    <input type="file" id="static-import-input" accept=".json,application/json" class="hidden" onchange="app.handleImport(event)">
 
 <script>
     // --- LÓGICA DEL ASISTENTE ---
@@ -602,10 +605,15 @@
             app.checkCookies();
             
             window.onpopstate = (event) => {
+                const overlay = document.getElementById('video-overlay');
+                if (overlay && !overlay.classList.contains('hidden')) {
+                    app.closeVideoOverlay(true);
+                }
+
                 if (event.state && event.state.view) {
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
                     else if (event.state.view === 'view-login') app.showLogin('none');
-                    else app.switchView(event.state.view, 'none');
+                    else if (event.state.view !== 'video-overlay') app.switchView(event.state.view, 'none');
                 }
             };
         },
@@ -637,12 +645,19 @@
             video.load();
             overlay.classList.remove('hidden');
             video.play();
+            
+            // Prevenir salida y manejar cierre automático
+            history.pushState({ view: 'video-overlay' }, null, "");
+            video.onended = () => {
+                if (!overlay.classList.contains('hidden')) history.back();
+            };
         },
-        closeVideoOverlay: () => {
+        closeVideoOverlay: (fromHistory = false) => {
             const overlay = document.getElementById('video-overlay');
             const video = document.getElementById('overlay-video');
             video.pause();
             overlay.classList.add('hidden');
+            if (fromHistory !== true) history.back();
         },
         
         showLogin: (h) => app.switchView('view-login', h),
@@ -955,42 +970,31 @@
             window.print();
         },
         importDB: () => {
-            let input = document.getElementById('import-db-input');
-            if (!input) {
-                input = document.createElement('input');
-                input.id = 'import-db-input';
-                input.type = 'file';
-                input.accept = '.json,application/json';
-                input.style.position = 'fixed';
-                input.style.top = '-1000px';
-                input.style.opacity = '0';
-                document.body.appendChild(input);
-                input.onchange = e => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = event => {
-                        try {
-                            const data = JSON.parse(event.target.result);
-                            if(data.topics && data.words) {
-                                if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
-                                    if(data.apiKey) {
-                                        localStorage.setItem(API_KEY_STORAGE, data.apiKey);
-                                        delete data.apiKey;
-                                    }
-                                    db = data;
-                                    app.saveDB();
-                                    alert("Datos importados correctamente. La página se recargará.");
-                                    location.reload();
-                                }
-                            } else alert("Archivo inválido.");
-                        } catch(err) { alert("Error al leer el archivo."); }
-                        input.value = ''; // Reset
-                    };
-                    reader.readAsText(file);
-                };
-            }
-            setTimeout(() => input.click(), 10);
+            document.getElementById('static-import-input').click();
+        },
+        handleImport: (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = event => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if(data.topics && data.words) {
+                        if(confirm("Esto sobrescribirá tus datos actuales. ¿Continuar?")) {
+                            if(data.apiKey) {
+                                localStorage.setItem(API_KEY_STORAGE, data.apiKey);
+                                delete data.apiKey;
+                            }
+                            db = data;
+                            app.saveDB();
+                            alert("Datos importados correctamente. La página se recargará.");
+                            location.reload();
+                        }
+                    } else alert("Archivo inválido.");
+                } catch(err) { alert("Error al leer el archivo."); }
+                e.target.value = ''; // Reset
+            };
+            reader.readAsText(file);
         },
         
         checkCookies: () => {
@@ -1440,7 +1444,6 @@
         topic: null,
         history: [],
         turn: 0,
-        maxTurns: 5, // 5-6 user replies
         recognition: null,
         isRepeating: false,
         autoMic: true,
@@ -1508,11 +1511,6 @@
             conversation.renderHistory();
             
             conversation.turn++;
-
-            if (conversation.turn >= conversation.maxTurns) {
-                conversation.end(transcript);
-                return;
-            }
 
             const langName = app.getLangName();
             // Usamos el historial menos el último mensaje (que acabamos de añadir), para reemplazarlo por uno con instrucciones.
