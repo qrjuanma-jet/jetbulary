@@ -59,6 +59,7 @@
         /* Image Avatar CSS */
         .avatar-container { width: 100%; margin: 0 auto 15px; position: relative; }
         .avatar-img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; border-radius: 12px; }
+        .face-img { width: 50%; margin: 0 auto; }
         
         /* Vocab List */
         .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; margin-bottom: 1px; text-align: left; }
@@ -86,6 +87,10 @@
         /* Convo Timer Bar */
         #convo-timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 10px 0; overflow: hidden; }
         #convo-timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
+        
+        /* Academy Timer Bar */
+        #academy-timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+        #academy-timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
         
         
         .app-logo { width: calc(100% + 40px); margin-left: -20px; margin-top: -20px; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; mix-blend-mode: multiply; }
@@ -378,6 +383,8 @@
     <!-- VISTA CONVERSACIÓN -->
     <div id="view-conversation" class="container hidden">
         <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
+        <!-- AVATAR CONVERSACIÓN -->
+        <div class="avatar-container" id="avatar-convo"></div>
         <h2>Conversación sobre <span id="conversation-topic-title"></span></h2>
         
         <div id="conversation-history" style="text-align: left; margin-bottom: 20px; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 12px;">
@@ -404,6 +411,33 @@
         <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
             <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
             <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+        </div>
+    </div>
+
+    <!-- VISTA ACADEMIA -->
+    <div id="view-academy" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
+        <!-- AVATAR ACADEMIA -->
+        <div class="avatar-container" id="avatar-academy"></div>
+        <h2>Modo Academia: <span id="academy-topic-title"></span></h2>
+        
+        <div id="academy-history" style="text-align: left; margin-bottom: 20px; max-height: 400px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 12px;">
+            <!-- Chat bubbles will go here -->
+        </div>
+
+        <button class="mic-btn" id="mic-btn-academy" onclick="academy.toggleMic()">🎤</button>
+        <div id="academy-timer-container" class="hidden"><div id="academy-timer-bar"></div></div>
+        
+        <div id="academy-feedback-container" style="margin: 15px 0; min-height: 60px;">
+            <p id="academy-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
+            <div id="academy-ai-advice" class="hidden" style="margin-top: 10px; font-weight: 500; color: #d32f2f; font-size: 16px; background: #ffebee; padding: 10px; border-radius: 8px;"></div>
+        </div>
+
+        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+            <button id="btn-academy-auto-on" onclick="academy.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+            <button id="btn-academy-auto-off" onclick="academy.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+            <button onclick="academy.skip()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
             <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
         </div>
     </div>
@@ -1022,6 +1056,7 @@
                                 <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
                                 <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
                                 <button onclick="conversation.start(${t.id})" style="background-color: #5856d6;">Conversación 💬 (New!)</button>
+                                <button onclick="academy.start(${t.id})" style="background-color: #9c27b0; color: white;">Academia 🏫 (New!)</button>
                             </div>
                             <div class="topic-actions">
                                 <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
@@ -1629,6 +1664,13 @@
                             </div>`;
                 } else {
                     return `<div style="margin: 10px 0; text-align: left;"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #E5E5EA; color: black;">${content}${trans}</div></div>`;
+                    return `<div style="margin: 10px 0; text-align: left;">
+                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #E5E5EA; color: black;">${content}${trans}</div>
+                                <div style="display: flex; gap: 8px; margin-top: 5px; margin-left: 10px;">
+                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.85)" style="background: #E5E5EA; border: none; color: #333; padding: 4px 10px; font-size: 0.9rem; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: auto; margin: 0;">🔊 Normal</button>
+                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.5)" style="background: #E5E5EA; border: none; color: #333; padding: 4px 10px; font-size: 0.9rem; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: auto; margin: 0;">🐢 Lento</button>
+                                </div>
+                            </div>`;
                 }
             }).join('');
             container.scrollTop = container.scrollHeight;
@@ -1737,7 +1779,6 @@
         recognition: null,
         autoMic: true,
         currentRetries: 0,
-        talkInterval: null,
         timerInterval: null,
         wasAutoMic: false,
         
@@ -1812,32 +1853,46 @@
                 const img = new Image();
                 img.className = 'avatar-img';
                 img.alt = 'Avatar';
-                img.style.cursor = 'pointer';
-                img.dataset.mode = 'bebe';
                 
-                const fallbacks = [
-                    'real_en.jpg',
-                    'bebe_en.jpg'
-                ];
+                const isGame = c.id === 'avatar' || c.id === 'avatar-convo' || c.id === 'avatar-academy';
+                let baseImage = isGame ? `face_${currentLang}.jpg` : `real_${currentLang}.jpg`;
                 
-                img.onclick = () => {
-                    if (img.dataset.mode === 'bebe') {
-                        img.src = `real_${currentLang}.jpg`;
-                        img.dataset.mode = 'real';
-                    } else if (img.dataset.mode === 'real') {
-                        img.src = `50_${currentLang}.jpg`;
-                        img.dataset.mode = '50';
-                    } else if (img.dataset.mode === '50') {
-                        img.src = `avatar_${currentLang}_closed.jpg`;
-                        img.dataset.mode = 'avatar';
-                    } else {
-                        img.src = `bebe_${currentLang}.jpg`;
-                        img.dataset.mode = 'bebe';
+                if (isGame) img.classList.add('face-img');
+                img.dataset.idleSrc = baseImage;
+                img.dataset.speakingSrc = `gif_${currentLang}.gif`;
+                
+                const fallbacks = [isGame ? 'face_en.jpg' : 'real_en.jpg'];
+                img.onerror = function() { if(fallbacks.length) this.src = fallbacks.shift(); };
+                img.src = baseImage;
+                img.dataset.gifSrc = `gif_${currentLang}.gif`;
+                
+                img.onload = function() {
+                    if (this.src.includes(this.dataset.gifSrc) && !this.dataset.staticSrc) {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = this.naturalWidth;
+                            canvas.height = this.naturalHeight;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(this, 0, 0);
+                            this.dataset.staticSrc = canvas.toDataURL(); 
+                            
+                            if (!c.classList.contains('talking')) {
+                                this.src = this.dataset.staticSrc;
+                            }
+                        } catch(e) {
+                            console.log("No se pudo congelar el GIF.");
+                        }
                     }
                 };
-                
-                img.onerror = function() { if(fallbacks.length) this.src = fallbacks.shift(); };
-                img.src = `bebe_${currentLang}.jpg`;
+
+                img.onerror = function() {
+                    if (this.src.includes(`gif_${currentLang}.gif`)) {
+                        this.dataset.gifSrc = 'gif_en.gif';
+                        this.src = 'gif_en.gif';
+                    }
+                };
+
+                img.src = img.dataset.gifSrc;
                 c.appendChild(img);
             });
         },
@@ -1941,7 +1996,6 @@
         speakText: (text, rate = 1) => {
             game.stopMic();
             window.speechSynthesis.cancel();
-            if (game.talkInterval) clearInterval(game.talkInterval);
             const u = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
             
@@ -1970,21 +2024,16 @@
             
             u.onstart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
-                
-                game.talkInterval = setInterval(() => {
-                    const rand = Math.random();
-                    const state = rand < 0.1 ? 'closed' : (rand < 0.55 ? 'half' : 'open');
-                    
-                    document.querySelectorAll('.avatar-img').forEach(img => {
-                        img.src = img.src.replace(/_(closed|half|open)\.(png|jpg)/, `_${state}.$2`);
-                    });
-                }, 100);
+                document.querySelectorAll('.avatar-img').forEach(img => {
+                    if (img.dataset.speakingSrc) img.src = img.dataset.speakingSrc;
+                    if (img.dataset.gifSrc) img.src = img.dataset.gifSrc;
+                });
             };
             u.onend = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                if (game.talkInterval) clearInterval(game.talkInterval);
                 document.querySelectorAll('.avatar-img').forEach(img => {
-                    img.src = img.src.replace(/_(half|open)\.(png|jpg)/, '_closed.$2');
+                    if (img.dataset.idleSrc) img.src = img.dataset.idleSrc;
+                    if (img.dataset.staticSrc) img.src = img.dataset.staticSrc;
                 });
                 
                 // Auto Mic Trigger
@@ -2001,6 +2050,15 @@
                     setTimeout(() => {
                         if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
                             conversation.toggleMic();
+                        }
+                    }, 300);
+                }
+                
+                // Auto Mic Trigger for Academy
+                if (academy.autoMic && !document.getElementById('view-academy').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn-academy').classList.contains('listening') && !document.getElementById('view-academy').classList.contains('hidden')) {
+                            academy.toggleMic();
                         }
                     }, 300);
                 }
@@ -2167,6 +2225,320 @@
             await app.callAI_Text(prompt, null, (text) => {
                 container.innerHTML = `<strong>💡 Consejo:</strong> ${text}`;
             }, 300);
+        }
+    };
+
+    const academy = {
+        topic: null,
+        history: [],
+        recognition: null,
+        autoMic: true,
+        timerInterval: null,
+        currentExpected: null,
+        isIntroDone: false,
+
+        start: async (topicId) => {
+            academy.topic = db.topics.find(t => t.id === topicId);
+            if (!academy.topic) return alert("Tema no encontrado.");
+
+            app.switchView('view-academy');
+            document.getElementById('academy-topic-title').innerText = academy.topic.name;
+            game.updateAvatar(); // Usar el avatar de la app
+            
+            academy.history = [];
+            academy.currentExpected = null;
+            academy.isIntroDone = false;
+            
+            academy.autoMic = true;
+            academy.setAutoMic(true);
+            
+            document.getElementById('academy-history').innerHTML = '<p>Preparando la clase de gramática y pronunciación...</p>';
+            document.getElementById('academy-spoken-text').innerText = '...';
+            document.getElementById('academy-ai-advice').classList.add('hidden');
+
+            academy.introduceLesson();
+        },
+
+        introduceLesson: async () => {
+            const langName = app.getLangName();
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora experta de ${langName}. Vas a iniciar una clase del "Modo Academia" sobre el tema seleccionado.
+                    TU TAREA es explicar de forma muy breve y amigable (1-2 párrafos) la gramática que se va a practicar y dar los tips o reglas clave que usarán en las frases. NO hagas preguntas de ejercicio todavía.
+                    Responde SIEMPRE con un objeto JSON válido con la estructura:
+                    {
+                        "teacher_says": "Tu explicación gramatical y tips en ${langName}",
+                        "teacher_says_trans": "Traducción al español de la explicación",
+                        "ready_phrase": "Frase corta preguntando si el alumno está listo para empezar en ${langName}",
+                        "ready_phrase_trans": "Traducción al español"
+                    }`
+                },
+                {
+                    role: 'user',
+                    content: `El tema de la lección de hoy es "${academy.topic.name}". Introduce la clase y da los tips gramaticales.`
+                }
+            ];
+
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-academy'), (data) => {
+                if (data.teacher_says) {
+                    const contentHtml = `
+                        <div style="margin-bottom: 8px;"><strong>👩‍🏫 Introducción y Tips Gramaticales:</strong><br><br>${data.teacher_says.replace(/\n/g, '<br>')} <br>
+                        <span style="font-size: 0.9em; color: #555;">(${data.teacher_says_trans.replace(/\n/g, '<br>')})</span></div>
+                        <div style="margin-top: 10px; color: #007AFF; font-weight: bold;">${data.ready_phrase} <br>
+                        <span style="font-size: 0.9em; color: #555; font-weight: normal;">(${data.ready_phrase_trans})</span></div>
+                    `;
+
+                    academy.history.push({ role: 'assistant', content: contentHtml, teacherSays: data.teacher_says + ". " + data.ready_phrase, plainExpected: "Yes", syntax: "Explicación inicial de la clase." });
+                    academy.currentExpected = { expected_answer: "Yes" }; 
+                    academy.renderHistory();
+                    game.speakText(data.teacher_says + ". " + data.ready_phrase, 0.9);
+                }
+            });
+        },
+
+        nextLesson: async () => {
+            const langName = app.getLangName();
+            const historyContext = academy.history.filter(m => m.role === 'assistant').slice(-3).map(m => m.teacherSays).join(' | ');
+
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Eres una profesora estricta pero amable de ${langName}. Estás en el "Modo Academia". Tu objetivo es decir una frase o hacer una pregunta, y darle al alumno la respuesta exacta que debe repetir para practicar pronunciación y gramática.
+                    Responde SIEMPRE con un objeto JSON válido con la estructura:
+                    {
+                        "teacher_says": "Tu frase de introducción o pregunta en ${langName}",
+                        "teacher_says_trans": "Traducción al español",
+                        "expected_answer": "La respuesta exacta que el alumno debe repetir en ${langName}",
+                        "expected_answer_trans": "Traducción al español",
+                        "syntax_explanation": "Breve explicación de la gramática/sintaxis de 'expected_answer' (en ${langName} y entre paréntesis en español)"
+                    }`
+                },
+                {
+                    role: 'user',
+                    content: `El tema es "${academy.topic.name}". Genera la siguiente frase para que la repita. Asegúrate de no repetir lo anterior: ${historyContext}`
+                }
+            ];
+
+            await app.callAI_Conversation(messages, document.getElementById('mic-btn-academy'), (data) => {
+                if (data.expected_answer) {
+                    academy.currentExpected = data;
+                    
+                    const contentHtml = `
+                        <div style="margin-bottom: 8px;"><strong>Profesora:</strong> ${data.teacher_says} <br>
+                        <span style="font-size: 0.9em; color: #555;">(${data.teacher_says_trans})</span></div>
+                        <div><strong>Repite esto:</strong> <span style="color: #007AFF; font-size: 1.1em;">${data.expected_answer}</span> <br>
+                        <span style="font-size: 0.9em; color: #555;">(${data.expected_answer_trans})</span></div>
+                    `;
+
+                    academy.history.push({ 
+                        role: 'assistant', 
+                        content: contentHtml,
+                        teacherSays: data.teacher_says,
+                        plainExpected: data.expected_answer,
+                        syntax: data.syntax_explanation
+                    });
+                    
+                    academy.renderHistory();
+                    
+                    // Habla la intro y luego la respuesta a repetir, con pausa natural
+                    game.speakText(data.teacher_says + ". " + data.expected_answer, 0.9);
+                }
+            });
+        },
+
+        handleUserReply: async (transcript) => {
+            document.getElementById('academy-spoken-text').innerText = `Tú: "${transcript}"`;
+            
+            if (!academy.isIntroDone) {
+                academy.isIntroDone = true;
+                academy.history.push({ 
+                    role: 'user', 
+                    content: transcript,
+                    status: 'correct'
+                });
+                academy.renderHistory();
+                document.getElementById('academy-ai-advice').classList.add('hidden');
+                setTimeout(() => academy.nextLesson(), 1000);
+                return;
+            }
+
+            const target = academy.currentExpected.expected_answer.toLowerCase();
+            const cleanTarget = target.replace(/[.,!?¿¡]/g, '').trim();
+            const cleanSpoken = transcript.toLowerCase().replace(/[.,!?¿¡]/g, '').trim();
+
+            const isCorrect = game.isCloseMatch(cleanTarget, cleanSpoken);
+
+            if (isCorrect) {
+                document.getElementById('academy-ai-advice').classList.add('hidden');
+                
+                academy.history.push({ 
+                    role: 'user', 
+                    content: transcript,
+                    status: 'correct'
+                });
+                academy.renderHistory();
+                
+                // Retraso para ver el check verde antes de cargar la siguiente
+                setTimeout(() => academy.nextLesson(), 1500);
+            } else {
+                academy.history.push({ 
+                    role: 'user', 
+                    content: transcript,
+                    status: 'incorrect'
+                });
+                academy.renderHistory();
+                
+                // Feedback de pronunciación AI
+                const adviceBox = document.getElementById('academy-ai-advice');
+                adviceBox.innerHTML = "Analizando tu pronunciación...";
+                adviceBox.classList.remove('hidden');
+                
+                const langName = app.getLangName();
+                const prompt = `El alumno debía repetir la respuesta exacta: "${academy.currentExpected.expected_answer}" pero pronunció mal o diferente diciendo: "${transcript}".
+                Dame un consejo muy breve, directo y amigable (1-2 frases) sobre cómo debe mejorar su pronunciación para conseguir decir correctamente la respuesta que pide la profesora. No reveles que eres una IA.`;
+                
+                await app.callAI_Text(prompt, null, (text) => {
+                    adviceBox.innerHTML = `<strong>💡 Consejo para mejorar:</strong> ${text} <br><br><span style="color:#000;">Inténtalo de nuevo cuando estés listo.</span>`;
+                    if (academy.autoMic) {
+                        setTimeout(() => {
+                            if (!document.getElementById('view-academy').classList.contains('hidden')) {
+                                academy.toggleMic();
+                            }
+                        }, 2500);
+                    }
+                });
+            }
+        },
+
+        skip: () => {
+            academy.stopMic();
+            if (!academy.isIntroDone) {
+                academy.isIntroDone = true;
+            }
+            document.getElementById('academy-ai-advice').classList.add('hidden');
+            academy.history.push({ 
+                role: 'user', 
+                content: "Saltado",
+                status: 'skipped'
+            });
+            academy.renderHistory();
+            setTimeout(() => academy.nextLesson(), 500);
+        },
+
+        toggleMic: () => {
+            if (document.getElementById('mic-btn-academy').classList.contains('listening')) {
+                academy.stopMic();
+                return;
+            }
+
+            if(!academy.recognition) { 
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
+                if(!SpeechRecognition) return alert("Navegador no soporta voz."); 
+                academy.recognition = new SpeechRecognition(); 
+                academy.recognition.onresult = (e) => academy.handleUserReply(e.results[0][0].transcript); 
+                academy.recognition.onend = () => {
+                    document.getElementById('mic-btn-academy').classList.remove('listening');
+                    academy.stopTimer();
+                };
+            } 
+            let langCode = 'en-US'; 
+            if(currentLang === 'de') langCode = 'de-DE'; if(currentLang === 'fr') langCode = 'fr-FR'; if(currentLang === 'it') langCode = 'it-IT'; if(currentLang === 'eu') langCode = 'eu-ES'; if(currentLang === 'ru') langCode = 'ru-RU'; if(currentLang === 'pt') langCode = 'pt-PT'; if(currentLang === 'ca') langCode = 'ca-ES'; if(currentLang === 'gl') langCode = 'gl-ES'; 
+            academy.recognition.lang = langCode; 
+            try { 
+                document.getElementById('mic-btn-academy').classList.add('listening'); 
+                academy.recognition.start(); 
+                academy.startTimer();
+            } catch(e) { 
+                console.error(e); 
+                document.getElementById('mic-btn-academy').classList.remove('listening'); 
+            } 
+        },
+
+        stopMic: () => {
+            if(academy.recognition) {
+                try { academy.recognition.stop(); } catch(e) {}
+                document.getElementById('mic-btn-academy').classList.remove('listening');
+                academy.stopTimer();
+            }
+        },
+        
+        startTimer: () => {
+            const bar = document.getElementById('academy-timer-bar');
+            const container = document.getElementById('academy-timer-container');
+            container.classList.remove('hidden');
+            bar.style.width = '0%';
+            bar.style.backgroundColor = '#28a745';
+            
+            let startTime = Date.now();
+            const duration = 20000;
+            
+            if (academy.timerInterval) clearInterval(academy.timerInterval);
+            
+            academy.timerInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const pct = Math.min((elapsed / duration) * 100, 100);
+                
+                bar.style.width = pct + '%';
+                
+                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
+                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                
+                if (elapsed >= duration) {
+                    if(academy.recognition) try { academy.recognition.stop(); } catch(e){}
+                }
+            }, 50);
+        },
+        
+        stopTimer: () => {
+            if (academy.timerInterval) clearInterval(academy.timerInterval);
+            document.getElementById('academy-timer-container').classList.add('hidden');
+        },
+        
+        setAutoMic: (state) => {
+            academy.autoMic = state;
+            const btnOn = document.getElementById('btn-academy-auto-on');
+            const btnOff = document.getElementById('btn-academy-auto-off');
+            if(state) {
+                btnOn.className = 'auto-mic-on';
+                btnOff.className = 'secondary';
+            } else {
+                btnOn.className = 'secondary';
+                btnOff.className = 'auto-mic-on';
+            }
+        },
+
+        renderHistory: () => {
+            const container = document.getElementById('academy-history');
+            container.innerHTML = academy.history.map((msg, index) => {
+                if (msg.role === 'user') {
+                    const bgColor = msg.status === 'correct' ? '#34C759' : (msg.status === 'skipped' ? '#8E8E93' : '#FF3B30');
+                    const icon = msg.status === 'correct' ? '✅' : (msg.status === 'skipped' ? '⏭️' : '❌');
+                    return `<div style="margin: 10px 0; display: flex; justify-content: flex-end;">
+                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${bgColor}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${icon} ${msg.content}</div>
+                            </div>`;
+                } else {
+                    return `<div style="margin: 10px 0; text-align: left;">
+                                <div style="display: inline-block; width: 100%; padding: 15px; border-radius: 18px; background: #E5E5EA; color: black; box-sizing: border-box; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${msg.content}</div>
+                                <div style="display: flex; gap: 8px; margin-top: 8px; margin-left: 5px; flex-wrap: wrap;">
+                                    <button onclick="game.speakText(academy.history[${index}].teacherSays, 0.85)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🔊 Profesora</button>
+                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.85)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🔊 Respuesta (Normal)</button>
+                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.5)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🐢 Lento</button>
+                                    <button onclick="academy.showSyntax(${index})" class="warning" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">📖 Sintaxis</button>
+                                </div>
+                                <div id="syntax-box-${index}" class="hidden" style="margin-top: 8px; margin-left: 5px; background: #fff3cd; padding: 12px; border-radius: 8px; font-size: 0.9rem; color: #856404; width: 95%; border: 1px solid #ffeeba; box-sizing: border-box; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    <strong>Sintaxis y Gramática:</strong><br><br>
+                                    ${msg.syntax ? msg.syntax.replace(/\n/g, '<br>') : 'Sin explicación.'}
+                                </div>
+                            </div>`;
+                }
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        },
+
+        showSyntax: (index) => {
+            const box = document.getElementById(`syntax-box-${index}`);
+            if(box) box.classList.toggle('hidden');
         }
     };
 
