@@ -358,6 +358,7 @@
         <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
             <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
             <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+            <button onclick="game.next()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
             <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
         </div>
         <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
@@ -2022,6 +2023,8 @@
             
             if (f) u.voice = f;
             
+            if (currentLang === 'eu') u.pitch = 1.4; // Ajuste para hacer la voz más aguda en euskera
+            
             u.onstart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => {
@@ -2395,8 +2398,8 @@
                 adviceBox.classList.remove('hidden');
                 
                 const langName = app.getLangName();
-                const prompt = `El alumno debía repetir la respuesta exacta: "${academy.currentExpected.expected_answer}" pero pronunció mal o diferente diciendo: "${transcript}".
-                Dame un consejo muy breve, directo y amigable (1-2 frases) sobre cómo debe mejorar su pronunciación para conseguir decir correctamente la respuesta que pide la profesora. No reveles que eres una IA.`;
+                const prompt = `El alumno debía repetir la respuesta exacta: "${academy.currentExpected.expected_answer}" pero ha pronunciado mal o de forma diferente diciendo: "${transcript}".
+                Identifica exactamente qué palabra o palabras ha pronunciado mal. Actúa como su profesora amigable y dale un tip rápido para pronunciarla bien. Luego, pídele explícitamente que repita primero SOLAMENTE la palabra en la que falló, y a continuación, la frase completa. Sé muy breve y directa (2-3 frases máximo). No reveles que eres una IA.`;
                 
                 await app.callAI_Text(prompt, null, (text) => {
                     adviceBox.innerHTML = `<strong>💡 Consejo para mejorar:</strong> ${text} <br><br><span style="color:#000;">Inténtalo de nuevo cuando estés listo.</span>`;
