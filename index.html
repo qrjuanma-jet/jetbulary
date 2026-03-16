@@ -1478,7 +1478,7 @@
                         </div>
                     </div>
                     <div style="font-size: 0.9rem; color: #555; margin-top: 8px; font-style: italic; background: #f9f9f9; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
-                        "${app.highlightWord(w.sentence_en, w.english)}"
+                        "${w.sentence_en}"
                     </div>
                 </div>`;
             }).join('');
@@ -1520,7 +1520,7 @@
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "speech_trans": "Traducción al español", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "speech_trans": "Traducción al español", "new_vocab": [{"english": "palabra", "spanish": "traducción", "sentence_en": "frase corta de ejemplo", "sentence_es": "traducción de la frase"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
                 },
                 {
                     role: 'user',
@@ -1565,7 +1565,7 @@
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu respuesta en ${langName}", "speech_trans": "Traducción al español", "user_trans": "Traducción de lo que dijo el usuario al español", "new_vocab": [{"english": "palabra", "spanish": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
+                    content: `Eres una profesora de ${langName} amigable. Continúa la conversación. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu respuesta en ${langName}", "speech_trans": "Traducción al español", "user_trans": "Traducción de lo que dijo el usuario al español", "new_vocab": [{"english": "palabra", "spanish": "traducción", "sentence_en": "frase corta de ejemplo", "sentence_es": "traducción de la frase"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
                 },
                 ...historyContext,
                 {
@@ -1705,7 +1705,7 @@
 
                 let word = db.words.find(w => w.english && w.english.toLowerCase() === v.english.toLowerCase() && w.topic_id === conversation.topic.id);
                 if (!word) {
-                    word = { id: Date.now() + Math.random(), topic_id: conversation.topic.id, english: v.english, spanish: v.spanish, sentence_en: `(De conversación: ${conversation.topic.name})`, sentence_es: `(De conversación: ${conversation.topic.name})` };
+                    word = { id: Date.now() + Math.random(), topic_id: conversation.topic.id, english: v.english, spanish: v.spanish, sentence_en: v.sentence_en || `(De conversación: ${conversation.topic.name})`, sentence_es: v.sentence_es || `(De conversación: ${conversation.topic.name})` };
                     db.words.push(word);
                 }
                 let prog = db.progress.find(p => p.word_id === word.id);
@@ -1918,10 +1918,16 @@
             const item = game.data[game.index];
             
             game.currentRetries = 0;
-            const html = app.highlightWord(item.sentence_en, item.english);
-            document.getElementById('sentence-display').innerHTML = html;
+            
+            if (item.sentence_en.startsWith('(De')) {
+                document.getElementById('sentence-display').innerHTML = `<span style="color:#8E8E93; font-size:0.8em; font-style:italic;">Palabra extraída de una conversación</span>`;
+                document.getElementById('sentence-translation').innerText = '';
+            } else {
+                document.getElementById('sentence-display').innerHTML = item.sentence_en;
+                document.getElementById('sentence-translation').innerText = item.sentence_es;
+            }
+            
             document.getElementById('word-display').innerHTML = `${item.english} <span style="color: #8E8E93; font-size: 0.6em; font-weight: normal;">(${item.spanish})</span>`;
-            document.getElementById('sentence-translation').innerText = item.sentence_es;
             
             // Link YouGlish dinámico según idioma
             const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', pt: 'portuguese', ru: 'russian' };
@@ -1991,7 +1997,12 @@
         },
         
         speak: () => {
-            game.speakText(game.data[game.index].sentence_en);
+            const item = game.data[game.index];
+            if (item.sentence_en.startsWith('(De')) {
+                game.speakText(item.english);
+            } else {
+                game.speakText(item.sentence_en);
+            }
         },
         
         speakWordSlow: () => {
