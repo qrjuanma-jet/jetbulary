@@ -699,6 +699,16 @@
         showPrivacy: () => app.switchView('view-privacy'),
         showTerms: () => app.switchView('view-terms'),
         showDashboard: (h) => {
+            // Detener voz, micrófonos y temporizadores al salir de un juego
+            window.speechSynthesis.cancel();
+            if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
+            if (typeof academy !== 'undefined' && academy.stopMic) academy.stopMic();
+            if (typeof conversation !== 'undefined') {
+                if (conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+                if (conversation.stopTimer) conversation.stopTimer();
+            }
+            document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
+
             app.switchView('view-dashboard', h);
             document.body.className = `lang-${currentLang}`;
             game.updateAvatar();
@@ -1468,7 +1478,7 @@
                         </div>
                     </div>
                     <div style="font-size: 0.9rem; color: #555; margin-top: 8px; font-style: italic; background: #f9f9f9; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
-                        "${w.sentence_en}"
+                        "${app.highlightWord(w.sentence_en, w.english)}"
                     </div>
                 </div>`;
             }).join('');
@@ -1907,16 +1917,10 @@
             game.stopMic(); // Asegurar que el micro está apagado al cargar nueva carta
             const item = game.data[game.index];
             
-            // Fix: Escapar caracteres especiales y ajustar regex para idiomas asiáticos
             game.currentRetries = 0;
-            const escapedWord = item.english.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const isAsian = ['ja', 'th'].includes(currentLang);
-            const boundary = isAsian ? '' : '\\b';
-            const regex = new RegExp(`${boundary}${escapedWord}${boundary}`, 'gi');
-            
-            const html = item.sentence_en.replace(regex, `<strong>${item.english}</strong>`);
+            const html = app.highlightWord(item.sentence_en, item.english);
             document.getElementById('sentence-display').innerHTML = html;
-            document.getElementById('word-display').innerText = item.spanish;
+            document.getElementById('word-display').innerHTML = `${item.english} <span style="color: #8E8E93; font-size: 0.6em; font-weight: normal;">(${item.spanish})</span>`;
             document.getElementById('sentence-translation').innerText = item.sentence_es;
             
             // Link YouGlish dinámico según idioma
@@ -2446,7 +2450,7 @@
                 };
             } 
             let langCode = 'en-US'; 
-            if(currentLang === 'de') langCode = 'de-DE'; if(currentLang === 'fr') langCode = 'fr-FR'; if(currentLang === 'it') langCode = 'it-IT'; if(currentLang === 'eu') langCode = 'eu-ES'; if(currentLang === 'ru') langCode = 'ru-RU'; if(currentLang === 'pt') langCode = 'pt-PT'; if(currentLang === 'ca') langCode = 'ca-ES'; if(currentLang === 'gl') langCode = 'gl-ES'; 
+            if(currentLang === 'de') langCode = 'de-DE'; if(currentLang === 'fr') langCode = 'fr-FR'; if(currentLang === 'it') langCode = 'it-IT'; if(currentLang === 'eu') langCode = 'eu-ES'; if(currentLang === 'ru') langCode = 'ru-RU'; if(currentLang === 'pt') langCode = 'pt-PT'; 
             academy.recognition.lang = langCode; 
             try { 
                 document.getElementById('mic-btn-academy').classList.add('listening'); 
