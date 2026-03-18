@@ -682,7 +682,7 @@
             video.play();
             
             // Prevenir salida y manejar cierre automático
-            history.pushState({ view: 'video-overlay' }, null, "");
+            history.pushState({ view: 'video-overlay' }, null, "#video");
             video.onended = () => {
                 if (!overlay.classList.contains('hidden')) history.back();
             };
@@ -784,10 +784,12 @@
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             
+            const newUrl = "#" + id.replace('view-', '');
+            
             if (historyAction === 'push') {
-                history.pushState({ view: id }, null, "");
+                history.pushState({ view: id }, null, newUrl);
             } else if (historyAction === 'replace') {
-                history.replaceState({ view: id }, null, "");
+                history.replaceState({ view: id }, null, newUrl);
             }
         },
         
