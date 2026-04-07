@@ -62,7 +62,14 @@
             overflow-x: hidden;
             line-height: 1.6;
         }
-        .container { width: 100%; max-width: 1000px; padding: 40px 20px; box-sizing: border-box; text-align: center; }
+        .container, .adsense-container, .layout-container { 
+            width: 100%; 
+            max-width: 1000px; 
+            padding: 40px 20px; 
+            box-sizing: border-box; 
+            text-align: center; 
+            margin: 0 auto;
+        }
         
         h1, h2, h3, .tech { 
             font-family: 'Orbitron', sans-serif; 
@@ -405,7 +412,7 @@
             
             <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
                 <button onclick="document.getElementById('acceso').scrollIntoView({behavior:'smooth'})">ACTIVAR PROTOCOLO</button>
-                <button class="secondary" onclick="document.getElementById('modules').scrollIntoView({behavior:'smooth'})">VER MÓDULOS</button>
+                <button class="secondary" onclick="document.getElementById('science').scrollIntoView({behavior:'smooth'})">MÉTRICAS Y CIENCIA</button>
             </div>
             
             <div style="margin-top: 20px;">
@@ -433,7 +440,7 @@
 
         <!-- 3. MÓDULOS DE IDIOMAS (ADSENSE VALUE) -->
         <section id="modules" class="premium-section" style="background: rgba(0, 0, 0, 0.6); border-top: 1px solid var(--cyber-border);">
-            <div class="container" style="text-align: left; padding: 0;">
+            <div class="adsense-container" style="text-align: left; padding: 0 20px; max-width: 1000px; margin: 0 auto;">
                 <h2 class="tech" style="font-size: 1.8rem; margin-bottom: 40px;">[ NODOS_DE_LENGUAJE_ACTIVOS ]</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                     <div class="hud-module">
@@ -466,7 +473,7 @@
 
         <!-- 4. CIENCIA Y TUTORIAL (EDUCATIONAL VALUE) -->
         <section id="science" class="premium-section">
-            <div class="container" style="text-align: left; padding: 0;">
+            <div class="adsense-container" style="text-align: left; padding: 0 20px; max-width: 1000px; margin: 0 auto;">
                 <div class="hud-module" style="border-color: var(--neon-pink);">
                     <h2 class="tech" style="color:var(--neon-cyan);">La Ciencia detrás del Protocolo</h2>
                     <div style="column-count: 2; column-gap: 40px; font-size: 16px; color: #AAA; line-height: 1.6;">
@@ -493,7 +500,7 @@
 
         <!-- 5. GLOSARIO DE ENTRENAMIENTO (SEO DENSITY) -->
         <section id="glossary" class="premium-section" style="background: rgba(0,0,0,0.4);">
-            <div class="container" style="text-align: left; padding: 0;">
+            <div class="adsense-container" style="text-align: left; padding: 0 20px; max-width: 1000px; margin: 0 auto;">
                 <h2 class="tech">Léxico de Frecuencia Crítica</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 30px;">
                     <div class="hud-card" style="padding: 10px; font-size: 12px;"><strong style="color:var(--neon-cyan)">Algorithm</strong></div>
@@ -1116,11 +1123,13 @@
             }
         },
         switchView: (id, historyAction = 'push') => {
-            document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-            
-            // Fix: Desplazar arriba para que el usuario vea el inicio de la nueva vista
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Fix: Target only top-level views that start with 'view-' to avoid hiding nested containers
+            document.querySelectorAll('.container[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(id);
+            if(target) {
+                target.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             
             const newUrl = "#" + id.replace('view-', '');
             
