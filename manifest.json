@@ -1,0 +1,17 @@
+{
+  "name": "Jetbulary Cyberpunk HUD",
+  "short_name": "Jetbulary",
+  "description": "Aprende vocabulario inmersivo con IA en un entorno Cyberpunk HUD.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#00F3FF",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

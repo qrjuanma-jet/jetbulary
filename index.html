@@ -6,114 +6,387 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
-    <title>Jetbulary Mobile</title>
+    <title>Jetbulary // Cyberpunk HUD</title>
     <meta name="description" content="Aprende vocabulario inmersivo en inglés y otros idiomas con IA. Jetbulary te ayuda a aprender sin memorizar listas, usando frases en contexto y pronunciación nativa.">
     <meta name="keywords" content="vocabulario inmersivo, vocabulario sin memorizar, aprender inglés con IA, vocabulario en contexto, app de idiomas gratuita, aprender idiomas online">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --neon-cyan: #00F3FF;
+            --neon-pink: #FF00FF;
+            --cyber-bg: #050505;
+            --cyber-surface: #121214;
+            --cyber-text: #E0E0E0;
+            --cyber-border: rgba(0, 243, 255, 0.3);
+            --cyber-glow: 0 0 12px rgba(0, 243, 255, 0.6);
+            --cyber-glow-strong: 0 0 20px rgba(0, 243, 255, 0.8), 0 0 40px rgba(0, 243, 255, 0.4);
+            
+            /* Logic colors */
+            --cyber-ok: #00FF95;
+            --cyber-warn: #FFD700;
+            --cyber-danger: #FF0055;
+            --cyber-info: #00F3FF;
+        }        /* Cyber Grid Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(5, 5, 5, 0.8) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
         /* iOS Style Reset & Optimization */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #FDFBF7; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c5b0' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #333; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
-        .container { width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; text-align: center; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--cyber-bg); 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            color: var(--cyber-text); 
+            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        .container { width: 100%; max-width: 1000px; padding: 40px 20px; box-sizing: border-box; text-align: center; }
         
-        h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 20px 0; color: #000; }
-        h2 { font-size: 22px; font-weight: 600; margin: 15px 0; color: #000; }
-        p { font-size: 17px; line-height: 1.4; color: #333; }
+        h1, h2, h3, .tech { 
+            font-family: 'Orbitron', sans-serif; 
+            font-weight: 700; 
+            letter-spacing: 0.05em; 
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            text-shadow: var(--cyber-glow);
+        }
         
-        button { background: #007AFF; color: white; border: none; padding: 16px; border-radius: 14px; font-size: 17px; font-weight: 600; cursor: pointer; margin: 8px 0; width: 100%; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); touch-action: manipulation; }
-        button:active { opacity: 0.7; }
-        button:disabled { background: #8E8E93; cursor: not-allowed; }
-        button.secondary { background: #E5E5EA; color: #000; }
-        button.success { background: #34C759; }
-        button.warning { background: #FF9500; color: white; }
-        button.danger { background: #FF3B30; }
+        h1 { font-size: clamp(32px, 8vw, 64px); line-height: 1.1; margin-bottom: 30px; }
+        h2 { font-size: clamp(24px, 5vw, 42px); line-height: 1.2; margin: 40px 0 20px; }
+        p { font-size: 18px; color: #BBB; margin-bottom: 20px; }
         
-        input { padding: 16px; width: 100%; border: none; background: #fff; border-radius: 12px; margin-bottom: 15px; box-sizing: border-box; font-size: 17px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        select { width: 100%; padding: 16px; border-radius: 12px; border: none; background: #fff; margin-bottom: 15px; font-size: 17px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); -webkit-appearance: none; appearance: none; }
+        button { 
+            background: transparent; 
+            color: var(--neon-cyan); 
+            border: 2px solid var(--neon-cyan); 
+            padding: 18px 32px; 
+            border-radius: 2px; 
+            font-size: 14px; 
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700; 
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer; 
+            margin: 10px 0; 
+            transition: all 0.3s ease;
+            box-shadow: var(--cyber-glow);
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        button:hover { 
+            background: var(--neon-cyan);
+            color: var(--cyber-bg);
+            box-shadow: var(--cyber-glow-strong);
+            transform: scale(1.05);
+        }
+        button:active { 
+            transform: scale(0.95);
+        }
+        button:disabled { 
+            border-color: #444;
+            color: #444;
+            box-shadow: none;
+            cursor: not-allowed; 
+        }
+        button.secondary { 
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+        button.secondary:hover {
+            background: var(--neon-pink);
+            color: var(--cyber-bg);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
+        }
+        button.success { 
+            border-color: var(--cyber-ok);
+            color: var(--cyber-ok);
+            box-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+        }
+        button.success:hover {
+            background: var(--cyber-ok);
+            color: var(--cyber-bg);
+            box-shadow: 0 0 20px rgba(0, 255, 149, 0.6);
+        }
+        button.warning { 
+            border-color: var(--cyber-warn);
+            color: var(--cyber-warn);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        button.warning:hover {
+            background: var(--cyber-warn);
+            color: var(--cyber-bg);
+        }
+        button.danger { 
+            border-color: var(--cyber-danger);
+            color: var(--cyber-danger);
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+        }
+        button.danger:hover {
+            background: var(--cyber-danger);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+        }
+        
+        
+        /* Premium Layout */
+        .premium-landing { text-align: left; }
+        .premium-section { width: 100%; padding: 120px 0; border-top: 1px solid var(--cyber-border); background: rgba(18, 18, 20, 0.4); }
+        .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(rgba(5, 5, 5, 0.8), rgba(5, 5, 5, 1)), url('cyber_hero_bg.png') center/cover; position: relative; padding: 120px 20px; box-sizing: border-box; border-bottom: 2px solid var(--neon-cyan); }
+        
+        .badge-authority { font-weight: 600; color: var(--neon-pink); letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; margin-bottom: 20px; display: block; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
+        
+        .hud-card { background: var(--cyber-surface); padding: 40px; border: 1px solid var(--cyber-border); border-left: 4px solid var(--neon-cyan); transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .hud-card::after { content: ""; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(225deg, var(--neon-cyan) 50%, transparent 50%); opacity: 0.5; }
+        .hud-card:hover { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow); transform: translateX(5px); }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 40px; }
+        .stat-item { padding: 30px; background: rgba(0, 243, 255, 0.05); border: 1px solid var(--cyber-border); border-radius: 2px; }
+        .stat-value { font-family: 'Orbitron'; font-size: 48px; color: var(--neon-cyan); display: block; margin-bottom: 10px; }
+        
+        input { 
+            padding: 20px; 
+            width: 100%; 
+            border: 1px solid var(--cyber-border); 
+            background: rgba(18, 18, 20, 0.8); 
+            border-radius: 2px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            font-family: 'Outfit', sans-serif;
+            color: var(--neon-cyan);
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: var(--cyber-glow);
+            background: rgba(0, 243, 255, 0.05);
+        }
+        select { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 2px; 
+            border: 1px solid var(--cyber-border); 
+            background: var(--cyber-surface); 
+            margin-bottom: 20px; 
+            font-size: 16px; 
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            cursor: pointer;
+            box-shadow: var(--cyber-glow);
+        }
         
         .hidden { display: none !important; }
         
-        /* Game Styles */
-        .sentence { font-size: 20px; color: #333; font-weight: 500; margin-bottom: 20px; line-height: 1.4; }
-        .word-target { font-size: 42px; color: #007AFF; font-weight: 800; margin: 20px 0; letter-spacing: -1px; }
-        .mic-btn { width: 90px !important; height: 90px; border-radius: 50%; background: #FF3B30; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 20px auto; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3); transition: transform 0.1s; touch-action: manipulation; }
-        .mic-btn:active { transform: scale(0.95); }
-        .mic-btn.listening { background: #ff0000; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .feedback { margin-top: 10px; font-weight: 600; min-height: 24px; font-size: 18px; }
-        .correct { color: #34C759; }
-        .incorrect { color: #FF3B30; }
-        .youglish { display: block; margin-top: 20px; color: #007AFF; text-decoration: none; font-weight: 500; font-size: 16px; }
+        .sentence { font-size: 24px; color: var(--neon-cyan); font-weight: 700; margin-bottom: 20px; line-height: 1.4; text-shadow: var(--cyber-glow); }
+        .word-target { font-size: 52px; color: var(--neon-pink); font-weight: 900; margin: 25px 0; letter-spacing: 2px; text-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+        .mic-btn { 
+            width: 90px !important; 
+            height: 90px; 
+            border-radius: 2px !important; 
+            background: rgba(0, 243, 255, 0.1) !important; 
+            border: 2px solid var(--neon-cyan) !important;
+            font-size: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 20px auto; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+            color: var(--neon-cyan);
+            box-shadow: var(--cyber-glow);
+        }
+        .mic-btn.listening { 
+            background: var(--neon-cyan) !important; 
+            color: var(--cyber-bg);
+            animation: pulse-cyber 1s infinite alternate; 
+        }
+        @keyframes pulse-cyber { 0% { box-shadow: 0 0 10px var(--neon-cyan); } 100% { box-shadow: 0 0 30px var(--neon-cyan); } }
+        .feedback { margin-top: 10px; font-weight: 700; min-height: 24px; font-size: 20px; font-family: 'Playfair Display', serif; }
+        .correct { color: var(--cyber-ok); text-shadow: 0 0 10px rgba(0, 255, 149, 0.5); }
+        .incorrect { color: var(--cyber-danger); text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
+        .youglish { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 15px; 
+            color: var(--neon-cyan); 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.2em;
+            padding: 10px 20px;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.05);
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .youglish:hover {
+            background: var(--neon-cyan);
+            color: var(--cyber-bg);
+            box-shadow: var(--cyber-glow-strong);
+        }
+        .youglish::before { content: '🎬'; }
         
-        .stat-card { background: #fff; padding: 20px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .stat-card { background: var(--cyber-surface); padding: 25px; border: 1px solid var(--cyber-border); margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; }
         
-        /* Accordion Topics */
-        details { background: #fff; margin: 10px 0; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); text-align: left; }
-        summary { padding: 18px; cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; touch-action: manipulation; }
-        summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; font-size: 20px; color: #007AFF; font-weight: 300; }
-        details[open] summary::after { content: '−'; color: #FF3B30; }
-        details[open] { background: white; }
-        .topic-content { padding: 15px; border-top: 1px solid #f2f2f7; display: flex; flex-direction: column; gap: 10px; }
-        .topic-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .topic-actions button { flex: 1; font-size: 15px; padding: 12px; margin: 0; border-radius: 10px; }
+        .avatar-container { margin: 20px auto; width: 100px; height: 100px; border: 2px solid var(--neon-cyan); position: relative; background: rgba(0, 243, 255, 0.05); box-shadow: var(--cyber-glow); overflow: hidden; }
+        .avatar-container::before { content: ""; position: absolute; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 243, 255, 0.1) 0px, transparent 1px); pointer-events: none; }
+        .avatar-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.2) contrast(1.1) sepia(0.5) hue-rotate(140deg); }
+        .avatar-container::after { content: "LIVE_FEED"; position: absolute; bottom: 2px; right: 5px; font-size: 8px; color: var(--neon-cyan); font-family: monospace; }
 
-        /* Image Avatar CSS */
-        .avatar-container { width: 100%; margin: 0 auto 15px; position: relative; }
-        .avatar-img { width: 100%; height: auto; display: block; mix-blend-mode: multiply; border-radius: 12px; }
-        .face-img { width: 50%; margin: 0 auto; }
-        
-        /* Vocab List */
-        .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fff; margin-bottom: 1px; text-align: left; }
-        .vocab-item:first-child { border-top-left-radius: 14px; border-top-right-radius: 14px; }
-        .vocab-item:last-child { border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; }
+        /* Cyber Accordion HUD */
+        details { background: var(--cyber-surface); margin: 15px 0; border: 1px solid var(--cyber-border); text-align: left; transition: all 0.3s;}
+        summary { padding: 22px; cursor: pointer; font-weight: 700; font-size: 18px; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; touch-action: manipulation; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; text-shadow: var(--cyber-glow); }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '>'; font-size: 20px; color: var(--neon-pink); font-weight: 700; }
+        details[open] summary::after { content: 'v'; }
+        .topic-content { padding: 20px; border-top: 1px solid var(--cyber-border); display: flex; flex-direction: column; gap: 15px; background: rgba(0, 243, 255, 0.05); }
+        .topic-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .topic-actions button { flex: 1; font-size: 13px; padding: 12px; margin: 0; border-radius: 0; }
+
+        /* Vocab List Cyber */
+        .vocab-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            padding: 25px; 
+            background: var(--cyber-surface); 
+            margin-bottom: 20px; 
+            text-align: left; 
+            border: 1px solid var(--cyber-border); 
+            border-left: 5px solid var(--neon-cyan);
+            border-radius: 0; 
+            position: relative;
+        }
+        .vocab-item:hover { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow); }
         .vocab-info { flex-grow: 1; }
-        .vocab-en { font-weight: 600; font-size: 18px; color: #000; }
-        .vocab-es { color: #8E8E93; font-size: 15px; margin-top: 2px; }
-        .vocab-score { font-size: 12px; padding: 4px 8px; border-radius: 6px; color: white; margin-left: 8px; font-weight: 600; }
-        .score-high { background: #34C759; }
-        .score-med { background: #FF9500; }
-        .score-low { background: #FF3B30; }
+        .vocab-en { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 22px; color: var(--neon-cyan); text-shadow: var(--cyber-glow); }
+        .vocab-es { color: #888; font-size: 16px; margin-top: 4px; }
+        .vocab-score { font-size: 12px; padding: 4px 8px; border-radius: 0; color: var(--cyber-bg); margin-left: 10px; font-weight: 700; background: var(--neon-cyan); }
+        .score-high { background: var(--cyber-ok); }
+        .score-med { background: var(--cyber-warn); }
+        .score-low { background: var(--cyber-danger); }
         
-        /* Grammar Course */
-        .level-header { background: transparent; padding: 10px 5px; font-weight: 700; font-size: 20px; margin-top: 20px; text-align: left; color: #000; }
-        .lesson-item { background: white; border-bottom: 1px solid #f2f2f7; padding: 16px; text-align: left; cursor: pointer; font-size: 17px; }
-        .lesson-item:first-of-type { border-top-left-radius: 14px; border-top-right-radius: 14px; }
-        .lesson-item:last-of-type { border-bottom-left-radius: 14px; border-bottom-right-radius: 14px; border-bottom: none; }
-        .lesson-item:active { background: #f2f2f7; }
+        /* Grammar Course HUD */
+        .level-header { background: rgba(0, 243, 255, 0.1); padding: 15px; font-weight: 900; font-size: 20px; margin-top: 20px; text-align: left; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; border-left: 4px solid var(--neon-cyan); }
+        .lesson-item { background: var(--cyber-surface); border: 1px solid var(--cyber-border); padding: 20px; text-align: left; cursor: pointer; font-size: 16px; font-weight: 600; color: #EEE; transition: all 0.3s; margin-bottom: 2px; }
+        .lesson-item:hover { background: rgba(0, 243, 255, 0.05); border-color: var(--neon-cyan); padding-left: 30px; }
+        .lesson-item:active { background: rgba(0, 243, 255, 0.1); }
         
-        /* Timer Bar */
-        #timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 20px 0; overflow: hidden; }
-        #timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
+        /* Timer Bar Cyber */
+        #timer-container, #convo-timer-container, #academy-timer-container { 
+            width: 100%; height: 8px; background: #222; border: 1px solid var(--cyber-border); margin: 20px 0; overflow: hidden; 
+        }
+        #timer-bar, #convo-timer-bar, #academy-timer-bar { 
+            height: 100%; width: 0%; background: var(--neon-cyan); box-shadow: var(--cyber-glow); transition: width 0.1s linear; 
+        }
         
-        /* Convo Timer Bar */
-        #convo-timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 10px 0; overflow: hidden; }
-        #convo-timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
+        .app-logo { width: 180px; margin: 0 auto 20px; height: auto; display: block; object-fit: contain; cursor: pointer; border-radius: 12px; }
         
-        /* Academy Timer Bar */
-        #academy-timer-container { width: 100%; height: 8px; background: #E5E5EA; border-radius: 4px; margin: 10px 0; overflow: hidden; }
-        #academy-timer-bar { height: 100%; width: 0%; background: #34C759; transition: width 0.1s linear, background 0.5s; }
-        
-        
-        .app-logo { width: calc(100% + 40px); margin-left: -20px; margin-top: -20px; height: auto; margin-bottom: 10px; display: block; object-fit: cover; cursor: pointer; mix-blend-mode: multiply; }
-        
-        /* Cookie Banner */
-        #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: white; padding: 15px; text-align: center; z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); }
+        /* Cookie Banner Cyber */
+        #cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; color: white; padding: 20px; text-align: center; z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 15px; border-top: 2px solid var(--neon-cyan); box-shadow: 0 -10px 30px rgba(0, 243, 255, 0.2); }
         @media (min-width: 600px) { #cookie-banner { flex-direction: row; justify-content: center; } }
-        #cookie-banner p { margin: 0; font-size: 0.9rem; color: #eee; }
-        #cookie-banner a { color: #4da3ff; }
-        #cookie-banner button { width: auto; padding: 8px 20px; margin: 0; font-size: 0.9rem; }
+        #cookie-banner p { margin: 0; font-size: 0.9rem; color: #ccc; font-family: 'Outfit', sans-serif; }
+        #cookie-banner a { color: var(--neon-pink); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--neon-pink); }
+        #cookie-banner button { width: auto; padding: 12px 30px; margin: 0; font-size: 0.8rem; }
         
-        /* Install Button */
-        #install-btn { margin: 30px auto 40px auto; padding: 12px 24px; font-size: 1rem; background: #007AFF; color: white; border-radius: 30px; border: none; cursor: pointer; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* Install Button Cyber */
+        #install-btn { 
+            margin: 30px auto 40px auto; 
+            padding: 20px 35px; 
+            font-size: 1.1rem; 
+            background: rgba(0, 243, 255, 0.1); 
+            color: var(--neon-cyan); 
+            border: 2px solid var(--neon-cyan); 
+            border-radius: 0; 
+            cursor: pointer; 
+            display: block; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: var(--cyber-glow);
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            transition: all 0.3s ease;
+        }
+        #install-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: var(--cyber-glow-strong);
+        }
         
-        /* Chinese Font Adjustment */
-        .lang-ja .sentence, .lang-ja .word-target { font-family: "Hiragino Kaku Gothic Pro", "Meiryo", "Noto Sans JP", sans-serif; font-size: 1.3em; }
+        .auto-mic-on { background-color: rgba(0, 255, 149, 0.2) !important; color: var(--cyber-ok) !important; border-color: var(--cyber-ok) !important; box-shadow: 0 0 15px var(--cyber-ok); }
         
-        .auto-mic-on { background-color: #34C759 !important; color: white !important; border: 1px solid #28a745 !important; }
+        /* HUD Advanced Modules */
+        .hud-module {
+            border: 1px solid var(--cyber-border);
+            background: linear-gradient(180deg, rgba(0, 243, 255, 0.05) 0%, transparent 100%);
+            padding: 25px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .hud-module::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 10px; height: 2px; background: var(--neon-cyan);
+        }
+        .hud-module::after {
+            content: "";
+            position: absolute;
+            bottom: 0; right: 0; width: 10px; height: 2px; background: var(--neon-pink);
+        }
+        
+        .flicker { animation: flicker-burn 3s infinite; }
+        @keyframes flicker-burn {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: drop-shadow(var(--cyber-glow)); }
+            20%, 22%, 24%, 55% { opacity: 0.5; filter: none; }
+        }
+        
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 243, 255, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            pointer-events: none;
+            animation: scanline-anim 8s linear infinite;
+        }
+        @keyframes scanline-anim {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
         
         @media print {
             body * { visibility: hidden; }
             #diploma-preview, #diploma-preview * { visibility: visible; }
-            #diploma-preview { position: fixed; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: 5px solid #007AFF !important; }
+            #diploma-preview { position: fixed; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none !important; }
             @page { size: auto; margin: 0mm; }
             body { background: white; }
         }
@@ -123,148 +396,261 @@
 <body>
 
     <!-- VISTA LOGIN -->
-    <div id="view-login" class="container">
-        <header style="margin-bottom: 40px;">
-            <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
-            <video id="welcome-video" style="width: 100%; height: auto; margin-bottom: 10px; display: block; object-fit: cover; border-radius: 12px;" controls playsinline>
-                <source src="video_en.mp4" type="video/mp4">
-                Tu navegador no soporta el tag de video.
-            </video>
-
-            <select id="welcome-lang-selector" onchange="app.changeWelcomeVideo(this.value)" style="margin-top: 15px; margin-bottom: 20px;">
-                <!-- Options will be populated by JS -->
-            </select>
-
-            <h2 style="color: #007AFF; margin-bottom: 10px;">VUELA ALTO, APRENDE MÁS 
-                <a href="https://api.whatsapp.com/send?text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="display: inline-block; vertical-align: middle; margin-left: 5px; text-decoration: none;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.381a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.891-9.885 9.891m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="#25D366"/></svg>
-                </a>
-                <a href="https://t.me/share/url?url=https://jetbulary.com&text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="display: inline-block; vertical-align: middle; margin-left: 5px; text-decoration: none;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#0088cc"/></svg>
-                </a>
-            </h2>
-            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto 20px auto;">Jetbulary: Aprende idiomas como un nativo de forma gratuita. Navega en Jetbulary.com para encontrar tu propio tesoro. Tu <a href="https://console.groq.com/keys" target="_blank" style="color:#007AFF; text-decoration: none; font-weight: bold;">🔑 llave personal</a>, en groq, entra con tu cuenta de google y pulsa en create API KEY, cópiala y pégala en el siguiente recuadro (no guardamos tus datos)</p>
+    <div id="view-login" class="container premium-landing">
+        <!-- 1. APERTURA (HERO HUD) -->
+        <header class="hero">
+            <span class="badge-authority">NÚCLEO DE IA LINGÜÍSTICA v4.0</span>
+            <h1 class="tech">OPTIMIZA TU CÓDIGO NEURONAL PARA UN NUEVO IDIOMA.</h1>
+            <p>Protocolo Jetbulary: Inmersión total mediante síntesis de datos en tiempo real. Máximo rendimiento cognitivo sin latencia.</p>
             
-            <div style="position: relative; max-width: 400px; margin: 0 auto;">
-                <input type="password" id="api-key-input" placeholder="Introduce tu API Key de Groq..." style="margin-bottom: 15px; padding-right: 40px;">
-                <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 15px; cursor: pointer; font-size: 1.2rem;">👁️</span>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <button onclick="document.getElementById('acceso').scrollIntoView({behavior:'smooth'})">INICIAR PROTOCOLO</button>
+                <button class="secondary" onclick="document.getElementById('science').scrollIntoView({behavior:'smooth'})">MÉTRICAS Y CIENCIA</button>
             </div>
-            <div style="max-width: 400px; margin: 0 auto;">
-                <button onclick="app.saveApiKey()" class="success">Entrar a Jetbulary</button>
-                <p style="font-size: 0.85rem; color: #666; margin-top: 15px; margin-bottom: 5px;">¿Ya tienes tu API Key y guardaste tu avance?</p>
-                <button onclick="app.importDB()" class="secondary">📂 Restaurar Avance</button>
+            
+            <div style="margin-top: 60px;">
+                <select id="welcome-lang-selector" onchange="app.changeWelcomeVideo(this.value)" style="max-width: 300px;">
+                    <!-- Options will be populated by JS -->
+                </select>
             </div>
         </header>
 
-        <nav style="margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-            <a href="#" onclick="return false;" style="margin: 0 10px; text-decoration: none; color: #333; font-weight: bold;">Inicio</a>
-            <a href="#features" style="margin: 0 10px; text-decoration: none; color: #555;">Características</a>
-            <a href="#methodology" style="margin: 0 10px; text-decoration: none; color: #555;">Metodología</a>
-            <a href="#faq" style="margin: 0 10px; text-decoration: none; color: #555;">Preguntas Frecuentes</a>
-        </nav>
+        <!-- 2. FORMULARIO DE ACCESO (HUD RESTAURADO) -->
+        <div class="hud-card" id="acceso" style="margin: 40px 0; background: rgba(0,0,0,0.6); border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
+            <h3 class="tech" style="margin-top: 0; color: var(--neon-cyan); letter-spacing: 0.3em; font-size: 1.4rem;">[ ACCESO AL NÚCLEO ]</h3>
+            <p style="font-size: 0.9rem; color: #888; font-style: italic; margin-bottom: 25px;">Introduce tu firma digital (Groq API Key) para sincronizar redes neuronales.</p>
+            <div style="position: relative;">
+                <input type="password" id="api-key-input" placeholder="GROQ_SIGNAL_KEY_..." style="font-family: monospace; letter-spacing: 2px; padding-right: 50px; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+                <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 20px; top: 15px; cursor: pointer; color: var(--neon-cyan); font-size: 1.2rem; filter: drop-shadow(var(--cyber-glow));">👁️</span>
+            </div>
+            <button class="success" onclick="app.saveApiKey()" style="width: 100%; border-width: 2px; font-size: 1.1rem; padding: 22px;">SINCRONIZAR AHORA</button>
+            <p style="font-size: 13px; margin-top: 25px; color: #666;">¿SIN SEÑAL? <a href="https://console.groq.com/keys" target="_blank" style="color: var(--neon-cyan); text-decoration: none; border-bottom: 1px solid var(--neon-cyan); font-weight: bold;">[ GENERAR CLAVE EN CONSOLA ]</a></p>
+        </div>
 
-        <section style="text-align: left; margin-bottom: 40px;">
-            <h2 style="color: #007AFF; margin-bottom: 20px;">Aprendizaje Inmersivo con IA</h2>
-            <p style="margin-bottom: 15px;">Jetbulary no es simplemente otra aplicación de tarjetas de memoria. Utilizamos modelos de lenguaje avanzados (LLMs) para generar contenido educativo personalizado al instante. Olvídate de las listas de palabras estáticas y aburridas; aquí tú eliges el tema y la IA construye la lección para ti.</p>
-            <div style="background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <h3 style="margin-top: 0; font-size: 1rem; color: #555;">Ejemplo Vocabulario: Entrevista de Trabajo</h3>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/resume/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Resume</a> <span style="color: #999;">(Currículum)</span></li>
-                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/strength/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Strength</a> <span style="color: #999;">(Fortaleza)</span></li>
-                    <li style="margin-bottom: 5px;">👉 <a href="https://youglish.com/pronounce/background/english" target="_blank" style="color: #0000EE; text-decoration: underline; font-weight: bold;">Background</a> <span style="color: #999;">(Trayectoria)</span></li>
-                </ul>
+        <!-- SECCIÓN: CIENCIA DEL APRENDIZAJE (SEO) -->
+        <section id="science" class="premium-section" style="background: rgba(0, 0, 0, 0.4);">
+            <div class="container" style="text-align: left;">
+                <div class="hud-module">
+                    <span class="tech flicker" style="color:var(--neon-pink); font-size:0.7rem; position:absolute; top: -10px; left: 20px; background:#000; padding:0 10px;">[ ANÁLISIS_COGNITIVO ]</span>
+                    <h2 class="tech" style="color:var(--neon-cyan); margin-top: 10px;">La Ciencia del Input Comprensible</h2>
+                    <div style="column-count: 2; column-gap: 40px; font-size: 16px; color: #AAA; line-height: 1.6;">
+                        <p>El aprendizaje de idiomas ha sido revolucionado por la Inteligencia Artificial. En Jetbulary, aplicamos la hipótesis del <strong>Input Comprensible</strong> de Stephen Krashen, pero potenciada por modelos de lenguaje de última generación. Esta teoría sostiene que adquirimos el lenguaje cuando entendemos mensajes que están un nivel por encima de nuestra competencia actual (i+1).</p>
+                        <p>Nuestra IA genera contenido dinámico que garantiza que cada frase que escuchas contenga vocabulario nuevo pero dentro de una estructura gramatical que ya dominas. Esto elimina la frustración del aprendizaje tradicional y fomenta la <em>adquisición subconsciente</em> del idioma.</p>
+                        <p>Además, integramos el sistema de <strong>Repetición Espaciada (SRS)</strong>. Cuando interactúas con nuestra herramienta, el algoritmo detecta qué palabras te resultan más difíciles de pronunciar y ajusta la frecuencia de aparición en futuras sesiones, optimizando la plasticidad neuronal.</p>
+                        <p>La inmersión no requiere viajar. Requiere un entorno controlado donde el idioma destino sea el único vehículo de comunicación. Jetbulary crea este "domo de inmersión" digital, permitiéndote practicar situaciones reales desde la comodidad de tu interfaz Cyberpunk.</p>
+                    </div>
+                </div>
+
+                <!-- ADDED FOR ADSENSE: HOW IT WORKS DETAILS -->
+                <div class="hud-module" style="margin-top: 40px; border-color: var(--neon-pink);">
+                    <h3 class="tech">[ PROTOCOLO DE ENTRENAMIENTO ]</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div>
+                            <h4 style="color: var(--neon-cyan);">1. Análisis de Contexto</h4>
+                            <p style="font-size: 0.9rem;">El motor de IA analiza tu historial y genera temas personalizados basados en tus intereses reales, no en lecciones genéricas.</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--neon-cyan);">2. Síntesis Vocal Nativa</h4>
+                            <p style="font-size: 0.9rem;">Utilizamos la Web Speech API para proporcionar modelos de pronunciación precisos en más de 9 idiomas diferentes.</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--neon-cyan);">3. Evaluación en Tiempo Real</h4>
+                            <p style="font-size: 0.9rem;">Nuestro sistema de reconocimiento de voz compara tu señal acústica con el patrón nativo deseado con precisión milimétrica.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p>Nuestro enfoque se basa en el <strong>aprendizaje contextual</strong>. No aprendes palabras aisladas, sino que las ves y escuchas dentro de frases completas, lo que ayuda a tu cerebro a retener el significado y el uso gramatical de forma natural.</p>
-            <p>Además, practicando podrás conseguir un <strong>Diploma Informativo Jetbulary (no oficial)</strong>.</p>
-            <img src="Diplo.jpg" alt="Diploma Jetbulary" style="width: 150px; display: block; margin: 10px auto; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-            <div style="background: #fff; padding: 15px; border-radius: 10px; margin-top: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <h3 style="margin-top: 0; font-size: 1rem; color: #555;">Practica como un Nativo</h3>
-                <p style="font-size: 0.95rem; margin-bottom: 10px;">Pulsa y <strong>escucha a nativos</strong> usar cualquier palabra en contextos reales. Entra a Jetbulary, elige un tema y <strong>habla con una profesora de IA</strong> que te guiará en conversaciones realistas.</p>
+        </section>
+
+        <!-- SECCIÓN: GLOSARIO 100 PALABRAS (BOT ALIMENTO) -->
+        <section id="glossary" class="premium-section">
+            <div class="container" style="text-align: left;">
+                <h2 class="tech">Diccionario de Frecuencia Crítica</h2>
+                <p>Para dominar un idioma, no necesitas conocer 50,000 palabras. El 80% de la comunicación diaria se basa en menos de 1,000 términos. Aquí presentamos una muestra estática de términos fundamentales que nuestra IA utiliza en cada lección:</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 30px; position: relative; overflow: hidden; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--cyber-border);">
+                    <div class="scanline"></div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong class="flicker" style="color:var(--neon-cyan)">Accomplish</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[V. DOMINAR / LOGRAR]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Challenge</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[N. DESAFÍO TÉCNICO]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Development</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[N. EVOLUCIÓN / PROGRESO]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong class="flicker" style="color:var(--neon-cyan)">Enhance</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[V. OPTIMIZAR / MEJORAR]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Knowledge</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[N. BASE DE DATOS / SABER]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Leverage</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[V. APALANCAR RECURSOS]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Innovation</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[N. DISRUPCIÓN / CAMBIO]</span>
+                    </div>
+                    <div class="hud-card" style="padding: 15px; font-size: 14px; background:rgba(0,243,255,0.02); border-radius:0;">
+                        <strong style="color:var(--neon-cyan)">Sustainability</strong><br>
+                        <span style="color:#888; font-size:0.75rem;">[N. PERSISTENCIA]</span>
+                    </div>
+                </div>
             </div>
+        </section>
+
+        <!-- SECCIÓN: CIERRE MÉTRICO -->
+        <footer id="cierre" class="premium-section" style="border-bottom: none; text-align: center; background: linear-gradient(to top, #000, var(--cyber-surface)); padding: 60px 20px;">
+            <div class="tech flicker" style="font-size: 0.8rem; letter-spacing: 0.5em; color: var(--neon-cyan); margin-bottom: 25px;">[ FIN DE TRANSMISIÓN ]</div>
+            <h2 class="tech" style="color: var(--neon-pink); font-size: 1.8rem; text-shadow: 0 0 20px rgba(255,0,255,0.4);">Tu evolución lingüística es inevitable.</h2>
+            <p style="color: #666; margin-bottom: 30px;">Protocolo Jetbulary: Desmantelando barreras comunicativas desde 2024.</p>
             
-            <h3 style="margin-top: 30px; margin-bottom: 15px;">¿Cómo funciona?</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                    <h4 style="margin-top: 0;">1. Elige tu Tema</h4>
-                    <p style="font-size: 0.95rem;">Desde "Negocios Internacionales" hasta "Cocina Italiana". Tú decides qué quieres aprender hoy.</p>
-                </div>
-                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                    <h4 style="margin-top: 0;">2. Generación IA</h4>
-                    <p style="font-size: 0.95rem;">Nuestra tecnología conecta con Groq para crear vocabulario relevante, frases de ejemplo y traducciones precisas en segundos.</p>
-                </div>
-                <div style="background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                    <h4 style="margin-top: 0;">3. Práctica Activa</h4>
-                    <p style="font-size: 0.95rem;">Escucha pronunciaciones nativas, usa el reconocimiento de voz para mejorar tu acento y recibe feedback instantáneo.</p>
-                </div>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; flex-wrap: wrap;">
+                <button class="secondary" onclick="app.showPrivacy()" style="font-size: 0.7rem; padding: 10px 20px;">[ PRIVACIDAD ]</button>
+                <button class="secondary" onclick="app.showTerms()" style="font-size: 0.7rem; padding: 10px 20px;">[ TÉRMINOS ]</button>
+                <button class="secondary" onclick="app.showSupport()" style="font-size: 0.7rem; padding: 10px 20px;">[ SOPORTE ]</button>
             </div>
 
-            <h3 id="features" style="margin-top: 30px;">Características Principales</h3>
-            <ul style="padding-left: 20px; color: #444; text-align: left; line-height: 1.6;">
-                <li><strong>IA Generativa Ilimitada:</strong> Nunca te quedarás sin contenido nuevo.</li>
-                <li><strong>Reconocimiento de Voz Avanzado:</strong> Evaluación de pronunciación en tiempo real.</li>
-                <li><strong>Sistema de Repaso Espaciado:</strong> Algoritmos inteligentes que detectan tus fallos y programan repasos automáticos.</li>
-                <li><strong>Soporte Multi-idioma:</strong> Aprende Inglés, Francés, Alemán, Italiano, y más.</li>
-                <li><strong>Integración Multimedia:</strong> Enlaces directos a YouGlish y diccionarios contextuales.</li>
-            </ul>
-        </section>
-
-        <section id="methodology" style="text-align: left; margin-bottom: 40px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <h2 style="color: #007AFF;">Nuestra Metodología</h2>
-            <p>En Jetbulary creemos que la mejor forma de aprender un idioma es usándolo. Por eso, hemos eliminado las barreras tradicionales:</p>
-            <ul style="list-style-type: none; padding: 0;">
-                <li style="margin-bottom: 10px;">🧠 <strong>Input Comprensible:</strong> Recibes frases que están ligeramente por encima de tu nivel actual, facilitando la adquisición natural.</li>
-                <li style="margin-bottom: 10px;">🗣️ <strong>Output Activo:</strong> Te obligamos a hablar desde el primer día. Sin pronunciación, no hay avance.</li>
-                <li style="margin-bottom: 10px;">🔄 <strong>Feedback Inmediato:</strong> La IA te corrige al instante, evitando que fosilices errores.</li>
-            </ul>
-        </section>
-
-        <section id="faq" style="text-align: left; margin-bottom: 40px;">
-            <h2 style="color: #007AFF;">Preguntas Frecuentes (FAQ)</h2>
-            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
-                <summary style="font-weight: bold; cursor: pointer;">¿Es realmente gratis?</summary>
-                <p style="margin-top: 10px;">Sí, Jetbulary es una herramienta gratuita. Utilizamos la API de Groq que ofrece un plan gratuito generoso para desarrolladores y estudiantes.</p>
-            </details>
-            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
-                <summary style="font-weight: bold; cursor: pointer;">¿Qué idiomas puedo aprender?</summary>
-                <p style="margin-top: 10px;">Actualmente soportamos Inglés, Alemán, Francés, Italiano, Euskera, Ruso, Portugués, Catalán y Gallego.</p>
-            </details>
-            <details style="margin-bottom: 10px; background: #fff; padding: 15px; border-radius: 8px;">
-                <summary style="font-weight: bold; cursor: pointer;">¿Necesito registrarme?</summary>
-                <p style="margin-top: 10px;">No necesitas crear una cuenta con email. Tu progreso se guarda localmente en tu dispositivo. Solo necesitas una API Key para activar la inteligencia artificial.</p>
-            </details>
-        </section>
+            <button class="secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">VOLVER AL INICIO</button>
+            
+            <div style="margin-top: 50px; font-size: 11px; color: #444; letter-spacing: 2px;">
+                JETBULARY OS v4.0.5 // ENCRYPTION: AES-256 // AI_NODE: GROQ_ACTIVE // SYNC: LOCAL_ONLY <br>
+                <span style="color:#222; margin-top:10px; display:block;">© 2024-2026 JETBULARY. TODOS LOS PROTOCOLOS RESERVADOS.</span>
+            </div>
+        </footer>
     </div>
 
     <!-- VISTA PRIVACIDAD -->
     <div id="view-privacy" class="container hidden" style="text-align: left;">
-        <h2>Política de Privacidad</h2>
-        <p>En Jetbulary, respetamos su privacidad. Esta aplicación funciona principalmente en el lado del cliente (su dispositivo).</p>
-        <h3>Recopilación de Datos</h3>
-        <p>No almacenamos sus datos personales en servidores externos. Su progreso, vocabulario y configuraciones se guardan localmente en su dispositivo utilizando `localStorage`.</p>
-        <h3>Uso de API de Terceros</h3>
-        <p>Para generar contenido, la aplicación envía solicitudes a la API de Groq. Su API Key se almacena localmente en su dispositivo y solo se utiliza para autenticar estas solicitudes.</p>
-        <h3>Cookies</h3>
-        <p>Utilizamos cookies técnicas esenciales para el funcionamiento de la aplicación y cookies de Google AdSense para mostrar publicidad personalizada.</p>
-        <button onclick="app.showLogin()" class="secondary" style="margin-top: 20px;">Volver</button>
+        <h2 class="tech">Política de Privacidad [PROTOCOL_A]</h2>
+        <div class="hud-card" style="margin-bottom:20px; border-color:var(--neon-pink);">
+            <p style="color:#AAA;">En Jetbulary, respetamos la integridad de sus datos neuronales. Esta terminal opera bajo los siguientes parámetros:</p>
+            <h3 class="tech" style="font-size:1rem; color:var(--neon-cyan);">[01] Almacenamiento Local</h3>
+            <p style="color:#AAA;">No almacenamos sus datos personales en servidores. Su progreso y API Key residen exclusivamente en su dispositivo (`localStorage`).</p>
+            <h3 class="tech" style="font-size:1rem; color:var(--neon-cyan);">[02] Criptografía de API</h3>
+            <p style="color:#AAA;">Su API Key se utiliza únicamente para establecer el enlace con el motor de inferencia Groq.</p>
+            <h3 class="tech" style="font-size:1rem; color:var(--neon-cyan);">[03] Cookies de Terceros</h3>
+            <p style="color:#AAA;">Utilizamos cookies de AdSense para el financiamiento del núcleo sin comprometer su firma digital.</p>
+        </div>
+        <button onclick="app.showLogin()" class="secondary" style="width:100%;">VOLVER AL INICIO</button>
     </div>
 
     <!-- VISTA TÉRMINOS -->
     <div id="view-terms" class="container hidden" style="text-align: left;">
-        <h2>Términos de Uso</h2>
-        <p>Al utilizar Jetbulary, usted acepta los siguientes términos:</p>
-        <h3>Uso Personal</h3>
-        <p>Esta aplicación es para uso personal y educativo.</p>
-        <h3>Contenido Generado por IA</h3>
-        <p>El contenido educativo es generado por Inteligencia Artificial. Aunque nos esforzamos por la precisión, puede haber errores ocasionales en las traducciones o explicaciones.</p>
-        <h3>Responsabilidad</h3>
-        <p>Jetbulary no se hace responsable del uso indebido de la aplicación o de la exactitud absoluta del contenido generado.</p>
-        <button onclick="app.showLogin()" class="secondary" style="margin-top: 20px;">Volver</button>
+        <h2 class="tech">Términos de Uso [PROTOCOLO]</h2>
+        <div class="hud-card" style="margin-bottom:20px;">
+            <p>Al utilizar Jetbulary, usted acepta los siguientes términos de sincronización:</p>
+            <h3 class="tech" style="font-size:1rem;">01. Uso Personal</h3>
+            <p>Esta aplicación es para uso personal y educativo mediante IA.</p>
+            <h3 class="tech" style="font-size:1rem;">02. Contenido Generado</h3>
+            <p>El contenido educativo es generado por síntesis de IA. Jetbulary no se hace responsable de imprecisiones técnicas en el motor de lenguaje.</p>
+        </div>
+        <button onclick="app.showLogin()" class="secondary" style="width:100%;">VOLVER AL INICIO</button>
+    </div>
+
+    <!-- VISTA SOPORTE -->
+    <div id="view-support" class="container hidden" style="text-align: left;">
+        <h2 class="tech">Soporte Técnico [NODE_CONTACT]</h2>
+        <div class="hud-card" style="margin-bottom:20px; border-color:var(--cyber-info);">
+            <p>¿Tienes problemas con la sincronización o dudas sobre el protocolo?</p>
+            <h3 class="tech" style="font-size:1rem; color:var(--neon-cyan);">[ CANAL DE CONTACTO ]</h3>
+            <p style="color:#AAA;">Puedes contactar con el centro de mando vía email:</p>
+            <p class="tech" style="font-size:1.2rem; color:var(--cyber-info); border: 1px dashed var(--cyber-info); padding: 15px;">soporte@jetbulary.com</p>
+            
+            <h3 class="tech" style="font-size:1rem; color:var(--neon-cyan); margin-top:30px;">[ ESTADO DEL NÚCLEO ]</h3>
+            <p style="color:#AAA;"><span style="color:var(--cyber-ok);">●</span> Sistema Online: 100% Operativo</p>
+            <p style="color:#AAA;"><span style="color:var(--cyber-ok);">●</span> Enlace Groq: Sincronizado</p>
+        </div>
+        <button onclick="app.showLogin()" class="secondary" style="width:100%;">VOLVER AL INICIO</button>
+    </div>
+
+    <!-- VISTA STATS -->
+    <div id="view-stats" class="container hidden">
+        <h2 class="tech">MÉTRICAS DE RENDIMIENTO</h2>
+        <div class="stat-grid" style="margin-top:20px;">
+            <div class="stat-item">
+                <span class="tech" style="font-size:0.8rem; color:#888;">[ DATOS TOTALES ]</span>
+                <span class="stat-value" id="stat-total" style="color:var(--neon-cyan);">0</span>
+                <span style="font-size:0.9rem; color:#666;">Módulos en Memoria</span>
+            </div>
+            <div class="stat-item">
+                <span class="tech" style="font-size:0.8rem; color:#888;">[ PRECISIÓN ]</span>
+                <span class="stat-value" id="stat-acc" style="color:var(--neon-pink);">0%</span>
+                <span style="font-size:0.9rem; color:#666;">Eficiencia Vocal</span>
+            </div>
+        </div>
+        <button onclick="app.showDashboard()" class="secondary" style="width:100%; margin-top:30px;">CERRAR PANEL</button>
+    </div>
+
+    <!-- VISTA RECURSOS -->
+    <div id="view-resources" class="container hidden">
+        <h2 class="tech">MANTENIMIENTO DEL SISTEMA</h2>
+        <p style="color:#888;">Nuevos módulos de entrenamiento y recursos externos.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0;">
+            <button onclick="app.showCulture()" class="secondary">🌍 CULTURA</button>
+            <button onclick="app.showAlphabet()" class="secondary">🔤 ALFABETO</button>
+        </div>
+        <div class="hud-card" style="text-align:left; background:rgba(255,0,255,0.02); border-color:var(--neon-pink);">
+            <h3 class="tech" style="color:var(--neon-pink); font-size:1rem;">[ RECURSOS EXTERNOS ]</h3>
+            <ul style="color:#AAA; font-size:0.9rem; padding-left:20px; list-style: none;">
+                <li><span style="color:var(--neon-cyan)">></span> YouGlish: Sincronización nativa.</li>
+                <li><span style="color:var(--neon-cyan)">></span> Filmot: Análisis de contexto.</li>
+                <li><span style="color:var(--neon-cyan)">></span> Groq: Motor de inferencia.</li>
+            </ul>
+        </div>
+        <button onclick="app.showDashboard()" class="secondary" style="width:100%; margin-top:20px;">VOLVER</button>
+    </div>
+
+    <!-- VISTA GRAMÁTICA -->
+    <div id="view-grammar" class="container hidden">
+        <div class="avatar-container" id="avatar-grammar"></div>
+        <h2 class="tech" id="grammar-title">MANUAL DE SINTAXIS</h2>
+        <p style="color:#888;">Estructuras de datos para el idioma: <span id="grammar-lang-tag" style="color:var(--neon-cyan)">...</span></p>
+        
+        <button id="btn-alphabet" onclick="app.showAlphabet()" class="warning hidden" style="margin-bottom: 20px; width:100%;">[!] CARGAR SET DE CARACTERES ESPECIALES</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
+            <button onclick="app.showGrammarCourse()" class="success">🎓 CURSO GUIADO</button>
+            <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ CONSULTA IA</button>
+        </div>
+        <div id="grammar-qa" class="hidden">
+            <input type="text" id="grammar-query" placeholder="Ej: Present Perfect, Verbos modales...">
+            <button onclick="app.askGrammar()" id="btn-grammar" style="width:100%;">REALIZAR CONSULTA</button>
+            <div id="grammar-content" style="text-align: left; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border: 1px solid var(--cyber-border); min-height: 100px;"></div>
+        </div>
+        <div id="grammar-course-list" style="margin-bottom: 20px;"></div>
+        <button onclick="app.showDashboard()" class="secondary" style="width:100%;">VOLVER</button>
+    </div>
+
+    <!-- VISTA DIPLOMA -->
+    <div id="view-diploma" class="container hidden">
+        <div id="diploma-content"></div>
+    </div>
+
+    <!-- VISTA CULTURA -->
+    <div id="view-culture" class="container hidden">
+        <h2 class="tech" id="culture-title">CURIOSIDADES CULTURALES</h2>
+        <div id="culture-content" style="text-align: left; margin: 20px 0; background: rgba(0,0,0,0.3); border: 1px solid var(--cyber-border); padding: 20px;"></div>
+        <button onclick="app.showResources()" class="secondary" style="width:100%;">VOLVER A RECURSOS</button>
+    </div>
+
+    <!-- VISTA ALFABETO -->
+    <div id="view-alphabet" class="container hidden">
+        <h2 class="tech">SISTEMA DE CARACTERES</h2>
+        <div id="alphabet-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 20px 0;"></div>
+        <button onclick="app.showResources()" class="secondary" style="width:100%;">VOLVER A RECURSOS</button>
     </div>
 
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
-        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
-        <h2 style="color: #007AFF; margin-bottom: 10px;">VUELA ALTO, APRENDE MÁS
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
+        <h2 class="tech" style="color: var(--neon-cyan); margin-bottom: 25px; font-size: 1.4rem; letter-spacing: 0.1em; text-shadow: var(--cyber-glow-strong);">
+            ESTADO DEL NÚCLEO: ACTIVO
             <a href="https://api.whatsapp.com/send?text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="display: inline-block; vertical-align: middle; margin-left: 5px; text-decoration: none;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.381a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.891-9.885 9.891m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="#25D366"/></svg>
             </a>
@@ -274,12 +660,12 @@
         </h2>
         
         <!-- Custom Language Selector -->
-        <div id="custom-lang-selector" style="position: relative; margin-bottom: 15px; z-index: 100;">
-            <button onclick="app.toggleLangMenu()" id="lang-btn" style="background: #fff; color: #333; width: 100%; padding: 16px; border-radius: 12px; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; font-size: 17px;">
+        <div id="custom-lang-selector" style="position: relative; margin-bottom: 25px; z-index: 100;">
+            <button onclick="app.toggleLangMenu()" id="lang-btn" style="background: rgba(0,243,255,0.05); color: var(--neon-cyan); width: 100%; padding: 18px; border-radius: 0; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); display: flex; align-items: center; justify-content: space-between; font-size: 16px; font-family: 'Orbitron', sans-serif;">
                 <span id="current-lang-display" style="display: flex; align-items: center; gap: 10px;"></span>
-                <span>▼</span>
+                <span>[ DESPLEGAR ]</span>
             </button>
-            <div id="lang-menu" class="hidden" style="position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden; margin-top: 5px; max-height: 300px; overflow-y: auto;"></div>
+            <div id="lang-menu" class="hidden" style="position: absolute; top: 100%; left: 0; width: 100%; background: var(--cyber-surface); border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); overflow: hidden; margin-top: 5px; max-height: 300px; overflow-y: auto;"></div>
         </div>
         
         <!-- AVATAR DASHBOARD -->
@@ -296,20 +682,20 @@
             <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
         </div>
 
-        <details open style="margin: 20px 0; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #f0f0f0;">
-            <summary style="font-size: 1.2rem; color: #007AFF; padding: 20px;">✨ Añade tu Propio Tema</summary>
-            <div style="padding: 20px; padding-top: 0;">
+        <details open style="margin: 20px 0;">
+            <summary>✨ INICIALIZAR NUEVO TEMA</summary>
+            <div class="topic-content">
                 <div style="position: relative; margin-bottom: 15px;">
-                    <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." style="margin-bottom: 0; padding-right: 50px; background: #f9f9f9; border: 1px solid #eee;">
-                    <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10;">🎤</span>
+                    <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." onkeydown="if(event.key === 'Enter') app.createTopic()">
+                    <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));">🎤</span>
                 </div>
-                <button onclick="app.createTopic()" id="btn-create" style="margin: 0;">Generar con IA</button>
+                <button onclick="app.createTopic()" id="btn-create" class="success" style="margin: 0; width: 100%;">Generar Protocolo IA</button>
             </div>
         </details>
         
-        <details open style="margin: 20px 0; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #f0f0f0;">
-            <summary style="font-size: 1.2rem; color: #007AFF; padding: 20px;">💡 Sugerencias de Temas</summary>
-            <div id="suggestions-container" style="padding: 20px; padding-top: 0;"></div>
+        <details open style="margin: 20px 0;">
+            <summary>💡 SUGERENCIAS DE INTERFAZ</summary>
+            <div id="suggestions-container" class="topic-content" style="padding-top: 0;"></div>
         </details>
         
         <div id="topic-list" style="margin-top: 20px;"></div>
@@ -317,18 +703,20 @@
         <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
         <!-- SECCIÓN PREMIUM / SOPORTE -->
-        <div style="margin-top: 30px; padding: 20px; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <h3 style="margin-top: 0; color: #007AFF;">Sincronización y Apoyo</h3>
-            <button onclick="app.exportDB()" class="secondary" style="margin-bottom: 15px;">1. Guardar Avance</button>
-            <button onclick="app.checkDiploma()" class="secondary" style="margin-bottom: 15px; background: #E3F2FD; color: #0277BD; border: 1px solid #81D4FA;">2. Consigue Diploma Jetbulary</button>
-            <button onclick="app.showDiplomas()" class="secondary" style="margin-bottom: 15px; background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7;">3. Diplomas conseguidos</button>
-            <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Guardar Avance e Importar Avance es GRATIS, pulsa en la tacita de café y vuelve a la página, verás el botón de Importar Avance, sólo SI QUIERES, PUEDES APORTAR AL PROYECTO, VUELA ALTO, APRENDE MÁS, ¡Gracias por usar Jetbulary!</p>
-            <p style="font-weight: bold; margin-bottom: 5px;">Apoya el proyecto, pulsando Tip <span onclick="app.secretAdmin()" style="color: #007AFF; cursor: pointer;">.</span></p>
-            <div onclick="app.unlockSync()" style="margin-bottom: 15px; cursor: pointer; display: inline-block;">
-                <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'X8X61UAY6L');kofiwidget2.draw();</script>
+        <div class="hud-card" style="margin-top: 30px; text-align: left;">
+            <h3 class="tech" style="margin-top: 0; font-size: 1.2rem;">SINCRONIZACIÓN Y NÚCLEO</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button onclick="app.exportDB()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px;">Guardar Avance</button>
+                <button onclick="app.checkDiploma()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px; color: var(--neon-cyan); border-color: var(--neon-cyan);">Misión Diploma</button>
             </div>
-            <div id="sync-buttons" class="hidden" style="display: flex; gap: 10px; margin-top: 10px;">
-                <button onclick="app.importDB()" class="secondary">⬆️ Importar Avance</button>
+            <button onclick="app.showDiplomas()" class="secondary" style="width: 100%; margin-top: 5px; font-size: 0.8rem;">Visualizar Logros</button>
+            
+            <p style="font-size: 0.85rem; color: #777; margin-top: 20px; border-top: 1px solid var(--cyber-border); padding-top: 15px;">Optimización gratuita: El núcleo de Jetbulary se financia mediante aportaciones voluntarias. Si el protocolo te ha sido útil, considera apoyar el mantenimiento de los servidores de IA.</p>
+            
+            <div style="text-align: center; margin-top: 10px;">
+                <div onclick="app.unlockSync()" style="cursor: pointer; display: inline-block; filter: drop-shadow(var(--cyber-glow));">
+                    <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support on Ko-fi', '#00f3ff', 'X8X61UAY6L');kofiwidget2.draw();</script>
+                </div>
             </div>
         </div>
     </div>
@@ -388,7 +776,7 @@
         <div class="avatar-container" id="avatar-convo"></div>
         <h2>Conversación sobre <span id="conversation-topic-title"></span></h2>
         
-        <div id="conversation-history" style="text-align: left; margin-bottom: 20px; max-height: 300px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 12px;">
+        <div id="conversation-history" style="text-align: left; margin-bottom: 20px; max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--cyber-border); border-radius: 2px;">
             <!-- Chat bubbles will go here -->
         </div>
 
@@ -423,7 +811,7 @@
         <div class="avatar-container" id="avatar-academy"></div>
         <h2>Modo Academia: <span id="academy-topic-title"></span></h2>
         
-        <div id="academy-history" style="text-align: left; margin-bottom: 20px; max-height: 400px; overflow-y: auto; background: #f9f9f9; padding: 10px; border-radius: 12px;">
+        <div id="academy-history" style="text-align: left; margin-bottom: 20px; max-height: 450px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--cyber-border); border-radius: 2px;">
             <!-- Chat bubbles will go here -->
         </div>
 
@@ -455,72 +843,12 @@
         <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
     </div>
 
-    <!-- VISTA GRAMÁTICA -->
-    <div id="view-grammar" class="container hidden">
-        <!-- AVATAR GRAMMAR -->
-        <div class="avatar-container" id="avatar-grammar">
-        </div>
-        
-        <h2 id="grammar-title">Gramática</h2>
-        
-        <button id="btn-alphabet" onclick="app.showAlphabet()" class="warning hidden" style="margin-bottom: 15px;">🔤 Alfabeto / Signos</button>
-        <div style="display: flex; gap: 5px; margin-bottom: 20px;">
-            <button onclick="app.showGrammarCourse()" class="success">🎓 Curso Guiado</button>
-            <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ Pregunta Rápida</button>
-        </div>
-
-        <!-- Pregunta Rápida -->
-        <div id="grammar-qa" class="hidden">
-            <p>Pide a la profesora que te explique algo:</p>
-            <input type="text" id="grammar-query" placeholder="Ej: Present Perfect, Verbos modales...">
-            <button onclick="app.askGrammar()" id="btn-grammar">Preguntar</button>
-            <div id="grammar-content" style="text-align: left; margin-top: 20px; background: #f9f9f9; padding: 10px; border-radius: 8px; min-height: 100px;"></div>
-        </div>
-
-        <!-- Curso Guiado -->
-        <div id="grammar-course-list" class="hidden"></div>
-
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
-    </div>
-
-    <!-- VISTA ALFABETO -->
-    <div id="view-alphabet" class="container hidden">
-        <h2>Alfabeto / Signos</h2>
-        <div id="alphabet-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px;"></div>
-        <button onclick="app.showGrammar()" class="secondary" style="margin-top:20px;">Volver</button>
-    </div>
-
-    <!-- VISTA RECURSOS -->
-    <div id="view-resources" class="container hidden">
-        <h2>Recursos Extra</h2>
-        <div id="resources-content" style="text-align: left;"></div>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Volver</button>
-    </div>
-
-    <!-- VISTA CULTURA -->
-    <div id="view-culture" class="container hidden">
-        <h2 id="culture-title">Cultura</h2>
-        <div id="culture-content" style="text-align: left; line-height: 1.6;"></div>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:20px;">Volver</button>
-    </div>
-
-    <!-- VISTA ESTADÍSTICAS -->
-    <div id="view-stats" class="container hidden">
-        <h2>Estadísticas</h2>
-        <div class="stat-card"><span>Palabras:</span> <strong id="stat-total">0</strong></div>
-        <div class="stat-card"><span>Precisión:</span> <strong id="stat-acc">0%</strong></div>
-        <button onclick="app.showDashboard()" class="secondary">Volver</button>
-    </div>
-
-    <!-- VISTA DIPLOMA -->
-    <div id="view-diploma" class="container hidden">
-        <div id="diploma-content"></div>
-    </div>
-
     <!-- COOKIE BANNER -->
     <div id="cookie-banner" class="hidden">
-        <p>🍪 Usamos cookies para mejorar tu experiencia y mostrar anuncios. Al continuar, aceptas nuestra <a href="#" onclick="app.showPrivacy()">Política de Privacidad</a>.</p>
-        <button onclick="app.acceptCookies()" class="success">Aceptar</button>
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
+            <p>🍪 <span class="tech" style="color:var(--neon-cyan); font-size:0.7rem;">[PROTOCOLO_COOKIES]</span> Usamos cookies para optimizar la sincronización de datos y anuncios. Al continuar, aceptas nuestra <a href="#" onclick="app.showPrivacy()">Política de Privacidad</a>.</p>
+            <button onclick="app.acceptCookies()" class="success" style="padding: 10px 25px; font-size: 0.8rem; margin: 0;">ACEPTAR</button>
+        </div>
     </div>
 
     <!-- VIDEO OVERLAY -->
@@ -531,12 +859,19 @@
         <button onclick="app.closeVideoOverlay()" class="secondary" style="margin-top:20px; width:auto;">Cerrar</button>
     </div>
 
-    <footer style="margin-top: 60px; font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 30px; width: 100%; max-width: 600px; text-align: center;">
-        <p>&copy; 2026 Jetbulary. Todos los derechos reservados.</p>
-        <p>
-            <a href="#" onclick="app.showPrivacy()" style="color: #888; text-decoration: none; margin: 0 10px;">Política de Privacidad</a> | 
-            <a href="#" onclick="app.showTerms()" style="color: #888; text-decoration: none; margin: 0 10px;">Términos de Uso</a> | 
-            <a href="mailto:info@jetbulary.com" style="color: #888; text-decoration: none; margin: 0 10px;">Contacto</a>
+    <footer class="premium-section" style="margin-top: 80px; padding: 60px 20px; text-align: center; background: linear-gradient(to top, #000, var(--cyber-surface)); border-top: 2px solid var(--neon-cyan);">
+        <div class="tech flicker" style="font-size: 0.8rem; letter-spacing: 0.5em; color: var(--neon-cyan); margin-bottom: 25px;">[ TERMINAL DE INFORMACIÓN ]</div>
+        <p class="tech" style="font-size: 1.1rem; color: var(--neon-cyan); margin-bottom: 15px;">&copy; 2026 PROTOCOLO JETBULARY</p>
+        
+        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+            <button class="secondary" onclick="app.showPrivacy()" style="font-size: 0.7rem; padding: 10px 20px;">[ PRIVACIDAD ]</button>
+            <button class="secondary" onclick="app.showTerms()" style="font-size: 0.7rem; padding: 10px 20px;">[ TÉRMINOS ]</button>
+            <button class="secondary" onclick="app.showSupport()" style="font-size: 0.7rem; padding: 10px 20px;">[ SOPORTE ]</button>
+        </div>
+
+        <p style="font-size: 11px; color: #444; letter-spacing: 2px; line-height: 1.8;">
+            SISTEMA DE ENTRENAMIENTO LINGÜÍSTICO v4.0.8 // NODOS ACTIVOS: 14 // NÚCLEO: LLAMA-3.3 <br>
+            <span style="color:#222;">DESARROLLADO PARA LA EXCELENCIA COGNITIVA.</span>
         </p>
     </footer>
 
@@ -733,11 +1068,11 @@
             menu.innerHTML = languages.map(l => {
                 const c = app.getCorrectCountForLang(l.code);
                 return `
-                <div onclick="app.selectLang('${l.code}')" style="padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer; background: ${l.code === currentLang ? '#f0f9ff' : 'white'};">
-                    <img src="flag_${l.code}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                <div onclick="app.selectLang('${l.code}')" style="padding: 15px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(0,243,255,0.1); cursor: pointer; background: ${l.code === currentLang ? 'rgba(0,243,255,0.15)' : 'transparent'};">
+                    <img src="flag_${l.code}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" style="width: 28px; height: 18px; border: 1px solid #444;">
                     <span style="display:none; font-size: 1.2rem;">${l.emoji}</span>
-                    <span style="flex-grow: 1; text-align: left; color: #333;">${l.name}</span>
-                    <span style="font-size: 0.8rem; color: #888;">${c}</span>
+                    <span class="tech" style="flex-grow: 1; text-align: left; color: ${l.code === currentLang ? 'var(--neon-cyan)' : '#888'}; font-size: 0.9rem;">${l.name}</span>
+                    <span class="tech" style="font-size: 0.7rem; color: #444;">[${c}]</span>
                 </div>`;
             }).join('');
         },
@@ -779,6 +1114,18 @@
             document.getElementById('grammar-title').innerText = `Gramática (${app.getLangName()})`;
             game.updateAvatar();
             app.showGrammarCourse();
+        },
+        showPrivacy: () => app.switchView('view-privacy'),
+        showTerms: () => app.switchView('view-terms'),
+        showSupport: () => app.switchView('view-support'),
+        acceptCookies: () => {
+            localStorage.setItem('jetbulary_cookies', 'accepted');
+            document.getElementById('cookie-banner').classList.add('hidden');
+        },
+        checkCookies: () => {
+            if(!localStorage.getItem('jetbulary_cookies')) {
+                document.getElementById('cookie-banner').classList.remove('hidden');
+            }
         },
         switchView: (id, historyAction = 'push') => {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
@@ -878,8 +1225,22 @@
         showAdminPanel: () => {
             const div = document.createElement('div');
             div.id = 'admin-panel';
-            div.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; justify-content:center; align-items:center;";
-            div.innerHTML = `<div style="background:white; padding:20px; border-radius:12px; width:90%; max-width:300px; text-align:center;"><h3 style="margin-top:0;">Admin: ${app.getLangName()}</h3><p>Añadir palabras dominadas:</p><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;"><button onclick="app.cheat(100)" class="success">+100</button><button onclick="app.cheat(500)" class="success">+500</button><button onclick="app.cheat(1000)" class="success">+1000</button><button onclick="app.cheat(5000)" class="success">+5000</button></div><button onclick="document.body.removeChild(document.getElementById('admin-panel'))" class="secondary">Cerrar</button></div>`;
+            div.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; display:flex; justify-content:center; align-items:center; backdrop-filter: blur(5px);";
+            div.innerHTML = `
+                <div class="hud-card flicker" style="width:90%; max-width:400px; padding:30px; border-color:var(--neon-pink); background:rgba(5,5,5,0.95);">
+                    <div class="scanline"></div>
+                    <h3 class="tech" style="color:var(--neon-pink); margin-top:0;">[ SYSTEM_OVERRIDE: ${app.getLangName().toUpperCase()} ]</h3>
+                    <p class="tech" style="font-size:0.8rem; color:#888;">> INYECTAR DATOS NEURONALES DIRECTOS:</p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                        <button onclick="app.cheat(100)" class="success" style="font-size:0.8rem; padding:12px;">+100_UNIT</button>
+                        <button onclick="app.cheat(500)" class="success" style="font-size:0.8rem; padding:12px;">+500_UNIT</button>
+                        <button onclick="app.cheat(1000)" class="success" style="font-size:0.8rem; padding:12px;">+1000_UNIT</button>
+                        <button onclick="app.cheat(5000)" class="success" style="font-size:0.8rem; padding:12px;">+5000_UNIT</button>
+                    </div>
+                    <button onclick="document.body.removeChild(document.getElementById('admin-panel'))" class="secondary" style="width:100%; font-size: 0.7rem;">[ ABORTAR_ACCESO ]</button>
+                    <div style="margin-top:15px; height:1px; background:linear-gradient(90deg, transparent, var(--neon-pink), transparent); opacity:0.3;"></div>
+                </div>
+            `;
             document.body.appendChild(div);
         },
         cheat: (amount) => {
@@ -913,20 +1274,32 @@
         checkDiploma: () => {
             app.switchView('view-diploma');
             const correctCount = app.getCorrectCount();
-            
             const container = document.getElementById('diploma-content');
             
             container.innerHTML = `
-                <h2 style="color:#007AFF">🎓 Diplomas Jetbulary</h2>
-                <p>Demuestra tu dominio del idioma. Pronuncia correctamente palabras habituales para conseguir tu certificado.</p>
-                <div style="background:white; padding:20px; border-radius:12px; text-align:left; margin:20px 0; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-                    <p style="margin:10px 0; color:${correctCount>=100?'#34C759':'#666'}">🥉 <strong>Diploma 100:</strong> 100 palabras (${Math.min(correctCount, 100)}/100) ${correctCount>=100 ? '✅' : ''}</p>
-                    <p style="margin:10px 0; color:${correctCount>=500?'#34C759':'#666'}">🥈 <strong>Diploma 500:</strong> 500 palabras (${Math.min(correctCount, 500)}/500) ${correctCount>=500 ? '✅' : ''}</p>
-                    <p style="margin:10px 0; color:${correctCount>=1000?'#34C759':'#666'}">🥇 <strong>Diploma 1000:</strong> 1000 palabras (${Math.min(correctCount, 1000)}/1000) ${correctCount>=1000 ? '✅' : ''}</p>
-                    <p style="margin:10px 0; color:${correctCount>=5000?'#34C759':'#666'}">🏆 <strong>Diploma NATIVO:</strong> 5000 palabras (${Math.min(correctCount, 5000)}/5000) ${correctCount>=5000 ? '✅' : ''}</p>
+                <h2 class="tech" style="color:var(--neon-cyan)">🎓 REGISTRO DE LOGROS (REPORT_LOG)</h2>
+                <div class="hud-module" style="background:rgba(0,0,0,0.6); padding:30px; border:1px solid var(--cyber-border); text-align:left; margin:20px 0;">
+                    <span class="tech flicker" style="color:var(--neon-pink); font-size:0.7rem; display:block; margin-bottom:15px;">[ ANALIZANDO_SECTOR: ${app.getLangName().toUpperCase()} ]</span>
+                    
+                    <div style="margin:15px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,243,255,0.1); padding-bottom:10px;">
+                        <span style="color:#EEE; font-family:'Orbitron'; font-size: 0.9rem;">🥉 PROTOCOLO_100:</span>
+                        <span class="tech" style="color:${correctCount>=100?'var(--cyber-ok)':'#444'}">${Math.min(correctCount, 100)}/100 ${correctCount>=100 ? '[SYNC_OK]' : '[ESTADO_WAIT]'}</span>
+                    </div>
+                    <div style="margin:15px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,243,255,0.1); padding-bottom:10px;">
+                        <span style="color:#EEE; font-family:'Orbitron'; font-size: 0.9rem;">🥈 PROTOCOLO_500:</span>
+                        <span class="tech" style="color:${correctCount>=500?'var(--cyber-ok)':'#444'}">${Math.min(correctCount, 500)}/500 ${correctCount>=500 ? '[SYNC_OK]' : '[ESTADO_WAIT]'}</span>
+                    </div>
+                    <div style="margin:15px 0; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,243,255,0.1); padding-bottom:10px;">
+                        <span style="color:#EEE; font-family:'Orbitron'; font-size: 0.9rem;">🥇 PROTOCOLO_1000:</span>
+                        <span class="tech" style="color:${correctCount>=1000?'var(--cyber-ok)':'#444'}">${Math.min(correctCount, 1000)}/1000 ${correctCount>=1000 ? '[SYNC_OK]' : '[ESTADO_WAIT]'}</span>
+                    </div>
+                    <div style="margin:15px 0; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="color:var(--neon-pink); font-family:'Orbitron'; font-size: 0.9rem;">🏆 PROTOCOLO_NATIVO:</span>
+                        <span class="tech" style="color:${correctCount>=5000?'var(--neon-pink)':'#444'}">${Math.min(correctCount, 5000)}/5000 ${correctCount>=5000 ? '[SYNC_OK]' : '[ESTADO_WAIT]'}</span>
+                    </div>
                 </div>
-                <p>¡Sigue practicando para desbloquear el siguiente nivel!</p>
-                <button onclick="app.showDashboard()" class="secondary">Volver</button>
+                <p class="tech" style="font-size:0.7rem; color:var(--cyber-warn); letter-spacing: 1px;">> OPTIMIZACIÓN NEURONAL EN CURSO... MANTENER ENTRENAMIENTO PARA DESBLOQUEAR RANGOS SUPERIORES.</p>
+                <button onclick="app.showDashboard()" class="secondary" style="width:100%; margin-top:20px;">[ VOLVER AL TERMINAL ]</button>
             `;
         },
 
@@ -940,75 +1313,90 @@
             
             if (achieved.length === 0) {
                 container.innerHTML = `
-                    <h2 style="color:#007AFF">🎓 Diplomas Conseguidos</h2>
-                    <p>Aún no has conseguido ningún diploma. ¡Sigue practicando!</p>
-                    <button onclick="app.showDashboard()" class="secondary">Volver</button>
+                    <h2 class="tech">📂 LOGROS_ALCANZADOS</h2>
+                    <div class="hud-card" style="margin: 20px 0; border-color: var(--cyber-danger);">
+                        <p style="color: var(--cyber-danger);">[!] ADVERTENCIA: No se han detectado protocolos de nivel suficiente para generar acreditación.</p>
+                        <p>Continúa el entrenamiento en el sector ${app.getLangName().toUpperCase()} para sincronizar datos.</p>
+                    </div>
+                    <button onclick="app.showDashboard()" class="secondary" style="width:100%;">[ VOLVER ]</button>
                 `;
             } else {
-                let html = `<h2 style="color:#007AFF">🎓 Tus Diplomas</h2><p>Selecciona uno para ver y descargar:</p><div style="display:flex; flex-direction:column; gap:10px; margin:20px 0;">`;
+                let html = `<h2 class="tech">📂 ARCHIVOS_DE_PROTOCOLO</h2><p class="tech" style="font-size:0.8rem; margin-bottom: 20px;">[ SELECCIONAR ACCESO PARA DESCARGA DIGITAL ]</p><div style="display:flex; flex-direction:column; gap:12px; margin:20px 0;">`;
                 achieved.forEach(l => {
-                    let title = `Diploma Jetbulary ${l}`;
-                    if (l === 5000) title = "Diploma Jetbulary NATIVO";
-                    html += `<button onclick="app.renderDiploma(${l})" class="success">${title}</button>`;
+                    let title = `[ PROTOCOLO_D-${l} ]`;
+                    if (l === 5000) title = "[ PROTOCOLO_NATIVO_Ω ]";
+                    html += `<button onclick="app.renderDiploma(${l})" class="success" style="font-size:0.9rem;">EXPORTAR ${title}</button>`;
                 });
-                html += `</div><button onclick="app.showDashboard()" class="secondary">Volver</button>`;
+                html += `</div><button onclick="app.showDashboard()" class="secondary" style="width:100%;">[ VOLVER ]</button>`;
                 container.innerHTML = html;
             }
         },
 
         renderDiploma: (level) => {
             const container = document.getElementById('diploma-content');
-            const certTranslations = {
-                en: { title: "Certificate of Achievement", awarded: "This certificate is awarded to", reason: "For mastering pronunciation of", words: "Words", in: "in", date: "Date" },
-                de: { title: "Urkunde", awarded: "Dieses Zertifikat wird verliehen an", reason: "Für die Beherrschung der Aussprache von", words: "Wörter", in: "auf", date: "Datum" },
-                fr: { title: "Certificat de Réussite", awarded: "Ce certificat est décerné à", reason: "Pour la maîtrise de la prononciation de", words: "Mots", in: "en", date: "Date" },
-                it: { title: "Certificato di Risultato", awarded: "Questo certificato è assegnato a", reason: "Per aver padroneggiato la pronuncia di", words: "Parole", in: "in", date: "Data" },
-                pt: { title: "Certificado de Conquista", awarded: "Este certificado é concedido a", reason: "Por dominar a pronúncia de", words: "Palavras", in: "em", date: "Data" },
-                ca: { title: "Certificat d'Assoliment", awarded: "Aquest certificat s'atorga a", reason: "Per dominar la pronunciació de", words: "Paraules", in: "en", date: "Data" },
-                gl: { title: "Certificado de Logro", awarded: "Este certificado outórgase a", reason: "Por dominar a pronuncia de", words: "Palabras", in: "en", date: "Data" },
-                eu: { title: "Lorpen Ziurtagiria", awarded: "Ziurtagiri hau honakoari ematen zaio", reason: "Ahoskera menperatzeagatik", words: "Hitz", in: "hizkuntzan", date: "Data" },
-                ru: { title: "Сертификат Достижений", awarded: "Этот сертификат вручается", reason: "За овладение произношением", words: "Слов", in: "на", date: "Дата" }
-            };
-            const t = certTranslations[currentLang] || certTranslations['en'];
-            const titleText = level === 5000 ? "Diploma Jetbulary NATIVO" : `Diploma Jetbulary ${level}`;
-            
+            const langName = app.getLangName();
+            const titleText = level === 5000 ? "PROTOCOLO NATIVO Ω" : `PROTOCOLO D-${level}`;
+            const certID = Math.random().toString(36).substring(2, 10).toUpperCase();
+
             container.innerHTML = `
-                    <h2 style="color:#34C759">🎉 ¡Felicidades!</h2>
-                    <p>Has desbloqueado el <strong>${titleText}</strong>.</p>
-                    <p style="font-size:0.9rem; color:#666; background:#fff3cd; padding:10px; border-radius:8px;">⚠️ Jetbulary no almacena tus datos. Este diploma se genera ahora y debes guardarlo tú mismo.</p>
+                <h2 class="tech" style="color:var(--cyber-ok)">🎉 SINCRONIZACIÓN EXITOSA</h2>
+                <div class="hud-module" style="background:rgba(0,255,149,0.05); border-color:var(--cyber-ok); margin-bottom: 20px;">
+                    <p>Has desbloqueado el <strong>${titleText}</strong> en el sector <strong>${langName.toUpperCase()}</strong>.</p>
+                    <p class="tech" style="font-size:0.75rem; color:#888;">[ID_CERT: JET-${certID}] | NO se almacenan datos personales en el núcleo.</p>
+                </div>
+                
+                <div class="hud-card" style="text-align:left; margin-bottom:20px;">
+                    <label class="tech" style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--neon-cyan);">[ IDENTIFICACIÓN_DE_USUARIO ]:</label>
+                    <input type="text" id="diploma-name" placeholder="FIRMA DIGITAL..." oninput="document.getElementById('cert-name').innerText = this.value || 'USER_UNDEFINED'" style="margin-bottom:0;">
+                </div>
+                
+                <div id="diploma-preview" style="border: 2px solid var(--neon-cyan); padding: 40px; margin: 30px 0; background: #050505; color: var(--cyber-text); font-family: 'Orbitron', sans-serif; position: relative; overflow: hidden; box-shadow: var(--cyber-glow-strong);">
+                    <div class="scanline"></div>
+                    <div style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.1; background: repeating-linear-gradient(0deg, rgba(0, 243, 255, 0.1) 0px, transparent 1px); pointer-events:none;"></div>
                     
-                    <div style="margin:20px 0;">
-                        <label style="display:block; text-align:left; margin-bottom:5px; font-weight:bold;">Nombre para el Diploma:</label>
-                        <input type="text" id="diploma-name" placeholder="Tu Nombre Completo" oninput="document.getElementById('cert-name').innerText = this.value || 'Tu Nombre'">
-                    </div>
-                    
-                    <div id="diploma-preview" style="border: 10px solid #007AFF; padding: 40px; margin: 20px 0; background: white; color: #333; font-family: 'Georgia', serif; position: relative; overflow: hidden;">
-                        <div style="position: absolute; top:0; left:0; width:100%; height:100%; opacity:0.05; background-image: url('logo.jpg'); background-size: cover; pointer-events:none;"></div>
-                        <div style="position: relative; z-index: 1;">
-                            <h1 style="color: #007AFF; margin: 0 0 10px 0; font-size: 2.5rem;">${titleText}</h1>
-                            <div style="width: 100px; height: 2px; background: #007AFF; margin: 10px auto;"></div>
-                            <p style="font-size: 1.2rem; margin: 20px 0;">Se otorga el presente reconocimiento a:<br><span style="font-size: 0.9rem; color: #666; font-style: italic;">${t.awarded}:</span></p>
-                            <h2 id="cert-name" style="font-size: 2.2rem; margin: 10px 0; color: #000; font-style: italic;">Tu Nombre</h2>
-                            <p style="font-size: 1.2rem; margin: 20px 0;">Por haber demostrado su competencia pronunciando correctamente<br><span style="font-size: 0.9rem; color: #666; font-style: italic;">${t.reason}:</span></p>
-                            <h3 style="font-size: 3rem; color: #34C759; margin: 10px 0; line-height:1;">${level} Palabras / ${t.words}</h3>
-                            <p style="font-size: 1.4rem;">en el idioma / ${t.in} <strong>${app.getLangName()}</strong></p>
-                            <div style="margin-top: 40px; display: flex; justify-content: space-between; align-items: end;">
-                                <div style="text-align: center;">
-                                    <div style="border-bottom: 1px solid #333; width: 150px; margin: 0 auto;"></div>
-                                    <p style="font-size: 0.9rem; margin-top: 5px;">Fecha / ${t.date}: ${new Date().toLocaleDateString()}</p>
-                                </div>
-                                <div style="text-align: center;">
-                                    <img src="logo.jpg" style="width: 60px; mix-blend-mode: multiply;">
-                                    <p style="font-size: 0.9rem; font-weight: bold; color: #007AFF;">Jetbulary.com</p>
-                                </div>
+                    <div style="position: relative; z-index: 1; border: 1px solid rgba(0, 243, 255, 0.2); padding: 30px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px;">
+                            <div>
+                                <h1 style="color: var(--neon-cyan); margin: 0; font-size: 1.8rem; text-shadow: var(--cyber-glow);">${titleText}</h1>
+                                <p class="tech" style="font-size: 0.6rem; color: var(--neon-pink); margin: 5px 0;">JETBULARY // NEURAL_PROTOCOL_VERIFIED</p>
+                            </div>
+                            <div style="text-align:right;">
+                                <p class="tech" style="font-size: 0.6rem; color: #555; margin: 0;">JET-ID: ${certID}</p>
+                                <p class="tech" style="font-size: 0.6rem; color: #555; margin: 0;">STAMP: ${new Date().getTime()}</p>
                             </div>
                         </div>
+                        
+                        <div style="margin: 40px 0;">
+                            <p class="tech" style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">SE OTORGA LA PRESENTE ACREDITACIÓN A:</p>
+                            <h2 id="cert-name" style="font-size: 2rem; margin: 0; color: #FFF; letter-spacing: 4px; border-bottom: 2px solid var(--neon-cyan); padding-bottom: 15px; display: inline-block; min-width: 300px;">USER_UNDEFINED</h2>
+                        </div>
+                        
+                        <div style="margin: 40px 0; background: rgba(0,243,255,0.03); padding: 20px; border-left: 2px solid var(--neon-pink);">
+                            <p class="tech" style="font-size: 0.8rem; line-height: 1.6;">POR HABER ALCANZADO EL NIVEL DE DOMINIO REQUERIDO: <br>
+                            <span style="font-size: 1.5rem; color: var(--cyber-ok);">${level} PALABRAS</span> SINCRONIZADAS EN <span style="color: var(--neon-cyan);">${langName.toUpperCase()}</span>.</p>
+                        </div>
+                        
+                        <div style="margin-top: 60px; display: flex; justify-content: space-between; align-items: flex-end;">
+                            <div style="text-align: left;">
+                                <p class="tech" style="font-size: 0.6rem; color: #444; margin-bottom: 5px;">TIMESTAMP_STAMP:</p>
+                                <p style="font-size: 0.9rem; margin: 0; color: var(--neon-cyan);">${new Date().toLocaleDateString()}</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <img src="logo.jpg" style="width: 50px; filter: grayscale(1) invert(1) brightness(1.5) contrast(1.2);">
+                                <p class="tech" style="font-size: 0.8rem; font-weight: bold; color: var(--neon-cyan); margin: 5px 0 0 0;">JETBULARY CORE</p>
+                            </div>
+                        </div>
+                        
+                        <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 90%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.5), transparent);"></div>
                     </div>
-                    
-                    <p style="font-size:0.9rem; color:#555;">Instrucciones: Pulsa el botón, y en la ventana de impresión elige "Guardar como PDF".</p>
-                    <button onclick="app.printDiploma()" class="success">🖨️ Imprimir / Guardar PDF</button>
-                    <button onclick="app.showDiplomas()" class="secondary">Volver</button>
-                `;
+                </div>
+                
+                <p class="tech" style="font-size:0.7rem; color:#666; margin-bottom:20px;">[ INSTRUCCIÓN_SISTEMA: USAR 'GUARDAR COMO PDF' EN MODO IMPRESIÓN ]</p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="app.printDiploma()" class="success" style="flex:1;">🖨️ EXPORTAR PDF</button>
+                    <button onclick="app.showDiplomas()" class="secondary" style="flex:1;">CANCELAR</button>
+                </div>
+            `;
         },
         
         printDiploma: () => {
@@ -1065,16 +1453,17 @@
                     <details ${index === 0 ? 'open' : ''} onclick="app.closeOthers(this)">
                         <summary>${t.name}</summary>
                         <div class="topic-content">
+                            <div class="tech" style="font-size:0.6rem; color:var(--neon-pink); margin-bottom:10px;">[ ACCESO_PROTOCOLOS_IA ]</div>
                             <div class="topic-actions">
-                                <button onclick="game.start(${t.id}, 'learn')" class="success">Aprender</button>
-                                <button onclick="game.start(${t.id}, 'review')" class="warning">Repasar</button>
-                                <button onclick="conversation.start(${t.id})" style="background-color: #5856d6;">Conversación 💬 (New!)</button>
-                                <button onclick="academy.start(${t.id})" style="background-color: #9c27b0; color: white;">Academia 🏫 (New!)</button>
+                                <button onclick="game.start(${t.id}, 'learn')" class="success">APRENDER</button>
+                                <button onclick="game.start(${t.id}, 'review')" class="warning">REPASAR</button>
+                                <button onclick="conversation.start(${t.id})" class="secondary" style="border-color: #5856d6; color: #5856d6;">CHARLA_💬</button>
+                                <button onclick="academy.start(${t.id})" class="secondary" style="border-color: #9c27b0; color: #9c27b0;">ACADEMIA_🏫</button>
                             </div>
                             <div class="topic-actions">
-                                <button onclick="app.expandTopic(${t.id}, this)" class="secondary">Ampliar</button>
-                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">🌍 Curiosidades</button>
-                                <button onclick="app.deleteTopic(${t.id})" class="danger">Borrar</button>
+                                <button onclick="app.expandTopic(${t.id}, this)" class="secondary">AMPLIAR</button>
+                                <button onclick="app.showTopicCulture(${t.id})" class="secondary">CURIOSIDADES</button>
+                                <button onclick="app.deleteTopic(${t.id})" class="danger">BORRAR</button>
                             </div>
                         </div>
                     </details>
@@ -1121,28 +1510,23 @@
                 let idx = (day - i) % dailyTopics.length;
                 if (idx < 0) idx += dailyTopics.length;
                 const t = dailyTopics[idx];
-                prevHtml += `<button onclick="app.createTopicFromSuggestion('${t}')" class="secondary" style="width:100%; text-align:left; margin:2px 0; font-size:0.9rem; background:#fff; border:1px solid #eee;">📅 Hace ${i} día${i>1?'s':''}: ${t}</button>`;
+                prevHtml += `<button onclick="app.createTopicFromSuggestion('${t}')" class="secondary" style="width:100%; text-align:left; margin:2px 0; font-size:0.75rem;">📅 T-${i}_SEC: ${t}</button>`;
             }
             
             const container = document.getElementById('suggestions-container');
             if(container) {
                 container.innerHTML = `
-                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="secondary" style="background: #E3F2FD; color: #007AFF; border: 1px solid #BBDEFB; width: 100%; font-weight: bold; margin-bottom: 5px;">📅 Tema del Día: ${dailyTopic}</button>
-                    <details style="margin-bottom: 15px; border:none; background:transparent; box-shadow:none;">
-                        <summary style="font-size: 0.85rem; color: #888; padding: 5px;">Ver temas anteriores (6 días)...</summary>
-                        <div style="display:flex; flex-direction:column; gap:5px; margin-top:5px;">${prevHtml}</div>
+                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="success flicker" style="width: 100%; margin-bottom: 10px; border-style:dashed;">[!] PROTOCOLO_DIARIO: ${dailyTopic.toUpperCase()}</button>
+                    <details style="margin-bottom: 20px; border:1px solid rgba(0,243,255,0.1); background:rgba(0,0,0,0.3);">
+                        <summary class="tech" style="font-size: 0.7rem; color: #888; padding: 12px;">HISTORIAL_DE_SECUENCIAS (L-6)...</summary>
+                        <div style="display:flex; flex-direction:column; gap:5px; padding:10px;">${prevHtml}</div>
                     </details>
-                    <button onclick="app.createJobInterviewTopic()" class="secondary" style="width: 100%; margin-bottom: 10px; background-color: #f0f9ff; border: 1px solid #b3e5fc; color: #0277bd; font-weight: bold;">👔 Tu Profesión / Entrevistas</button>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary" style="flex: 1 1 auto; width: auto;">👨‍👩‍👧‍👦 Familia</button>
-                        <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary" style="flex: 1 1 auto; width: auto;">🍔 Comida</button>
-                        <button onclick="app.createTopicFromSuggestion('Viajes y Aeropuerto')" class="secondary" style="flex: 1 1 auto; width: auto;">✈️ Viajes</button>
-                        <button onclick="app.createTopicFromSuggestion('Trabajo y Negocios')" class="secondary" style="flex: 1 1 auto; width: auto;">💼 Trabajo</button>
-                        <button onclick="app.createTopicFromSuggestion('Rutina Diaria')" class="secondary" style="flex: 1 1 auto; width: auto;">⏰ Rutina</button>
-                        <button onclick="app.createTopicFromSuggestion('Compras y Ropa')" class="secondary" style="flex: 1 1 auto; width: auto;">🛍️ Compras</button>
-                        <button onclick="app.createTopicFromSuggestion('Salud y Cuerpo')" class="secondary" style="flex: 1 1 auto; width: auto;">🏥 Salud</button>
-                        <button onclick="app.createTopicFromSuggestion('Tecnología')" class="secondary" style="flex: 1 1 auto; width: auto;">💻 Tecnología</button>
-                        <button onclick="app.createTopicFromSuggestion('Vocabulario Especializado')" class="secondary" style="flex: 1 1 auto; width: auto;">🎓 Vocabulario Especializado</button>
+                    <button onclick="app.createJobInterviewTopic()" class="secondary tech" style="width: 100%; margin-bottom: 15px; border-color:var(--neon-cyan); color:var(--neon-cyan); font-size:0.8rem;">[PROCEDIMIENTO] ENTREVISTA_PROFESIONAL</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button onclick="app.createTopicFromSuggestion('Familia y Amigos')" class="secondary tech" style="font-size:0.65rem; padding:12px;">G_SOCIAL</button>
+                        <button onclick="app.createTopicFromSuggestion('Comida y Restaurantes')" class="secondary tech" style="font-size:0.65rem; padding:12px;">LOG_NUTRICIÓN</button>
+                        <button onclick="app.createTopicFromSuggestion('Viajes y Aeropuerto')" class="secondary tech" style="font-size:0.65rem; padding:12px;">EXT_SECTOR</button>
+                        <button onclick="app.createTopicFromSuggestion('Trabajo y Negocios')" class="secondary tech" style="font-size:0.65rem; padding:12px;">PROC_CORP</button>
                     </div>
                 `;
             }
@@ -1169,17 +1553,15 @@
             
             let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
             if(topic) {
-                game.start(topic.id, 'learn');
+                academy.start(topic.id);
                 return;
             }
             
-            await app.callAI(name, btn, (vocab) => {
-                const newTopic = { id: Date.now(), name: name, lang: currentLang };
-                db.topics.push(newTopic);
-                vocab.forEach((w, i) => db.words.push({ ...w, id: Date.now()+i, topic_id: newTopic.id }));
-                app.saveDB();
-                game.start(newTopic.id, 'learn');
-            });
+            // Cuando creamos un tema nuevo, vamos directos a Academia
+            const newTopic = { id: Date.now(), name: name, lang: currentLang };
+            db.topics.push(newTopic);
+            app.saveDB();
+            academy.start(newTopic.id);
         },
         
         expandTopic: async (id, btn) => {
@@ -1463,23 +1845,24 @@
             if(sortBy === 'alpha') words.sort((a,b) => a.english.localeCompare(b.english));
 
             list.innerHTML = words.map(w => {
-                let badge = w.score === -1 ? '<span class="vocab-score" style="background:#999">Nuevo</span>' : 
-                            w.score < 50 ? `<span class="vocab-score score-low">${w.score}%</span>` :
-                            w.score < 80 ? `<span class="vocab-score score-med">${w.score}%</span>` :
-                            `<span class="vocab-score score-high">${w.score}%</span>`;
+                const badge = w.score === -1 ? `<span class="tech" style="color:#888; font-size:0.7rem; border:1px solid #888; padding:2px 5px; margin-left:10px;">[NUEVO]</span>` :
+                            w.score < 50 ? `<span class="tech" style="color:var(--duo-red); font-size:0.7rem; border:1px solid var(--duo-red); padding:2px 5px; margin-left:10px;">[DIF.ALTA]</span>` :
+                            w.score < 80 ? `<span class="tech" style="color:#FFD700; font-size:0.7rem; border:1px solid #FFD700; padding:2px 5px; margin-left:10px;">[DIF.MED]</span>` :
+                            `<span class="tech" style="color:var(--neon-cyan); font-size:0.7rem; border:1px solid var(--neon-cyan); padding:2px 5px; margin-left:10px;">[SYNC.OK]</span>`;
                 
                 return `
-                <div class="vocab-item" style="flex-direction: column; align-items: flex-start;">
+                <div class="vocab-item" style="flex-direction: column; background: rgba(0,243,255,0.02); border: 1px solid var(--cyber-border); border-radius: 0; padding: 20px; margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                         <div class="vocab-info">
-                            <div class="vocab-en">${w.english} ${badge}</div>
-                            <div class="vocab-es">${w.spanish} <small>(${w.topicName})</small></div>
+                            <div class="vocab-en" style="color:var(--neon-cyan); font-weight:700;">${w.english} ${badge}</div>
+                            <div class="vocab-es" style="color:#AAA;">${w.spanish} <span class="tech" style="font-size:0.7rem; color:var(--neon-pink);">[${w.topicName.toUpperCase()}]</span></div>
                         </div>
-                        <div class="vocab-controls">
-                            <button onclick="game.speakText('${w.english}')" class="secondary" style="padding: 8px 12px;">🔊</button>
+                        <div class="vocab-controls" style="display:flex; gap:10px;">
+                            <button onclick="game.speakText('${w.english}')" class="secondary" style="padding: 10px; width:44px; height:44px; border-radius:0; border:1px solid var(--cyber-border); display:flex; align-items:center; justify-content:center; margin:0; background:rgba(255,255,255,0.05);">🔊</button>
                         </div>
                     </div>
-                    <div style="font-size: 0.9rem; color: #555; margin-top: 8px; font-style: italic; background: #f9f9f9; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
+                    <div style="font-size: 0.95rem; color: #EEE; margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 0; width: 100%; box-sizing: border-box; border-left: 2px solid var(--neon-cyan);">
+                        <span class="tech" style="color:var(--neon-cyan); font-size:0.7rem; display:block; margin-bottom:5px;">SINTAXIS_EJEMPLO:</span>
                         "${w.sentence_en}"
                     </div>
                 </div>`;
@@ -1668,20 +2051,30 @@
             container.innerHTML = conversation.history.map((msg, index) => {
                 const isUser = msg.role === 'user';
                 const content = msg.content ? msg.content.replace(/\n/g, '<br>') : '';
-                const trans = msg.trans ? `<div style="font-size: 0.85rem; color: ${isUser ? 'rgba(255,255,255,0.8)' : '#666'}; margin-top: 4px; font-style: italic;">(${msg.trans})</div>` : '';
+                
+                const borderColor = isUser ? 'var(--neon-pink)' : 'var(--neon-cyan)';
+                const glowColor = isUser ? 'rgba(255, 0, 255, 0.2)' : 'rgba(0, 243, 255, 0.2)';
+                const roleLabel = isUser ? '[USUARIO]' : '[DOCENTE_IA]';
+                
+                const trans = msg.trans ? `<div style="font-size: 0.85rem; color: #888; margin-top: 8px; font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 5px;">(${msg.trans})</div>` : '';
                 
                 if (isUser) {
-                    return `<div style="margin: 10px 0; display: flex; justify-content: flex-end; align-items: center;">
-                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #007AFF; color: white;">${content}${trans}</div>
-                                <button onclick="conversation.rewind(${index})" style="background: #E5E5EA; border: none; color: #333; padding: 0; font-size: 1.2rem; border-radius: 50%; margin-left: 8px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">🔄</button>
+                    return `<div style="margin: 15px 0; display: flex; justify-content: flex-end; align-items: start;">
+                                <div style="display: inline-block; max-width: 85%; padding: 12px 18px; border: 1px solid ${borderColor}; background: rgba(0,0,0,0.4); color: white; box-shadow: 0 0 10px ${glowColor}; text-align: right;">
+                                    <span class="tech" style="color:${borderColor}; font-size:0.7rem; display:block; margin-bottom:5px;">${roleLabel}</span>
+                                    ${content}${trans}
+                                </div>
+                                <button onclick="conversation.rewind(${index})" class="secondary" style="border-radius: 0; margin-left: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding:0; flex:0;">🔄</button>
                             </div>`;
                 } else {
-                    return `<div style="margin: 10px 0; text-align: left;"><div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #E5E5EA; color: black;">${content}${trans}</div></div>`;
-                    return `<div style="margin: 10px 0; text-align: left;">
-                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: #E5E5EA; color: black;">${content}${trans}</div>
-                                <div style="display: flex; gap: 8px; margin-top: 5px; margin-left: 10px;">
-                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.85)" style="background: #E5E5EA; border: none; color: #333; padding: 4px 10px; font-size: 0.9rem; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: auto; margin: 0;">🔊 Normal</button>
-                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.5)" style="background: #E5E5EA; border: none; color: #333; padding: 4px 10px; font-size: 0.9rem; border-radius: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1); width: auto; margin: 0;">🐢 Lento</button>
+                    return `<div style="margin: 15px 0; text-align: left;">
+                                <div style="display: inline-block; width: 100%; padding: 15px; border: 1px solid ${borderColor}; background: rgba(0, 243, 255, 0.05); color: #EEE; border-left: 4px solid ${borderColor};">
+                                    <span class="tech" style="color:${borderColor}; font-size:0.7rem; display:block; margin-bottom:5px;">${roleLabel}</span>
+                                    ${content}${trans}
+                                </div>
+                                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.85)" class="secondary" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; border-radius:0;">🔊 NORMAL</button>
+                                    <button onclick="game.speakText(conversation.history[${index}].content, 0.5)" class="secondary" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; border-radius:0;">🐢 LENTO</button>
                                 </div>
                             </div>`;
                 }
@@ -1689,11 +2082,11 @@
             container.scrollTop = container.scrollHeight;
         },
 
-        renderSuggestions: (vocab) => document.getElementById('suggestions-list').innerHTML = vocab.map(v => `<span style="background: #fff; padding: 5px 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem;"><strong>${v.english}</strong> (${v.spanish})</span>`).join(''),
+        renderSuggestions: (vocab) => document.getElementById('suggestions-list').innerHTML = vocab.map(v => `<span style="background: rgba(0,243,255,0.05); padding: 6px 12px; border: 1px solid var(--cyber-border); font-size: 0.85rem; color:#EEE;"><strong style="color:var(--neon-cyan);">${v.english}</strong> (${v.spanish})</span>`).join(''),
 
         renderPhrases: (phrases) => document.getElementById('phrases-list').innerHTML = phrases.map(p => {
             if (!p.text) return '';
-            return `<div onclick="game.speakText('${p.text.replace(/'/g, "\\'")}')" style="background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.9rem; cursor: pointer;"><strong>${p.text}</strong> <span style="color:#666; font-size:0.8rem;">(${p.trans})</span></div>`;
+            return `<div onclick="game.speakText('${p.text.replace(/'/g, "\\'")}')" style="background: rgba(0,0,0,0.3); padding: 10px 15px; border: 1px solid var(--cyber-border); border-left: 3px solid var(--neon-pink); font-size: 0.9rem; cursor: pointer; margin-bottom:5px;"><strong>${p.text}</strong> <span style="color:#888; font-size:0.8rem;">(${p.trans})</span></div>`;
         }).join(''),
 
         addWordsToDB: (vocabList) => {
@@ -1757,9 +2150,8 @@
                 const pct = Math.min((elapsed / duration) * 100, 100);
                 
                 bar.style.width = pct + '%';
-                
-                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
-                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                bar.style.backgroundColor = 'var(--neon-cyan)';
+                bar.style.boxShadow = 'var(--cyber-glow)';
                 
                 if (elapsed >= duration) {
                     if(conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
@@ -1929,7 +2321,7 @@
                 document.getElementById('sentence-translation').innerText = item.sentence_es;
             }
             
-            document.getElementById('word-display').innerHTML = `${item.english} <span style="color: #8E8E93; font-size: 0.6em; font-weight: normal;">(${item.spanish})</span>`;
+            document.getElementById('word-display').innerHTML = `${item.english} <span style="color: var(--neon-pink); font-size: 0.6em; font-weight: 700; text-shadow: 0 0 5px rgba(255,0,255,0.3);">(${item.spanish})</span>`;
             
             // Link YouGlish dinámico según idioma
             const ygMap = { en: 'english', fr: 'french', de: 'german', it: 'italian', pt: 'portuguese', ru: 'russian' };
@@ -1939,41 +2331,22 @@
 
             if (ygLang) {
                 ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(item.english)}/${ygLang}`;
-                ygLink.innerText = "NATIVOS (YouGlish)";
-                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (YouGlish)";
+                ygLink.innerText = "[RECURSO.NATIVO]";
+                if(nativeBtn) nativeBtn.innerText = "👂 OÍR NATIVOS";
                 if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
-            } else if (currentLang === 'eu') {
-                ygLink.href = `https://hiztegiak.elhuyar.eus/eu/es/${encodeURIComponent(item.english)}`;
-                ygLink.innerText = "Ver en Elhuyar (Diccionario/Contexto) ↗";
-                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=eu`;
-                ygLink.innerText = "NATIVOS (Filmot)";
-                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
-                if(nativeBtn) nativeBtn.style.display = "";
-                ygLink.classList.remove('hidden');
-            } else if (currentLang === 'ca') {
-                ygLink.href = `https://www.diccionari.cat/gdlc/${encodeURIComponent(item.english)}`;
-                ygLink.innerText = "Ver en Diccionari.cat ↗";
-                if(nativeBtn) nativeBtn.style.display = "none";
-                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=ca`;
-                ygLink.innerText = "NATIVOS (Filmot)";
-                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
-                if(nativeBtn) nativeBtn.style.display = "";
-                ygLink.classList.remove('hidden');
-            } else if (currentLang === 'gl') {
-                ygLink.href = `https://academia.gal/dicionario/-/termo/${encodeURIComponent(item.english)}`;
-                ygLink.innerText = "Ver en Academia Galega ↗";
-                if(nativeBtn) nativeBtn.style.display = "none";
-                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=gl`;
-                ygLink.innerText = "NATIVOS (Filmot)";
-                if(nativeBtn) nativeBtn.innerText = "👂 Oír Nativos (Filmot)";
+            } else if (currentLang === 'eu' || currentLang === 'ca' || currentLang === 'gl') {
+                const searchLang = currentLang;
+                ygLink.href = `https://filmot.com/search/${encodeURIComponent(item.english)}/1?lang=${searchLang}`;
+                ygLink.innerText = "[PROTOCOLO.FILMOT]";
+                if(nativeBtn) nativeBtn.innerText = "👂 OÍR NATIVOS";
                 if(nativeBtn) nativeBtn.style.display = "";
                 ygLink.classList.remove('hidden');
             } else {
                 ygLink.classList.add('hidden');
                 if(nativeBtn) nativeBtn.style.display = "none";
             }
-            document.getElementById('prompt-pronounce').innerText = `Pulsa y pronuncia en ${app.getLangName()}`;
+            document.getElementById('prompt-pronounce').innerText = `MODO ESCANEO: ${app.getLangName().toUpperCase()}`;
             
             document.getElementById('feedback-msg').innerText = "";
             document.getElementById('ai-advice').classList.add('hidden');
@@ -1986,8 +2359,8 @@
             if (correctCount >= 1000) nextThreshold = 5000;
             if (correctCount >= 5000) nextThreshold = null;
             
-            let scoreText = `Palabras dominadas: ${correctCount}`;
-            if (nextThreshold) scoreText += ` | Te quedan ${nextThreshold - correctCount} para Diploma`;
+            let scoreText = `<span class="tech" style="color:var(--neon-cyan);">NIVEL DE DOMINIO: ${correctCount}</span>`;
+            if (nextThreshold) scoreText += ` | <span class="tech" style="color:var(--neon-pink);">PRÓXIMO RANGO: ${nextThreshold - correctCount}</span>`;
             else scoreText += ` | ¡Nivel Nativo Alcanzado!`;
             document.getElementById('spoken-text').innerText = scoreText;
             
@@ -2176,7 +2549,7 @@
             const container = document.getElementById('timer-container');
             container.classList.remove('hidden');
             bar.style.width = '0%';
-            bar.style.backgroundColor = '#28a745';
+            bar.style.backgroundColor = 'var(--neon-cyan)';
             
             let startTime = Date.now();
             const duration = 6000; // 5000 * 1.2
@@ -2188,9 +2561,8 @@
                 const pct = Math.min((elapsed / duration) * 100, 100);
                 
                 bar.style.width = pct + '%';
-                
-                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
-                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                bar.style.backgroundColor = 'var(--neon-cyan)';
+                bar.style.boxShadow = 'var(--cyber-glow)';
                 
                 if (elapsed >= duration) game.stopMic();
             }, 50);
@@ -2284,36 +2656,83 @@
             const messages = [
                 {
                     role: 'system',
-                    content: `Eres una profesora experta de ${langName}. Vas a iniciar una clase del "Modo Academia" sobre el tema seleccionado.
-                    TU TAREA es explicar de forma muy breve y amigable (1-2 párrafos) la gramática que se va a practicar y dar los tips o reglas clave que usarán en las frases. NO hagas preguntas de ejercicio todavía.
-                    Responde SIEMPRE con un objeto JSON válido con la estructura:
+                    content: `Eres una profesora experta de ${langName}. Vas a iniciar una clase magistral del "Modo Academia" sobre el tema seleccionado.
+                    TU TAREA:
+                    1. Explicar brevemente (1-2 párrafos) la gramática o estructuras clave útiles para este tema.
+                    2. Compartir 2 curiosidades culturales fascinantes relacionadas con el tema en países donde se habla ${langName}.
+                    3. Proporcionar 10 palabras/frases de vocabulario esenciales.
+                    
+                    IMPORTANTE: Incluye SIEMPRE la traducción al español de todo lo que digas en los campos correspondientes.
+                    
+                    Responde SIEMPRE con un objeto JSON válido:
                     {
-                        "teacher_says": "Tu explicación gramatical y tips en ${langName}",
-                        "teacher_says_trans": "Traducción al español de la explicación",
-                        "ready_phrase": "Frase corta preguntando si el alumno está listo para empezar en ${langName}",
-                        "ready_phrase_trans": "Traducción al español"
+                        "grammar_explanation": "Explicación en ${langName}",
+                        "grammar_trans": "Traducción español",
+                        "curiosities": [{"text": "Curiosidad en ${langName}", "trans": "Traducción"}],
+                        "vocabulary": [{"english": "Palabra", "spanish": "Traducción", "sentence_en": "Ejemplo", "sentence_es": "Traducción ejemplo"}],
+                        "ready_phrase": "¿Listo para empezar el ejercicio de pronunciación? (en ${langName})",
+                        "ready_phrase_trans": "¿Listo... (español)"
                     }`
                 },
                 {
                     role: 'user',
-                    content: `El tema de la lección de hoy es "${academy.topic.name}". Introduce la clase y da los tips gramaticales.`
+                    content: `Inicia la lección premium sobre "${academy.topic.name}".`
                 }
             ];
 
             await app.callAI_Conversation(messages, document.getElementById('mic-btn-academy'), (data) => {
-                if (data.teacher_says) {
-                    const contentHtml = `
-                        <div style="margin-bottom: 8px;"><strong>👩‍🏫 Introducción y Tips Gramaticales:</strong><br><br>${data.teacher_says.replace(/\n/g, '<br>')} <br>
-                        <span style="font-size: 0.9em; color: #555;">(${data.teacher_says_trans.replace(/\n/g, '<br>')})</span></div>
-                        <div style="margin-top: 10px; color: #007AFF; font-weight: bold;">${data.ready_phrase} <br>
-                        <span style="font-size: 0.9em; color: #555; font-weight: normal;">(${data.ready_phrase_trans})</span></div>
-                    `;
-
-                    academy.history.push({ role: 'assistant', content: contentHtml, teacherSays: data.teacher_says + ". " + data.ready_phrase, plainExpected: "Yes", syntax: "Explicación inicial de la clase." });
-                    academy.currentExpected = { expected_answer: "Yes" }; 
-                    academy.renderHistory();
-                    game.speakText(data.teacher_says + ". " + data.ready_phrase, 0.9);
+                // Guardar vocabulario en la DB si no existe (para este tema)
+                if (data.vocabulary) {
+                    const existing = db.words.filter(w => w.topic_id === academy.topic.id);
+                    if (existing.length === 0) {
+                        data.vocabulary.forEach((w, i) => {
+                            db.words.push({ ...w, id: Date.now() + i, topic_id: academy.topic.id, section: 'academia' });
+                        });
+                        app.saveDB();
+                    }
                 }
+
+                const curiositiesHtml = data.curiosities.map(c => `
+                    <div style="background:rgba(255, 0, 255, 0.05); padding:15px; border-left:3px solid var(--neon-pink); margin-bottom:10px;">
+                        <strong style="color:var(--neon-pink); font-family:'Orbitron';">💡 PROTOCOLO CULTURAL:</strong> ${c.text}<br>
+                        <span style="font-size:0.9em; opacity:0.7;">(${c.trans})</span>
+                    </div>
+                `).join('');
+
+                const vocabHtml = `
+                    <div style="margin: 20px 0; border: 1px solid var(--cyber-border); padding: 20px; background:rgba(0,243,255,0.03);">
+                        <strong class="tech" style="font-size:1.1rem; display:block; margin-bottom:10px; color:var(--neon-cyan);">📚 REGISTROS DE DATOS:</strong>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.9rem;">
+                            ${data.vocabulary.map(v => `<div>• <strong style="color:var(--neon-cyan);">${v.english}</strong>: ${v.spanish}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+
+                const contentHtml = `
+                    <div class="tech" style="font-size:1.4rem; margin-bottom:15px; border-bottom:1px solid var(--neon-cyan); display:inline-block; color:var(--neon-cyan);">MÓDULO DE SINTAXIS</div>
+                    <p style="font-size:1.1rem; margin-bottom:10px; color:#EEE;">${data.grammar_explanation.replace(/\n/g, '<br>')}</p>
+                    <p style="font-size:0.9em; opacity:0.6; font-style:italic; margin-bottom:25px;">(${data.grammar_trans})</p>
+                    
+                    <div class="tech" style="font-size:1.2rem; margin-bottom:15px; color:var(--neon-pink);">FRAGMENTOS CULTURALES</div>
+                    ${curiositiesHtml}
+                    ${vocabHtml}
+                    
+                    <div style="margin-top: 30px; color: var(--neon-cyan); font-weight: bold; font-size: 1.1rem; text-align:center; text-shadow:var(--cyber-glow);">
+                        ${data.ready_phrase}<br>
+                        <span style="font-size:0.9em; opacity:0.6; font-weight:normal;">(${data.ready_phrase_trans})</span>
+                    </div>
+                `;
+
+                academy.history.push({ 
+                    role: 'assistant', 
+                    content: contentHtml, 
+                    teacherSays: data.grammar_explanation + ". " + data.ready_phrase, 
+                    plainExpected: "Yes", 
+                    syntax: "Introducción teórica completada." 
+                });
+                academy.currentExpected = { expected_answer: "Yes" }; 
+                academy.renderHistory();
+                game.speakText(data.grammar_explanation + ". " + data.ready_phrase, 0.9);
             });
         },
 
@@ -2345,10 +2764,16 @@
                     academy.currentExpected = data;
                     
                     const contentHtml = `
-                        <div style="margin-bottom: 8px;"><strong>Profesora:</strong> ${data.teacher_says} <br>
-                        <span style="font-size: 0.9em; color: #555;">(${data.teacher_says_trans})</span></div>
-                        <div><strong>Repite esto:</strong> <span style="color: #007AFF; font-size: 1.1em;">${data.expected_answer}</span> <br>
-                        <span style="font-size: 0.9em; color: #555;">(${data.expected_answer_trans})</span></div>
+                        <div style="margin-bottom: 12px; border-left: 2px solid var(--neon-cyan); padding-left: 10px;">
+                            <strong class="tech" style="color:var(--neon-cyan); font-size:0.9rem;">[TRANSMISIÓN DOCENTE]</strong><br>
+                            ${data.teacher_says} <br>
+                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.teacher_says_trans})</span>
+                        </div>
+                        <div style="background: rgba(0,243,255,0.03); padding: 15px; border: 1px solid var(--cyber-border);">
+                            <strong class="tech" style="color:var(--neon-pink); font-size:0.9rem;">[REPETICIÓN REQUERIDA]</strong><br>
+                            <span style="color: var(--neon-cyan); font-size: 1.2rem; font-weight:700;">${data.expected_answer}</span> <br>
+                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.expected_answer_trans})</span>
+                        </div>
                     `;
 
                     academy.history.push({ 
@@ -2372,6 +2797,7 @@
             
             if (!academy.isIntroDone) {
                 academy.isIntroDone = true;
+                academy.correctCount = 0; // Inicializar contador
                 academy.history.push({ 
                     role: 'user', 
                     content: transcript,
@@ -2390,6 +2816,7 @@
             const isCorrect = game.isCloseMatch(cleanTarget, cleanSpoken);
 
             if (isCorrect) {
+                academy.correctCount = (academy.correctCount || 0) + 1;
                 document.getElementById('academy-ai-advice').classList.add('hidden');
                 
                 academy.history.push({ 
@@ -2399,7 +2826,21 @@
                 });
                 academy.renderHistory();
                 
-                // Retraso para ver el check verde antes de cargar la siguiente
+                // Si ha hecho 5 frases bien, pasamos a conversación
+                if (academy.correctCount >= 5) {
+                    const finishHtml = `
+                        <div class="tech" style="font-size:1.5rem; color:var(--neon-pink); margin:20px 0; text-align:center; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
+                            🏆 [ASCENSO ACADÉMICO COMPLETADO]
+                        </div>
+                        <p style="text-align:center; color: #AAA;">Has procesado la estructura base con éxito. Activando protocolo de comunicación ilimitada para pruebas de campo reales.</p>
+                        <button onclick="conversation.start(${academy.topic.id})" style="width:100%;" class="success">INICIAR COMUNICACIÓN LIBRE</button>
+                    `;
+                    academy.history.push({ role: 'assistant', content: finishHtml, teacherSays: "Great job! You are ready for a real conversation. Let's start." });
+                    academy.renderHistory();
+                    game.speakText("Great job! You are ready for a real conversation. Let's start.", 0.9);
+                    return;
+                }
+
                 setTimeout(() => academy.nextLesson(), 1500);
             } else {
                 academy.history.push({ 
@@ -2488,7 +2929,7 @@
             const container = document.getElementById('academy-timer-container');
             container.classList.remove('hidden');
             bar.style.width = '0%';
-            bar.style.backgroundColor = '#28a745';
+            bar.style.backgroundColor = 'var(--neon-cyan)';
             
             let startTime = Date.now();
             const duration = 20000;
@@ -2500,9 +2941,8 @@
                 const pct = Math.min((elapsed / duration) * 100, 100);
                 
                 bar.style.width = pct + '%';
-                
-                if (pct > 50 && pct < 80) bar.style.backgroundColor = '#ffc107';
-                else if (pct >= 80) bar.style.backgroundColor = '#dc3545';
+                bar.style.backgroundColor = 'var(--neon-cyan)';
+                bar.style.boxShadow = 'var(--cyber-glow)';
                 
                 if (elapsed >= duration) {
                     if(academy.recognition) try { academy.recognition.stop(); } catch(e){}
@@ -2532,23 +2972,31 @@
             const container = document.getElementById('academy-history');
             container.innerHTML = academy.history.map((msg, index) => {
                 if (msg.role === 'user') {
-                    const bgColor = msg.status === 'correct' ? '#34C759' : (msg.status === 'skipped' ? '#8E8E93' : '#FF3B30');
+                    const borderColor = msg.status === 'correct' ? 'var(--duo-green)' : (msg.status === 'skipped' ? '#444' : 'var(--duo-red)');
+                    const glowColor = msg.status === 'correct' ? 'rgba(0, 255, 149, 0.3)' : (msg.status === 'skipped' ? 'transparent' : 'rgba(255, 0, 85, 0.3)');
                     const icon = msg.status === 'correct' ? '✅' : (msg.status === 'skipped' ? '⏭️' : '❌');
-                    return `<div style="margin: 10px 0; display: flex; justify-content: flex-end;">
-                                <div style="display: inline-block; max-width: 80%; padding: 10px 15px; border-radius: 18px; background: ${bgColor}; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">${icon} ${msg.content}</div>
+                    
+                    return `<div style="margin: 15px 0; display: flex; justify-content: flex-end;">
+                                <div style="display: inline-block; max-width: 85%; padding: 12px 18px; border: 1px solid ${borderColor}; background: rgba(0,0,0,0.4); color: white; box-shadow: 0 0 10px ${glowColor}; text-align: right;">
+                                    <span class="tech" style="color:${borderColor}; font-size:0.7rem; display:block; margin-bottom:5px;">[USUARIO]</span>
+                                    ${icon} ${msg.content}
+                                </div>
                             </div>`;
                 } else {
-                    return `<div style="margin: 10px 0; text-align: left;">
-                                <div style="display: inline-block; width: 100%; padding: 15px; border-radius: 18px; background: #E5E5EA; color: black; box-sizing: border-box; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">${msg.content}</div>
-                                <div style="display: flex; gap: 8px; margin-top: 8px; margin-left: 5px; flex-wrap: wrap;">
-                                    <button onclick="game.speakText(academy.history[${index}].teacherSays, 0.85)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🔊 Profesora</button>
-                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.85)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🔊 Respuesta (Normal)</button>
-                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.5)" class="secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">🐢 Lento</button>
-                                    <button onclick="academy.showSyntax(${index})" class="warning" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 12px; width: auto; margin: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">📖 Sintaxis</button>
+                    return `<div style="margin: 15px 0; text-align: left;">
+                                <div style="display: inline-block; width: 100%; padding: 20px; border: 1px solid var(--cyber-border); background: rgba(0, 243, 255, 0.03); color: #EEE; box-sizing: border-box; border-left: 4px solid var(--neon-cyan);">
+                                    <span class="tech" style="color:var(--neon-cyan); font-size:0.7rem; display:block; margin-bottom:10px;">[DOCENTE_IA.PROTOCOLO]</span>
+                                    ${msg.content}
                                 </div>
-                                <div id="syntax-box-${index}" class="hidden" style="margin-top: 8px; margin-left: 5px; background: #fff3cd; padding: 12px; border-radius: 8px; font-size: 0.9rem; color: #856404; width: 95%; border: 1px solid #ffeeba; box-sizing: border-box; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                                    <strong>Sintaxis y Gramática:</strong><br><br>
-                                    ${msg.syntax ? msg.syntax.replace(/\n/g, '<br>') : 'Sin explicación.'}
+                                <div style="display: flex; gap: 8px; margin-top: 10px; margin-left: 0; flex-wrap: wrap;">
+                                    <button onclick="game.speakText(academy.history[${index}].teacherSays, 0.85)" class="secondary" style="padding: 8px 15px; font-size: 0.75rem; width: auto; margin: 0; border-radius:0;">🔊 DOCENTE</button>
+                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.85)" class="secondary" style="padding: 8px 15px; font-size: 0.75rem; width: auto; margin: 0; border-radius:0;">🔊 RESPUESTA</button>
+                                    <button onclick="game.speakText(academy.history[${index}].plainExpected, 0.5)" class="secondary" style="padding: 8px 15px; font-size: 0.75rem; width: auto; margin: 0; border-radius:0;">🐢 LENTO</button>
+                                    <button onclick="academy.showSyntax(${index})" class="warning" style="padding: 8px 15px; font-size: 0.75rem; width: auto; margin: 0; border-radius:0;">📖 SINTAXIS</button>
+                                </div>
+                                <div id="syntax-box-${index}" class="hidden" style="margin-top: 10px; background: rgba(255, 215, 0, 0.05); padding: 15px; border: 1px solid rgba(255, 215, 0, 0.3); font-size: 0.9rem; color: #FFD700; width: 100%; box-sizing: border-box; line-height: 1.5;">
+                                    <strong class="tech" style="font-size:0.8rem;">[ANÁLISIS SINTÁCTICO]</strong><br><br>
+                                    ${msg.syntax ? msg.syntax.replace(/\n/g, '<br>') : 'Sin datos disponibles.'}
                                 </div>
                             </div>`;
                 }
