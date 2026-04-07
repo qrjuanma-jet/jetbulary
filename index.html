@@ -505,25 +505,11 @@
             </div>
         </section>
 
-        <!-- SECCIÓN: CIERRE MÉTRICO -->
-        <footer id="cierre" class="premium-section" style="border-bottom: none; text-align: center; background: linear-gradient(to top, #000, var(--cyber-surface)); padding: 60px 20px;">
-            <div class="tech flicker" style="font-size: 0.8rem; letter-spacing: 0.5em; color: var(--neon-cyan); margin-bottom: 25px;">[ FIN DE TRANSMISIÓN ]</div>
-            <h2 class="tech" style="color: var(--neon-pink); font-size: 1.8rem; text-shadow: 0 0 20px rgba(255,0,255,0.4);">Tu evolución lingüística es inevitable.</h2>
-            <p style="color: #666; margin-bottom: 30px;">Protocolo Jetbulary: Desmantelando barreras comunicativas desde 2024.</p>
-            
-            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; flex-wrap: wrap;">
-                <button class="secondary" onclick="app.showPrivacy()" style="font-size: 0.7rem; padding: 10px 20px;">[ PRIVACIDAD ]</button>
-                <button class="secondary" onclick="app.showTerms()" style="font-size: 0.7rem; padding: 10px 20px;">[ TÉRMINOS ]</button>
-                <button class="secondary" onclick="app.showSupport()" style="font-size: 0.7rem; padding: 10px 20px;">[ SOPORTE ]</button>
+            <button class="secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="margin-top: 40px; width: 100%;">VOLVER AL INICIO</button>
+            <div style="margin-top: 50px; font-size: 11px; color: #333; letter-spacing: 2px; text-align: center;">
+                JETBULARY OS v4.0.5 // ENCRYPTION: AES-256 // AI_NODE: GROQ_ACTIVE // SYNC: LOCAL_ONLY
             </div>
-
-            <button class="secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">VOLVER AL INICIO</button>
-            
-            <div style="margin-top: 50px; font-size: 11px; color: #444; letter-spacing: 2px;">
-                JETBULARY OS v4.0.5 // ENCRYPTION: AES-256 // AI_NODE: GROQ_ACTIVE // SYNC: LOCAL_ONLY <br>
-                <span style="color:#222; margin-top:10px; display:block;">© 2024-2026 JETBULARY. TODOS LOS PROTOCOLOS RESERVADOS.</span>
-            </div>
-        </footer>
+        </section>
     </div>
 
     <!-- VISTA PRIVACIDAD -->
@@ -1130,6 +1116,9 @@
         switchView: (id, historyAction = 'push') => {
             document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            
+            // Fix: Desplazar arriba para que el usuario vea el inicio de la nueva vista
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             
             const newUrl = "#" + id.replace('view-', '');
             
