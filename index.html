@@ -651,16 +651,21 @@
         <h2 class="tech" id="grammar-title">MANUAL DE SINTAXIS</h2>
         <p style="color:#888;">Estructuras de datos para el idioma: <span id="grammar-lang-tag" style="color:var(--neon-cyan)">...</span></p>
         
-        <button id="btn-alphabet" onclick="app.showAlphabet()" class="warning hidden" style="margin-bottom: 20px; width:100%;">[!] CARGAR SET DE CARACTERES ESPECIALES</button>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
-            <button onclick="app.showGrammarCourse()" class="success">🎓 CURSO GUIADO</button>
-            <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ CONSULTA IA</button>
-        </div>
-        <div id="grammar-qa" class="hidden">
-            <input type="text" id="grammar-query" placeholder="Ej: Present Perfect, Verbos modales...">
-            <button onclick="app.askGrammar()" id="btn-grammar" style="width:100%;">REALIZAR CONSULTA</button>
-            <div id="grammar-content" style="text-align: left; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border: 1px solid var(--cyber-border); min-height: 100px;"></div>
-        </div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
+                <button id="btn-alphabet" onclick="app.showAlphabet()" class="warning hidden" style="margin-bottom: 20px; width:100%;">[!] CARGAR SET DE CARACTERES ESPECIALES</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px;">
+                    <button onclick="app.showGrammarCourse()" class="success">🎓 CURSO GUIADO</button>
+                    <button onclick="document.getElementById('grammar-qa').classList.remove('hidden'); document.getElementById('grammar-course-list').classList.add('hidden');" class="secondary">❓ CONSULTA IA</button>
+                </div>
+                <div id="grammar-qa" class="hidden">
+                    <input type="text" id="grammar-query" placeholder="Ej: Present Perfect, Verbos modales...">
+                    <button onclick="app.askGrammar()" id="btn-grammar" style="width:100%;">REALIZAR CONSULTA</button>
+                    <div id="grammar-content" style="text-align: left; margin-top: 20px; background: rgba(0,0,0,0.3); padding: 20px; border: 1px solid var(--cyber-border); min-height: 100px;"></div>
+                </div>
+            </div>
+        </details>
         <div id="grammar-course-list" style="margin-bottom: 20px;"></div>
         <button onclick="app.showDashboard()" class="secondary" style="width:100%;">VOLVER</button>
     </div>
@@ -741,30 +746,30 @@
                     <summary style="font-size: 14px;">💡 SUGERENCIAS DE TEMA</summary>
                     <div id="suggestions-container" class="topic-content" style="padding-top: 0; background: transparent;"></div>
                 </details>
-            </div>
-        </details>
-        
-        <div id="topic-list" style="margin-top: 20px;"></div>
-        
-        <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
+                
+                <div id="topic-list" style="margin-top: 20px;"></div>
+                
+                <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
-        <!-- SECCIÓN PREMIUM / SOPORTE -->
-        <div class="hud-card" style="margin-top: 30px; text-align: left;">
-            <h3 class="tech" style="margin-top: 0; font-size: 1.2rem;">SINCRONIZACIÓN Y NÚCLEO</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="app.exportDB()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px;">Guardar Avance</button>
-                <button onclick="app.checkDiploma()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px; color: var(--neon-cyan); border-color: var(--neon-cyan);">Misión Diploma</button>
-            </div>
-            <button onclick="app.showDiplomas()" class="secondary" style="width: 100%; margin-top: 5px; font-size: 0.8rem;">Visualizar Logros</button>
-            
-            <p style="font-size: 0.85rem; color: #777; margin-top: 20px; border-top: 1px solid var(--cyber-border); padding-top: 15px;">Optimización gratuita: El núcleo de Jetbulary se financia mediante aportaciones voluntarias. Si el protocolo te ha sido útil, considera apoyar el mantenimiento de los servidores de IA.</p>
-            
-            <div style="text-align: center; margin-top: 10px;">
-                <div onclick="app.unlockSync()" style="cursor: pointer; display: inline-block; filter: drop-shadow(var(--cyber-glow));">
-                    <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support on Ko-fi', '#00f3ff', 'X8X61UAY6L');kofiwidget2.draw();</script>
+                <!-- SECCIÓN PREMIUM / SOPORTE -->
+                <div class="hud-card" style="margin-top: 30px; text-align: left;">
+                    <h3 class="tech" style="margin-top: 0; font-size: 1.2rem;">SINCRONIZACIÓN Y NÚCLEO</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button onclick="app.exportDB()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px;">Guardar Avance</button>
+                        <button onclick="app.checkDiploma()" class="secondary" style="font-size: 0.7rem; padding: 12px 5px; color: var(--neon-cyan); border-color: var(--neon-cyan);">Misión Diploma</button>
+                    </div>
+                    <button onclick="app.showDiplomas()" class="secondary" style="width: 100%; margin-top: 5px; font-size: 0.8rem;">Visualizar Logros</button>
+                    
+                    <p style="font-size: 0.85rem; color: #777; margin-top: 20px; border-top: 1px solid var(--cyber-border); padding-top: 15px;">Optimización gratuita: El núcleo de Jetbulary se financia mediante aportaciones voluntarias. Si el protocolo te ha sido útil, considera apoyar el mantenimiento de los servidores de IA.</p>
+                    
+                    <div style="text-align: center; margin-top: 10px;">
+                        <div onclick="app.unlockSync()" style="cursor: pointer; display: inline-block; filter: drop-shadow(var(--cyber-glow));">
+                            <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support on Ko-fi', '#00f3ff', 'X8X61UAY6L');kofiwidget2.draw();</script>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </details>
     </div>
 
     <!-- VISTA JUEGO -->
@@ -779,22 +784,28 @@
         
         <div class="word-target" id="word-display"></div>
 
-        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
-             <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
-             <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
-             <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
-        </div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+                     <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
+                     <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
+                     <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
+                </div>
 
-        <!-- New Play Video Button -->
-        <button onclick="app.playTeacherVideo()" class="secondary" style="width: auto; padding: 8px 15px; margin: 0 auto 15px auto; display: block; font-size: 0.9rem;">🎥 Ver Video Profesora</button>
+                <!-- New Play Video Button -->
+                <button onclick="app.playTeacherVideo()" class="secondary" style="width: auto; padding: 8px 15px; margin: 0 auto 15px auto; display: block; font-size: 0.9rem;">🎥 Ver Video Profesora</button>
 
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+                    <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+                    <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+                    <button onclick="game.next()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
+                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+                </div>
+            </div>
+        </details>
+        
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
-        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
-            <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-            <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-            <button onclick="game.next()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
-            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
-        </div>
         <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
         
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
@@ -843,11 +854,16 @@
             <p id="convo-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
         </div>
 
-        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
-            <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-            <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
-        </div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+                    <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+                    <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+                </div>
+            </div>
+        </details>
     </div>
 
     <!-- VISTA ACADEMIA -->
@@ -869,22 +885,32 @@
             <div id="academy-ai-advice" class="hidden" style="margin-top: 10px; font-weight: 500; color: #d32f2f; font-size: 16px; background: #ffebee; padding: 10px; border-radius: 8px;"></div>
         </div>
 
-        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
-            <button id="btn-academy-auto-on" onclick="academy.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-            <button id="btn-academy-auto-off" onclick="academy.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-            <button onclick="academy.skip()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
-            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
-        </div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+                    <button id="btn-academy-auto-on" onclick="academy.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
+                    <button id="btn-academy-auto-off" onclick="academy.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
+                    <button onclick="academy.skip()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
+                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+                </div>
+            </div>
+        </details>
     </div>
 
     <!-- VISTA VOCABULARIO -->
     <div id="view-vocab" class="container hidden">
         <h2>Mi Vocabulario</h2>
-        <div style="display:flex; gap:5px; margin-bottom:10px;">
-            <button onclick="vocab.sort('score')" class="secondary" style="font-size:0.8rem">Dificultad</button>
-            <button onclick="vocab.sort('topic')" class="secondary" style="font-size:0.8rem">Tema</button>
-            <button onclick="vocab.sort('alpha')" class="secondary" style="font-size:0.8rem">A-Z</button>
-        </div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <button onclick="vocab.sort('score')" class="secondary" style="font-size:0.8rem">Dificultad</button>
+                    <button onclick="vocab.sort('topic')" class="secondary" style="font-size:0.8rem">Tema</button>
+                    <button onclick="vocab.sort('alpha')" class="secondary" style="font-size:0.8rem">A-Z</button>
+                </div>
+            </div>
+        </details>
         <div id="vocab-list" style="max-height: 400px; overflow-y: auto;"></div>
         <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Volver</button>
     </div>
