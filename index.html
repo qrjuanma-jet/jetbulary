@@ -1593,7 +1593,12 @@
             const container = document.getElementById('suggestions-container');
             const dailyContainer = document.getElementById('daily-protocol-container');
             if(dailyContainer) {
-                dailyContainer.innerHTML = `<button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="success flicker" style="width: 100%; font-size: 1.2rem; padding: 25px; box-shadow: 0 0 15px var(--cyber-ok); font-weight: 900;">[!] PROTOCOLO DIARIO: <br>${dailyTopic.toUpperCase()}</button>`;
+                dailyContainer.innerHTML = `
+                    <div class="tech" style="text-align: center; margin-bottom: 8px; color: var(--neon-cyan); font-size: 0.8rem; letter-spacing: 2px; animation: flicker 3s infinite;">
+                        ▼ PULSE PARA INICIAR ENTRENAMIENTO ▼
+                    </div>
+                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="success flicker" style="width: 100%; font-size: 1.2rem; padding: 25px; box-shadow: 0 0 15px var(--cyber-ok); font-weight: 900; border: 2px solid var(--neon-cyan);">[!] PROTOCOLO DIARIO: <br>${dailyTopic.toUpperCase()}</button>
+                `;
             }
             if(container) {
                 container.innerHTML = `
