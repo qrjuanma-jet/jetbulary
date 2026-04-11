@@ -710,30 +710,38 @@
         <div class="avatar-container" id="avatar-dash">
         </div>
         
-        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-            <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
-            <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
-        </div>
-        <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-            <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
-            <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
-            <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
-        </div>
-
-        <details open style="margin: 20px 0;">
-            <summary>✨ INICIALIZAR NUEVO TEMA</summary>
-            <div class="topic-content">
-                <div style="position: relative; margin-bottom: 15px;">
-                    <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." onkeydown="if(event.key === 'Enter') app.createTopic()">
-                    <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));">🎤</span>
-                </div>
-                <button onclick="app.createTopic()" id="btn-create" class="success" style="margin: 0; width: 100%;">Generar Protocolo IA</button>
-            </div>
-        </details>
+        <!-- PROTOCOLO DIARIO DESTACADO -->
+        <div id="daily-protocol-container" style="margin: 20px 0;"></div>
         
-        <details open style="margin: 20px 0;">
-            <summary>💡 SUGERENCIAS DE INTERFAZ</summary>
-            <div id="suggestions-container" class="topic-content" style="padding-top: 0;"></div>
+        <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
+            <summary style="font-size: 1.1rem; padding: 20px; font-weight: 800; text-align: center; justify-content: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
+            <div class="topic-content" style="border-top: 1px dashed var(--neon-pink);">
+                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                    <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
+                    <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
+                </div>
+                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                    <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
+                    <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
+                    <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
+                </div>
+
+                <details style="margin: 20px 0; background: rgba(0,0,0,0.3); border: none;">
+                    <summary style="font-size: 14px;">✨ INICIALIZAR NUEVO TEMA</summary>
+                    <div class="topic-content" style="background: transparent;">
+                        <div style="position: relative; margin-bottom: 15px;">
+                            <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." onkeydown="if(event.key === 'Enter') app.createTopic()">
+                            <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));">🎤</span>
+                        </div>
+                        <button onclick="app.createTopic()" id="btn-create" class="success" style="margin: 0; width: 100%;">Generar Protocolo IA</button>
+                    </div>
+                </details>
+                
+                <details style="margin: 20px 0; background: rgba(0,0,0,0.3); border: none;">
+                    <summary style="font-size: 14px;">💡 SUGERENCIAS DE TEMA</summary>
+                    <div id="suggestions-container" class="topic-content" style="padding-top: 0; background: transparent;"></div>
+                </details>
+            </div>
         </details>
         
         <div id="topic-list" style="margin-top: 20px;"></div>
@@ -849,7 +857,7 @@
         <div class="avatar-container" id="avatar-academy"></div>
         <h2>Modo Academia: <span id="academy-topic-title"></span></h2>
         
-        <div id="academy-history" style="text-align: left; margin-bottom: 20px; max-height: 450px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--cyber-border); border-radius: 2px;">
+        <div id="academy-history" style="text-align: left; margin-bottom: 20px; background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--cyber-border); border-radius: 2px;">
             <!-- Chat bubbles will go here -->
         </div>
 
@@ -1557,9 +1565,12 @@
             }
             
             const container = document.getElementById('suggestions-container');
+            const dailyContainer = document.getElementById('daily-protocol-container');
+            if(dailyContainer) {
+                dailyContainer.innerHTML = `<button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="success flicker" style="width: 100%; font-size: 1.2rem; padding: 25px; box-shadow: 0 0 15px var(--cyber-ok); font-weight: 900;">[!] PROTOCOLO DIARIO: <br>${dailyTopic.toUpperCase()}</button>`;
+            }
             if(container) {
                 container.innerHTML = `
-                    <button onclick="app.createTopicFromSuggestion('${dailyTopic}')" class="success flicker" style="width: 100%; margin-bottom: 10px; border-style:dashed;">[!] PROTOCOLO_DIARIO: ${dailyTopic.toUpperCase()}</button>
                     <details style="margin-bottom: 20px; border:1px solid rgba(0,243,255,0.1); background:rgba(0,0,0,0.3);">
                         <summary class="tech" style="font-size: 0.7rem; color: #888; padding: 12px;">HISTORIAL_DE_SECUENCIAS (L-6)...</summary>
                         <div style="display:flex; flex-direction:column; gap:5px; padding:10px;">${prevHtml}</div>
@@ -2244,7 +2255,7 @@
                 }
             }
             const dist = matrix[b.length][a.length];
-            return (1 - dist / Math.max(a.length, b.length)) > 0.45;
+            return (1 - dist / Math.max(a.length, b.length)) > 0.35;
         },
 
         start: (topicId, mode) => {
