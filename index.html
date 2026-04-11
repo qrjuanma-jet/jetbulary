@@ -2438,11 +2438,11 @@
             if(currentLang === 'de') langCode = 'de-DE';
             if(currentLang === 'fr') langCode = 'fr-FR';
             if(currentLang === 'it') langCode = 'it-IT';
-            if(currentLang === 'eu') langCode = 'es-ES';
+            if(currentLang === 'eu') langCode = voices.some(v => v.lang.startsWith('eu')) ? 'eu-ES' : 'es-ES';
             if(currentLang === 'ru') langCode = 'ru-RU';
             if(currentLang === 'pt') langCode = 'pt-PT';
-            if(currentLang === 'ca') langCode = 'ca-ES';
-            if(currentLang === 'gl') langCode = 'es-ES';
+            if(currentLang === 'ca') langCode = voices.some(v => v.lang.startsWith('ca')) ? 'ca-ES' : 'es-ES';
+            if(currentLang === 'gl') langCode = voices.some(v => v.lang.startsWith('gl')) ? 'gl-ES' : 'es-ES';
             
             u.lang = langCode;
             
@@ -2456,8 +2456,7 @@
             
             if (f) u.voice = f;
             
-            if (currentLang === 'eu') u.pitch = 1.4; // Ajuste para hacer la voz más aguda en euskera
-            
+
             u.onstart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => {
