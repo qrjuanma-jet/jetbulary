@@ -1018,8 +1018,8 @@
         <h2 class="tech" style="color: var(--neon-cyan); margin-top: 20px;">[ CENTRAL AUDIOVISUAL ]</h2>
         <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--cyber-border); padding: 20px; text-align: left; margin-bottom: 30px;">
             <div id="videoteca-input-container">
-                <p style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-bottom:10px;">Introduce un tema (Preferiblemente en INGLÉS) o deja el campo vacío para que la IA te asigne un tema aleatorio.</p>
-                <input type="text" id="videoteca-topic-input" placeholder="Ej: artificial intelligence, cooking, travel..." onkeydown="if(event.key === 'Enter') videoteca.startSearch()">
+                <p style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-bottom:10px;">Introduce un tema (en su IDIOMA ORIGINAL) o deja el campo vacío para que la IA te asigne un tema aleatorio corto.</p>
+                <input type="text" id="videoteca-topic-input" placeholder="Ej (en el idioma objetivo): technology, cocina, voyages..." onkeydown="if(event.key === 'Enter') videoteca.startSearch()">
                 <button onclick="videoteca.startSearch()" class="success" style="width: 100%; margin-top: 10px;">BUSCAR / ASIGNAR</button>
             </div>
             <p id="videoteca-msg" style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;"></p>
@@ -2171,7 +2171,7 @@
             } else {
                 document.getElementById('videoteca-msg').innerHTML = "Buscando material audiovisual en la base de datos global...";
                 const langName = app.getLangName();
-                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema muy interesante y específico (ej: "El futuro de los videojuegos", "Exploración de Marte", "Cocina tradicional japonesa") para aprender ${langName} hablando de él. Genera el tema SIEMPRE EN INGLÉS, sin comillas, para que la búsqueda en YouGlish sea más efectiva (a menos que el idioma a aprender use otros alfabetos, en ese caso usa el idioma objetivo).`;
+                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un término de búsqueda corto y muy interesante (máximo 1 o 2 palabras) para aprender ${langName} escuchando sobre él. IMPORTANTE: El término debe estar SIEMPRE en el idioma ${langName} (con su ortografía correcta) y deben ser palabras muy comunes (ej: si es francés, no pongas una frase larga, pon simplemente "jeux" o "technologie"). Esto es crucial para que en la búsqueda exacta de YouGlish siempre se encuentren resultados y evitemos el error de "no results found".`;
                 
                 await app.callAI_Text_JSON(prompt, null, (data) => {
                     videoteca.setTopic(data.topic);
