@@ -1017,10 +1017,15 @@
         <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
         <h2 class="tech" style="color: var(--neon-cyan); margin-top: 20px;">[ CENTRAL AUDIOVISUAL ]</h2>
         <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--cyber-border); padding: 20px; text-align: left; margin-bottom: 30px;">
-            <p id="videoteca-msg" style="color: #EEE; font-size: 1.1rem; line-height: 1.6;"></p>
+            <div id="videoteca-input-container">
+                <p style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-bottom:10px;">Introduce un tema (Preferiblemente en INGLÉS) o deja el campo vacío para que la IA te asigne un tema aleatorio.</p>
+                <input type="text" id="videoteca-topic-input" placeholder="Ej: artificial intelligence, cooking, travel..." onkeydown="if(event.key === 'Enter') videoteca.startSearch()">
+                <button onclick="videoteca.startSearch()" class="success" style="width: 100%; margin-top: 10px;">BUSCAR / ASIGNAR</button>
+            </div>
+            <p id="videoteca-msg" style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;"></p>
         </div>
         
-        <button id="btn-open-youglish" onclick="videoteca.openVideo()" class="warning" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🔗 ABRIR VIDEO Y OÍR NATIVOS</button>
+        <button id="btn-open-youglish" onclick="videoteca.openVideo()" class="warning hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🔗 ABRIR VIDEO Y OÍR NATIVOS</button>
         <button id="btn-videoteca-talk" onclick="videoteca.startTalk()" class="success hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🎤 VOY A RESUMIR LO QUE HE VISTO</button>
         <button onclick="app.showDashboard()" class="secondary" style="width: 100%;">Volver al Núcleo</button>
     </div>
@@ -1962,6 +1967,41 @@
             }
         },
 
+        callAI_Text_JSON: async (prompt, btn, callback) => {
+            const key = localStorage.getItem(API_KEY_STORAGE);
+            if(!key) return alert("Falta API Key");
+            
+            let originalText = "";
+            if (btn) {
+                originalText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = "...";
+            }
+            
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{role:"user", content: prompt}],
+                        temperature: 0.7,
+                        response_format: { type: "json_object" }
+                    })
+                });
+                if(!res.ok) throw new Error("Error en la API de Groq");
+                const data = await res.json();
+                callback(JSON.parse(data.choices[0].message.content));
+            } catch(e) { 
+                alert("Error con la IA: " + e.message); 
+            } finally { 
+                if (btn) {
+                    btn.disabled = false; 
+                    btn.innerText = originalText; 
+                }
+            }
+        },
+
         getLangName: () => {
             const map = { en: 'Inglés', de: 'Alemán', fr: 'Francés', it: 'Italiano', eu: 'Euskera', ru: 'Ruso', pt: 'Portugués', ca: 'Catalán', gl: 'Gallego' };
             return map[currentLang] || 'Inglés';
@@ -2101,26 +2141,42 @@
     const videoteca = {
         currentTopicName: null,
         
-        init: async () => {
+        init: () => {
             app.switchView('view-videoteca');
-            document.getElementById('videoteca-msg').innerHTML = "Buscando material audiovisual en la base de datos global...";
+            document.getElementById('videoteca-input-container').classList.remove('hidden');
+            document.getElementById('videoteca-topic-input').value = '';
+            document.getElementById('videoteca-msg').innerHTML = "";
             document.getElementById('btn-open-youglish').classList.add('hidden');
             document.getElementById('btn-videoteca-talk').classList.add('hidden');
+        },
+
+        setTopic: (topic) => {
+            videoteca.currentTopicName = topic || "Future technology";
+            document.getElementById('videoteca-msg').innerHTML = `
+                <span class="tech" style="color:var(--neon-pink); display:block; margin-bottom: 10px;">[ TEMA ASIGNADO: ${videoteca.currentTopicName.toUpperCase()} ]</span>
+                <strong style="color:var(--neon-cyan);">LA PROFESORA DICE:</strong><br><br>
+                "¡He preparado un material excelente para nuestra clase de hoy! Trata fundamentalmente sobre <strong>${videoteca.currentTopicName}</strong>.<br><br>
+                Por favor, pulsa el botón para abrir YouGlish. <strong>Asegúrate de leer detenidamente los subtítulos nativos</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
+            `;
+            document.getElementById('btn-open-youglish').classList.remove('hidden');
+            document.getElementById('btn-videoteca-talk').classList.remove('hidden');
+        },
+
+        startSearch: async () => {
+            const inputVal = document.getElementById('videoteca-topic-input').value.trim();
+            document.getElementById('videoteca-input-container').classList.add('hidden');
             
-            const langName = app.getLangName();
-            const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema muy interesante y específico (ej: "El futuro de los videojuegos", "Exploración de Marte", "Cocina tradicional japonesa") para aprender ${langName} hablando de él. Genera el tema SIEMPRE EN INGLÉS, sin comillas, para que la búsqueda en YouGlish sea más efectiva (a menos que el idioma a aprender use otros alfabetos, en ese caso usa el idioma objetivo).`;
-            
-            await app.callAI_Text_JSON(prompt, null, (data) => {
-                videoteca.currentTopicName = data.topic || "Future technology";
-                document.getElementById('videoteca-msg').innerHTML = `
-                    <span class="tech" style="color:var(--neon-pink); display:block; margin-bottom: 10px;">[ TEMA ASIGNADO: ${videoteca.currentTopicName.toUpperCase()} ]</span>
-                    <strong style="color:var(--neon-cyan);">LA PROFESORA DICE:</strong><br><br>
-                    "¡He preparado un material excelente para nuestra clase de hoy! Trata fundamentalmente sobre <strong>${videoteca.currentTopicName}</strong>.<br><br>
-                    Por favor, pulsa el botón para abrir YouGlish. <strong>Asegúrate de leer detenidamente los subtítulos nativos</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
-                `;
-                document.getElementById('btn-open-youglish').classList.remove('hidden');
-                document.getElementById('btn-videoteca-talk').classList.remove('hidden');
-            });
+            if (inputVal) {
+                videoteca.setTopic(inputVal);
+            } else {
+                document.getElementById('videoteca-msg').innerHTML = "Buscando material audiovisual en la base de datos global...";
+                const langName = app.getLangName();
+                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema muy interesante y específico (ej: "El futuro de los videojuegos", "Exploración de Marte", "Cocina tradicional japonesa") para aprender ${langName} hablando de él. Genera el tema SIEMPRE EN INGLÉS, sin comillas, para que la búsqueda en YouGlish sea más efectiva (a menos que el idioma a aprender use otros alfabetos, en ese caso usa el idioma objetivo).`;
+                
+                await app.callAI_Text_JSON(prompt, null, (data) => {
+                    videoteca.setTopic(data.topic);
+                });
+            }
         },
         
         openVideo: () => {
