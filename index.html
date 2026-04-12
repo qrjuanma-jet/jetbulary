@@ -558,6 +558,77 @@
             </div>
         </section>
 
+        <!-- 6. ZONA RESTRINGIDA (MÚLTIPLES APARTADOS VISIBLES PARA ADSENSE) -->
+        <section id="restricted-zone" class="premium-section" style="background: rgba(0, 0, 0, 0.9); border-top: 2px dashed var(--cyber-warn); border-bottom: 2px dashed var(--cyber-warn); position: relative; overflow: hidden; padding-bottom: 80px;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: clamp(200px, 40vw, 400px); opacity: 0.03; color: var(--cyber-warn); pointer-events: none; z-index: 1; text-align: center; width: 100%; white-space: nowrap;">
+                ☢️ ☢️ ☢️
+            </div>
+            
+            <div class="adsense-container" style="text-align: center; position: relative; z-index: 2;">
+                <h2 class="tech" style="color: var(--cyber-warn); font-size: clamp(28px, 6vw, 48px); text-shadow: 0 0 20px var(--cyber-warn); margin-bottom: 10px;">
+                    [ ZONA RESTRINGIDA ☢️ ]
+                </h2>
+                <p style="color: var(--cyber-warn); font-size: 1.1rem; font-weight: bold; margin-bottom: 50px; text-transform: uppercase;">
+                    Las áreas de despliegue inferior se activarán cuando actives tu API-KEY (Gratuita)
+                </p>
+
+                <!-- BARRERA POSTAPOCALÍPTICA -->
+                <div style="width: 100%; height: 20px; background: repeating-linear-gradient(45deg, var(--cyber-warn), var(--cyber-warn) 20px, #000 20px, #000 40px); border: 2px solid #000; margin-bottom: 50px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);"></div>
+
+                <!-- CONTENIDO DESACTIVADO (MOCKUPS PARA ADSENSE) -->
+                <div style="opacity: 0.4; filter: grayscale(1) sepia(0.5) hue-rotate(-50deg); pointer-events: none; text-align: left;">
+                    
+                    <!-- PANEL DASHBOARD MOCKUP -->
+                    <div class="hud-card" style="margin-bottom: 40px; border-color: #555;">
+                        <h3 class="tech" style="color: #777; margin-top: 0; text-align: center;">ESTADO DEL NÚCLEO: ESPERANDO SEÑAL</h3>
+                        <div style="margin: 20px 0; border: 1px dashed #555; padding: 20px; background: rgba(255,255,255,0.02);">
+                            <div class="tech" style="text-align: center; color: #555; margin-bottom: 15px;">▼ PROTOCOLO DIARIO ▼</div>
+                            <button style="width:100%; background: transparent; border-color: #444; color: #444;">INICIAR APRENDIZAJE IA</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button style="flex: 1; min-width: 150px; border-color: #444; color: #444;">⚡ Repaso Espaciado</button>
+                            <button style="flex: 1; min-width: 150px; border-color: #444; color: #444;">📊 Estadísticas</button>
+                            <button style="flex: 1; min-width: 150px; border-color: #444; color: #444;">📚 Vocabulario Completo</button>
+                        </div>
+                    </div>
+
+                    <!-- AREA DE JUEGO MOCKUP -->
+                    <div class="hud-card" style="margin-bottom: 40px; border-color: #555; text-align: center;">
+                        <h3 class="tech" style="color: #777; margin-top: 0; text-align: left;">[ ÁREA DE ENTRENAMIENTO ]</h3>
+                        <div style="width: 150px; height: 150px; margin: 20px auto; border: 2px solid #444; background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px); border-radius: 4px;"></div>
+                        <p class="sentence" style="color: #555; text-shadow: none;">The neural link is waiting for initialization.</p>
+                        <div class="word-target" style="color: #444; text-shadow: none;">NÚCLEO_INACTIVO</div>
+                        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                            <button class="mic-btn" style="border-color: #444 !important; color: #444; margin:0;">🎤</button>
+                        </div>
+                        <p style="color: #555; font-size: 0.9rem; margin-top: 15px;">Habla para calibrar el reconocimiento neuronal...</p>
+                    </div>
+
+                    <!-- GRAMÁTICA MOCKUP -->
+                    <div class="hud-card" style="margin-bottom: 0px; border-color: #555;">
+                        <h3 class="tech" style="color: #777; margin-top: 0;">[ MANUAL DE SINTAXIS IA ]</h3>
+                        <p style="color: #555;">Estructuras de datos bloqueadas por falta de permisos. Sincronice su API Key para tener acceso libre al curso completo y realizar consultas personalizadas al motor neuronal.</p>
+                        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                            <button style="flex: 1; min-width: 150px; border-color: #444; color: #444;">🎓 CURSO GUIADO DE SINTAXIS</button>
+                            <button style="flex: 1; min-width: 150px; border-color: #444; color: #444;">❓ PREGUNTAR A LA IA</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+                    <a href="#game" onclick="app.showGamePreview(); return false;" style="text-decoration: none; width: 100%; max-width: 400px;">
+                        <button class="warning" style="font-size: 1rem; padding: 15px 30px; width: 100%;">
+                            [ EXPLORAR ZONA DE JUEGO (PREVIEW) ]
+                        </button>
+                    </a>
+                    <button class="success" onclick="document.getElementById('acceso').scrollIntoView({behavior:'smooth'})" style="font-size: 1rem; padding: 15px 30px; width: 100%; max-width: 400px;">
+                        [ VOLVER PARA ACTIVAR CON API-KEY ]
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <footer style="padding: 60px 0; text-align: center;">
             <button class="secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="width: 100%;">VOLVER AL INICIO</button>
             <p style="margin-top: 40px; font-size: 11px; color: #444;">© 2026 JETBULARY // PROTOCOLO DE DESPLIEGUE FINALIZADO</p>
@@ -718,14 +789,16 @@
         <!-- PROTOCOLO DIARIO DESTACADO -->
         <div id="daily-protocol-container" style="margin: 20px 0;"></div>
         
+        <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 18px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO VIDEOTECA YOUGLISH</button>
+
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 20px; font-weight: 800; text-align: center; justify-content: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink);">
-                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
                     <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
                     <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
                 </div>
-                <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
                     <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
                     <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
                     <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
@@ -773,7 +846,34 @@
     </div>
 
     <!-- VISTA JUEGO -->
-    <div id="view-game" class="container hidden">
+    <div id="view-game" class="container hidden" style="position: relative;">
+        <!-- OVERLAY ZONA RESTRINGIDA PARA ADSENSE Y SIN API KEY -->
+        <div id="game-restricted-barrier" class="hidden premium-section" style="background: rgba(0, 0, 0, 0.95); border: 2px dashed var(--cyber-warn); position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 100vh; z-index: 1000; text-align: center; padding: 40px 20px; box-sizing: border-box;">
+            <div style="font-size: clamp(80px, 20vw, 200px); opacity: 0.05; color: var(--cyber-warn); position: absolute; top: 50%; left: 0; width: 100%; text-align: center; pointer-events: none; transform: translateY(-50%);">☢️ ☢️ ☢️</div>
+            <div style="position: relative; z-index: 2; max-width: 800px; margin: 0 auto; margin-top: 50px;">
+                <h2 class="tech" style="color: var(--cyber-warn); font-size: clamp(24px, 5vw, 42px); text-shadow: 0 0 20px var(--cyber-warn);">[ ZONA DE JUEGO RESTRINGIDA ]</h2>
+                <p style="color: var(--cyber-warn); font-size: 1.2rem; margin-top: 30px; text-transform: uppercase; font-weight: bold;">Este simulador no funcionará sin tu API-KEY (Gratuita)</p>
+                
+                <div style="width: 100%; height: 20px; background: repeating-linear-gradient(45deg, var(--cyber-warn), var(--cyber-warn) 20px, #000 20px, #000 40px); border: 2px solid #000; margin: 40px 0; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);"></div>
+                
+                <p style="color: #AAA; font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; text-align: left;">
+                    Estás intentando acceder a la <strong>Zona de Entrenamiento de Jetbulary</strong>. En este simulador inmersivo, la Inteligencia artificial evalúa tu pronunciación en tiempo real y dirige un algoritmo avanzado de repetición espaciada. Para poder corregir tus intentos vocales y generar frases dinámicas sin límite, el núcleo necesita interactuar directamente con tu propia <span style="color: var(--neon-cyan);">API-Key de Groq</span>.
+                </p>
+                <div class="hud-card" style="text-align: left; margin-bottom: 40px; border-color: var(--cyber-warn); background: rgba(0,0,0,0.8);">
+                    <h3 class="tech" style="color: var(--neon-cyan); margin-top: 0; font-size: 1rem;">[ QUÉ ENCONTRARÁS AQUÍ AL ACTIVAR TU CLAVE ]</h3>
+                    <ul style="color: #888; font-size: 0.9rem; padding-left: 20px; margin-top: 15px; line-height: 1.8;">
+                        <li><strong>Inmersión Contextual Real:</strong> Nunca memorices palabras sueltas. Practica siempre con frases lógicas y relevantes creadas por la IA al instante.</li>
+                        <li><strong>Feedback de Pronunciación:</strong> Usa el micrófono. Si fallas, el motor fonético te ayudará a perfeccionar el acento.</li>
+                        <li><strong>Sincronización Nativa:</strong> Enlaces directos a YouGlish para que aprendas el acento original.</li>
+                    </ul>
+                </div>
+
+                <button class="success" onclick="app.showLogin()" style="padding: 18px 30px; width: 100%; max-width: 400px; font-size: 1rem; margin: 0 auto; display: block;">
+                    [ VOLVER AL INICIO Y SINCRONIZAR API-KEY ]
+                </button>
+            </div>
+        </div>
+
         <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
         <!-- AVATAR -->
         <div class="avatar-container" id="avatar">
@@ -787,7 +887,7 @@
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
-                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+                <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap;">
                      <button onclick="game.speak()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🔊 Frase</button>
                      <button onclick="game.speakWordSlow()" class="secondary" style="width: auto; padding: 10px; margin: 0;">🐢 Palabra</button>
                      <button onclick="document.getElementById('youglish-link').click()" class="warning" style="width: auto; padding: 10px; margin: 0;">👂 Nativo</button>
@@ -796,7 +896,7 @@
                 <!-- New Play Video Button -->
                 <button onclick="app.playTeacherVideo()" class="secondary" style="width: auto; padding: 8px 15px; margin: 0 auto 15px auto; display: block; font-size: 0.9rem;">🎥 Ver Video Profesora</button>
 
-                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px; flex-wrap: wrap;">
                     <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
                     <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
                     <button onclick="game.next()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
@@ -848,7 +948,8 @@
         </div>
 
         <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
-        <div id="convo-timer-container" class="hidden"><div id="convo-timer-bar"></div></div>
+        <button id="btn-blancazo" onclick="conversation.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 EVITAR BLANCAZO</button>
+        <div id="convo-timer-container" class="hidden" style="margin-top: 10px;"><div id="convo-timer-bar"></div></div>
         
         <div id="user-feedback-container" style="margin: 15px 0; min-height: 60px;">
             <p id="convo-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
@@ -857,13 +958,26 @@
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
-                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
-                    <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-                    <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px; flex-wrap: wrap;">
+                    <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Auto ON</button>
+                    <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Auto OFF</button>
+                    <button id="btn-convo-end" onclick="conversation.endSession()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Terminar 🛑</button>
                 </div>
             </div>
         </details>
+    </div>
+
+    <!-- VISTA SUMMARY / ERROR REPORT -->
+    <div id="view-summary" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
+        <h2 class="tech" style="color: var(--neon-pink); margin-top: 20px;">[ REPORTE FONÉTICO ]</h2>
+        <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--cyber-border); padding: 20px; text-align: left; margin-bottom: 30px;">
+            <p style="color: #AAA;">Estas son las palabras o fragmentos donde la Inteligencia Artificial ha detectado debilidades pronunciativas:</p>
+            <div id="summary-bad-words" style="margin-top: 20px; display: grid; gap: 10px;"></div>
+        </div>
+        
+        <button id="btn-start-improve" onclick="game.startImproveMode()" class="success" style="width: 100%; padding: 20px; font-size: 1.2rem; margin-bottom: 15px; text-transform: uppercase;">⚡ JUGAR MODO MEJORAR</button>
+        <button onclick="app.showDashboard()" class="secondary" style="width: 100%;">Volver al Núcleo</button>
     </div>
 
     <!-- VISTA ACADEMIA -->
@@ -888,14 +1002,27 @@
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
-                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px;">
-                    <button id="btn-academy-auto-on" onclick="academy.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-                    <button id="btn-academy-auto-off" onclick="academy.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-                    <button onclick="academy.skip()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Saltar ⏭️</button>
-                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px;">Salir</button>
+                <div style="display: flex; gap: 5px; justify-content: center; width: 100%; margin-top: 10px; flex-wrap: wrap;">
+                    <button id="btn-academy-auto-on" onclick="academy.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Auto ON</button>
+                    <button id="btn-academy-auto-off" onclick="academy.setAutoMic(false)" class="secondary" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Auto OFF</button>
+                    <button onclick="academy.skip()" class="warning" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Saltar ⏭️</button>
+                    <button onclick="app.showDashboard()" class="danger" style="font-size: 0.9rem; padding: 10px; flex: 1; border-radius: 10px; min-width: 80px;">Salir</button>
                 </div>
             </div>
         </details>
+    </div>
+
+    <!-- VISTA VIDEOTECA (PUENTE) -->
+    <div id="view-videoteca" class="container hidden">
+        <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
+        <h2 class="tech" style="color: var(--neon-cyan); margin-top: 20px;">[ CENTRAL AUDIOVISUAL ]</h2>
+        <div style="background: rgba(0, 0, 0, 0.4); border: 1px solid var(--cyber-border); padding: 20px; text-align: left; margin-bottom: 30px;">
+            <p id="videoteca-msg" style="color: #EEE; font-size: 1.1rem; line-height: 1.6;"></p>
+        </div>
+        
+        <button id="btn-open-youglish" onclick="videoteca.openVideo()" class="warning" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🔗 ABRIR VIDEO Y OÍR NATIVOS</button>
+        <button id="btn-videoteca-talk" onclick="videoteca.startTalk()" class="success hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🎤 VOY A RESUMIR LO QUE HE VISTO</button>
+        <button onclick="app.showDashboard()" class="secondary" style="width: 100%;">Volver al Núcleo</button>
     </div>
 
     <!-- VISTA VOCABULARIO -->
@@ -904,10 +1031,10 @@
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 15px; font-weight: 800; text-align: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink); background: transparent;">
-                <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <button onclick="vocab.sort('score')" class="secondary" style="font-size:0.8rem">Dificultad</button>
-                    <button onclick="vocab.sort('topic')" class="secondary" style="font-size:0.8rem">Tema</button>
-                    <button onclick="vocab.sort('alpha')" class="secondary" style="font-size:0.8rem">A-Z</button>
+                <div style="display:flex; gap:5px; margin-bottom:10px; flex-wrap: wrap;">
+                    <button onclick="vocab.sort('score')" class="secondary" style="font-size:0.8rem; flex: 1; min-width: 80px;">Dificultad</button>
+                    <button onclick="vocab.sort('topic')" class="secondary" style="font-size:0.8rem; flex: 1; min-width: 80px;">Tema</button>
+                    <button onclick="vocab.sort('alpha')" class="secondary" style="font-size:0.8rem; flex: 1; min-width: 80px;">A-Z</button>
                 </div>
             </div>
         </details>
@@ -1041,7 +1168,11 @@
             if(savedKey) {
                 app.showDashboard('replace');
             } else {
-                app.showLogin('replace');
+                if (window.location.hash === '#game') {
+                    app.showGamePreview();
+                } else {
+                    app.showLogin('replace');
+                }
             }
             app.renderWelcomeLangSelector();
             app.checkCookies();
@@ -1105,6 +1236,17 @@
         showLogin: (h) => app.switchView('view-login', h),
         showPrivacy: () => app.switchView('view-privacy'),
         showTerms: () => app.switchView('view-terms'),
+        showGamePreview: () => {
+            app.switchView('view-game');
+            document.getElementById('game-restricted-barrier').classList.remove('hidden');
+            // Mock content to provide AdSense crawlable content in the background of the barrier
+            document.getElementById('sentence-display').innerText = "The neural link is waiting for initialization. Adquiere tu clave gratuita para activar el entrenamiento inmersivo y dejar de memorizar de forma tradicional.";
+            document.getElementById('sentence-translation').innerText = "El enlace neuronal espera inicialización.";
+            document.getElementById('word-display').innerText = "NÚCLEO_INACTIVO";
+            document.getElementById('feedback-msg').innerText = "";
+            document.getElementById('spoken-text').innerText = "Inicia el simulador introduciendo la API-KEY gratuita...";
+        },
+        
         showDashboard: (h) => {
             // Detener voz, micrófonos y temporizadores al salir de un juego
             window.speechSynthesis.cancel();
@@ -1956,6 +2098,49 @@
         sort: (type) => vocab.render(type)
     };
 
+    const videoteca = {
+        currentTopicName: null,
+        
+        init: async () => {
+            app.switchView('view-videoteca');
+            document.getElementById('videoteca-msg').innerHTML = "Buscando material audiovisual en la base de datos global...";
+            document.getElementById('btn-open-youglish').classList.add('hidden');
+            document.getElementById('btn-videoteca-talk').classList.add('hidden');
+            
+            const langName = app.getLangName();
+            const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema muy interesante y específico (ej: "El futuro de los videojuegos", "Exploración de Marte", "Cocina tradicional japonesa") para aprender ${langName} hablando de él. Genera el tema SIEMPRE EN INGLÉS, sin comillas, para que la búsqueda en YouGlish sea más efectiva (a menos que el idioma a aprender use otros alfabetos, en ese caso usa el idioma objetivo).`;
+            
+            await app.callAI_Text_JSON(prompt, null, (data) => {
+                videoteca.currentTopicName = data.topic || "Future technology";
+                document.getElementById('videoteca-msg').innerHTML = `
+                    <span class="tech" style="color:var(--neon-pink); display:block; margin-bottom: 10px;">[ TEMA ASIGNADO: ${videoteca.currentTopicName.toUpperCase()} ]</span>
+                    <strong style="color:var(--neon-cyan);">LA PROFESORA DICE:</strong><br><br>
+                    "¡He preparado un material excelente para nuestra clase de hoy! Trata fundamentalmente sobre <strong>${videoteca.currentTopicName}</strong>.<br><br>
+                    Por favor, pulsa el botón para abrir YouGlish. <strong>Asegúrate de leer detenidamente los subtítulos nativos</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
+                `;
+                document.getElementById('btn-open-youglish').classList.remove('hidden');
+                document.getElementById('btn-videoteca-talk').classList.remove('hidden');
+            });
+        },
+        
+        openVideo: () => {
+             const ygLang = (currentLang === 'en') ? 'english' : 
+                            (currentLang === 'fr') ? 'french' : 
+                            (currentLang === 'de') ? 'german' : 
+                            (currentLang === 'it') ? 'italian' : 
+                            (currentLang === 'pt') ? 'portuguese' : 
+                            (currentLang === 'ru') ? 'russian' : 
+                            (currentLang === 'ja') ? 'japanese' : currentLang;
+             const url = `https://youglish.com/pronounce/${encodeURIComponent(videoteca.currentTopicName)}/${ygLang}`;
+             window.open(url, '_blank');
+        },
+        
+        startTalk: () => {
+             conversation.start('videoteca_mock_id', 'videoteca', videoteca.currentTopicName);
+        }
+    };
+
+
     const conversation = {
         topic: null,
         history: [],
@@ -1965,9 +2150,13 @@
         autoMic: true,
         timerInterval: null,
 
-        start: async (topicId) => {
-            conversation.topic = db.topics.find(t => t.id === topicId);
-            if (!conversation.topic) return alert("Tema no encontrado.");
+        start: async (topicId, mode = "normal", customTopicName = "") => {
+            if (mode === "videoteca") {
+                conversation.topic = { id: 'videoteca_mock', name: customTopicName };
+            } else {
+                conversation.topic = db.topics.find(t => t.id === topicId);
+                if (!conversation.topic) return alert("Tema no encontrado.");
+            }
 
             app.switchView('view-conversation');
             document.getElementById('conversation-topic-title').innerText = conversation.topic.name;
@@ -1987,18 +2176,26 @@
             document.getElementById('convo-spoken-text').innerText = '...';
 
             const langName = app.getLangName();
-            const messages = [
-                {
-                    role: 'system',
-                    content: `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "speech_trans": "Traducción al español", "new_vocab": [{"english": "palabra", "spanish": "traducción", "sentence_en": "frase corta de ejemplo", "sentence_es": "traducción de la frase"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`
-                },
-                {
-                    role: 'user',
-                    content: `Inicia una conversación sobre "${conversation.topic.name}".
+            
+            let systemPrompt = `Eres una profesora de ${langName} amigable. Tu objetivo es tener una conversación corta. Responde SIEMPRE con un objeto JSON válido con la estructura: {"speech": "Tu texto aquí, solo en ${langName}", "speech_trans": "Traducción al español", "new_vocab": [{"english": "palabra", "spanish": "traducción", "sentence_en": "frase", "sentence_es": "traducción"}], "suggested_phrases": [{"text": "frase", "trans": "traducción"}]}`;
+            let userPrompt = `Inicia una conversación sobre "${conversation.topic.name}".
 1. Haz una breve introducción y una pregunta abierta para empezar.
 2. Sugiere 5-7 palabras/verbos útiles para la respuesta.
-3. Sugiere 3 frases cortas completas que podría usar.`
-                }
+3. Sugiere 3 frases cortas completas que podría usar.`;
+
+            if (mode === "videoteca") {
+                systemPrompt = `Eres una profesora de ${langName} extremadamente empática, paciente y comprensiva, que está dando clase a un alumno que intenta expresarse. El alumno acaba de volver de ver un video externo en YouGlish sobre "${conversation.topic.name}". Tú NO has visto el video. Tu papel NO es evaluar o corregir duramente sus ideas, sino ser su mayor apoyo moral. Felicítalo de forma muy natural y hazle preguntas MUY SENCILLAS e interesantes para que intente explicarte con sus palabras (o apoyándose en el traductor) qué le ha llamado la atención del video. Responde SIEMPRE con un JSON válido con la estructura: {"speech": "Tu texto aquí en ${langName} comprensivo", "speech_trans": "Traducción", "new_vocab": [{"english": "palabra_sencilla", "spanish": "traducción", "sentence_en": "ejemplo facil", "sentence_es": "traducción"}], "suggested_phrases": [{"text": "frase_segura_para_el_alumno", "trans": "traducción"}]}`;
+                
+                userPrompt = `Hola. Acabo de ver el video sobre "${conversation.topic.name}" e intentaré resumirlo.
+1. ¡Salúdame de forma muy alegre y empática!
+2. Pregúntame amablemente cuál fue la idea principal que vi o si me ha gustado el video (hazlo muy fácil de entender).
+3. Sugiere vocabulario sencillo que podría usar para describirlo.
+4. Sugiere frases cortas que podría decirle a alguien para explicar si un video le gusto o no.`;
+            }
+
+            const messages = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
             ];
 
             await app.callAI_Conversation(messages, document.getElementById('mic-btn-convo'), (data) => {
@@ -2104,6 +2301,79 @@
                     }, 5000);
                 }
             });
+        },
+        
+        endSession: () => {
+            conversation.setAutoMic(false);
+            window.speechSynthesis.cancel();
+            if(conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+            conversation.stopTimer();
+            
+            // Populate view-summary
+            const summaryBox = document.getElementById('summary-bad-words');
+            const words = app.improveWords || [];
+            
+            if (words.length === 0) {
+                summaryBox.innerHTML = '<p class="tech" style="color:var(--neon-cyan);">¡Datos perfectos! No se detectaron errores fonéticos graves durante esta inmersión.</p>';
+                document.getElementById('btn-start-improve').classList.add('hidden');
+            } else {
+                summaryBox.innerHTML = words.map(w => `
+                    <div style="background: rgba(255,0,0,0.1); border-left: 3px solid var(--neon-pink); padding: 10px;">
+                        <span style="color: var(--neon-pink); font-weight: bold; font-size: 1.1rem;">${w.english}</span>
+                        <span style="color: #AAA; font-size: 0.9rem;"> - ${w.spanish}</span>
+                    </div>
+                `).join('');
+                document.getElementById('btn-start-improve').classList.remove('hidden');
+            }
+            
+            app.switchView('view-summary');
+        },
+
+        toggleBlancazo: () => {
+            window.speechSynthesis.cancel();
+            if(conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+            conversation.stopTimer();
+
+            if(!conversation.recognitionEs) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                conversation.recognitionEs = new SpeechRecognition();
+                conversation.recognitionEs.lang = 'es-ES';
+                
+                conversation.recognitionEs.onresult = async (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    document.getElementById('convo-spoken-text').innerText = `Tú (ES): "${transcript}"`;
+                    document.getElementById('convo-spoken-text').style.color = '#ff9800'; 
+                    
+                    const langName = app.getLangName();
+                    const prompt = `Soy estudiante de ${langName}. Tradúceme perfectamente esta frase al ${langName}: "${transcript}". 
+Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto JSON válido con la estructura: {"translation": "La traducción aquí"}. NO devuelvas texto plano.`;
+                    
+                    document.getElementById('btn-blancazo').innerText = "⏳ TRADUCIENDO...";
+                    await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
+                        document.getElementById('btn-blancazo').innerText = "🇪🇸 EVITAR BLANCAZO";
+                        if(data.translation) {
+                            document.getElementById('convo-spoken-text').innerHTML = `AHORA DILO TÚ EN ${langName.toUpperCase()}: <br><strong style="font-size: 1.3rem; color:var(--neon-cyan); letter-spacing: 0.5px;">${data.translation}</strong>`;
+                            game.speakText(data.translation, 0.75); // la profe lo dice lento
+                        }
+                    });
+                };
+                conversation.recognitionEs.onend = () => {
+                    document.getElementById('mic-btn-convo').classList.remove('listening');
+                    if (document.getElementById('btn-blancazo').innerText.includes("HABLANDO")) {
+                         document.getElementById('btn-blancazo').innerText = "🇪🇸 EVITAR BLANCAZO";
+                    }
+                    conversation.stopTimer();
+                };
+            }
+            
+            try {
+                document.getElementById('mic-btn-convo').classList.remove('listening');
+                document.getElementById('btn-blancazo').innerText = "👂 HABLE EN ESPAÑOL...";
+                conversation.recognitionEs.start();
+                conversation.startTimer();
+            } catch(e) {
+                console.error(e);
+            }
         },
 
         rewind: (index) => {
@@ -2289,7 +2559,30 @@
             return (1 - dist / Math.max(a.length, b.length)) > 0.35;
         },
 
+        startImproveMode: () => {
+             const wordsToImprove = app.improveWords || [];
+             if (wordsToImprove.length === 0) return alert("No hay palabras detectadas para mejorar.");
+             
+             game.isImproveMode = true;
+             game.data = wordsToImprove.map((w, index) => {
+                 return {
+                     id: 'improve_' + index,
+                     english: w.english,
+                     spanish: w.spanish,
+                     sentence_en: "(Palabra a mejorar detectada por el Docente IA)",
+                     sentence_es: "Revisa el enlace nativo e imita la fonética."
+                 };
+             });
+             
+             game.index = 0;
+             app.switchView('view-game');
+             game.setAutoMic(true);
+             game.updateAvatar();
+             game.loadCard();
+        },
+
         start: (topicId, mode) => {
+            game.isImproveMode = false;
             let words = [];
             if(topicId === 'global_review') {
                 const langTopics = db.topics.filter(t => (t.lang || 'en') === currentLang).map(t => t.id);
@@ -2389,7 +2682,11 @@
 
         loadCard: () => {
             if(game.index >= game.data.length) {
-                alert("Lo has hecho muy bien, sigue practicando, es la mejor forma de aprender un idioma.");
+                if (game.isImproveMode) {
+                    alert("¡Todas tus debilidades han sido procesadas! Volviendo al núcleo.");
+                } else {
+                    alert("Lo has hecho muy bien, sigue practicando, es la mejor forma de aprender un idioma.");
+                }
                 app.showDashboard();
                 return;
             }
@@ -2453,7 +2750,13 @@
             document.getElementById('mic-btn').classList.remove('hidden');
             document.getElementById('fail-options').classList.add('hidden');
             
-            setTimeout(game.speak, 500);
+            setTimeout(() => {
+                if (game.isImproveMode) {
+                    game.speakWordSlow();
+                } else {
+                    game.speak();
+                }
+            }, 500);
         },
         
         speak: () => {
@@ -2876,12 +3179,69 @@
             });
         },
 
+        handleEndOfLesson: async () => {
+            const adviceBox = document.getElementById('academy-ai-advice');
+            adviceBox.innerHTML = "Analizando tu rendimiento y generando feedback docente...";
+            adviceBox.classList.remove('hidden');
+            adviceBox.style.color = '#FFF';
+            adviceBox.style.background = 'transparent';
+            
+            const langName = app.getLangName();
+            const mistakesArr = academy.mistakes || [];
+            let mistakeText = mistakesArr.length === 0 ? "El alumno lo ha hecho perfecto en todas las frases." : 
+                "El alumno falló en estas frases:\n" + mistakesArr.map(m => `- Debía decir "${m.expected}" pero pronunció algo como "${m.spoken}"`).join("\n");
+            
+            const prompt = `El alumno ha terminado su lección interactiva de ${langName}. 
+${mistakeText}
+Actúa como su excelente profesor de idiomas. Felicítalo y dale breves consejos claros para mejorar las palabras concretas en las que falló.
+IMPORTANTE: Responde SIEMPRE con un objeto JSON válido con la estructura:
+{
+  "feedback_text": "Tu feedback aquí. IMPORTANTE: Añade al final la frase '¿Hablamos ahora para poner en práctica la inmersión lingüística?' traducida al ${langName}.",
+  "mispronounced_words": [
+    {"english": "palabra1", "spanish": "traducción1"}
+  ]
+}
+Solo devuelve las palabras en las que realmente falló según el análisis. No incluyas código extra.`;
+
+            await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
+                if (data.mispronounced_words) {
+                    app.improveWords = data.mispronounced_words;
+                } else {
+                    app.improveWords = [];
+                }
+                const text = data.feedback_text || "Excellent work! Let's have a real conversation.";
+                const finishHtml = `
+                    <div class="tech" style="font-size:1.5rem; color:var(--neon-pink); margin:20px 0; text-align:center; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
+                        🏆 [ASCENSO ACADÉMICO COMPLETADO]
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; margin-bottom: 20px; border-left: 3px solid var(--neon-cyan); border-radius: 4px;">
+                        <strong style="color:var(--neon-cyan); font-size: 1.1rem;">💡 FEEDBACK FINAL DEL DOCENTE:</strong><br><br>
+                        <span style="color:#EEE; font-size: 0.95rem; line-height: 1.7;">${text.replace(/\n/g, '<br>')}</span>
+                    </div>
+                    <p style="text-align:center; color: #AAA;">Iniciando inmersión lingüística en breve...</p>
+                `;
+                academy.history.push({ role: 'assistant', content: finishHtml, teacherSays: "" }); // El tts lo hacemos manual y luego cortamos.
+                academy.renderHistory();
+                adviceBox.classList.add('hidden');
+                adviceBox.style.color = '';
+                adviceBox.style.background = '';
+                game.speakText(text, 0.9);
+                
+                // Transición a la conversación después de que la IA termine de hablar (+ un margen)
+                const delay = Math.max(text.length * 60, 3000);
+                setTimeout(() => {
+                    conversation.start(academy.topic.id);
+                }, delay);
+            });
+        },
+
         handleUserReply: async (transcript) => {
             document.getElementById('academy-spoken-text').innerText = `Tú: "${transcript}"`;
             
             if (!academy.isIntroDone) {
                 academy.isIntroDone = true;
-                academy.correctCount = 0; // Inicializar contador
+                academy.phraseCount = 0; // Inicializar contador
+                academy.mistakes = []; // Inicializar errores
                 academy.history.push({ 
                     role: 'user', 
                     content: transcript,
@@ -2898,68 +3258,43 @@
             const cleanSpoken = transcript.toLowerCase().replace(/[.,!?¿¡]/g, '').trim();
 
             const isCorrect = game.isCloseMatch(cleanTarget, cleanSpoken);
+            academy.phraseCount = (academy.phraseCount || 0) + 1;
 
             if (isCorrect) {
-                academy.correctCount = (academy.correctCount || 0) + 1;
                 document.getElementById('academy-ai-advice').classList.add('hidden');
-                
                 academy.history.push({ 
                     role: 'user', 
                     content: transcript,
                     status: 'correct'
                 });
-                academy.renderHistory();
-                
-                // Si ha hecho 5 frases bien, pasamos a conversación
-                if (academy.correctCount >= 5) {
-                    const finishHtml = `
-                        <div class="tech" style="font-size:1.5rem; color:var(--neon-pink); margin:20px 0; text-align:center; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
-                            🏆 [ASCENSO ACADÉMICO COMPLETADO]
-                        </div>
-                        <p style="text-align:center; color: #AAA;">Has procesado la estructura base con éxito. Activando protocolo de comunicación ilimitada para pruebas de campo reales.</p>
-                        <button onclick="conversation.start(${academy.topic.id})" style="width:100%;" class="success">INICIAR COMUNICACIÓN LIBRE</button>
-                    `;
-                    academy.history.push({ role: 'assistant', content: finishHtml, teacherSays: "Great job! You are ready for a real conversation. Let's start." });
-                    academy.renderHistory();
-                    game.speakText("Great job! You are ready for a real conversation. Let's start.", 0.9);
-                    return;
-                }
-
-                setTimeout(() => academy.nextLesson(), 1500);
             } else {
                 academy.history.push({ 
                     role: 'user', 
                     content: transcript,
                     status: 'incorrect'
                 });
-                academy.renderHistory();
-                
-                // Feedback de pronunciación AI
-                const adviceBox = document.getElementById('academy-ai-advice');
-                adviceBox.innerHTML = "Analizando tu pronunciación...";
-                adviceBox.classList.remove('hidden');
-                
-                const langName = app.getLangName();
-                const prompt = `El alumno debía repetir la respuesta exacta: "${academy.currentExpected.expected_answer}" pero ha pronunciado mal o de forma diferente diciendo: "${transcript}".
-                Identifica exactamente qué palabra o palabras ha pronunciado mal. Actúa como su profesora amigable y dale un tip rápido para pronunciarla bien. Luego, pídele explícitamente que repita primero SOLAMENTE la palabra en la que falló, y a continuación, la frase completa. Sé muy breve y directa (2-3 frases máximo). No reveles que eres una IA.`;
-                
-                await app.callAI_Text(prompt, null, (text) => {
-                    adviceBox.innerHTML = `<strong>💡 Consejo para mejorar:</strong> ${text} <br><br><span style="color:#000;">Inténtalo de nuevo cuando estés listo.</span>`;
-                    if (academy.autoMic) {
-                        setTimeout(() => {
-                            if (!document.getElementById('view-academy').classList.contains('hidden')) {
-                                academy.toggleMic();
-                            }
-                        }, 2500);
-                    }
-                });
+                if(!academy.mistakes) academy.mistakes = [];
+                academy.mistakes.push({expected: academy.currentExpected.expected_answer, spoken: transcript});
             }
+            academy.renderHistory();
+            
+            // Si ha hecho 5 frases, pasamos al feedback general
+            if (academy.phraseCount >= 5) {
+                academy.handleEndOfLesson();
+                return;
+            }
+
+            setTimeout(() => academy.nextLesson(), 1500);
         },
 
         skip: () => {
             academy.stopMic();
             if (!academy.isIntroDone) {
                 academy.isIntroDone = true;
+                academy.phraseCount = 0;
+                academy.mistakes = [];
+            } else {
+                academy.phraseCount = (academy.phraseCount || 0) + 1;
             }
             document.getElementById('academy-ai-advice').classList.add('hidden');
             academy.history.push({ 
@@ -2968,6 +3303,12 @@
                 status: 'skipped'
             });
             academy.renderHistory();
+            
+            if (academy.phraseCount >= 5) {
+                academy.handleEndOfLesson();
+                return;
+            }
+            
             setTimeout(() => academy.nextLesson(), 500);
         },
 
