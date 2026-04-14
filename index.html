@@ -681,8 +681,9 @@
 
     <!-- VISTA STATS -->
     <div id="view-stats" class="container hidden">
-        <h2 class="tech">MÉTRICAS DE RENDIMIENTO</h2>
-        <div class="stat-grid" style="margin-top:20px;">
+        <h2 class="tech">ESTADÍSTICAS Y CUADERNO DE REPASO</h2>
+        
+        <div class="stat-grid" style="margin-top:20px; border-bottom: 1px solid var(--cyber-border); padding-bottom: 20px;">
             <div class="stat-item">
                 <span class="tech" style="font-size:0.8rem; color:#888;">[ DATOS TOTALES ]</span>
                 <span class="stat-value" id="stat-total" style="color:var(--neon-cyan);">0</span>
@@ -694,6 +695,14 @@
                 <span style="font-size:0.9rem; color:#666;">Eficiencia Vocal</span>
             </div>
         </div>
+
+        <h3 class="tech" style="margin-top: 30px; font-size: 1.2rem; color: var(--neon-pink); text-align: left;">[ APUNTES DE LA ACADEMIA ]</h3>
+        <p style="color: #AAA; text-align: left; font-size: 0.9rem;">Los consejos y gramática impartidos por la profesora IA se registrarán aquí.</p>
+        <div id="academy-tips-list" style="margin-top: 10px;"></div>
+
+        <h3 class="tech" style="margin-top: 30px; font-size: 1.2rem; color: var(--neon-cyan); text-align: left;">[ TEMAS GENERADOS ]</h3>
+        <div id="topic-list" style="margin-top: 10px;"></div>
+
         <button onclick="app.showDashboard()" class="secondary" style="width:100%; margin-top:30px;">CERRAR PANEL</button>
     </div>
 
@@ -789,6 +798,19 @@
         <!-- PROTOCOLO DIARIO DESTACADO -->
         <div id="daily-protocol-container" style="margin: 20px 0;"></div>
         
+        <!-- NIVELES ACADEMIA -->
+        <div style="background: rgba(0,0,0,0.4); padding: 15px; border: 1px solid var(--neon-cyan); margin-bottom: 15px; border-radius: 4px;">
+             <label style="color: var(--neon-cyan); font-weight: bold; display: block; margin-bottom: 15px; font-family: 'Orbitron', sans-serif;">[ EXIGENCIA ACADÉMICA ] <span id="academy-level-display" style="color: white; float: right; font-size: 0.9rem;"></span></label>
+             <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
+             <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: #888; margin-top: 5px;">
+                 <span>A0</span><span>A1-A2</span><span>B1</span><span>B2</span><span>C1+</span>
+             </div>
+        </div>
+
+        <button onclick="academy.startGlobal()" class="warning" style="width: 100%; padding: 22px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #9c27b0); border-color: #e040fb; color: #FFF;">🏫 ENTRAR A LA ACADEMIA</button>
+
+        <button onclick="app.showStats()" class="success" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #001100, #004d00); border-color: var(--cyber-ok);">📚 MI CUADERNO (Temas y Repaso)</button>
+
         <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 18px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO VIDEOTECA YOUGLISH</button>
 
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
@@ -796,17 +818,17 @@
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink);">
                 <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
                     <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
-                    <button onclick="app.showStats()" style="background-color: #17a2b8;">📊 Stats</button>
+                    <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
                 </div>
                 <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
-                    <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
-                    <button onclick="app.showGrammar()" class="secondary">📖 Gramática</button>
+                    <button onclick="app.showGrammar()" class="secondary">📖 Cuaderno Estático</button>
                     <button onclick="app.showResources()" class="secondary">➕ Recursos Extra</button>
                 </div>
 
                 <details style="margin: 20px 0; background: rgba(0,0,0,0.3); border: none;">
                     <summary style="font-size: 14px;">✨ INICIALIZAR NUEVO TEMA</summary>
                     <div class="topic-content" style="background: transparent;">
+                        <p style="font-size:0.85rem; color:#888;">El tema que generes se guardará silenciosamente en tu Cuaderno de Estadísticas.</p>
                         <div style="position: relative; margin-bottom: 15px;">
                             <input type="text" id="new-topic-input" placeholder="Ej: Viajes, Amor, Trabajo..." onkeydown="if(event.key === 'Enter') app.createTopic()">
                             <span onclick="app.listenTopic(this)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));">🎤</span>
@@ -819,8 +841,6 @@
                     <summary style="font-size: 14px;">💡 SUGERENCIAS DE TEMA</summary>
                     <div id="suggestions-container" class="topic-content" style="padding-top: 0; background: transparent;"></div>
                 </details>
-                
-                <div id="topic-list" style="margin-top: 20px;"></div>
                 
                 <button onclick="app.logout()" class="secondary">Cambiar API Key</button>
 
@@ -905,6 +925,7 @@
             </div>
         </details>
         
+        <button id="btn-blancazo-game" onclick="game.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
         <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
         <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
         
@@ -948,7 +969,7 @@
         </div>
 
         <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
-        <button id="btn-blancazo" onclick="conversation.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 EVITAR BLANCAZO</button>
+        <button id="btn-blancazo" onclick="conversation.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
         <div id="convo-timer-container" class="hidden" style="margin-top: 10px;"><div id="convo-timer-bar"></div></div>
         
         <div id="user-feedback-container" style="margin: 15px 0; min-height: 60px;">
@@ -991,6 +1012,7 @@
             <!-- Chat bubbles will go here -->
         </div>
 
+        <button id="btn-blancazo-academy" onclick="academy.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
         <button class="mic-btn" id="mic-btn-academy" onclick="academy.toggleMic()">🎤</button>
         <div id="academy-timer-container" class="hidden"><div id="academy-timer-bar"></div></div>
         
@@ -1132,7 +1154,7 @@
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
-    let db = { topics: [], words: [], progress: [], grammar_courses: {} };
+    let db = { topics: [], words: [], progress: [], grammar_courses: {}, academy_tips: [], academy_level: 0 };
     let currentLang = 'en';
     
     const languages = [
@@ -1148,12 +1170,32 @@
     ];
 
     const app = {
+        saveAcademyLevel: (val) => {
+            db.academy_level = parseInt(val);
+            app.saveDB();
+            app.updateAcademyLevelDisplay(val);
+        },
+        updateAcademyLevelDisplay: (val) => {
+            const display = document.getElementById('academy-level-display');
+            if (display) {
+                const labels = ['A0 (Desde cero)', 'A1-A2 (Básico)', 'B1 (Intermedio)', 'B2 (Avanzado)', 'C1/C2 (Nativo/Pro)'];
+                display.innerText = labels[parseInt(val)] || labels[0];
+            }
+        },
         init: () => {
             try {
                 const data = localStorage.getItem(DB_KEY);
                 if (data) db = JSON.parse(data);
             } catch(e) { console.error("Error DB", e); }
             if (!db.grammar_courses) db.grammar_courses = {};
+            if (!db.academy_tips) db.academy_tips = [];
+            if (db.academy_level === undefined) db.academy_level = 0;
+            
+            setTimeout(() => {
+                const slider = document.getElementById('academy-level-slider');
+                if (slider) slider.value = db.academy_level;
+                app.updateAcademyLevelDisplay(db.academy_level);
+            }, 500);
             
             const savedLang = localStorage.getItem('jetbulary_lang');
             if(savedLang) {
@@ -1308,13 +1350,33 @@
         showStats: () => {
             app.switchView('view-stats');
             const prog = db.progress;
-            if(!prog) return;
-            const total = prog.length;
-            const succ = prog.reduce((a,b) => a + b.successes, 0);
-            const att = prog.reduce((a,b) => a + b.attempts, 0);
-            const acc = att > 0 ? Math.round((succ/att)*100) : 0;
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-acc').innerText = acc + '%';
+            if(prog) {
+                const total = prog.length;
+                const succ = prog.reduce((a,b) => a + b.successes, 0);
+                const att = prog.reduce((a,b) => a + b.attempts, 0);
+                const acc = att > 0 ? Math.round((succ/att)*100) : 0;
+                document.getElementById('stat-total').innerText = total;
+                document.getElementById('stat-acc').innerText = acc + '%';
+            }
+            app.renderAcademyTips();
+            app.renderTopics();
+        },
+        renderAcademyTips: () => {
+            const list = document.getElementById('academy-tips-list');
+            if(!list) return;
+            const myTips = (db.academy_tips || []).filter(t => (t.lang || 'en') === currentLang);
+            if(myTips.length === 0) list.innerHTML = `<p>Aún no hay apuntes. Entra a la Academia para generarlos.</p>`;
+            else {
+                const reversed = [...myTips].reverse();
+                list.innerHTML = reversed.map((t, index) => `
+                    <details style="margin-bottom:10px; border-left: 3px solid var(--neon-pink); background: rgba(255,0,255,0.05); padding: 5px;">
+                        <summary style="font-size:0.95rem; color:var(--neon-pink); padding: 10px; cursor: pointer; text-shadow: none;">${t.title || 'Apunte de Academia'}</summary>
+                        <div class="topic-content" style="background: transparent; border: none; padding-top: 10px; font-size: 0.9rem; line-height: 1.5; color: #EEE;">
+                            ${t.content}
+                        </div>
+                    </details>
+                `).join('');
+            }
         },
         showVocab: () => {
             app.switchView('view-vocab');
@@ -1682,7 +1744,6 @@
                                 <button onclick="game.start(${t.id}, 'learn')" class="success">APRENDER</button>
                                 <button onclick="game.start(${t.id}, 'review')" class="warning">REPASAR</button>
                                 <button onclick="conversation.start(${t.id})" class="secondary" style="border-color: #5856d6; color: #5856d6;">CHARLA_💬</button>
-                                <button onclick="academy.start(${t.id})" class="secondary" style="border-color: #9c27b0; color: #9c27b0;">ACADEMIA_🏫</button>
                             </div>
                             <div class="topic-actions">
                                 <button onclick="app.expandTopic(${t.id}, this)" class="secondary">AMPLIAR</button>
@@ -2406,7 +2467,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                     
                     document.getElementById('btn-blancazo').innerText = "⏳ TRADUCIENDO...";
                     await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
-                        document.getElementById('btn-blancazo').innerText = "🇪🇸 EVITAR BLANCAZO";
+                        document.getElementById('btn-blancazo').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
                         if(data.translation) {
                             document.getElementById('convo-spoken-text').innerHTML = `AHORA DILO TÚ EN ${langName.toUpperCase()}: <br><strong style="font-size: 1.3rem; color:var(--neon-cyan); letter-spacing: 0.5px;">${data.translation}</strong>`;
                             game.speakText(data.translation, 0.75); // la profe lo dice lento
@@ -2416,7 +2477,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 conversation.recognitionEs.onend = () => {
                     document.getElementById('mic-btn-convo').classList.remove('listening');
                     if (document.getElementById('btn-blancazo').innerText.includes("HABLANDO")) {
-                         document.getElementById('btn-blancazo').innerText = "🇪🇸 EVITAR BLANCAZO";
+                         document.getElementById('btn-blancazo').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
                     }
                     conversation.stopTimer();
                 };
@@ -2519,6 +2580,52 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 prog.attempts++; prog.successes++;
             });
             app.saveDB();
+        },
+        toggleBlancazo: () => {
+            window.speechSynthesis.cancel();
+            if(game.recognition) try { game.recognition.stop(); } catch(e){}
+            if(game.stopTimer) game.stopTimer();
+
+            if(!game.recognitionEs) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                game.recognitionEs = new SpeechRecognition();
+                game.recognitionEs.lang = 'es-ES';
+                
+                game.recognitionEs.onresult = async (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    document.getElementById('spoken-text').innerText = `Tú (ES): "${transcript}"`;
+                    document.getElementById('spoken-text').style.color = '#ff9800'; 
+                    
+                    const langName = app.getLangName();
+                    const prompt = `Soy estudiante de ${langName}. Tradúceme perfectamente esta frase al ${langName}: "${transcript}". 
+Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto JSON válido con la estructura: {"translation": "La traducción aquí"}. NO devuelvas texto plano.`;
+                    
+                    document.getElementById('btn-blancazo-game').innerText = "⏳ TRADUCIENDO...";
+                    await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
+                        document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
+                        if(data.translation) {
+                            document.getElementById('spoken-text').innerHTML = `AHORA DILO TÚ EN ${langName.toUpperCase()}: <br><strong style="font-size: 1.3rem; color:var(--neon-cyan); letter-spacing: 0.5px;">${data.translation}</strong>`;
+                            game.speakText(data.translation, 0.75);
+                        }
+                    });
+                };
+                game.recognitionEs.onend = () => {
+                    document.getElementById('mic-btn').classList.remove('listening');
+                    if (document.getElementById('btn-blancazo-game').innerText.includes("HABLANDO")) {
+                         document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
+                    }
+                    if(game.stopTimer) game.stopTimer();
+                };
+            }
+            
+            try {
+                document.getElementById('mic-btn').classList.remove('listening');
+                document.getElementById('btn-blancazo-game').innerText = "👂 HABLE EN ESPAÑOL...";
+                game.recognitionEs.start();
+                if(game.startTimer) game.startTimer();
+            } catch(e) {
+                console.error(e);
+            }
         },
         toggleMic: () => { 
             if(!conversation.recognition) { 
@@ -3072,302 +3179,275 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         currentExpected: null,
         isIntroDone: false,
 
-        start: async (topicId) => {
-            academy.topic = db.topics.find(t => t.id === topicId);
-            if (!academy.topic) return alert("Tema no encontrado.");
-
+        startGlobal: async () => {
             app.switchView('view-academy');
-            document.getElementById('academy-topic-title').innerText = academy.topic.name;
-            game.updateAvatar(); // Usar el avatar de la app
+            document.getElementById('academy-topic-title').innerText = "Clase Magistral Libre";
+            game.updateAvatar();
             
             academy.history = [];
+            academy.sessionTips = [];
             academy.currentExpected = null;
-            academy.isIntroDone = false;
+            academy.phase = 0;
+            academy.mistakes = [];
+            academy.isIntroDone = true;
             
             academy.autoMic = true;
             academy.setAutoMic(true);
             
-            document.getElementById('academy-history').innerHTML = '<p>Preparando la clase de gramática y pronunciación...</p>';
+            document.getElementById('academy-history').innerHTML = '<p>Conectando con la Profesora IA...</p>';
             document.getElementById('academy-spoken-text').innerText = '...';
             document.getElementById('academy-ai-advice').classList.add('hidden');
 
-            academy.introduceLesson();
+            academy.nextPhase();
         },
 
-        introduceLesson: async () => {
+        nextPhase: async () => {
             const langName = app.getLangName();
-            const messages = [
-                {
-                    role: 'system',
-                    content: `Eres una profesora experta de ${langName}. Vas a iniciar una clase magistral del "Modo Academia" sobre el tema seleccionado.
-                    TU TAREA:
-                    1. Explicar brevemente (1-2 párrafos) la gramática o estructuras clave útiles para este tema.
-                    2. Compartir 2 curiosidades culturales fascinantes relacionadas con el tema en países donde se habla ${langName}.
-                    3. Proporcionar 10 palabras/frases de vocabulario esenciales.
-                    
-                    IMPORTANTE: Incluye SIEMPRE la traducción al español de todo lo que digas en los campos correspondientes.
-                    
-                    Responde SIEMPRE con un objeto JSON válido:
-                    {
-                        "grammar_explanation": "Explicación en ${langName}",
-                        "grammar_trans": "Traducción español",
-                        "curiosities": [{"text": "Curiosidad en ${langName}", "trans": "Traducción"}],
-                        "vocabulary": [{"english": "Palabra", "spanish": "Traducción", "sentence_en": "Ejemplo", "sentence_es": "Traducción ejemplo"}],
-                        "ready_phrase": "¿Listo para empezar el ejercicio de pronunciación? (en ${langName})",
-                        "ready_phrase_trans": "¿Listo... (español)"
-                    }`
-                },
-                {
-                    role: 'user',
-                    content: `Inicia la lección premium sobre "${academy.topic.name}".`
+            const levelNum = db.academy_level || 0;
+            const levelLabel = ['A0 (Desde cero)', 'A1-A2 (Básico)', 'B1 (Intermedio)', 'B2 (Avanzado)', 'C1/C2 (Nativo/Pro)'][levelNum];
+            const existingTips = (db.academy_tips || []).slice(-10).map(t => t.title).join(", ");
+            const sessionTipsStr = academy.sessionTips.map(t => t.content).join(" | ");
+
+            let systemPrompt = "";
+            let userPrompt = "";
+
+            if (academy.phase === 0) {
+                systemPrompt = `Eres la mejor profesora de ${langName} del mundo. Tienes un plan de estudios progresivo.
+NIVEL ACTUAL DEL ALUMNO: Nivel ${levelNum} - ${levelLabel}.
+Tu TAREA:
+1. Elige una lección LÓGICA y CRÍTICA de gramática o pronunciación para este nivel. (Si es 0, empieza con pronombres, "To be"; si es 4 empieza con subjuntivos, phrasal verbs raros...).
+2. Revisa que NO repitas estas lecciones recientes: [${existingTips}]. Avanza materia lógicamente.
+3. Explica el concepto MUY brevemente (1 párrafo max) en ${langName} y en español.
+4. Da una frase corta de ejemplo y pide al alumno que la repita.
+
+Responde SIEMPRE con un objeto JSON válido:
+{
+  "tip_title": "Nivel ${levelNum} - Lección X: [Título corto del temario]",
+  "teacher_says": "Explicación + 'Repite conmigo esta frase: ...' (en ${langName})",
+  "teacher_says_trans": "Traducción al español de lo que dices",
+  "expected_answer": "Frase que dijiste que debía repetir, escrita en ${langName}",
+  "expected_answer_trans": "Traducción de la frase"
+}`;
+                userPrompt = `Inicia la lección de nivel ${levelNum} con el nuevo concepto.`;
+            } else if (academy.phase === 1) {
+                systemPrompt = `Eres la mejor profesora de ${langName}. Alumno de nivel ${levelNum}.
+Tu TAREA:
+1. Da un segundo paso en la lección, o una excepción de lo que acabas de enseñar: [${sessionTipsStr}].
+2. Explícalo MUY brevemente en ${langName} y español.
+3. Da otra frase para practicarlo y pide que la repita.
+
+Responde SIEMPRE con un objeto JSON válido:
+{
+  "tip_title": "Nivel ${levelNum} - [Subtema]",
+  "teacher_says": "Explicación + 'Ahora repite esta frase: ...' (en ${langName})",
+  "teacher_says_trans": "Traducción al español de lo que dices",
+  "expected_answer": "Frase que dijiste que debía repetir, escrita en ${langName}",
+  "expected_answer_trans": "Traducción de la frase"
+}`;
+                userPrompt = "Excelente, dame el segundo concepto avanzado.";
+            } else if (academy.phase === 2) {
+                systemPrompt = `Eres profesora de ${langName} para un Nivel ${levelNum}. 
+Basado en lo enseñado hoy: [${sessionTipsStr}], haz un RETO ACTIVO.
+Dile una situación muy corta en español y pregúntale "¿Cómo dirías [situación en español]?"
+El alumno tendrá que crear la frase traduciéndola al ${langName} usando mentalmente la regla.
+
+Responde SIEMPRE con un objeto JSON válido:
+{
+  "teacher_says": "Reto y pregunta en español (añade ánimos en ${langName} acordes al nivel)",
+  "expected_answer": "La mejor traducción que esperas que el alumno infiera en ${langName}",
+  "expected_answer_trans": "Traducción literal al español"
+}`;
+                userPrompt = "Lanza el test (Reto Activo).";
+            } else if (academy.phase === 3) {
+                systemPrompt = `Eres profesora de ${langName} para Nivel ${levelNum}.
+El alumno logró traducir. Ahora proponle un mini roleplay de 1 interacción. 
+Tú dices una línea de diálogo (ej: Te hago una pregunta de entrevista, o te invito a salir...) que OBLIGUE al alumno a responderte usando la gramática de hoy: [${sessionTipsStr}].
+
+Responde SIEMPRE con un objeto JSON válido:
+{
+  "teacher_says": "Tu línea de roleplay oral en ${langName} + indicación táctica en español de qué responder",
+  "teacher_says_trans": "Traducción al español de tu línea oral",
+  "expected_answer": "Ejemplo de una respuesta magistral que encaje en ${langName}"
+}`;
+                userPrompt = "Lánzame el mini roleplay de fijación.";
+            } else if (academy.phase >= 4) {
+                academy.handleEndOfLesson();
+                return;
+            }
+
+            document.getElementById('academy-history').innerHTML += `<div id="loading-academy" style="color:var(--neon-cyan); margin: 10px 0;">⏳ La profesora está formulando...</div>`;
+
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
+                const loader = document.getElementById('loading-academy');
+                if(loader) loader.remove();
+
+                if (data.tip_title && data.teacher_says) {
+                    academy.sessionTips.push({
+                        title: data.tip_title,
+                        content: `${data.teacher_says} (${data.teacher_says_trans || ''})`
+                    });
                 }
-            ];
 
-            await app.callAI_Conversation(messages, document.getElementById('mic-btn-academy'), (data) => {
-                // Guardar vocabulario en la DB si no existe (para este tema)
-                if (data.vocabulary) {
-                    const existing = db.words.filter(w => w.topic_id === academy.topic.id);
-                    if (existing.length === 0) {
-                        data.vocabulary.forEach((w, i) => {
-                            db.words.push({ ...w, id: Date.now() + i, topic_id: academy.topic.id, section: 'academia' });
-                        });
-                        app.saveDB();
-                    }
-                }
-
-                const curiositiesHtml = data.curiosities.map(c => `
-                    <div style="background:rgba(255, 0, 255, 0.05); padding:15px; border-left:3px solid var(--neon-pink); margin-bottom:10px;">
-                        <strong style="color:var(--neon-pink); font-family:'Orbitron';">💡 PROTOCOLO CULTURAL:</strong> ${c.text}<br>
-                        <span style="font-size:0.9em; opacity:0.7;">(${c.trans})</span>
-                    </div>
-                `).join('');
-
-                const vocabHtml = `
-                    <div style="margin: 20px 0; border: 1px solid var(--cyber-border); padding: 20px; background:rgba(0,243,255,0.03);">
-                        <strong class="tech" style="font-size:1.1rem; display:block; margin-bottom:10px; color:var(--neon-cyan);">📚 REGISTROS DE DATOS:</strong>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.9rem;">
-                            ${data.vocabulary.map(v => `<div>• <strong style="color:var(--neon-cyan);">${v.english}</strong>: ${v.spanish}</div>`).join('')}
-                        </div>
-                    </div>
-                `;
-
-                const contentHtml = `
-                    <div class="tech" style="font-size:1.4rem; margin-bottom:15px; border-bottom:1px solid var(--neon-cyan); display:inline-block; color:var(--neon-cyan);">MÓDULO DE SINTAXIS</div>
-                    <p style="font-size:1.1rem; margin-bottom:10px; color:#EEE;">${data.grammar_explanation.replace(/\n/g, '<br>')}</p>
-                    <p style="font-size:0.9em; opacity:0.6; font-style:italic; margin-bottom:25px;">(${data.grammar_trans})</p>
-                    
-                    <div class="tech" style="font-size:1.2rem; margin-bottom:15px; color:var(--neon-pink);">FRAGMENTOS CULTURALES</div>
-                    ${curiositiesHtml}
-                    ${vocabHtml}
-                    
-                    <div style="margin-top: 30px; color: var(--neon-cyan); font-weight: bold; font-size: 1.1rem; text-align:center; text-shadow:var(--cyber-glow);">
-                        ${data.ready_phrase}<br>
-                        <span style="font-size:0.9em; opacity:0.6; font-weight:normal;">(${data.ready_phrase_trans})</span>
-                    </div>
-                `;
-
-                academy.history.push({ 
-                    role: 'assistant', 
-                    content: contentHtml, 
-                    teacherSays: data.grammar_explanation + ". " + data.ready_phrase, 
-                    plainExpected: "Yes", 
-                    syntax: "Introducción teórica completada." 
-                });
-                academy.currentExpected = { expected_answer: "Yes" }; 
-                academy.renderHistory();
-                game.speakText(data.grammar_explanation + ". " + data.ready_phrase, 0.9);
-            });
-        },
-
-        nextLesson: async () => {
-            const langName = app.getLangName();
-            const historyContext = academy.history.filter(m => m.role === 'assistant').slice(-3).map(m => m.teacherSays).join(' | ');
-
-            const messages = [
-                {
-                    role: 'system',
-                    content: `Eres una profesora estricta pero amable de ${langName}. Estás en el "Modo Academia". Tu objetivo es decir una frase o hacer una pregunta, y darle al alumno la respuesta exacta que debe repetir para practicar pronunciación y gramática.
-                    Responde SIEMPRE con un objeto JSON válido con la estructura:
-                    {
-                        "teacher_says": "Tu frase de introducción o pregunta en ${langName}",
-                        "teacher_says_trans": "Traducción al español",
-                        "expected_answer": "La respuesta exacta que el alumno debe repetir en ${langName}",
-                        "expected_answer_trans": "Traducción al español",
-                        "syntax_explanation": "Breve explicación de la gramática/sintaxis de 'expected_answer' (en ${langName} y entre paréntesis en español)"
-                    }`
-                },
-                {
-                    role: 'user',
-                    content: `El tema es "${academy.topic.name}". Genera la siguiente frase para que la repita. Asegúrate de no repetir lo anterior: ${historyContext}`
-                }
-            ];
-
-            await app.callAI_Conversation(messages, document.getElementById('mic-btn-academy'), (data) => {
                 if (data.expected_answer) {
                     academy.currentExpected = data;
-                    
                     const contentHtml = `
                         <div style="margin-bottom: 12px; border-left: 2px solid var(--neon-cyan); padding-left: 10px;">
                             <strong class="tech" style="color:var(--neon-cyan); font-size:0.9rem;">[TRANSMISIÓN DOCENTE]</strong><br>
                             ${data.teacher_says} <br>
-                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.teacher_says_trans})</span>
+                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.teacher_says_trans || ''})</span>
                         </div>
                         <div style="background: rgba(0,243,255,0.03); padding: 15px; border: 1px solid var(--cyber-border);">
-                            <strong class="tech" style="color:var(--neon-pink); font-size:0.9rem;">[REPETICIÓN REQUERIDA]</strong><br>
+                            <strong class="tech" style="color:var(--neon-pink); font-size:0.9rem;">[TU OBJETIVO]</strong><br>
                             <span style="color: var(--neon-cyan); font-size: 1.2rem; font-weight:700;">${data.expected_answer}</span> <br>
-                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.expected_answer_trans})</span>
+                            <span style="font-size: 0.85em; opacity: 0.6;">(${data.expected_answer_trans || ''})</span>
                         </div>
                     `;
-
                     academy.history.push({ 
                         role: 'assistant', 
                         content: contentHtml,
                         teacherSays: data.teacher_says,
-                        plainExpected: data.expected_answer,
-                        syntax: data.syntax_explanation
+                        plainExpected: data.expected_answer
                     });
                     
                     academy.renderHistory();
-                    
-                    // Habla la intro y luego la respuesta a repetir, con pausa natural
-                    game.speakText(data.teacher_says + ". " + data.expected_answer, 0.9);
+                    game.speakText(data.teacher_says, 0.9);
+                } else if (data.teacher_says) {
+                     academy.history.push({ role: 'assistant', content: data.teacher_says, teacherSays: data.teacher_says });
+                     academy.renderHistory();
+                     game.speakText(data.teacher_says, 0.9);
+                     
+                     if (academy.phase >= 4) {
+                         academy.handleEndOfLesson();
+                     } else {
+                         academy.phase++;
+                         setTimeout(() => academy.nextPhase(), 2000);
+                     }
                 }
-            });
-        },
-
-        handleEndOfLesson: async () => {
-            const adviceBox = document.getElementById('academy-ai-advice');
-            adviceBox.innerHTML = "Analizando tu rendimiento y generando feedback docente...";
-            adviceBox.classList.remove('hidden');
-            adviceBox.style.color = '#FFF';
-            adviceBox.style.background = 'transparent';
-            
-            const langName = app.getLangName();
-            const mistakesArr = academy.mistakes || [];
-            let mistakeText = mistakesArr.length === 0 ? "El alumno lo ha hecho perfecto en todas las frases." : 
-                "El alumno falló en estas frases:\n" + mistakesArr.map(m => `- Debía decir "${m.expected}" pero pronunció algo como "${m.spoken}"`).join("\n");
-            
-            const prompt = `El alumno ha terminado su lección interactiva de ${langName}. 
-${mistakeText}
-Actúa como su excelente profesor de idiomas. Felicítalo y dale breves consejos claros para mejorar las palabras concretas en las que falló.
-IMPORTANTE: Responde SIEMPRE con un objeto JSON válido con la estructura:
-{
-  "feedback_text": "Tu feedback aquí. IMPORTANTE: Añade al final la frase '¿Hablamos ahora para poner en práctica la inmersión lingüística?' traducida al ${langName}.",
-  "mispronounced_words": [
-    {"english": "palabra1", "spanish": "traducción1"}
-  ]
-}
-Solo devuelve las palabras en las que realmente falló según el análisis. No incluyas código extra.`;
-
-            await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
-                if (data.mispronounced_words) {
-                    app.improveWords = data.mispronounced_words;
-                } else {
-                    app.improveWords = [];
-                }
-                const text = data.feedback_text || "Excellent work! Let's have a real conversation.";
-                const finishHtml = `
-                    <div class="tech" style="font-size:1.5rem; color:var(--neon-pink); margin:20px 0; text-align:center; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
-                        🏆 [ASCENSO ACADÉMICO COMPLETADO]
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; margin-bottom: 20px; border-left: 3px solid var(--neon-cyan); border-radius: 4px;">
-                        <strong style="color:var(--neon-cyan); font-size: 1.1rem;">💡 FEEDBACK FINAL DEL DOCENTE:</strong><br><br>
-                        <span style="color:#EEE; font-size: 0.95rem; line-height: 1.7;">${text.replace(/\n/g, '<br>')}</span>
-                    </div>
-                    <p style="text-align:center; color: #AAA;">Iniciando inmersión lingüística en breve...</p>
-                `;
-                academy.history.push({ role: 'assistant', content: finishHtml, teacherSays: "" }); // El tts lo hacemos manual y luego cortamos.
-                academy.renderHistory();
-                adviceBox.classList.add('hidden');
-                adviceBox.style.color = '';
-                adviceBox.style.background = '';
-                game.speakText(text, 0.9);
-                
-                // Transición a la conversación después de que la IA termine de hablar (+ un margen)
-                const delay = Math.max(text.length * 60, 3000);
-                setTimeout(() => {
-                    conversation.start(academy.topic.id);
-                }, delay);
             });
         },
 
         handleUserReply: async (transcript) => {
             document.getElementById('academy-spoken-text').innerText = `Tú: "${transcript}"`;
             
-            if (!academy.isIntroDone) {
-                academy.isIntroDone = true;
-                academy.phraseCount = 0; // Inicializar contador
-                academy.mistakes = []; // Inicializar errores
-                academy.history.push({ 
-                    role: 'user', 
-                    content: transcript,
-                    status: 'correct'
-                });
-                academy.renderHistory();
-                document.getElementById('academy-ai-advice').classList.add('hidden');
-                setTimeout(() => academy.nextLesson(), 1000);
-                return;
-            }
+            if(!academy.currentExpected) return;
 
             const target = academy.currentExpected.expected_answer.toLowerCase();
             const cleanTarget = target.replace(/[.,!?¿¡]/g, '').trim();
             const cleanSpoken = transcript.toLowerCase().replace(/[.,!?¿¡]/g, '').trim();
 
-            const isCorrect = game.isCloseMatch(cleanTarget, cleanSpoken);
-            academy.phraseCount = (academy.phraseCount || 0) + 1;
-
-            if (isCorrect) {
-                document.getElementById('academy-ai-advice').classList.add('hidden');
-                academy.history.push({ 
-                    role: 'user', 
-                    content: transcript,
-                    status: 'correct'
-                });
+            let isCorrect = false;
+            if (academy.phase < 2) {
+                isCorrect = game.isCloseMatch(cleanTarget, cleanSpoken);
             } else {
-                academy.history.push({ 
-                    role: 'user', 
-                    content: transcript,
-                    status: 'incorrect'
-                });
+                isCorrect = true; // Permisivo en respuestas abiertas
+            }
+
+            academy.history.push({ 
+                role: 'user', 
+                content: transcript + (academy.phase >= 2 ? ` <br><span style="color:var(--neon-cyan);font-size:0.8rem;">(La IA esperaba algo similar a: ${academy.currentExpected.expected_answer})</span>` : ''),
+                status: isCorrect ? 'correct' : 'incorrect'
+            });
+            
+            academy.renderHistory();
+
+            if (!isCorrect && academy.phase < 2) {
                 if(!academy.mistakes) academy.mistakes = [];
                 academy.mistakes.push({expected: academy.currentExpected.expected_answer, spoken: transcript});
+                setTimeout(() => academy.stopMic(), 100);
+            } else {
+                academy.phase++;
+                setTimeout(() => academy.nextPhase(), 1500);
             }
-            academy.renderHistory();
-            
-            // Si ha hecho 5 frases, pasamos al feedback general
-            if (academy.phraseCount >= 5) {
-                academy.handleEndOfLesson();
-                return;
-            }
-
-            setTimeout(() => academy.nextLesson(), 1500);
         },
 
         skip: () => {
             academy.stopMic();
-            if (!academy.isIntroDone) {
-                academy.isIntroDone = true;
-                academy.phraseCount = 0;
-                academy.mistakes = [];
-            } else {
-                academy.phraseCount = (academy.phraseCount || 0) + 1;
-            }
-            document.getElementById('academy-ai-advice').classList.add('hidden');
             academy.history.push({ 
                 role: 'user', 
                 content: "Saltado",
                 status: 'skipped'
             });
             academy.renderHistory();
-            
-            if (academy.phraseCount >= 5) {
-                academy.handleEndOfLesson();
-                return;
-            }
-            
-            setTimeout(() => academy.nextLesson(), 500);
+            academy.phase++;
+            setTimeout(() => academy.nextPhase(), 500);
         },
 
+        handleEndOfLesson: () => {
+            document.getElementById('academy-ai-advice').classList.add('hidden');
+            
+            academy.sessionTips.forEach(tip => {
+                if(!db.academy_tips) db.academy_tips = [];
+                db.academy_tips.push({
+                    id: Date.now() + Math.random(),
+                    lang: currentLang,
+                    title: tip.title,
+                    content: tip.content,
+                    date: new Date().toISOString()
+                });
+            });
+            app.saveDB();
+
+            const finishHtml = `
+                <div class="tech" style="font-size:1.5rem; color:var(--neon-pink); margin:20px 0; text-align:center; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);">
+                    🏆 [CLASE MÁGISTRAL COMPLETADA]
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; margin-bottom: 20px; border-left: 3px solid var(--neon-cyan); border-radius: 4px;">
+                    <strong style="color:var(--neon-cyan); font-size: 1.1rem;">💡 RESUMEN:</strong><br><br>
+                    <span style="color:#EEE; font-size: 0.95rem; line-height: 1.7;">Se han guardado en tu Cuaderno de Estadísticas ${academy.sessionTips.length} apuntes de gramática nuevos. ¡Repásalos cuando quieras!</span>
+                </div>
+                <button onclick="app.showDashboard()" class="success" style="width: 100%; padding: 20px;">VOLVER AL NÚCLEO</button>
+            `;
+            academy.history.push({ role: 'assistant', content: finishHtml, teacherSays: "" });
+            academy.renderHistory();
+            game.speakText("¡Excelente trabajo! Has completado la clase de hoy.", 0.9);
+        },
+
+        toggleBlancazo: () => {
+            window.speechSynthesis.cancel();
+            if(academy.recognition) try { academy.recognition.stop(); } catch(e){}
+            if(academy.stopTimer) academy.stopTimer();
+
+            if(!academy.recognitionEs) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                academy.recognitionEs = new SpeechRecognition();
+                academy.recognitionEs.lang = 'es-ES';
+                
+                academy.recognitionEs.onresult = async (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    document.getElementById('academy-spoken-text').innerText = `Tú (ES): "${transcript}"`;
+                    document.getElementById('academy-spoken-text').style.color = '#ff9800'; 
+                    
+                    const langName = app.getLangName();
+                    const prompt = `Soy estudiante de ${langName}. Tradúceme perfectamente esta frase al ${langName}: "${transcript}". 
+Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto JSON válido con la estructura: {"translation": "La traducción aquí"}. NO devuelvas texto plano.`;
+                    
+                    document.getElementById('btn-blancazo-academy').innerText = "⏳ TRADUCIENDO...";
+                    await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
+                        document.getElementById('btn-blancazo-academy').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
+                        if(data.translation) {
+                            document.getElementById('academy-spoken-text').innerHTML = `AHORA DILO TÚ EN ${langName.toUpperCase()}: <br><strong style="font-size: 1.3rem; color:var(--neon-cyan); letter-spacing: 0.5px;">${data.translation}</strong>`;
+                            game.speakText(data.translation, 0.75);
+                        }
+                    });
+                };
+                academy.recognitionEs.onend = () => {
+                    document.getElementById('mic-btn-academy').classList.remove('listening');
+                    if (document.getElementById('btn-blancazo-academy').innerText.includes("HABLANDO")) {
+                         document.getElementById('btn-blancazo-academy').innerText = "🇪🇸 Dilo en Castellano, te ayudo...";
+                    }
+                    if(academy.stopTimer) academy.stopTimer();
+                };
+            }
+            
+            try {
+                document.getElementById('mic-btn-academy').classList.remove('listening');
+                document.getElementById('btn-blancazo-academy').innerText = "👂 HABLE EN ESPAÑOL...";
+                academy.recognitionEs.start();
+                if(academy.startTimer) academy.startTimer();
+            } catch(e) {
+                console.error(e);
+            }
+        },
         toggleMic: () => {
             if (document.getElementById('mic-btn-academy').classList.contains('listening')) {
                 academy.stopMic();
