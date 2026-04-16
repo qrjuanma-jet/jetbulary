@@ -436,6 +436,37 @@
             transition: transform 0.2s;
         }
         .hud-module img:active, .avatar-container img:active { transform: scale(0.95); }
+        /* Block download/save on media */
+        video, .hud-module img, #view-login img, .gif-protected {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: auto;
+        }
+        /* Welcome language selector custom dropdown */
+        .welcome-lang-dropdown { position: relative; max-width: 300px; z-index: 50; }
+        .welcome-lang-btn {
+            background: rgba(0,243,255,0.05); color: var(--neon-cyan); width: 100%; padding: 14px 18px;
+            border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); display: flex;
+            align-items: center; justify-content: space-between; font-size: 14px;
+            font-family: 'Orbitron', sans-serif; cursor: pointer; clip-path: none; border-radius: 2px;
+        }
+        .welcome-lang-btn:hover { background: rgba(0,243,255,0.1); }
+        .welcome-lang-menu {
+            position: absolute; top: 100%; left: 0; width: 100%; background: var(--cyber-surface);
+            border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong);
+            margin-top: 4px; max-height: 300px; overflow-y: auto; z-index: 51;
+        }
+        .welcome-lang-menu .wlang-item {
+            padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(0,243,255,0.1); cursor: pointer;
+            transition: background 0.2s;
+        }
+        .welcome-lang-menu .wlang-item:hover { background: rgba(0,243,255,0.1); }
+        .welcome-lang-menu .wlang-item.active { background: rgba(0,243,255,0.15); }
+        .welcome-lang-menu .wlang-item img {
+            width: 28px; height: 18px; border: 1px solid #444; object-fit: cover; flex-shrink: 0;
+        }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -467,9 +498,13 @@
             
             <div style="margin-top: 20px;">
                 <p style="font-size: 0.8rem; letter-spacing: 2px; color: var(--neon-cyan);">[ SELECCIÓN_DE_CANAL_DE_VÍDEO ]</p>
-                <select id="welcome-lang-selector" onchange="app.changeWelcomeVideo(this.value)" style="max-width: 300px;">
-                    <!-- Populated by JS -->
-                </select>
+                <div class="welcome-lang-dropdown" id="welcome-lang-dropdown">
+                    <button type="button" class="welcome-lang-btn" id="welcome-lang-btn" onclick="app.toggleWelcomeLangMenu()">
+                        <span id="welcome-lang-display" style="display: flex; align-items: center; gap: 8px;"></span>
+                        <span style="font-size: 0.7rem;">[ ▼ ]</span>
+                    </button>
+                    <div class="welcome-lang-menu hidden" id="welcome-lang-menu"></div>
+                </div>
             </div>
         </header>
 
@@ -498,56 +533,56 @@
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇬🇧 NÚCLEO ANGLOSAJÓN</h4>
                             <p style="font-size: 0.85rem; color: #888;">Optimizado para dialectos US/UK. Enfoque en 'Phrasal Verbs' y entonación nativa mediante síntesis neuronal.</p>
                         </div>
-                        <img src="gif_en.gif" onclick="app.playLanguageVideo('en')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_en.gif" onclick="app.playLanguageVideo('en')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇩🇪 NODO GERMANO</h4>
                             <p style="font-size: 0.85rem; color: #888;">Entrenamiento especializado en declinaciones y estructuras compuestas. Alta fidelidad en fonética gutural.</p>
                         </div>
-                        <img src="gif_de.gif" onclick="app.playLanguageVideo('de')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_de.gif" onclick="app.playLanguageVideo('de')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇫🇷 MÓDULO GALO</h4>
                             <p style="font-size: 0.85rem; color: #888;">Refinamiento de vocales nasales y liaison. Protocolo estricto de pronunciación académica.</p>
                         </div>
-                        <img src="gif_fr.gif" onclick="app.playLanguageVideo('fr')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_fr.gif" onclick="app.playLanguageVideo('fr')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇮🇹 NODO ITALIANO</h4>
                             <p style="font-size: 0.85rem; color: #888;">Inmersión en la fonética melódica y estructuras gramaticales latinas modernas. Enfoque en fluidez conversacional.</p>
                         </div>
-                        <img src="gif_it.gif" onclick="app.playLanguageVideo('it')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_it.gif" onclick="app.playLanguageVideo('it')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇵🇹 MÓDULO LUSO</h4>
                             <p style="font-size: 0.85rem; color: #888;">Sincronización con dialectos europeos y brasileños. Dominio de fonemas nasales y apertura vocálica.</p>
                         </div>
-                        <img src="gif_pt.gif" onclick="app.playLanguageVideo('pt')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_pt.gif" onclick="app.playLanguageVideo('pt')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇷🇺 SEÑAL CIRÍLICA</h4>
                             <p style="font-size: 0.85rem; color: #888;">Dominio del alfabeto y casos gramaticales. Inmersión total en fonética eslava profunda.</p>
                         </div>
-                        <img src="gif_ru.gif" onclick="app.playLanguageVideo('ru')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_ru.gif" onclick="app.playLanguageVideo('ru')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🟡🔴 NODO CATALÁN</h4>
                             <p style="font-size: 0.85rem; color: #888;">Protocolo de inmersión en catalán central. Optimización de fonemas mediterráneos y sintaxis romance.</p>
                         </div>
-                        <img src="gif_ca.gif" onclick="app.playLanguageVideo('ca')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_ca.gif" onclick="app.playLanguageVideo('ca')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">⚪🔵 SEÑAL GALLEGA</h4>
                             <p style="font-size: 0.85rem; color: #888;">Nodo de señal atlántica. Entrenamiento en fonética gallega y léxico patrimonial de alta frecuencia.</p>
                         </div>
-                        <img src="gif_gl.gif" onclick="app.playLanguageVideo('gl')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_gl.gif" onclick="app.playLanguageVideo('gl')" onerror="this.src='gif_en.gif'" oncontextmenu="return false" draggable="false" class="gif-protected" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                 </div>
             </div>
@@ -1128,7 +1163,7 @@
 
     <!-- VIDEO OVERLAY -->
     <div id="video-overlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-        <video id="overlay-video" controls playsinline webkit-playsinline style="width:100%; max-width:600px; border-radius:12px;">
+        <video id="overlay-video" controls playsinline webkit-playsinline controlsList="nodownload" oncontextmenu="return false" disablePictureInPicture style="width:100%; max-width:600px; border-radius:12px;">
             <source src="" type="video/mp4">
         </video>
         <button onclick="app.closeVideoOverlay()" class="secondary" style="margin-top:20px; width:auto;">Cerrar</button>
@@ -1292,11 +1327,33 @@
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
 
         renderWelcomeLangSelector: () => {
-            const selector = document.getElementById('welcome-lang-selector');
-            if (!selector) return;
-            selector.innerHTML = languages.map(l => 
-                `<option value="${l.code}" ${l.code === 'en' ? 'selected' : ''}>${l.emoji} ${l.name}</option>`
-            ).join('');
+            const display = document.getElementById('welcome-lang-display');
+            const menu = document.getElementById('welcome-lang-menu');
+            if (!display || !menu) return;
+            const defaultLang = languages.find(l => l.code === 'en') || languages[0];
+            display.innerHTML = `<img src="flag_en.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"><span style="display:none; font-size: 1.2rem;">${defaultLang.emoji}</span> <span class="tech" style="font-size: 0.85rem;">${defaultLang.name}</span>`;
+            menu.innerHTML = languages.map(l => `
+                <div class="wlang-item ${l.code === 'en' ? 'active' : ''}" onclick="app.selectWelcomeLang('${l.code}')">
+                    <img src="flag_${l.code}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+                    <span style="display:none; font-size: 1.2rem;">${l.emoji}</span>
+                    <span class="tech" style="font-size: 0.85rem; color: #AAA;">${l.name}</span>
+                </div>
+            `).join('');
+        },
+
+        toggleWelcomeLangMenu: () => {
+            document.getElementById('welcome-lang-menu').classList.toggle('hidden');
+        },
+
+        selectWelcomeLang: (langCode) => {
+            const display = document.getElementById('welcome-lang-display');
+            const menu = document.getElementById('welcome-lang-menu');
+            const lang = languages.find(l => l.code === langCode) || languages[0];
+            display.innerHTML = `<img src="flag_${langCode}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"><span style="display:none; font-size: 1.2rem;">${lang.emoji}</span> <span class="tech" style="font-size: 0.85rem;">${lang.name}</span>`;
+            menu.querySelectorAll('.wlang-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            menu.classList.add('hidden');
+            app.playLanguageVideo(langCode);
         },
 
         changeWelcomeVideo: (langCode) => {
@@ -3673,7 +3730,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
     <div id="video-modal" onclick="app.closeVideo()">
         <div class="video-wrapper" onclick="event.stopPropagation()">
-            <video id="video-player" playsinline preload="auto">
+            <video id="video-player" playsinline preload="auto" controlsList="nodownload" oncontextmenu="return false" disablePictureInPicture>
                 <source src="" type="video/mp4">
                 Tu navegador no soporta video.
             </video>
