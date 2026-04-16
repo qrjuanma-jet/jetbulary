@@ -533,7 +533,7 @@
                             <h4 style="color: var(--neon-cyan); margin-bottom: 10px;">🇷🇺 SEÑAL CIRÍLICA</h4>
                             <p style="font-size: 0.85rem; color: #888;">Dominio del alfabeto y casos gramaticales. Inmersión total en fonética eslava profunda.</p>
                         </div>
-                        <img src="gif_ru.ロシア" onclick="app.playLanguageVideo('ru')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
+                        <img src="gif_ru.gif" onclick="app.playLanguageVideo('ru')" onerror="this.src='gif_en.gif'" style="width: 60px; height: 60px; border: 1px solid var(--neon-cyan); border-radius: 4px; box-shadow: var(--cyber-glow); object-fit: cover; flex-shrink: 0;">
                     </div>
                     <div class="hud-module" style="display: flex; gap: 15px; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
@@ -1238,6 +1238,9 @@
             } catch(e) { console.error("Error DB", e); }
             if (!db.grammar_courses) db.grammar_courses = {};
             if (!db.academy_tips) db.academy_tips = [];
+            if (!db.topics) db.topics = [];
+            if (!db.words) db.words = [];
+            if (!db.progress) db.progress = [];
             if (db.academy_level === undefined) db.academy_level = 0;
             
             setTimeout(() => {
@@ -1351,25 +1354,39 @@
         },
         
         showDashboard: (h) => {
-            // Detener voz, micrófonos y temporizadores al salir de un juego
-            window.speechSynthesis.cancel();
-            if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
-            if (typeof academy !== 'undefined' && academy.stopMic) academy.stopMic();
-            if (typeof conversation !== 'undefined') {
-                if (conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
-                if (conversation.stopTimer) conversation.stopTimer();
-            }
-            document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
+            try {
+                // Detener voz, micrófonos y temporizadores al salir de un juego
+                window.speechSynthesis.cancel();
+                if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
+                if (typeof academy !== 'undefined' && academy.stopMic) academy.stopMic();
+                if (typeof conversation !== 'undefined') {
+                    if (conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
+                    if (conversation.stopTimer) conversation.stopTimer();
+                }
+                document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
 
-            app.switchView('view-dashboard', h);
-            document.body.className = `lang-${currentLang}`;
-            game.updateAvatar();
-            app.renderTopics();
-            app.renderSuggestions();
-            app.renderLangSelector();
-            document.getElementById('new-topic-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') app.createTopic();
-            });
+                app.switchView('view-dashboard', h);
+                document.body.className = `lang-${currentLang}`;
+                
+                if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
+                app.renderTopics();
+                app.renderSuggestions();
+                app.renderLangSelector();
+                
+                const topicInput = document.getElementById('new-topic-input');
+                if (topicInput) {
+                    const oldHandler = topicInput.getAttribute('data-has-handler');
+                    if (!oldHandler) {
+                        topicInput.addEventListener('keypress', function (e) {
+                            if (e.key === 'Enter') app.createTopic();
+                        });
+                        topicInput.setAttribute('data-has-handler', 'true');
+                    }
+                }
+            } catch (err) {
+                console.error("Error al mostrar el dashboard:", err);
+                app.switchView('view-dashboard', h);
+            }
         },
         
         renderLangSelector: () => {
@@ -1489,12 +1506,18 @@
             }
         },
         saveApiKey: () => {
-            const k = document.getElementById('api-key-input').value.trim();
-            if(k) {
-                localStorage.setItem(API_KEY_STORAGE, k);
-                app.showDashboard();
-            } else {
-                alert("Introduce una API Key válida.");
+            try {
+                const input = document.getElementById('api-key-input');
+                if (!input) return alert("Error crítico: No se encuentra el campo de API Key.");
+                const k = input.value.trim();
+                if(k) {
+                    localStorage.setItem(API_KEY_STORAGE, k);
+                    app.showDashboard();
+                } else {
+                    alert("Introduce una API Key válida.");
+                }
+            } catch (err) {
+                alert("Error al guardar la clave: " + err.message);
             }
         },
         toggleApiKeyVisibility: () => {
@@ -1786,7 +1809,8 @@
         
         renderTopics: () => {
             const list = document.getElementById('topic-list');
-            const myTopics = db.topics.filter(t => (t.lang || 'en') === currentLang);
+            if (!list) return;
+            const myTopics = (db.topics || []).filter(t => (t.lang || 'en') === currentLang);
             
             if(myTopics.length === 0) list.innerHTML = `<p>No hay temas en ${app.getLangName()}. Crea uno nuevo.</p>`;
             else {
@@ -3644,6 +3668,9 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         if(btn) btn.classList.add('hidden');
     }
     
+    app.init();
+</script>
+
     <div id="video-modal" onclick="app.closeVideo()">
         <div class="video-wrapper" onclick="event.stopPropagation()">
             <video id="video-player" playsinline preload="auto">
@@ -3654,6 +3681,5 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         <button class="danger video-close-btn" onclick="app.closeVideo()">[ CERRAR_PROTOCOLO ]</button>
     </div>
 
-<script>
 </body>
 </html>
