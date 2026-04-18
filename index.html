@@ -444,7 +444,7 @@
             pointer-events: auto;
         }
         /* Welcome language selector custom dropdown */
-        .welcome-lang-dropdown { position: relative; max-width: 300px; z-index: 50; }
+        .welcome-lang-dropdown { position: relative; width: 350px; z-index: 50; }
         .welcome-lang-btn {
             background: rgba(0,243,255,0.05); color: var(--neon-cyan); width: 100%; padding: 14px 18px;
             border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); display: flex;
@@ -457,15 +457,34 @@
             border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong);
             margin-top: 4px; max-height: 300px; overflow-y: auto; z-index: 51;
         }
-        .welcome-lang-menu .wlang-item {
-            padding: 12px 16px; display: flex; align-items: center; gap: 10px;
-            border-bottom: 1px solid rgba(0,243,255,0.1); cursor: pointer;
-            transition: background 0.2s;
+        .wlang-item, .lang-item {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.08);
+            position: relative;
         }
-        .welcome-lang-menu .wlang-item:hover { background: rgba(0,243,255,0.1); }
-        .welcome-lang-menu .wlang-item.active { background: rgba(0,243,255,0.15); }
-        .welcome-lang-menu .wlang-item img {
-            width: 28px; height: 18px; border: 1px solid #444; object-fit: cover; flex-shrink: 0;
+        .wlang-item:hover, .lang-item:hover {
+            background: rgba(0, 243, 255, 0.12) !important;
+            padding-left: 24px;
+            box-shadow: inset 4px 0 0 var(--neon-cyan);
+        }
+        .wlang-item.active, .lang-item.active {
+            background: rgba(0, 243, 255, 0.2);
+            border-left: 3px solid var(--neon-cyan);
+        }
+        .wlang-item img, .lang-item img, .wlang-item span, .lang-item span {
+            pointer-events: none;
+        }
+        .wlang-item img, .lang-item img {
+            width: 28px;
+            height: 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+            object-fit: cover;
+            flex-shrink: 0;
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
@@ -1327,18 +1346,28 @@
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
 
         renderWelcomeLangSelector: () => {
-            const display = document.getElementById('welcome-lang-display');
-            const menu = document.getElementById('welcome-lang-menu');
-            if (!display || !menu) return;
-            const defaultLang = languages.find(l => l.code === 'en') || languages[0];
-            display.innerHTML = `<img src="flag_en.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"><span style="display:none; font-size: 1.2rem;">${defaultLang.emoji}</span> <span class="tech" style="font-size: 0.85rem;">${defaultLang.name}</span>`;
-            menu.innerHTML = languages.map(l => `
-                <div class="wlang-item ${l.code === 'en' ? 'active' : ''}" onclick="app.selectWelcomeLang('${l.code}')">
-                    <img src="flag_${l.code}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
-                    <span style="display:none; font-size: 1.2rem;">${l.emoji}</span>
-                    <span class="tech" style="font-size: 0.85rem; color: #AAA;">${l.name}</span>
-                </div>
-            `).join('');
+            try {
+                const display = document.getElementById('welcome-lang-display');
+                const menu = document.getElementById('welcome-lang-menu');
+                if (!display || !menu) return;
+                const cur = languages.find(l => l.code === currentLang) || languages[0];
+                
+                // Render botón principal
+                display.innerHTML = `
+                    <img src="flag_${currentLang}.jpg" onerror="this.src='flag_en.jpg'">
+                    <span class="tech" style="font-size: 0.85rem;">${cur.name}</span>
+                `;
+                
+                // Render menú interactivo
+                menu.innerHTML = languages.map(l => `
+                    <div class="wlang-item ${l.code === currentLang ? 'active' : ''}" onclick="app.selectWelcomeLang('${l.code}')">
+                        <img src="flag_${l.code}.jpg" onerror="this.src='flag_en.jpg'">
+                        <span class="tech" style="flex-grow: 1; text-align: left; font-size: 0.9rem;">${l.name}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Error renderWelcomeLangSelector:", err);
+            }
         },
 
         toggleWelcomeLangMenu: () => {
@@ -1346,13 +1375,15 @@
         },
 
         selectWelcomeLang: (langCode) => {
-            const display = document.getElementById('welcome-lang-display');
+            currentLang = langCode;
+            localStorage.setItem('jetbulary_lang', currentLang);
+            document.body.className = `lang-${currentLang}`;
+            document.documentElement.lang = currentLang;
+            
             const menu = document.getElementById('welcome-lang-menu');
-            const lang = languages.find(l => l.code === langCode) || languages[0];
-            display.innerHTML = `<img src="flag_${langCode}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"><span style="display:none; font-size: 1.2rem;">${lang.emoji}</span> <span class="tech" style="font-size: 0.85rem;">${lang.name}</span>`;
-            menu.querySelectorAll('.wlang-item').forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            menu.classList.add('hidden');
+            if (menu) menu.classList.add('hidden');
+            
+            app.renderWelcomeLangSelector();
             app.playLanguageVideo(langCode);
         },
 
@@ -1447,25 +1478,33 @@
         },
         
         renderLangSelector: () => {
-            const btnDisplay = document.getElementById('current-lang-display');
-            const menu = document.getElementById('lang-menu');
-            const cur = languages.find(l => l.code === currentLang) || languages[0];
-            
-            // Botón principal
-            const count = app.getCorrectCountForLang(currentLang);
-            btnDisplay.innerHTML = `<img src="flag_${currentLang}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px;"><span style="display:none; font-size: 1.2rem; margin-right: 5px;">${cur.emoji}</span> ${cur.name} <span style="font-size:0.8rem; opacity:0.7; margin-left:5px;">(${count})</span>`;
-            
-            // Menú desplegable
-            menu.innerHTML = languages.map(l => {
-                const c = app.getCorrectCountForLang(l.code);
-                return `
-                <div onclick="app.selectLang('${l.code}')" style="padding: 15px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(0,243,255,0.1); cursor: pointer; background: ${l.code === currentLang ? 'rgba(0,243,255,0.15)' : 'transparent'};">
-                    <img src="flag_${l.code}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" style="width: 28px; height: 18px; border: 1px solid #444;">
-                    <span style="display:none; font-size: 1.2rem;">${l.emoji}</span>
-                    <span class="tech" style="flex-grow: 1; text-align: left; color: ${l.code === currentLang ? 'var(--neon-cyan)' : '#888'}; font-size: 0.9rem;">${l.name}</span>
-                    <span class="tech" style="font-size: 0.7rem; color: #444;">[${c}]</span>
-                </div>`;
-            }).join('');
+            try {
+                const btnDisplay = document.getElementById('current-lang-display');
+                const menu = document.getElementById('lang-menu');
+                if (!btnDisplay || !menu) return;
+                
+                const cur = languages.find(l => l.code === currentLang) || languages[0];
+                const count = app.getCorrectCountForLang(currentLang);
+                
+                // Botón principal
+                btnDisplay.innerHTML = `
+                    <img src="flag_${currentLang}.jpg" onerror="this.src='flag_en.jpg'" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                    <span class="tech">${cur.name}</span> <span style="font-size:0.8rem; opacity:0.6; margin-left:5px;">(${count})</span>
+                `;
+                
+                // Menú desplegable centralizado en CSS
+                menu.innerHTML = languages.map(l => {
+                    const c = app.getCorrectCountForLang(l.code);
+                    return `
+                    <div class="lang-item ${l.code === currentLang ? 'active' : ''}" onclick="app.selectLang('${l.code}')">
+                        <img src="flag_${l.code}.jpg" onerror="this.src='flag_en.jpg'">
+                        <span class="tech" style="flex-grow: 1; text-align: left; color: ${l.code === currentLang ? 'var(--neon-cyan)' : 'inherit'}; font-size: 0.9rem;">${l.name}</span>
+                        <span class="tech" style="font-size: 0.7rem; opacity: 0.5;">[${c}]</span>
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                console.error("Error renderLangSelector:", err);
+            }
         },
         
         toggleLangMenu: () => document.getElementById('lang-menu').classList.toggle('hidden'),
