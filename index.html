@@ -443,21 +443,8 @@
             user-select: none;
             pointer-events: auto;
         }
-        /* Welcome language selector custom dropdown */
-        .welcome-lang-dropdown { position: relative; width: 350px; z-index: 50; }
-        .welcome-lang-btn {
-            background: rgba(0,243,255,0.05); color: var(--neon-cyan); width: 100%; padding: 14px 18px;
-            border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); display: flex;
-            align-items: center; justify-content: space-between; font-size: 14px;
-            font-family: 'Orbitron', sans-serif; cursor: pointer; clip-path: none; border-radius: 2px;
-        }
-        .welcome-lang-btn:hover { background: rgba(0,243,255,0.1); }
-        .welcome-lang-menu {
-            position: absolute; top: 100%; left: 0; width: 100%; background: var(--cyber-surface);
-            border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong);
-            margin-top: 4px; max-height: 300px; overflow-y: auto; z-index: 51;
-        }
-        .wlang-item, .lang-item {
+        /* Language item styles for dashboard selector */
+        .lang-item {
             padding: 14px 18px;
             display: flex;
             align-items: center;
@@ -467,24 +454,31 @@
             border-bottom: 1px solid rgba(0, 243, 255, 0.08);
             position: relative;
         }
-        .wlang-item:hover, .lang-item:hover {
+        .lang-item:hover {
             background: rgba(0, 243, 255, 0.12) !important;
             padding-left: 24px;
             box-shadow: inset 4px 0 0 var(--neon-cyan);
         }
-        .wlang-item.active, .lang-item.active {
+        .lang-item.active {
             background: rgba(0, 243, 255, 0.2);
             border-left: 3px solid var(--neon-cyan);
         }
-        .wlang-item img, .lang-item img, .wlang-item span, .lang-item span {
+        .lang-item img, .lang-item span {
             pointer-events: none;
         }
-        .wlang-item img, .lang-item img {
+        .lang-item img {
             width: 28px;
             height: 18px;
             border: 1px solid rgba(255,255,255,0.15);
             object-fit: cover;
             flex-shrink: 0;
+        }
+        /* Block download/save on media */
+        video, .hud-module img, #view-login img, .gif-protected {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            pointer-events: auto;
         }
     </style>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
@@ -513,18 +507,11 @@
                 <a href="https://t.me/share/url?url=https://jetbulary.com&text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="text-decoration: none; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#0088cc"/></svg>
                 </a>
+                <a id="welcome-install-link" href="#" onclick="app.installApp(); return false;" class="hidden" style="text-decoration: none; transition: transform 0.3s; color: var(--neon-cyan);" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><path d="M12 15L12 3M12 15L8 11M12 15L16 11M4 17V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
             </div>
             
-            <div style="margin-top: 20px;">
-                <p style="font-size: 0.8rem; letter-spacing: 2px; color: var(--neon-cyan);">[ SELECCIÓN_DE_CANAL_DE_VÍDEO ]</p>
-                <div class="welcome-lang-dropdown" id="welcome-lang-dropdown">
-                    <button type="button" class="welcome-lang-btn" id="welcome-lang-btn" onclick="app.toggleWelcomeLangMenu()">
-                        <span id="welcome-lang-display" style="display: flex; align-items: center; gap: 8px;"></span>
-                        <span style="font-size: 0.7rem;">[ ▼ ]</span>
-                    </button>
-                    <div class="welcome-lang-menu hidden" id="welcome-lang-menu"></div>
-                </div>
-            </div>
         </header>
 
         <!-- 2. FORMULARIO DE ACCESO (PUNTO CRÍTICO) -->
@@ -1327,7 +1314,6 @@
                     app.showLogin('replace');
                 }
             }
-            app.renderWelcomeLangSelector();
             app.checkCookies();
             
             window.onpopstate = (event) => {
@@ -1344,52 +1330,6 @@
             };
         },
         saveDB: () => localStorage.setItem(DB_KEY, JSON.stringify(db)),
-
-        renderWelcomeLangSelector: () => {
-            try {
-                const display = document.getElementById('welcome-lang-display');
-                const menu = document.getElementById('welcome-lang-menu');
-                if (!display || !menu) return;
-                const cur = languages.find(l => l.code === currentLang) || languages[0];
-                
-                // Render botón principal
-                display.innerHTML = `
-                    <img src="flag_${currentLang}.jpg" onerror="this.src='flag_en.jpg'">
-                    <span class="tech" style="font-size: 0.85rem;">${cur.name}</span>
-                `;
-                
-                // Render menú interactivo
-                menu.innerHTML = languages.map(l => `
-                    <div class="wlang-item ${l.code === currentLang ? 'active' : ''}" onclick="app.selectWelcomeLang('${l.code}')">
-                        <img src="flag_${l.code}.jpg" onerror="this.src='flag_en.jpg'">
-                        <span class="tech" style="flex-grow: 1; text-align: left; font-size: 0.9rem;">${l.name}</span>
-                    </div>
-                `).join('');
-            } catch (err) {
-                console.error("Error renderWelcomeLangSelector:", err);
-            }
-        },
-
-        toggleWelcomeLangMenu: () => {
-            document.getElementById('welcome-lang-menu').classList.toggle('hidden');
-        },
-
-        selectWelcomeLang: (langCode) => {
-            currentLang = langCode;
-            localStorage.setItem('jetbulary_lang', currentLang);
-            document.body.className = `lang-${currentLang}`;
-            document.documentElement.lang = currentLang;
-            
-            const menu = document.getElementById('welcome-lang-menu');
-            if (menu) menu.classList.add('hidden');
-            
-            app.renderWelcomeLangSelector();
-            app.playLanguageVideo(langCode);
-        },
-
-        changeWelcomeVideo: (langCode) => {
-            app.playLanguageVideo(langCode);
-        },
 
         playTeacherVideo: () => {
             app.playLanguageVideo(currentLang);
@@ -1644,6 +1584,8 @@
                 window.deferredPrompt.userChoice.then((choiceResult) => {
                     window.deferredPrompt = null;
                     document.getElementById('install-btn').classList.add('hidden');
+                    const welcomeBtn = document.getElementById('welcome-install-link');
+                    if(welcomeBtn) welcomeBtn.classList.add('hidden');
                 });
             } else {
                 alert("Crea un acceso directo para entrar más rápido:\n\n🍏 iOS: Pulsa el botón 'Compartir' y luego 'Añadir a Inicio'.\n\n🤖 Android: Pulsa el menú (3 puntos) y elige 'Añadir a pantalla de inicio'.\n\n💻 Windows: Pulsa el icono (+) en la barra de direcciones.");
@@ -3756,12 +3698,24 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         window.deferredPrompt = e;
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.remove('hidden');
+        const welcomeBtn = document.getElementById('welcome-install-link');
+        if(welcomeBtn) welcomeBtn.classList.remove('hidden');
     });
     
-    // Ocultar botón si ya está en modo app (instalada)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+    // Ocultar botón si ya está en modo app (instalada) o mostrarlo si es iOS para dar instrucciones
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isStandalone) {
         const btn = document.getElementById('install-btn');
         if(btn) btn.classList.add('hidden');
+        const welcomeBtn = document.getElementById('welcome-install-link');
+        if(welcomeBtn) welcomeBtn.classList.add('hidden');
+    } else if (isIOS) {
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.classList.remove('hidden');
+        const welcomeBtn = document.getElementById('welcome-install-link');
+        if(welcomeBtn) welcomeBtn.classList.remove('hidden');
     }
     
     app.init();
