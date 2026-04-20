@@ -98,7 +98,8 @@
             box-shadow: var(--cyber-glow);
             clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
             position: relative;
-            z-index: 10;
+            z-index: 1000;
+            pointer-events: auto !important;
             touch-action: manipulation;
         }
         button:hover { 
@@ -159,12 +160,12 @@
         
         /* Premium Layout */
         .premium-landing { text-align: left; }
-        .premium-section { width: 100%; padding: 80px 0; border-top: 1px solid var(--cyber-border); background: rgba(18, 18, 20, 0.4); position: relative; z-index: 1; }
-        .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(rgba(5, 5, 5, 0.8), rgba(5, 5, 5, 1)), url('cyber_hero_bg.png') center/cover; position: relative; padding: 100px 20px; box-sizing: border-box; border-bottom: 2px solid var(--neon-cyan); z-index: 2; }
+        .premium-section { width: 100%; padding: 80px 0; border-top: 1px solid var(--cyber-border); background: rgba(18, 18, 20, 0.4); position: relative; }
+        .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(rgba(5, 5, 5, 0.8), rgba(5, 5, 5, 1)), url('cyber_hero_bg.png') center/cover; position: relative; padding: 100px 20px; box-sizing: border-box; border-bottom: 2px solid var(--neon-cyan); }
         
         .badge-authority { font-weight: 600; color: var(--neon-pink); letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; margin-bottom: 20px; display: block; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
         
-        .hud-card { background: var(--cyber-surface); padding: 40px; border: 1px solid var(--cyber-border); border-left: 4px solid var(--neon-cyan); transition: all 0.3s ease; position: relative; overflow: hidden; z-index: 5; }
+        .hud-card { background: var(--cyber-surface); padding: 40px; border: 1px solid var(--cyber-border); border-left: 4px solid var(--neon-cyan); transition: all 0.3s ease; position: relative; overflow: hidden; z-index: 1000; }
         .hud-card::after { content: ""; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(225deg, var(--neon-cyan) 50%, transparent 50%); opacity: 0.5; }
         .hud-card:hover { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow); transform: translateX(5px); }
 
@@ -184,6 +185,9 @@
             font-family: 'Outfit', sans-serif;
             color: var(--neon-cyan);
             transition: all 0.3s;
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         input:focus {
             outline: none;
@@ -203,6 +207,9 @@
             color: var(--neon-cyan);
             cursor: pointer;
             box-shadow: var(--cyber-glow);
+            position: relative;
+            z-index: 1001;
+            pointer-events: auto !important;
         }
         
         .hidden { display: none !important; }
@@ -1512,17 +1519,19 @@
             localStorage.setItem('jetbulary_cookies', 'accepted');
             document.getElementById('cookie-banner').classList.add('hidden');
         },
-        checkCookies: () => {
-            if(!localStorage.getItem('jetbulary_cookies')) {
-                document.getElementById('cookie-banner').classList.remove('hidden');
-            }
-        },
+        // checkCookies consolidado al final del archivo
         switchView: (id, historyAction = 'push') => {
             // Fix: Target only top-level views that start with 'view-' to avoid hiding nested containers
-            document.querySelectorAll('.container[id^="view-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.container[id^="view-"]').forEach(el => {
+                el.classList.add('hidden');
+                el.style.zIndex = '1';
+                el.style.position = 'relative'; 
+            });
             const target = document.getElementById(id);
             if(target) {
                 target.classList.remove('hidden');
+                target.style.zIndex = '100';
+                target.style.position = 'relative';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             
@@ -3701,6 +3710,13 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         const welcomeBtn = document.getElementById('welcome-install-link');
         if(welcomeBtn) welcomeBtn.classList.remove('hidden');
     });
+
+    // Forzar visibilidad de la vista actual y asegurar interactividad
+    const currentView = document.querySelector('.container:not(.hidden)');
+    if (currentView) {
+        currentView.style.position = 'relative';
+        currentView.style.zIndex = '500';
+    }
     
     // Ocultar botón si ya está en modo app (instalada) o mostrarlo si es iOS para dar instrucciones
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
