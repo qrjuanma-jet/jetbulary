@@ -96,11 +96,23 @@
             letter-spacing: 2px; 
             transition: all 0.3s ease;
             box-shadow: var(--cyber-glow);
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            position: relative;
-            z-index: 1000;
-            pointer-events: auto !important;
+            border-radius: 2px;
+            border-top-left-radius: 12px;
+            border-bottom-right-radius: 12px;
             touch-action: manipulation;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 2;
+            background: transparent;
+            border-radius: inherit;
         }
         button:hover { 
             background: var(--neon-cyan);
@@ -185,9 +197,6 @@
             font-family: 'Outfit', sans-serif;
             color: var(--neon-cyan);
             transition: all 0.3s;
-            position: relative;
-            z-index: 1001;
-            pointer-events: auto !important;
         }
         input:focus {
             outline: none;
@@ -207,9 +216,6 @@
             color: var(--neon-cyan);
             cursor: pointer;
             box-shadow: var(--cyber-glow);
-            position: relative;
-            z-index: 1001;
-            pointer-events: auto !important;
         }
         
         .hidden { display: none !important; }
@@ -220,6 +226,8 @@
             width: 90px !important; 
             height: 90px; 
             border-radius: 2px !important; 
+            border-top-left-radius: 15px !important;
+            border-bottom-right-radius: 15px !important;
             background: rgba(0, 243, 255, 0.1) !important; 
             border: 2px solid var(--neon-cyan) !important;
             font-size: 40px; 
@@ -229,7 +237,6 @@
             margin: 20px auto; 
             cursor: pointer; 
             transition: all 0.2s; 
-            clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
             color: var(--neon-cyan);
             box-shadow: var(--cyber-glow);
         }
@@ -258,7 +265,9 @@
             background: rgba(0, 243, 255, 0.05);
             transition: all 0.3s;
             font-family: 'Orbitron', sans-serif;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            border-radius: 2px;
+            border-top-left-radius: 10px;
+            border-bottom-right-radius: 10px;
         }
         .youglish:hover {
             background: var(--neon-cyan);
@@ -338,14 +347,15 @@
             background: rgba(0, 243, 255, 0.1); 
             color: var(--neon-cyan); 
             border: 2px solid var(--neon-cyan); 
-            border-radius: 0; 
+            border-radius: 2px; 
+            border-top-left-radius: 15px;
+            border-bottom-right-radius: 15px;
             cursor: pointer; 
             display: block; 
             font-weight: 800; 
             text-transform: uppercase; 
             font-family: 'Orbitron', sans-serif;
             box-shadow: var(--cyber-glow);
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
             transition: all 0.3s ease;
         }
         #install-btn:hover {
@@ -418,7 +428,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
         }
         #video-modal.active { opacity: 1; pointer-events: all; }
@@ -430,12 +440,22 @@
             background: #000;
             position: relative;
             line-height: 0;
+            display: flex;
+            justify-content: center;
         }
-        #video-player { width: 100%; height: auto; display: block; }
+        #video-player { 
+            max-width: 100%; 
+            max-height: calc(100dvh - 140px); /* Constrain inside dynamic viewport */
+            width: auto; 
+            height: auto; 
+            display: block; 
+            object-fit: contain;
+        }
         .video-close-btn {
-            margin-top: 30px;
+            margin-top: 20px;
             width: 100%;
             max-width: 300px;
+            flex-shrink: 0;
         }
         .hud-module img, .avatar-container img, #view-login img { 
             cursor: pointer; 
@@ -514,7 +534,7 @@
                 <a href="https://t.me/share/url?url=https://jetbulary.com&text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="text-decoration: none; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#0088cc"/></svg>
                 </a>
-                <a id="welcome-install-link" href="#" onclick="app.installApp(); return false;" class="hidden" style="text-decoration: none; transition: transform 0.3s; color: var(--neon-cyan);" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                <a id="welcome-install-link" href="#" onclick="app.installApp(); return false;" title="Instalar Web App" style="text-decoration: none; transition: transform 0.3s; color: var(--neon-cyan);" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><path d="M12 15L12 3M12 15L8 11M12 15L16 11M4 17V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
             </div>
@@ -527,12 +547,14 @@
                 <h3 class="tech" style="margin-top: 0; color: var(--neon-cyan); letter-spacing: 0.3em; font-size: 1.4rem;">[ ACCESO AL NÚCLEO ]</h3>
                 <p style="font-size: 0.9rem; color: #888; font-style: italic; margin-bottom: 25px;">Introduce tu firma digital (Groq API Key) para sincronizar redes neuronales.</p>
                 
-                <div style="position: relative; margin-bottom: 20px;">
-                    <input type="password" id="api-key-input" placeholder="GROQ_SIGNAL_KEY_..." style="font-family: monospace; letter-spacing: 2px; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+                <div style="position: relative; margin-bottom: 5px;">
+                    <input type="password" id="api-key-input" placeholder="CLAVE..." style="font-family: monospace; letter-spacing: 2px; border-color: var(--neon-cyan); color: var(--neon-cyan); padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()">
+                    <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));" title="Mostrar/Ocultar API Key">👁️</span>
                 </div>
                 
+                <p style="font-size: 13px; margin-top: 0; margin-bottom: 20px; color: #666; text-align: left;">¿SIN SEÑAL? <a href="https://console.groq.com/keys" target="_blank" style="color: var(--neon-cyan); text-decoration: none; border-bottom: 1px solid var(--neon-cyan); font-weight: bold;">[ GENERAR CLAVE EN CONSOLA ]</a></p>
+                
                 <button class="success" onclick="app.saveApiKey()" style="width: 100%; border-width: 2px; font-size: 1.1rem; padding: 22px;">SINCRONIZAR AHORA</button>
-                <p style="font-size: 13px; margin-top: 25px; color: #666;">¿SIN SEÑAL? <a href="https://console.groq.com/keys" target="_blank" style="color: var(--neon-cyan); text-decoration: none; border-bottom: 1px solid var(--neon-cyan); font-weight: bold;">[ GENERAR CLAVE EN CONSOLA ]</a></p>
             </div>
         </section>
 
@@ -866,6 +888,38 @@
         <button onclick="app.showResources()" class="secondary" style="width:100%;">VOLVER A RECURSOS</button>
     </div>
 
+    <!-- VISTA BÁSICOS -->
+    <div id="view-basicos" class="container hidden" style="position: relative;">
+        <h2 class="tech" style="color: var(--neon-cyan);">[ FUNDAMENTOS NÚCLEO ]</h2>
+        <div id="basicos-content" style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); padding: 20px; border-radius: 4px; box-shadow: var(--cyber-glow); margin-bottom: 20px; font-family: 'Outfit', sans-serif; min-height: 200px; line-height: 1.6;">
+            <p style="text-align: center; color: var(--neon-pink);">Iniciando síntesis de datos...</p>
+        </div>
+        <button onclick="app.showDashboard()" class="secondary" style="width: 100%; padding: 15px;">VOLVER AL MANDO DIRECTIVO</button>
+    </div>
+
+    <!-- VISTA EJERCICIOS -->
+    <div id="view-ejercicios" class="container hidden" style="position: relative;">
+        <h2 class="tech" style="color: var(--neon-cyan);">[ PRUEBA DE CAMPO ] <span id="ejercicios-progress" style="float: right; color: white;">0/5</span></h2>
+        
+        <div id="ejercicios-loading" style="text-align: center; padding: 40px; display: none;">
+            <p class="tech" style="color: var(--neon-pink); animation: pulse-cyber 1s infinite alternate; font-size: 1.2rem;">Generando simulador interactivo temporal...</p>
+        </div>
+        
+        <div id="ejercicios-quiz" style="display: none; background: rgba(0,0,0,0.6); border: 1px solid var(--cyber-warn); padding: 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(255, 170, 0, 0.2); margin-bottom: 20px;">
+            <p id="ejercicio-phrase" style="font-size: 1.4rem; color: #FFF; font-weight: bold; margin-bottom: 30px; line-height: 1.5; text-align: center;"></p>
+            <div id="ejercicio-options" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+
+        <div id="ejercicios-results" style="display: none; text-align: center; padding: 20px; border: 1px solid var(--cyber-ok); background: rgba(0,255,149,0.05); margin-bottom: 20px; border-radius: 4px;">
+            <h3 class="tech" style="color: var(--cyber-ok); font-size: 2rem;">EVALUACIÓN COMPLETADA</h3>
+            <p id="ejercicios-score" style="font-size: 1.5rem; color: #FFF; margin-top:20px;"></p>
+            <button onclick="ejercicios.init()" class="secondary" style="width: 100%; padding: 15px; margin-top: 15px;">REPETIR SIMULACIÓN</button>
+        </div>
+        
+        <button id="ejercicios-next-btn" onclick="ejercicios.next()" class="warning hidden" style="width: 100%; padding: 15px; margin-bottom: 10px; font-weight: bold;">SIGUIENTE ⏭️</button>
+        <button onclick="app.showDashboard()" class="danger" style="width: 100%; padding: 15px;">ABORTAR / SALIR</button>
+    </div>
+
     <!-- VISTA DASHBOARD -->
     <div id="view-dashboard" class="container hidden">
         <img src="logo.jpg" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
@@ -876,6 +930,9 @@
             </a>
             <a href="https://t.me/share/url?url=https://jetbulary.com&text=Descubre%20Jetbulary.com%20-%20Aprende%20idiomas%20con%20IA%20gratis!" target="_blank" style="display: inline-block; vertical-align: middle; margin-left: 5px; text-decoration: none;">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" fill="#0088cc"/></svg>
+            </a>
+            <a href="#" onclick="app.installApp(); return false;" title="Instalar App de Escritorio / Móvil" style="display: inline-block; vertical-align: middle; margin-left: 5px; text-decoration: none; color: var(--neon-cyan);">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><path d="M12 15L12 3M12 15L8 11M12 15L16 11M4 17V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
         </h2>
         
@@ -904,6 +961,7 @@
              </div>
         </div>
 
+
         <button onclick="academy.startGlobal()" class="warning" style="width: 100%; padding: 22px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #9c27b0); border-color: #e040fb; color: #FFF;">🏫 ENTRAR A LA ACADEMIA</button>
 
         <button onclick="app.showStats()" class="success" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #001100, #004d00); border-color: var(--cyber-ok);">📚 MI CUADERNO (Temas y Repaso)</button>
@@ -913,6 +971,10 @@
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 20px; font-weight: 800; text-align: center; justify-content: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
             <div class="topic-content" style="border-top: 1px dashed var(--neon-pink);">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; width: 100%;">
+                    <button onclick="basicos.init()" class="secondary" style="flex: 1; padding: 15px; font-size: 1rem; background: linear-gradient(45deg, #1A1A1A, #004d4f); border-color: var(--neon-cyan);">🔰 BÁSICOS</button>
+                    <button onclick="ejercicios.init()" class="secondary" style="flex: 1; padding: 15px; font-size: 1rem; background: linear-gradient(45deg, #1A1A1A, #6d4e00); border-color: var(--cyber-warn); color: var(--cyber-warn);">📝 EJERCICIOS</button>
+                </div>
                 <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
                     <button onclick="app.startReview()" class="warning">⚡ Repaso</button>
                     <button onclick="app.showVocab()" class="secondary">📚 Vocabulario</button>
@@ -1592,12 +1654,9 @@
                 window.deferredPrompt.prompt();
                 window.deferredPrompt.userChoice.then((choiceResult) => {
                     window.deferredPrompt = null;
-                    document.getElementById('install-btn').classList.add('hidden');
-                    const welcomeBtn = document.getElementById('welcome-install-link');
-                    if(welcomeBtn) welcomeBtn.classList.add('hidden');
                 });
             } else {
-                alert("Crea un acceso directo para entrar más rápido:\n\n🍏 iOS: Pulsa el botón 'Compartir' y luego 'Añadir a Inicio'.\n\n🤖 Android: Pulsa el menú (3 puntos) y elige 'Añadir a pantalla de inicio'.\n\n💻 Windows: Pulsa el icono (+) en la barra de direcciones.");
+                alert("CÓMO INSTALARLA Y JUGAR RÁPIDO:\n\n🍏 iOS (iPhone/iPad): Pulsa el botón de tu navegador 'Compartir' (cuadrado con flecha hacia arriba) y luego 'Añadir a Inicio'.\n\n🤖 Android / Navegadores: Pulsa el menú (3 puntos laterales) y elige 'Añadir a pantalla de inicio' o 'Instalar aplicación'.\n\n💻 Windows (Escritorio): Pulsa el icono (+) que hay a la derecha en la barra de direcciones de tu navegador Chrome/Edge.");
             }
         },
         
@@ -1973,15 +2032,19 @@
             
             let topic = db.topics.find(t => t.name.toLowerCase() === name.toLowerCase() && (t.lang || 'en') === currentLang);
             if(topic) {
-                academy.start(topic.id);
+                game.start(topic.id, 'learn');
                 return;
             }
             
-            // Cuando creamos un tema nuevo, vamos directos a Academia
             const newTopic = { id: Date.now(), name: name, lang: currentLang };
-            db.topics.push(newTopic);
-            app.saveDB();
-            academy.start(newTopic.id);
+            
+            await app.callAI(name, btn, (vocabItems) => {
+                db.topics.push(newTopic);
+                vocabItems.forEach((w, i) => db.words.push({ ...w, id: Date.now()+i, topic_id: newTopic.id }));
+                app.saveDB();
+                game.start(newTopic.id, 'learn');
+                app.renderTopics();
+            });
         },
         
         expandTopic: async (id, btn) => {
@@ -3298,6 +3361,137 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             }, 300);
         }
     };
+    const basicos = {
+        init: async () => {
+            app.switchView('view-basicos');
+            const contentDiv = document.getElementById('basicos-content');
+            contentDiv.innerHTML = `<p style="text-align: center; color: var(--neon-pink);">Descargando reglas algorítmicas de la matriz...</p>`;
+            
+            const levelMap = ["A0", "A1-A2", "B1", "B2", "C1+"];
+            const level = levelMap[db.academy_level || 0];
+            const langName = app.getLangName();
+
+            const prompt = `Devuelve ESTRICTAMENTE y ÚNICAMENTE una respuesta en HTML puro (sin backticks iniciales como \`\`\`html ni formatos Markdown, solo texto plano conteniendo las etiquetas y estilos html necesarios). Crea una guía súper rápida y escueta de nivel ${level} para aprender ${langName}. Usa este esquema:
+<h3 style="color: #00f3ff; margin-top:0;">1. Gramática a Fuego (Las 5 Reglas)</h3>
+<ul> con las 5 reglas GRAMATICALES O SINTACTICAS más vitales a dominar en este nivel. OBLIGATORIO: Tras cada regla escribe un ejemplo claro en ${langName} y su traducción, e incluye justo al lado este botón exacto (reemplazando LA_FRASE por la oración en ${langName}): <button onclick="game.speakText(this.dataset.text, 0.5)" data-text="LA_FRASE" class="secondary" style="display: inline-flex; align-items: center; justify-content: center; padding: 4px 8px; font-size: 0.70rem; margin-left: 10px; border-radius: 4px; position: relative;"><span style="pointer-events: none;">🐢 OÍR LENTO</span></button>
+<h3 style="color: #00f3ff; margin-top:20px;">2. Vocabulario Base Salvavidas</h3>
+<ul> con exactamente las 10 palabras o expresiones más usadas para este nivel (formato: "<strong>Extranjera</strong> - Español", INCLUYENDO justo detrás este mismo botón reemplazando SOLO_PALABRA_EXTRANJERA por la palabra extranjera sin la traducción: <button onclick="game.speakText(this.dataset.text, 0.5)" data-text="SOLO_PALABRA_EXTRANJERA" class="secondary" style="display: inline-flex; align-items: center; justify-content: center; padding: 4px 8px; font-size: 0.70rem; margin-left: 10px; border-radius: 4px; position: relative;"><span style="pointer-events: none;">🐢 OÍR LENTO</span></button>).`;
+
+            await app.callAI_Text(prompt, null, (response) => {
+                let cleanResponse = response.replace(/^```html\n?/i, "").replace(/^```\n?/i, "").replace(/\n?```$/i, "");
+                contentDiv.innerHTML = cleanResponse;
+            }, 60);
+        }
+    };
+
+    const ejercicios = {
+        list: [],
+        current: 0,
+        score: 0,
+        init: async () => {
+            app.switchView('view-ejercicios');
+            ejercicios.list = [];
+            ejercicios.current = 0;
+            ejercicios.score = 0;
+            document.getElementById('ejercicios-progress').innerText = "0/5";
+            document.getElementById('ejercicios-quiz').style.display = 'none';
+            document.getElementById('ejercicios-results').style.display = 'none';
+            document.getElementById('ejercicios-loading').style.display = 'block';
+            document.getElementById('ejercicios-next-btn').classList.add('hidden');
+
+            const levelMap = ["A0", "A1-A2", "B1", "B2", "C1+"];
+            const level = levelMap[db.academy_level || 0];
+            const langName = app.getLangName();
+
+            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown (ni siquiera \`\`\`json).`;
+            const userPrompt = `Genera un examen de respuesta múltiple con EXACTAMENTE 5 preguntas para repasar el nivel de exigencia gramatical ${level} de ${langName}. Las preguntas deben enfocarse en gramática para rellenar huecos. Debes introducir un hueco indicado con EXACTAMENTE un triple guión bajo (___) en la frase.
+Devuelve SOLO un JSON ESTRICTO con la siguiente estructura:
+{
+  "ejercicios": [
+    {
+      "sentence": "He ___ to the store yesterday.",
+      "options": ["go", "goes", "went", "going"],
+      "correct_index": 2,
+      "translation": "Él fue a la tienda ayer."
+    }
+  ]
+}`;
+
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
+                document.getElementById('ejercicios-loading').style.display = 'none';
+                if(data && data.ejercicios && data.ejercicios.length > 0) {
+                    ejercicios.list = data.ejercicios;
+                    document.getElementById('ejercicios-quiz').style.display = 'block';
+                    ejercicios.renderCurrent();
+                } else {
+                    const phraseEl = document.getElementById('ejercicio-phrase');
+                    phraseEl.innerHTML = `<span style='color:red;'>Fallo en la comunicación con el satélite LLM. Aborta y vuelve a intentarlo. (¿Problemas con el JSON o API Key?)</span>`;
+                    document.getElementById('ejercicios-quiz').style.display = 'block';
+                    document.getElementById('ejercicio-options').innerHTML = "";
+                }
+            });
+        },
+        renderCurrent: () => {
+            if(ejercicios.current >= ejercicios.list.length) {
+                ejercicios.finish();
+                return;
+            }
+            document.getElementById('ejercicios-progress').innerText = `${ejercicios.current + 1}/5`;
+            const ex = ejercicios.list[ejercicios.current];
+            const phraseEl = document.getElementById('ejercicio-phrase');
+            const optsEl = document.getElementById('ejercicio-options');
+            
+            phraseEl.innerHTML = `${ex.sentence}<br><br><span style="font-size:0.9rem; color:#888; font-weight:normal;">TRADUCCIÓN DE APOYO: <br><i>${ex.translation}</i></span>`;
+            optsEl.innerHTML = "";
+            document.getElementById('ejercicios-next-btn').classList.add('hidden');
+
+            ex.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "secondary";
+                btn.innerText = `${String.fromCharCode(65 + index)}. ${opt}`;
+                btn.onclick = () => ejercicios.checkAnswer(index, btn, ex.correct_index, buttonsArray);
+                btn.style.width = "100%";
+                btn.style.textAlign = "left";
+                btn.style.textTransform = "none";
+                btn.style.fontFamily = "'Outfit', sans-serif";
+                btn.style.fontWeight = "bold";
+                btn.style.padding = "20px";
+                btn.style.fontSize = "1.1rem";
+                optsEl.appendChild(btn);
+            });
+            const buttonsArray = Array.from(optsEl.querySelectorAll('button'));
+        },
+        checkAnswer: (selectedIndex, btnElement, correctIndex, buttonsArray) => {
+            buttonsArray.forEach(b => b.onclick = null); // disable all
+
+            if(selectedIndex === correctIndex) {
+                ejercicios.score++;
+                btnElement.style.backgroundColor = "var(--cyber-ok)";
+                btnElement.style.color = "#000";
+                btnElement.style.borderColor = "var(--cyber-ok)";
+            } else {
+                btnElement.style.backgroundColor = "var(--cyber-danger)";
+                btnElement.style.color = "#FFF";
+                btnElement.style.borderColor = "var(--cyber-danger)";
+                buttonsArray[correctIndex].style.backgroundColor = "var(--cyber-ok)";
+                buttonsArray[correctIndex].style.color = "#000";
+            }
+            document.getElementById('ejercicios-next-btn').classList.remove('hidden');
+        },
+        next: () => {
+            ejercicios.current++;
+            ejercicios.renderCurrent();
+        },
+        finish: () => {
+            document.getElementById('ejercicios-quiz').style.display = 'none';
+            document.getElementById('ejercicios-next-btn').classList.add('hidden');
+            document.getElementById('ejercicios-results').style.display = 'block';
+            let status = ejercicios.score >= 4 ? "ACEPTABLE" : "REQUIERE REASIGNACIÓN";
+            let color = ejercicios.score >= 4 ? "var(--cyber-ok)" : "var(--cyber-warn)";
+            const rsEl = document.getElementById('ejercicios-score');
+            rsEl.innerHTML = `PRECISIÓN: ${Math.round((ejercicios.score / ejercicios.list.length) * 100)}%<br>(${ejercicios.score} de ${ejercicios.list.length} correctas)<br><br><span style="color:${color}; font-weight:bold;">ESTADO: ${status}</span>`;
+        }
+    };
 
     const academy = {
         topic: null,
@@ -3705,10 +3899,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         window.deferredPrompt = e;
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-        const welcomeBtn = document.getElementById('welcome-install-link');
-        if(welcomeBtn) welcomeBtn.classList.remove('hidden');
+        // Botones de instalación siempre visibles para evitar confusión, no los ocultamos/mostramos condicionalmente.
     });
 
     // Forzar visibilidad de la vista actual y asegurar interactividad
@@ -3716,22 +3907,6 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
     if (currentView) {
         currentView.style.position = 'relative';
         currentView.style.zIndex = '500';
-    }
-    
-    // Ocultar botón si ya está en modo app (instalada) o mostrarlo si es iOS para dar instrucciones
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    if (isStandalone) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.add('hidden');
-        const welcomeBtn = document.getElementById('welcome-install-link');
-        if(welcomeBtn) welcomeBtn.classList.add('hidden');
-    } else if (isIOS) {
-        const btn = document.getElementById('install-btn');
-        if(btn) btn.classList.remove('hidden');
-        const welcomeBtn = document.getElementById('welcome-install-link');
-        if(welcomeBtn) welcomeBtn.classList.remove('hidden');
     }
     
     app.init();
