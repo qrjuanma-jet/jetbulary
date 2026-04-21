@@ -106,13 +106,8 @@
             -webkit-tap-highlight-color: transparent;
             position: relative;
         }
-        button::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 2;
-            background: transparent;
-            border-radius: inherit;
+        button * {
+            pointer-events: none;
         }
         button:hover { 
             background: var(--neon-cyan);
@@ -698,7 +693,7 @@
 
                         <button style="width:100%; background: transparent; border-color: #444; color: #444;">🏫 ENTRAR A LA ACADEMIA</button>
                         <button style="width:100%; background: transparent; border-color: #444; color: #444;">📚 MI CUADERNO (Temas y Repaso)</button>
-                        <button style="width:100%; background: transparent; border-color: #444; color: #444;">🎬 MODO VIDEOTECA YOUGLISH</button>
+                        <button style="width:100%; background: transparent; border-color: #444; color: #444;">🎬 MODO VIDEOTECA</button>
                     </div>
 
                     <!-- LA ACADEMIA MOCKUP -->
@@ -966,7 +961,7 @@
 
         <button onclick="app.showStats()" class="success" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #001100, #004d00); border-color: var(--cyber-ok);">📚 MI CUADERNO (Temas y Repaso)</button>
 
-        <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 18px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO VIDEOTECA YOUGLISH</button>
+        <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 18px; font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO VIDEOTECA</button>
 
         <details style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface);">
             <summary style="font-size: 1.1rem; padding: 20px; font-weight: 800; text-align: center; justify-content: center; color: var(--neon-pink);">🚀 MUCHO MÁS...</summary>
@@ -1201,12 +1196,19 @@
             <div id="videoteca-input-container">
                 <p style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-bottom:10px;">Introduce un tema (en su IDIOMA ORIGINAL) o deja el campo vacío para que la IA te asigne un tema aleatorio corto.</p>
                 <input type="text" id="videoteca-topic-input" placeholder="Ej (en el idioma objetivo): technology, cocina, voyages..." onkeydown="if(event.key === 'Enter') videoteca.startSearch()">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Tecnología'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">💻 Tecnología</button>
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Viajes'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">✈️ Viajes</button>
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Historia'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">🏛️ Historia</button>
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Ciencia'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">🔬 Ciencia</button>
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Misterio'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">🕵️ Misterio</button>
+                </div>
                 <button onclick="videoteca.startSearch()" class="success" style="width: 100%; margin-top: 10px;">BUSCAR / ASIGNAR</button>
             </div>
             <p id="videoteca-msg" style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-top: 15px;"></p>
         </div>
         
-        <button id="btn-open-youglish" onclick="videoteca.openVideo()" class="warning hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🔗 ABRIR VIDEO Y OÍR NATIVOS</button>
+        <button id="btn-open-youglish" onclick="videoteca.openVideo()" class="warning hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">▶ ABRIR YOUTUBE (NATIVOS)</button>
         <button id="btn-videoteca-talk" onclick="videoteca.startTalk()" class="success hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🎤 VOY A RESUMIR LO QUE HE VISTO</button>
         <button onclick="app.showDashboard()" class="secondary" style="width: 100%;">Volver al Núcleo</button>
     </div>
@@ -2407,7 +2409,7 @@
                 <span class="tech" style="color:var(--neon-pink); display:block; margin-bottom: 10px;">[ TEMA ASIGNADO: ${videoteca.currentTopicName.toUpperCase()} ]</span>
                 <strong style="color:var(--neon-cyan);">LA PROFESORA DICE:</strong><br><br>
                 "¡He preparado un material excelente para nuestra clase de hoy! Trata fundamentalmente sobre <strong>${videoteca.currentTopicName}</strong>.<br><br>
-                Por favor, pulsa el botón para abrir YouGlish. <strong>Asegúrate de leer detenidamente los subtítulos nativos</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
+                Por favor, pulsa el botón para abrir YouTube. <strong>Intenta encontrar un documental, charla o podcast interesante</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
             `;
             document.getElementById('btn-open-youglish').classList.remove('hidden');
             document.getElementById('btn-videoteca-talk').classList.remove('hidden');
@@ -2418,11 +2420,17 @@
             document.getElementById('videoteca-input-container').classList.add('hidden');
             
             if (inputVal) {
-                videoteca.setTopic(inputVal);
+                document.getElementById('videoteca-msg').innerHTML = "Generando tema específico en la base de datos global...";
+                const langName = app.getLangName();
+                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema interesante y específico relacionado con la categoría o palabra "${inputVal}" en el idioma ${langName} para buscar documentales o podcasts en YouTube. Debe estar 100% traducido al ${langName}. Ejemplo si es inglés y la entrada es 'Viajes': 'Solo travel in Japan' o 'Backpacking Europe'.`;
+                
+                await app.callAI_Text_JSON(prompt, null, (data) => {
+                    videoteca.setTopic(data.topic);
+                });
             } else {
                 document.getElementById('videoteca-msg').innerHTML = "Buscando material audiovisual en la base de datos global...";
                 const langName = app.getLangName();
-                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un término de búsqueda corto y muy interesante (máximo 1 o 2 palabras) para aprender ${langName} escuchando sobre él. IMPORTANTE: El término debe estar SIEMPRE en el idioma ${langName} (con su ortografía correcta) y deben ser palabras muy comunes (ej: si es francés, no pongas una frase larga, pon simplemente "jeux" o "technologie"). Esto es crucial para que en la búsqueda exacta de YouGlish siempre se encuentren resultados y evitemos el error de "no results found".`;
+                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema apasionante y misterioso (ej: The lost city of Atlantis, Future of Artificial Intelligence, Deep sea creatures) en el idioma ${langName} para buscar documentales cortos en YouTube. El término debe estar SIEMPRE en el idioma ${langName} (con su ortografía correcta).`;
                 
                 await app.callAI_Text_JSON(prompt, null, (data) => {
                     videoteca.setTopic(data.topic);
@@ -2431,14 +2439,7 @@
         },
         
         openVideo: () => {
-             const ygLang = (currentLang === 'en') ? 'english' : 
-                            (currentLang === 'fr') ? 'french' : 
-                            (currentLang === 'de') ? 'german' : 
-                            (currentLang === 'it') ? 'italian' : 
-                            (currentLang === 'pt') ? 'portuguese' : 
-                            (currentLang === 'ru') ? 'russian' : 
-                            (currentLang === 'ja') ? 'japanese' : currentLang;
-             const url = `https://youglish.com/pronounce/${encodeURIComponent(videoteca.currentTopicName)}/${ygLang}`;
+             const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`;
              window.open(url, '_blank');
         },
         
@@ -2491,7 +2492,7 @@
 3. Sugiere 3 frases cortas completas que podría usar.`;
 
             if (mode === "videoteca") {
-                systemPrompt = `Eres una profesora de ${langName} extremadamente empática, paciente y comprensiva, que está dando clase a un alumno que intenta expresarse. El alumno acaba de volver de ver un video externo en YouGlish sobre "${conversation.topic.name}". Tú NO has visto el video. Tu papel NO es evaluar o corregir duramente sus ideas, sino ser su mayor apoyo moral. Felicítalo de forma muy natural y hazle preguntas MUY SENCILLAS e interesantes para que intente explicarte con sus palabras (o apoyándose en el traductor) qué le ha llamado la atención del video. Responde SIEMPRE con un JSON válido con la estructura: {"speech": "Tu texto aquí en ${langName} comprensivo", "speech_trans": "Traducción", "new_vocab": [{"english": "palabra_sencilla", "spanish": "traducción", "sentence_en": "ejemplo facil", "sentence_es": "traducción"}], "suggested_phrases": [{"text": "frase_segura_para_el_alumno", "trans": "traducción"}]}`;
+                systemPrompt = `Eres una profesora de ${langName} extremadamente empática, paciente y comprensiva, que está dando clase a un alumno que intenta expresarse. El alumno acaba de volver de ver un video externo en YouTube sobre "${conversation.topic.name}". Tú NO has visto el video. Tu papel NO es evaluar o corregir duramente sus ideas, sino ser su mayor apoyo moral. Felicítalo de forma muy natural y hazle preguntas MUY SENCILLAS e interesantes para que intente explicarte con sus palabras (o apoyándose en el traductor) qué le ha llamado la atención del video. Responde SIEMPRE con un JSON válido con la estructura: {"speech": "Tu texto aquí en ${langName} comprensivo", "speech_trans": "Traducción", "new_vocab": [{"english": "palabra_sencilla", "spanish": "traducción", "sentence_en": "ejemplo facil", "sentence_es": "traducción"}], "suggested_phrases": [{"text": "frase_segura_para_el_alumno", "trans": "traducción"}]}`;
                 
                 userPrompt = `Hola. Acabo de ver el video sobre "${conversation.topic.name}" e intentaré resumirlo.
 1. ¡Salúdame de forma muy alegre y empática!
