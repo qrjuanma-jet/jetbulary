@@ -85,7 +85,7 @@
         p { font-size: 18px; color: #BBB; margin-bottom: 20px; }
         
         button { 
-            background: transparent; 
+            background: rgba(0, 0, 0, 0.01); 
             border: 1px solid var(--neon-cyan); 
             color: var(--neon-cyan); 
             padding: 18px 24px; 
@@ -99,15 +99,8 @@
             border-radius: 2px;
             border-top-left-radius: 12px;
             border-bottom-right-radius: 12px;
-            touch-action: manipulation;
-            -webkit-user-select: none !important;
-            user-select: none !important;
-            -webkit-touch-callout: none !important;
-            -webkit-tap-highlight-color: transparent;
             position: relative;
-        }
-        button * {
-            pointer-events: none;
+            z-index: 10;
         }
         button:hover { 
             background: var(--neon-cyan);
