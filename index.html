@@ -3408,19 +3408,31 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             const level = levelMap[db.academy_level || 0];
             const langName = app.getLangName();
 
-            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown (ni siquiera \`\`\`json).`;
-            const userPrompt = `Genera un examen de respuesta múltiple con EXACTAMENTE 5 preguntas para repasar el nivel de exigencia gramatical ${level} de ${langName}. Las preguntas deben enfocarse en gramática para rellenar huecos. Debes introducir un hueco indicado con EXACTAMENTE un triple guión bajo (___) en la frase.
-Devuelve SOLO un JSON ESTRICTO con la siguiente estructura:
-{
-  "ejercicios": [
-    {
-      "sentence": "He ___ to the store yesterday.",
-      "options": ["go", "goes", "went", "going"],
-      "correct_index": 2,
-      "translation": "Él fue a la tienda ayer."
-    }
-  ]
-}`;
+            let grammarFocus = "";
+            if (currentLang === 'eu') {
+                grammarFocus = "TEN ESPECIAL CUIDADO: El euskera es una lengua ergativa-absolutiva. Las declinaciones (NOR, NORK, NORI, NOREN, NON...) son críticas. Ejemplo: 'Miren_K_ (Nork) liburua erosi du'. La concordancia del verbo auxiliar (du/ditu, dio/dizkio, da/dira, zaio/zaizkio) debe ser perfecta. Usa siempre Euskara Batua. Evita errores comunes de concordancia entre sujeto, objeto directo e indirecto.";
+            }
+
+            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. ${grammarFocus}`;
+            const randomSeed = Math.random().toString(36).substring(7);
+            const userPrompt = `ID_PROTOCOLO: ${randomSeed}. Genera un examen de respuesta múltiple con EXACTAMENTE 5 preguntas COMPLETAMENTE NUEVAS, ORIGINALES y VARIADAS para repasar el nivel ${level} de ${langName}. 
+            REGLAS:
+            1. No repitas frases comunes de libros de texto.
+            2. Usa situaciones de la vida real, tecnología o cultura.
+            3. El hueco debe estar indicado con ___ (triple guión bajo).
+            4. Asegúrate de que las opciones sean plausibles pero solo una sea correcta.
+            
+            Devuelve SOLO un JSON con esta estructura:
+            {
+              "ejercicios": [
+                {
+                  "sentence": "Frase con ___ hueco",
+                  "options": ["A", "B", "C", "D"],
+                  "correct_index": 0,
+                  "translation": "Traducción al español"
+                }
+              ]
+            }`;
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
                 document.getElementById('ejercicios-loading').style.display = 'none';
