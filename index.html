@@ -3410,26 +3410,25 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
             let grammarFocus = "";
             if (currentLang === 'eu') {
-                grammarFocus = "TEN ESPECIAL CUIDADO: El euskera es una lengua ergativa-absolutiva. Las declinaciones (NOR, NORK, NORI, NOREN, NON...) son críticas. Ejemplo: 'Miren_K_ (Nork) liburua erosi du'. La concordancia del verbo auxiliar (du/ditu, dio/dizkio, da/dira, zaio/zaizkio) debe ser perfecta. Usa siempre Euskara Batua. Evita errores comunes de concordancia entre sujeto, objeto directo e indirecto.";
+                grammarFocus = "TEN ESPECIAL CUIDADO: El euskera es una lengua ergativa-absolutiva. La concordancia del verbo auxiliar (du/ditu, dio/dizkio, da/dira, zaio/zaizkio) es vital. \nCRÍTICO: El hueco ___ debe SUSTITUIR a la palabra que falta. NO repitas la palabra correcta en la frase si el hueco es para ella. \nEjemplo CORRECTO: 'Mirenek liburua ___ du' (Opción: erosi). \nEjemplo INCORRECTO: 'Mirenek liburua erosi erosi ___' (Repetición de verbo).";
             }
 
             const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. ${grammarFocus}`;
             const randomSeed = Math.random().toString(36).substring(7);
-            const userPrompt = `ID_PROTOCOLO: ${randomSeed}. Genera un examen de respuesta múltiple con EXACTAMENTE 5 preguntas COMPLETAMENTE NUEVAS, ORIGINALES y VARIADAS para repasar el nivel ${level} de ${langName}. 
-            REGLAS:
-            1. No repitas frases comunes de libros de texto.
-            2. Usa situaciones de la vida real, tecnología o cultura.
-            3. El hueco debe estar indicado con ___ (triple guión bajo).
-            4. Asegúrate de que las opciones sean plausibles pero solo una sea correcta.
+            const userPrompt = `ID_PROTOCOLO: ${randomSeed}. Genera 5 ejercicios de respuesta múltiple (nivel ${level}, idioma ${langName}). 
+            REGLAS DE ORO:
+            1. El hueco ___ debe SUSTITUIR a la palabra correcta. NUNCA incluyas la palabra correcta dentro de la frase 'sentence'.
+            2. Evita la redundancia gramatical.
+            3. No repitas frases comunes.
             
-            Devuelve SOLO un JSON con esta estructura:
+            Estructura JSON:
             {
               "ejercicios": [
                 {
-                  "sentence": "Frase con ___ hueco",
-                  "options": ["A", "B", "C", "D"],
+                  "sentence": "Frase con el hueco ___ en el lugar correcto",
+                  "options": ["Respuesta Correcta", "Distractor1", "Distractor2", "Distractor3"],
                   "correct_index": 0,
-                  "translation": "Traducción al español"
+                  "translation": "Traducción completa"
                 }
               ]
             }`;
