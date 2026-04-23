@@ -3413,20 +3413,20 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 grammarFocus = "TEN ESPECIAL CUIDADO: El euskera es una lengua ergativa-absolutiva. La concordancia del verbo auxiliar (du/ditu, dio/dizkio, da/dira, zaio/zaizkio) es vital. \nCRÍTICO: El hueco ___ debe SUSTITUIR a la palabra que falta. NO repitas la palabra correcta en la frase si el hueco es para ella. \nEjemplo CORRECTO: 'Mirenek liburua ___ du' (Opción: erosi). \nEjemplo INCORRECTO: 'Mirenek liburua erosi erosi ___' (Repetición de verbo).";
             }
 
-            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. ${grammarFocus}`;
+            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. REGLA CRÍTICA: Ninguna de las opciones de respuesta debe aparecer ya escrita en la frase (sentence). El hueco ___ es el único lugar donde debe ir la respuesta. ${grammarFocus}`;
             const randomSeed = Math.random().toString(36).substring(7);
             const userPrompt = `ID_PROTOCOLO: ${randomSeed}. Genera 5 ejercicios de respuesta múltiple (nivel ${level}, idioma ${langName}). 
-            REGLAS DE ORO:
-            1. El hueco ___ debe SUSTITUIR a la palabra correcta. NUNCA incluyas la palabra correcta dentro de la frase 'sentence'.
-            2. Evita la redundancia gramatical.
-            3. No repitas frases comunes.
+            REGLAS DE ORO (APLICAR A RAJATABLA):
+            1. El hueco ___ debe SUSTITUIR a la palabra correcta. NUNCA incluyas la palabra correcta NI NINGUNA DE LAS OTRAS OPCIONES dentro de la frase 'sentence'.
+            2. La frase debe ser gramaticalmente incorrecta o incompleta sin la opción correcta.
+            3. Evita la redundancia y no repitas frases de libros.
             
             Estructura JSON:
             {
               "ejercicios": [
                 {
-                  "sentence": "Frase con el hueco ___ en el lugar correcto",
-                  "options": ["Respuesta Correcta", "Distractor1", "Distractor2", "Distractor3"],
+                  "sentence": "Frase con el hueco ___ y NADA MÁS",
+                  "options": ["Correcta", "Incorrecta1", "Incorrecta2", "Incorrecta3"],
                   "correct_index": 0,
                   "translation": "Traducción completa"
                 }
