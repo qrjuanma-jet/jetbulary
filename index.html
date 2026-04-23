@@ -898,8 +898,9 @@
             <p class="tech" style="color: var(--neon-pink); animation: pulse-cyber 1s infinite alternate; font-size: 1.2rem;">Generando simulador interactivo temporal...</p>
         </div>
         
-        <div id="ejercicios-quiz" style="display: none; background: rgba(0,0,0,0.6); border: 1px solid var(--cyber-warn); padding: 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(255, 170, 0, 0.2); margin-bottom: 20px;">
+        <div id="ejercicios-quiz" style="display: none; background: rgba(0,0,0,0.6); border: 1px solid var(--cyber-warn); padding: 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(255, 170, 0, 0.2); margin-bottom: 20px; position: relative;">
             <p id="ejercicio-phrase" style="font-size: 1.4rem; color: #FFF; font-weight: bold; margin-bottom: 30px; line-height: 1.5; text-align: center;"></p>
+            <button id="report-error-btn" onclick="ejercicios.reportError()" class="secondary" style="position: absolute; top: 5px; right: 5px; padding: 5px 10px; font-size: 0.6rem; opacity: 0.7;">[ ⚠️ REPORTAR ERROR ]</button>
             <div id="ejercicio-options" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
 
@@ -1313,7 +1314,7 @@
     // --- BASE DE DATOS LOCAL ---
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
-    let db = { topics: [], words: [], progress: [], grammar_courses: {}, academy_tips: [], academy_level: 0 };
+    let db = { topics: [], words: [], progress: [], grammar_courses: {}, academy_tips: [], academy_level: 0, reported_errors: [] };
     let currentLang = 'en';
     
     const languages = [
@@ -3413,19 +3414,39 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 grammarFocus = "TEN ESPECIAL CUIDADO: El euskera es una lengua ergativa-absolutiva. La concordancia del verbo auxiliar (du/ditu, dio/dizkio, da/dira, zaio/zaizkio) es vital. \nCRÍTICO: El hueco ___ debe SUSTITUIR a la palabra que falta. NO repitas la palabra correcta en la frase si el hueco es para ella. \nEjemplo CORRECTO: 'Mirenek liburua ___ du' (Opción: erosi). \nEjemplo INCORRECTO: 'Mirenek liburua erosi erosi ___' (Repetición de verbo).";
             }
 
-            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. REGLA CRÍTICA: Ninguna de las opciones de respuesta debe aparecer ya escrita en la frase (sentence). El hueco ___ es el único lugar donde debe ir la respuesta. ${grammarFocus}`;
+            let historyExtra = "";
+            if (db.reported_errors && db.reported_errors.length > 0) {
+                const recent = db.reported_errors.filter(e => e.lang === currentLang).slice(-5);
+                if (recent.length > 0) {
+                    historyExtra = "\nERRORES PREVIOS REPORTADOS POR EL USUARIO (NO REPETIR ESTOS FALLOS): " + 
+                        recent.map(e => `"${e.sentence}" (Respuesta esperada: ${e.correct_answer})`).join("; ");
+                }
+            }
+
+            const systemPrompt = `Tu único objetivo es proveer respuestas en formato JSON estricto puro. NADA de preámbulos, despedidas ni markdown. REGLA CRÍTICA: Ninguna de las opciones de respuesta debe aparecer ya escrita en la frase (sentence). El hueco ___ es el único lugar donde debe ir la respuesta. ${grammarFocus} ${historyExtra}`;
             const randomSeed = Math.random().toString(36).substring(7);
             const userPrompt = `ID_PROTOCOLO: ${randomSeed}. Genera 5 ejercicios de respuesta múltiple (nivel ${level}, idioma ${langName}). 
-            REGLAS DE ORO (APLICAR A RAJATABLA):
-            1. El hueco ___ debe SUSTITUIR a la palabra correcta. NUNCA incluyas la palabra correcta NI NINGUNA DE LAS OTRAS OPCIONES dentro de la frase 'sentence'.
-            2. La frase debe ser gramaticalmente incorrecta o incompleta sin la opción correcta.
-            3. Evita la redundancia y no repitas frases de libros.
+            
+            PROHIBICIÓN ABSOLUTA:
+            - NINGUNA de las palabras de 'options' puede estar en 'sentence'.
+            - Ejemplo de ERROR (NO HACER): 
+                Sentence: "Ez dakit ___ non dago" 
+                Answer: "non"
+                (ERROR: 'non' está repetido).
+            - Ejemplo CORRECTO (SÍ HACER):
+                Sentence: "Ez dakit ___ dago" 
+                Answer: "non"
+            
+            REGLAS:
+            1. El hueco ___ reemplaza COMPLETAMENTE a la palabra correcta.
+            2. La frase debe ser gramaticalmente correcta solo cuando se rellena el hueco.
+            3. Sé creativo y variado.
             
             Estructura JSON:
             {
               "ejercicios": [
                 {
-                  "sentence": "Frase con el hueco ___ y NADA MÁS",
+                  "sentence": "Frase con el hueco ___",
                   "options": ["Correcta", "Incorrecta1", "Incorrecta2", "Incorrecta3"],
                   "correct_index": 0,
                   "translation": "Traducción completa"
@@ -3506,6 +3527,29 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             let color = ejercicios.score >= 4 ? "var(--cyber-ok)" : "var(--cyber-warn)";
             const rsEl = document.getElementById('ejercicios-score');
             rsEl.innerHTML = `PRECISIÓN: ${Math.round((ejercicios.score / ejercicios.list.length) * 100)}%<br>(${ejercicios.score} de ${ejercicios.list.length} correctas)<br><br><span style="color:${color}; font-weight:bold;">ESTADO: ${status}</span>`;
+        },
+        reportError: () => {
+            const currentEx = ejercicios.list[ejercicios.current];
+            if (!currentEx) return;
+            
+            if (!db.reported_errors) db.reported_errors = [];
+            if (!db.reported_errors.some(e => e.sentence === currentEx.sentence)) {
+                db.reported_errors.push({
+                    sentence: currentEx.sentence,
+                    correct_answer: currentEx.options[currentEx.correct_index],
+                    lang: currentLang,
+                    timestamp: Date.now()
+                });
+                app.saveDB();
+            }
+            
+            const btn = document.getElementById('report-error-btn');
+            btn.innerText = "✓ ERROR REGISTRADO";
+            btn.style.color = "var(--cyber-ok)";
+            setTimeout(() => {
+                btn.innerText = "[ ⚠️ REPORTAR ERROR ]";
+                btn.style.color = "";
+            }, 2000);
         }
     };
 
