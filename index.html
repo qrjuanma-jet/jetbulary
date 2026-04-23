@@ -1079,8 +1079,18 @@
         </details>
         
         <button id="btn-blancazo-game" onclick="game.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
-        <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()">🎤</button>
-        <p id="prompt-pronounce" style="margin-top: 10px; color: #888;">Pulsa para hablar</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 25px 0;">
+            <button onclick="game.speakWordSlow()" class="secondary" title="Oír despacio" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🐢</span>
+            </button>
+            
+            <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()" style="margin: 0;">🎤</button>
+            
+            <button onclick="game.speak()" class="secondary" title="Oír frase" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🔊</span>
+            </button>
+        </div>
+        <p id="prompt-pronounce" style="margin-top: 5px; color: #888; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Pulsa el micro para hablar</p>
         
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
         
@@ -1121,9 +1131,19 @@
             <div id="phrases-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
         </div>
 
-        <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()">🎤</button>
         <button id="btn-blancazo" onclick="conversation.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
-        <div id="convo-timer-container" class="hidden" style="margin-top: 10px;"><div id="convo-timer-bar"></div></div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
+            <button onclick="conversation.repeatSlow()" class="secondary" title="Oír despacio" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🐢</span>
+            </button>
+            
+            <button class="mic-btn" id="mic-btn-convo" onclick="conversation.toggleMic()" style="margin: 0;">🎤</button>
+            
+            <button onclick="conversation.repeat()" class="secondary" title="Oír respuesta" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🔊</span>
+            </button>
+        </div>
+        <div id="convo-timer-container" class="hidden" style="margin-top: 5px;"><div id="convo-timer-bar"></div></div>
         
         <div id="user-feedback-container" style="margin: 15px 0; min-height: 60px;">
             <p id="convo-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
@@ -1166,8 +1186,18 @@
         </div>
 
         <button id="btn-blancazo-academy" onclick="academy.toggleBlancazo()" class="warning" style="display:block; margin: 15px auto; width: 100%; max-width: 300px; font-size: 0.95rem; padding: 15px; border-radius: 8px; text-transform: uppercase;">🇪🇸 Dilo en Castellano, te ayudo...</button>
-        <button class="mic-btn" id="mic-btn-academy" onclick="academy.toggleMic()">🎤</button>
-        <div id="academy-timer-container" class="hidden"><div id="academy-timer-bar"></div></div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
+            <button onclick="academy.repeatSlow()" class="secondary" title="Oír despacio" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-pink); color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🐢</span>
+            </button>
+            
+            <button class="mic-btn" id="mic-btn-academy" onclick="academy.toggleMic()" style="margin: 0;">🎤</button>
+            
+            <button onclick="academy.repeat()" class="secondary" title="Oír explicación" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);">
+                <span style="font-size: 1.5rem;">🔊</span>
+            </button>
+        </div>
+        <div id="academy-timer-container" class="hidden" style="margin-top: 5px;"><div id="academy-timer-bar"></div></div>
         
         <div id="academy-feedback-container" style="margin: 15px 0; min-height: 60px;">
             <p id="academy-spoken-text" style="color:#333; font-style:italic; font-size: 1.1rem; margin-bottom: 10px;">...</p>
@@ -2463,6 +2493,13 @@
         autoMic: true,
         timerInterval: null,
 
+        repeat: () => {
+            if (game.lastText) game.speakText(game.lastText);
+        },
+        repeatSlow: () => {
+            if (game.lastText) game.speakText(game.lastText, 0.5);
+        },
+
         start: async (topicId, mode = "normal", customTopicName = "") => {
             if (mode === "videoteca") {
                 conversation.topic = { id: 'videoteca_mock', name: customTopicName };
@@ -3136,6 +3173,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         speakText: (text, rate = 1) => {
             game.stopMic();
             window.speechSynthesis.cancel();
+            game.lastText = text; // Guardar el último texto hablado para repetición
             const u = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
             
@@ -3151,6 +3189,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             if(currentLang === 'gl') langCode = voices.some(v => v.lang.startsWith('gl')) ? 'gl-ES' : 'es-ES';
             
             u.lang = langCode;
+            game.lastText = text; // Guardar para repetición
             
             const femaleNames = ['female', 'woman', 'femenina', 'girl', 'samantha', 'monica', 'amelie', 'anna', 'helena', 'laura', 'marta', 'zira', 'sara', 'carmen', 'paulina', 'huihui', 'yaoyao', 'google'];
             
@@ -3561,6 +3600,13 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
         timerInterval: null,
         currentExpected: null,
         isIntroDone: false,
+
+        repeat: () => {
+            if (game.lastText) game.speakText(game.lastText);
+        },
+        repeatSlow: () => {
+            if (game.lastText) game.speakText(game.lastText, 0.5);
+        },
 
         startGlobal: async () => {
             app.switchView('view-academy');
