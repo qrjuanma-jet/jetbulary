@@ -85,7 +85,7 @@
         p { font-size: 18px; color: #BBB; margin-bottom: 20px; }
         
         button { 
-            background: rgba(0, 0, 0, 0.01); 
+            background: rgba(0, 0, 0, 0.1); 
             border: 1px solid var(--neon-cyan); 
             color: var(--neon-cyan); 
             padding: 18px 24px; 
@@ -100,8 +100,10 @@
             border-top-left-radius: 12px;
             border-bottom-right-radius: 12px;
             position: relative;
-            z-index: 10;
+            z-index: 20;
+            pointer-events: auto;
         }
+        button * { pointer-events: none; }
         button:hover { 
             background: var(--neon-cyan);
             color: var(--cyber-bg);
@@ -165,8 +167,8 @@
         
         .badge-authority { font-weight: 600; color: var(--neon-pink); letter-spacing: 0.3em; text-transform: uppercase; font-size: 14px; margin-bottom: 20px; display: block; text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
         
-        .hud-card { background: var(--cyber-surface); padding: 40px; border: 1px solid var(--cyber-border); border-left: 4px solid var(--neon-cyan); transition: all 0.3s ease; position: relative; overflow: hidden; z-index: 1000; }
-        .hud-card::after { content: ""; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(225deg, var(--neon-cyan) 50%, transparent 50%); opacity: 0.5; }
+        .hud-card { background: var(--cyber-surface); padding: 40px; border: 1px solid var(--cyber-border); border-left: 4px solid var(--neon-cyan); transition: all 0.3s ease; position: relative; overflow: hidden; z-index: 100; }
+        .hud-card::after { content: ""; position: absolute; top: 0; right: 0; width: 40px; height: 40px; background: linear-gradient(225deg, var(--neon-cyan) 50%, transparent 50%); opacity: 0.5; pointer-events: none; }
         .hud-card:hover { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow); transform: translateX(5px); }
 
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 40px; }
@@ -266,10 +268,11 @@
         
         .stat-card { background: var(--cyber-surface); padding: 25px; border: 1px solid var(--cyber-border); margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; }
         
-        .avatar-container { margin: 20px auto; width: 160px; height: 160px; border: 2px solid var(--neon-cyan); position: relative; background: rgba(0, 243, 255, 0.05); box-shadow: var(--cyber-glow); overflow: hidden; }
+        .avatar-container { margin: 20px auto; width: 160px; height: 160px; border: 2px solid var(--neon-cyan); position: relative; background: rgba(0, 243, 255, 0.05); box-shadow: var(--cyber-glow); overflow: hidden; pointer-events: none; }
+        .avatar-container img { pointer-events: auto; }
         .avatar-container::before { content: ""; position: absolute; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0, 243, 255, 0.1) 0px, transparent 1px); pointer-events: none; }
         .avatar-container img { width: 100%; height: 100%; object-fit: cover; filter: brightness(1.2) contrast(1.1) sepia(0.5) hue-rotate(140deg); }
-        .avatar-container::after { content: "LIVE_FEED"; position: absolute; bottom: 2px; right: 5px; font-size: 8px; color: var(--neon-cyan); font-family: monospace; }
+        .avatar-container::after { content: "LIVE_FEED"; position: absolute; bottom: 2px; right: 5px; font-size: 8px; color: var(--neon-cyan); font-family: monospace; pointer-events: none; }
 
         /* Cyber Accordion HUD */
         details { background: var(--cyber-surface); margin: 15px 0; border: 1px solid var(--cyber-border); text-align: left; transition: all 0.3s;}
@@ -371,6 +374,7 @@
             content: "";
             position: absolute;
             bottom: 0; right: 0; width: 10px; height: 2px; background: var(--neon-pink);
+            pointer-events: none;
         }
         
         .flicker { animation: flicker-burn 3s infinite; }
@@ -409,7 +413,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 5, 5, 0.95);
             z-index: 10000;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -418,8 +422,9 @@
             transition: opacity 0.3s ease;
             padding: 10px;
             box-sizing: border-box;
+            backdrop-filter: blur(10px);
         }
-        #video-modal.active { opacity: 1; pointer-events: all; }
+        #video-modal.active { display: flex; opacity: 1; pointer-events: all; }
         .video-wrapper {
             width: 100%;
             max-width: 800px;
@@ -1587,9 +1592,15 @@
             const target = document.getElementById(id);
             if(target) {
                 target.classList.remove('hidden');
-                target.style.zIndex = '100';
+                target.style.zIndex = '500';
                 target.style.position = 'relative';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Forzar interactividad en botones tras cambio de vista
+                target.querySelectorAll('button').forEach(btn => {
+                    btn.style.zIndex = '600';
+                    btn.style.pointerEvents = 'auto';
+                });
             }
             
             const newUrl = "#" + id.replace('view-', '');
@@ -3897,13 +3908,21 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
     });
 
     // Forzar visibilidad de la vista actual y asegurar interactividad
-    const currentView = document.querySelector('.container:not(.hidden)');
-    if (currentView) {
-        currentView.style.position = 'relative';
-        currentView.style.zIndex = '500';
+    function refreshViewInteractivity() {
+        const currentView = document.querySelector('.container:not(.hidden)');
+        if (currentView) {
+            currentView.style.position = 'relative';
+            currentView.style.zIndex = '500';
+            // Asegurar que los botones dentro son clicables
+            currentView.querySelectorAll('button').forEach(btn => {
+                btn.style.zIndex = '600';
+                btn.style.pointerEvents = 'auto';
+            });
+        }
     }
     
     app.init();
+    refreshViewInteractivity();
 </script>
 
     <div id="video-modal" onclick="app.closeVideo()">
