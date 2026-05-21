@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 
 
@@ -2880,7 +2880,7 @@
                         <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #9c27b0); border: 1px solid #e040fb; color: #FFF; font-size: 0.9rem;">🤖 MODO ACADEMIA</button>
                         <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #004d4f); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); font-size: 0.9rem;">🔰 MODO ESENCIALES</button>
                         <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #6d4e00); border: 1px solid var(--cyber-warn); color: var(--cyber-warn); font-size: 0.9rem;">📓 MODO EJERCICIOS</button>
-                        <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border: 1px solid #ff5252; color: #ff5252; font-size: 0.9rem;">🎬 MODO VIDEOTECA</button>
+                        <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border: 1px solid #ff5252; color: #ff5252; font-size: 0.9rem;">🎬 MODO MULTIMEDIA</button>
                         <button style="width:100%; margin-bottom: 8px; padding: 14px; background: linear-gradient(45deg, #1A1A1A, #1a237e); border: 1px solid #7c4dff; color: #b388ff; font-size: 0.9rem;">💼 MODO ENTREVISTA PROFESIONAL</button>
 
                         <!-- Mi Cuaderno mockup -->
@@ -3864,7 +3864,7 @@
 
         <button onclick="ejercicios.init()" class="secondary" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 12px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #6d4e00); border-color: var(--cyber-warn); color: var(--cyber-warn);">📓 MODO EJERCICIOS</button>
 
-        <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 12px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO VIDEOTECA</button>
+        <button onclick="videoteca.init()" class="success" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 12px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #bd2c00); border-color: #ff5252;">🎬 MODO MULTIMEDIA</button>
 
         <button onclick="app.createJobInterviewTopic(this)" class="warning" style="width: 100%; padding: 22px; font-size: 1.2rem; margin-bottom: 12px; font-weight: bold; background: linear-gradient(45deg, #1A1A1A, #1a237e); border-color: #7c4dff; color: #b388ff;">💼 MODO ENTREVISTA PROFESIONAL</button>
 
@@ -4655,8 +4655,7 @@
 
 
 
-
-    <!-- VISTA VIDEOTECA (PUENTE) -->
+    <!-- VISTA MULTIMEDIA (PUENTE) -->
 
 
 
@@ -4668,7 +4667,7 @@
 
 
 
-        <h2 class="tech" style="color: var(--neon-cyan); margin-top: 20px;">[ CENTRAL AUDIOVISUAL ]</h2>
+        <h2 class="tech" style="color: var(--neon-cyan); margin-top: 20px;">[ CENTRAL MULTIMEDIA ]</h2>
 
 
 
@@ -4679,6 +4678,17 @@
             <div id="videoteca-input-container">
 
 
+
+                <!-- SELECTOR DE PLATAFORMA -->
+                <p style="color: var(--neon-cyan); font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">▌ Plataforma</p>
+                <div id="multimedia-platform-selector" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button id="btn-platform-youtube" onclick="videoteca.setPlatform('youtube')" style="flex: 1; padding: 14px 10px; font-size: 0.85rem; background: rgba(255, 0, 0, 0.15); border-color: #FF4444; color: #FF4444; box-shadow: 0 0 10px rgba(255,68,68,0.3);">
+                        ▶ YouTube
+                    </button>
+                    <button id="btn-platform-spotify" onclick="videoteca.setPlatform('spotify')" style="flex: 1; padding: 14px 10px; font-size: 0.85rem; background: rgba(0,0,0,0.1); border-color: #444; color: #888;">
+                        🎧 Spotify Podcasts
+                    </button>
+                </div>
 
                 <p style="color: #EEE; font-size: 1.1rem; line-height: 1.6; margin-bottom:10px;">Introduce un tema (en su IDIOMA ORIGINAL) o deja el campo vacío para que la IA te asigne un tema aleatorio corto.</p>
 
@@ -4708,7 +4718,7 @@
 
 
 
-                    <button onclick="document.getElementById('videoteca-topic-input').value='Misterio'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">🕵ï¸  Misterio</button>
+                    <button onclick="document.getElementById('videoteca-topic-input').value='Misterio'; videoteca.startSearch()" class="secondary" style="padding: 10px; font-size: 0.8rem; flex: 1;">🕵️  Misterio</button>
 
 
 
@@ -4740,7 +4750,7 @@
 
 
 
-        <button id="btn-videoteca-talk" onclick="videoteca.startTalk()" class="success hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🎤 VOY A RESUMIR LO QUE HE VISTO</button>
+        <button id="btn-videoteca-talk" onclick="videoteca.startTalk()" class="success hidden" style="width: 100%; padding: 20px; font-size: 1.1rem; margin-bottom: 15px;">🎤 VOY A RESUMIR LO QUE HE VISTO/ESCUCHADO</button>
 
 
 
@@ -10270,9 +10280,59 @@
 
         currentTopicName: null,
 
+        currentPlatform: 'youtube', // 'youtube' | 'spotify'
 
 
-        
+
+        setPlatform: (platform) => {
+
+            videoteca.currentPlatform = platform;
+
+            // Estilos del botón YouTube
+            const btnYT = document.getElementById('btn-platform-youtube');
+            const btnSP = document.getElementById('btn-platform-spotify');
+
+            if (platform === 'youtube') {
+                btnYT.style.background = 'rgba(255, 68, 68, 0.15)';
+                btnYT.style.borderColor = '#FF4444';
+                btnYT.style.color = '#FF4444';
+                btnYT.style.boxShadow = '0 0 10px rgba(255,68,68,0.3)';
+                btnSP.style.background = 'rgba(0,0,0,0.1)';
+                btnSP.style.borderColor = '#444';
+                btnSP.style.color = '#888';
+                btnSP.style.boxShadow = 'none';
+
+                // Actualizar botón de apertura
+                const btnOpen = document.getElementById('btn-open-youglish');
+                if (!btnOpen.classList.contains('hidden')) {
+                    btnOpen.innerHTML = '▶ ABRIR YOUTUBE (NATIVOS)';
+                }
+            } else {
+                btnSP.style.background = 'rgba(29, 185, 84, 0.15)';
+                btnSP.style.borderColor = '#1DB954';
+                btnSP.style.color = '#1DB954';
+                btnSP.style.boxShadow = '0 0 10px rgba(29,185,84,0.3)';
+                btnYT.style.background = 'rgba(0,0,0,0.1)';
+                btnYT.style.borderColor = '#444';
+                btnYT.style.color = '#888';
+                btnYT.style.boxShadow = 'none';
+
+                // Actualizar botón de apertura
+                const btnOpen = document.getElementById('btn-open-youglish');
+                if (!btnOpen.classList.contains('hidden')) {
+                    btnOpen.innerHTML = '🎧 ABRIR SPOTIFY PODCASTS';
+                    btnOpen.style.borderColor = '#1DB954';
+                    btnOpen.style.color = '#1DB954';
+                    btnOpen.style.boxShadow = '0 0 10px rgba(29,185,84,0.3)';
+                }
+            }
+
+            // Si ya hay un tema asignado, actualizar el mensaje
+            if (videoteca.currentTopicName) {
+                videoteca.setTopic(videoteca.currentTopicName);
+            }
+
+        },
 
 
 
@@ -10304,6 +10364,9 @@
 
 
 
+            // Resetear plataforma a YouTube por defecto
+            videoteca.setPlatform('youtube');
+
         },
 
 
@@ -10318,13 +10381,20 @@
 
             videoteca.currentTopicName = topic || "Future technology";
 
-
+            const isSpotify = videoteca.currentPlatform === 'spotify';
+            const plataformaLabel = isSpotify ? '🎧 SPOTIFY PODCASTS' : '▶ YOUTUBE';
+            const plataformaColor = isSpotify ? 'var(--cyber-ok)' : '#FF4444';
+            const instruccion = isSpotify
+                ? `pulsa el botón para abrir Spotify. <strong>Busca un podcast interesante sobre este tema</strong>. Escucha al menos unos minutos`
+                : `pulsa el botón para abrir YouTube. <strong>Intenta encontrar un documental, charla o podcast interesante</strong>`;
 
             document.getElementById('videoteca-msg').innerHTML = `
 
 
 
                 <span class="tech" style="color:var(--neon-pink); display:block; margin-bottom: 10px;">[ TEMA ASIGNADO: ${videoteca.currentTopicName.toUpperCase()} ]</span>
+
+                <span style="color:${plataformaColor}; font-size:0.85rem; letter-spacing:0.1em; font-family:'Orbitron',sans-serif;">[ ${plataformaLabel} ]</span><br><br>
 
 
 
@@ -10336,15 +10406,26 @@
 
 
 
-                Por favor, pulsa el botón para abrir YouTube. <strong>Intenta encontrar un documental, charla o podcast interesante</strong>. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
+                Por favor, ${instruccion}. Cuando termines, vuelve a esta pestaña y me cuentas qué te ha parecido."
 
 
 
             `;
 
-
-
-            document.getElementById('btn-open-youglish').classList.remove('hidden');
+            // Actualizar botón de apertura según plataforma
+            const btnOpen = document.getElementById('btn-open-youglish');
+            btnOpen.classList.remove('hidden');
+            if (isSpotify) {
+                btnOpen.innerHTML = '🎧 ABRIR SPOTIFY PODCASTS';
+                btnOpen.style.borderColor = '#1DB954';
+                btnOpen.style.color = '#1DB954';
+                btnOpen.style.boxShadow = '0 0 12px rgba(29,185,84,0.5)';
+            } else {
+                btnOpen.innerHTML = '▶ ABRIR YOUTUBE (NATIVOS)';
+                btnOpen.style.borderColor = '';
+                btnOpen.style.color = '';
+                btnOpen.style.boxShadow = '';
+            }
 
 
 
@@ -10454,11 +10535,14 @@
 
         openVideo: () => {
 
-
-
-             const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`;
-
-
+            let url;
+            if (videoteca.currentPlatform === 'spotify') {
+                // Buscar podcasts en Spotify
+                url = `https://open.spotify.com/search/${encodeURIComponent(videoteca.currentTopicName)}/podcasts`;
+            } else {
+                // Buscar en YouTube (por defecto)
+                url = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`;
+            }
 
              window.open(url, '_blank');
 
@@ -10710,9 +10794,13 @@
 
             if (mode === "videoteca") {
 
+                const isSpotify = videoteca.currentPlatform === 'spotify';
+                const tipoContenido = isSpotify ? 'un podcast de Spotify' : 'un video de YouTube';
+                const tipoContenidoShort = isSpotify ? 'el podcast' : 'el video';
 
 
-                systemPrompt = `Eres una profesora de ${langName} extremadamente empática, paciente y comprensiva, que está dando clase a un alumno que intenta expresarse. El alumno acaba de volver de ver un video externo en YouTube sobre "${conversation.topic.name}". Tú NO has visto el video. Tu papel NO es evaluar o corregir duramente sus ideas, sino ser su mayor apoyo moral. Felicítalo de forma muy natural y hazle preguntas MUY SENCILLAS e interesantes para que intente explicarte con sus palabras (o apoyándose en el traductor) qué le ha llamado la atención del video. 
+
+                systemPrompt = `Eres una profesora de ${langName} extremadamente empática, paciente y comprensiva, que está dando clase a un alumno que intenta expresarse. El alumno acaba de volver de escuchar/ver ${tipoContenido} externo sobre "${conversation.topic.name}". Tú NO has visto ni escuchado el contenido. Tu papel NO es evaluar o corregir duramente sus ideas, sino ser su mayor apoyo moral. Felicítalo de forma muy natural y hazle preguntas MUY SENCILLAS e interesantes para que intente explicarte con sus palabras (o apoyándose en el traductor) qué le ha llamado la atención. 
 
 
 
@@ -10736,7 +10824,7 @@
 
 
 
-                userPrompt = `Hola. Acabo de ver el video sobre "${conversation.topic.name}" e intentaré resumirlo.
+                userPrompt = `Hola. Acabo de ${isSpotify ? 'escuchar' : 'ver'} ${tipoContenido} sobre "${conversation.topic.name}" e intentaré resumirlo.
 
 
 
@@ -10744,7 +10832,7 @@
 
 
 
-2. Pregúntame amablemente cuál fue la idea principal que vi o si me ha gustado el video (hazlo muy fácil de entender).
+2. Pregúntame amablemente cuál fue la idea principal que ${isSpotify ? 'escuché' : 'vi'} o si me ha gustado ${tipoContenidoShort} (hazlo muy fácil de entender).
 
 
 
@@ -10752,7 +10840,7 @@
 
 
 
-4. Sugiere frases cortas que podría decirle a alguien para explicar si un video le gusto o no.`;
+4. Sugiere frases cortas que podría decirle a alguien para explicar si ${isSpotify ? 'un podcast le gustó o no' : 'un video le gustó o no'}.`;
 
 
 
