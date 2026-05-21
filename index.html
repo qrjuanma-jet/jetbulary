@@ -10536,18 +10536,11 @@
         openVideo: () => {
 
             if (videoteca.currentPlatform === 'spotify') {
-                // Abrir Spotify app directamente con el protocolo URI nativo
                 const query = encodeURIComponent(videoteca.currentTopicName + ' podcast');
-                // El protocolo spotify: abre la app; si no está instalada, fallback al web
-                window.location.href = `spotify:search:${query}`;
-                // Fallback al web player tras 1.5s por si no tiene la app
-                setTimeout(() => {
-                    window.open(`https://open.spotify.com/search/${query}/podcasts`, '_blank');
-                }, 1500);
+                // open.spotify.com funciona en PC (web player) y móvil (abre la app via Universal Links)
+                window.open(`https://open.spotify.com/search/${query}/podcasts`, '_blank');
             } else {
-                // Buscar en YouTube (por defecto)
-                const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`;
-                window.open(url, '_blank');
+                window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`, '_blank');
             }
 
 
