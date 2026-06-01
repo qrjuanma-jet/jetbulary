@@ -10591,7 +10591,7 @@
             const plataformaLabel = isSpotify ? '🎧 SPOTIFY PODCASTS' : '▶ YOUTUBE';
             const plataformaColor = isSpotify ? 'var(--cyber-ok)' : '#FF4444';
             const instruccion = isSpotify
-                ? `pulsa el botón para abrir Spotify. <strong>Busca un podcast interesante sobre este tema</strong>. Escucha al menos unos minutos`
+                ? `pulsa el botón para abrir Spotify directamente. <strong>Busca un episodio de podcast sobre este tema</strong> en tu idioma objetivo y escucha al menos unos minutos`
                 : `pulsa el botón para abrir YouTube. <strong>Intenta encontrar un documental, charla o podcast interesante</strong>`;
 
             document.getElementById('videoteca-msg').innerHTML = `
@@ -10675,7 +10675,10 @@
 
 
 
-                const prompt = `Devuelve un objeto JSON con la clave "topic" que contenga un tema interesante y específico relacionado con la categoría o palabra "${inputVal}" en el idioma ${langName} para buscar documentales o podcasts en YouTube. Debe estar 100% traducido al ${langName}. Ejemplo si es inglés y la entrada es 'Viajes': 'Solo travel in Japan' o 'Backpacking Europe'.`;
+                const plataforma = videoteca.currentPlatform;
+                const prompt = plataforma === 'spotify'
+                    ? `Devuelve un objeto JSON con la clave "topic" que contenga un tema específico e interesante relacionado con "${inputVal}" para buscar podcasts en Spotify. El tema debe estar en el idioma ${langName} y ser una frase de búsqueda atractiva. Ejemplo si es inglés y la entrada es 'Negocios': 'Building a startup from scratch'.`
+                    : `Devuelve un objeto JSON con la clave "topic" que contenga un tema interesante y específico relacionado con la categoría o palabra "${inputVal}" en el idioma ${langName} para buscar documentales o podcasts en YouTube. Debe estar 100% traducido al ${langName}. Ejemplo si es inglés y la entrada es 'Viajes': 'Solo travel in Japan' o 'Backpacking Europe'.`;
 
 
 
@@ -10743,13 +10746,33 @@
 
             if (videoteca.currentPlatform === 'spotify') {
                 const query = encodeURIComponent(videoteca.currentTopicName + ' podcast');
-                // open.spotify.com funciona en PC (web player) y móvil (abre la app via Universal Links)
-                window.open(`https://open.spotify.com/search/${query}/podcasts`, '_blank');
+
+                // Detectar si es móvil
+                const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                if (isMobile) {
+                    // En móvil: intentar abrir la app nativa con deep link
+                    // spotify:search: abre la app directamente en iOS y Android
+                    const spotifyDeepLink = `spotify:search:${encodeURIComponent(videoteca.currentTopicName + ' podcast')}`;
+                    const spotifyWebFallback = `https://open.spotify.com/search/${query}/podcasts`;
+
+                    // Intentar el deep link; si falla (app no instalada), caer al web player
+                    const start = Date.now();
+                    window.location.href = spotifyDeepLink;
+
+                    setTimeout(function() {
+                        // Si la app no abrió (seguimos aquí después de 800ms), ir al web player
+                        if (Date.now() - start < 2000) {
+                            window.open(spotifyWebFallback, '_blank');
+                        }
+                    }, 800);
+                } else {
+                    // En PC: abrir directamente el web player de Spotify
+                    window.open(`https://open.spotify.com/search/${query}/podcasts`, '_blank');
+                }
             } else {
                 window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(videoteca.currentTopicName)}`, '_blank');
             }
-
-
 
         },
 
