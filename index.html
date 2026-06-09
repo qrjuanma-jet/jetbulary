@@ -4524,13 +4524,8 @@
 
         </div>
 
-        <div id="conversation-suggestions" style="margin-bottom: 20px;">
-
-            <p style="font-weight: bold;">Vocabulario sugerido (palabras y verbos):</p>
-
-            <div id="suggestions-list" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
-
-        </div>
+        <!-- Vocabulario sugerido eliminado: los usuarios no lo usan -->
+        <div id="conversation-suggestions" class="hidden"><div id="suggestions-list"></div></div>
 
 
 
@@ -5200,25 +5195,16 @@
 
 
 
-    // --- AUTO-SCROLL: Desplazar pantalla para que el micrófono y timer sean visibles ---
+    // --- AUTO-SCROLL: Desplazar pantalla para que el micrófono sea lo último visible ---
     function scrollToMicArea(micBtnId) {
         requestAnimationFrame(() => {
             const micBtn = document.getElementById(micBtnId);
             if (!micBtn) return;
-            const viewParent = micBtn.closest('.container');
-            if (!viewParent) return;
-            // Buscar el elemento más bajo visible: timer, feedback o botones de acción
-            const timerContainer = viewParent.querySelector('[id$="timer-container"]:not(.hidden)');
-            const feedbackContainer = viewParent.querySelector('[id$="feedback-container"], [id$="spoken-text"], [id$="feedback-msg"]');
-            // Priorizar: timer visible > feedback > micrófono
-            const targetEl = timerContainer || feedbackContainer || micBtn;
-            // Scroll suave para que el área del mic quede visible al final de la pantalla
-            targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            // También asegurar que el mic en sí sea visible
-            micBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Segundo intento tras 400ms para asegurar scroll después de reflows del DOM/teclado virtual
+            // block:'end' = el micrófono queda al final (fondo) de la pantalla visible
+            micBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            // Segundo intento tras 400ms para compensar reflows del DOM/teclado virtual
             setTimeout(() => {
-                micBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                micBtn.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }, 400);
         });
     }
