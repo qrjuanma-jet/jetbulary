@@ -5200,6 +5200,29 @@
 
 
 
+    // --- AUTO-SCROLL: Desplazar pantalla para que el micrófono y timer sean visibles ---
+    function scrollToMicArea(micBtnId) {
+        requestAnimationFrame(() => {
+            const micBtn = document.getElementById(micBtnId);
+            if (!micBtn) return;
+            const viewParent = micBtn.closest('.container');
+            if (!viewParent) return;
+            // Buscar el elemento más bajo visible: timer, feedback o botones de acción
+            const timerContainer = viewParent.querySelector('[id$="timer-container"]:not(.hidden)');
+            const feedbackContainer = viewParent.querySelector('[id$="feedback-container"], [id$="spoken-text"], [id$="feedback-msg"]');
+            // Priorizar: timer visible > feedback > micrófono
+            const targetEl = timerContainer || feedbackContainer || micBtn;
+            // Scroll suave para que el área del mic quede visible al final de la pantalla
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // También asegurar que el mic en sí sea visible
+            micBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Segundo intento tras 400ms para asegurar scroll después de reflows del DOM/teclado virtual
+            setTimeout(() => {
+                micBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 400);
+        });
+    }
+
     // --- LÓGICA DEL ASISTENTE ---
 
 
@@ -11867,7 +11890,7 @@ Responde SIEMPRE con JSON válido: {"translation": "La frase en ${langName}", "t
 
 
 
-            setTimeout(() => conversation.toggleMic(), 300);
+            setTimeout(() => { conversation.toggleMic(); scrollToMicArea('mic-btn-convo'); }, 300);
 
 
 
@@ -12020,6 +12043,8 @@ Responde SIEMPRE con JSON válido: {"translation": "La frase en ${langName}", "t
                 if (container.lastElementChild) {
                     container.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'end' });
                 }
+                // También scroll de la página para que el mic y timer sean visibles
+                scrollToMicArea('mic-btn-convo');
             });
 
 
@@ -12144,188 +12169,139 @@ Responde SIEMPRE con JSON válido: {"translation": "La frase en ${langName}", "t
 
         toggleBlancazo: () => {
 
-
-
             window.speechSynthesis.cancel();
-
-
-
             if(game.recognition) try { game.recognition.stop(); } catch(e){}
-
-
-
             if(game.stopTimer) game.stopTimer();
 
+            // ── COMPROBACIÓN: mostrar traducción directamente si no hay micrófono/SpeechRecognition ──
+            const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-
-
-
-
+            if (!SpeechRecognitionAPI) {
+                // Sin reconocimiento de voz: mostrar la traducción al español de la palabra actual
+                const item = game.data && game.data[game.index];
+                const spokenEl = document.getElementById('spoken-text');
+                const langName = app.getLangName();
+                if (item && spokenEl) {
+                    const translation = item.spanish || '';
+                    const sentenceEs = item.sentence_es || '';
+                    spokenEl.innerHTML = `
+                        <span style="color:var(--neon-cyan); font-weight:700;">🇪🇸 EN CASTELLANO:</span><br>
+                        <span style="font-size:1.4rem; color:var(--neon-pink); font-weight:700;">${translation}</span>
+                        ${sentenceEs && !sentenceEs.startsWith('(De') ? `<br><span style="font-size:0.9rem; color:#888; margin-top:6px; display:block; font-style:italic;">"${sentenceEs}"</span>` : ''}
+                        <br><span style="font-size:0.75rem; color:#555; margin-top:8px; display:block;">💡 Activa el micrófono en el navegador para hablar en español</span>
+                    `;
+                    spokenEl.style.color = '';
+                    document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dímelo en Castellano, te ayudo...";
+                }
+                return;
+            }
 
             if(!game.recognitionEs) {
 
-
-
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-
+                const SpeechRecognition = SpeechRecognitionAPI;
 
                 game.recognitionEs = new SpeechRecognition();
 
-
-
                 game.recognitionEs.lang = 'es-ES';
-
-
-
-                
-
-
 
                 game.recognitionEs.onresult = async (e) => {
 
-
-
                     const transcript = e.results[0][0].transcript;
-
-
 
                     document.getElementById('spoken-text').innerText = `Tú (ES): "${transcript}"`;
 
-
-
-                    document.getElementById('spoken-text').style.color = '#ff9800'; 
-
-
-
-                    
-
-
+                    document.getElementById('spoken-text').style.color = '#ff9800';
 
                     const langName = app.getLangName();
 
-
-
-                    const prompt = `Soy estudiante de ${langName}. Tradúceme perfectamente esta frase al ${langName}: "${transcript}". 
-
-
+                    const prompt = `Soy estudiante de ${langName}. Tradúceme perfectamente esta frase al ${langName}: "${transcript}".
 
 Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto JSON válido con la estructura: {"translation": "La traducción aquí"}. NO devuelvas texto plano.`;
 
-
-
-                    
-
-
-
-                    document.getElementById('btn-blancazo-game').innerText = "â³ TRADUCIENDO...";
-
-
+                    document.getElementById('btn-blancazo-game').innerText = "⏳ TRADUCIENDO...";
 
                     await app.callAI_Conversation([{role: "user", content: prompt}], null, (data) => {
 
-
-
                         document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dímelo en Castellano, te ayudo...";
-
-
 
                         if(data.translation) {
 
-
-
+                            const langName = app.getLangName();
                             document.getElementById('spoken-text').innerHTML = `AHORA DÍMELO TÚ EN ${langName.toUpperCase()}: <br><strong style="font-size: 1.3rem; color:var(--neon-cyan); letter-spacing: 0.5px;">${data.translation}</strong>`;
-
-
 
                             game.speakText(data.translation, 0.75);
 
-
-
                         }
-
-
 
                     });
 
-
-
                 };
-
-
 
                 game.recognitionEs.onend = () => {
 
-
-
                     document.getElementById('mic-btn').classList.remove('listening');
-
-
 
                     if (document.getElementById('btn-blancazo-game').innerText.includes("HABLANDO")) {
 
-
-
                          document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dímelo en Castellano, te ayudo...";
-
-
 
                     }
 
-
-
                     if(game.stopTimer) game.stopTimer();
-
-
 
                 };
 
-
+                game.recognitionEs.onerror = (e) => {
+                    console.error('Blancazo mic error:', e.error);
+                    // Si el micrófono falla, mostrar la traducción directamente
+                    const item = game.data && game.data[game.index];
+                    const spokenEl = document.getElementById('spoken-text');
+                    if (item && spokenEl) {
+                        const translation = item.spanish || '';
+                        const sentenceEs = item.sentence_es || '';
+                        spokenEl.innerHTML = `
+                            <span style="color:var(--neon-cyan); font-weight:700;">🇪🇸 EN CASTELLANO:</span><br>
+                            <span style="font-size:1.4rem; color:var(--neon-pink); font-weight:700;">${translation}</span>
+                            ${sentenceEs && !sentenceEs.startsWith('(De') ? `<br><span style="font-size:0.9rem; color:#888; font-style:italic;">"${sentenceEs}"</span>` : ''}
+                        `;
+                        spokenEl.style.color = '';
+                    }
+                    document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dímelo en Castellano, te ayudo...";
+                };
 
             }
-
-
-
-            
-
-
 
             try {
 
-
-
                 document.getElementById('mic-btn').classList.remove('listening');
-
-
 
                 document.getElementById('btn-blancazo-game').innerText = "👂 HABLE EN ESPAÑOL...";
 
-
-
                 game.recognitionEs.start();
-
-
 
                 if(game.startTimer) game.startTimer();
 
-
-
             } catch(e) {
 
-
-
                 console.error(e);
-
-
+                // Fallback si falla el inicio del reconocimiento
+                const item = game.data && game.data[game.index];
+                const spokenEl = document.getElementById('spoken-text');
+                if (item && spokenEl) {
+                    spokenEl.innerHTML = `
+                        <span style="color:var(--neon-cyan); font-weight:700;">🇪🇸 EN CASTELLANO:</span><br>
+                        <span style="font-size:1.4rem; color:var(--neon-pink); font-weight:700;">${item.spanish || ''}</span>
+                        ${item.sentence_es && !item.sentence_es.startsWith('(De') ? `<br><span style="font-size:0.9rem; color:#888; font-style:italic;">"${item.sentence_es}"</span>` : ''}
+                    `;
+                    spokenEl.style.color = '';
+                }
+                document.getElementById('btn-blancazo-game').innerText = "🇪🇸 Dímelo en Castellano, te ayudo...";
 
             }
 
-
-
         },
 
-
-
+        
         toggleMic: () => {
             const btn = document.getElementById('mic-btn-convo');
             if (!btn) return;
@@ -12407,6 +12383,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 document.getElementById('convo-spoken-text').innerText = 'Escuchando...';
                 conversation.recognition.start();
                 conversation.startTimer();
+                scrollToMicArea('mic-btn-convo');
             } catch(e) {
                 console.error("No se pudo iniciar el reconocimiento:", e);
                 btn.classList.remove('listening');
@@ -12432,6 +12409,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
             container.classList.remove('hidden');
+            scrollToMicArea('mic-btn-convo');
 
 
 
@@ -13722,6 +13700,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
                             game.toggleMic();
+                            scrollToMicArea('mic-btn');
 
 
 
@@ -13750,6 +13729,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                         if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
 
                             conversation.toggleMic();
+                            scrollToMicArea('mic-btn-convo');
 
                         }
 
@@ -13780,6 +13760,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
                             academy.toggleMic();
+                            scrollToMicArea('mic-btn-academy');
 
 
 
@@ -13944,6 +13925,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
                 game.startTimer();
+                scrollToMicArea('mic-btn');
 
 
 
@@ -14167,6 +14149,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
             container.classList.remove('hidden');
+            scrollToMicArea('mic-btn');
 
 
 
@@ -16380,6 +16363,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
                 academy.startTimer();
+                scrollToMicArea('mic-btn-academy');
 
 
 
@@ -16452,6 +16436,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
 
             container.classList.remove('hidden');
+            scrollToMicArea('mic-btn-academy');
 
 
 
@@ -16757,7 +16742,8 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
 
             }
 
-
+            // También scroll de la página para que el mic y timer sean visibles
+            scrollToMicArea('mic-btn-academy');
 
         },
 
