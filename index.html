@@ -10815,6 +10815,38 @@
 
 
 
+    // ── Detector de muletillas/sonidos de pensamiento ──
+    // Cuando el usuario dice "uh", "um", "eh", etc. significa que está pensando
+    // y necesita más tiempo. No se envía como respuesta.
+    function isFillerSound(text) {
+        const cleaned = text.toLowerCase().trim().replace(/[.,!?¿¡\-]/g, '').trim();
+        // Muletillas comunes en varios idiomas
+        const fillers = [
+            'uh', 'uhh', 'uhhh', 'uhhhh',
+            'um', 'umm', 'ummm',
+            'eh', 'ehh', 'ehhh',
+            'ah', 'ahh', 'ahhh',
+            'er', 'err', 'errr',
+            'hm', 'hmm', 'hmmm', 'hmmmm',
+            'mm', 'mmm', 'mmmm',
+            'euh', 'euhh',     // Francés
+            'äh', 'ähm',       // Alemán
+            'ehm', 'em',
+            'a', 'aa', 'aaa',  // Sonido "a" relajada
+            'oh',
+            'eem', 'em',
+            'pues',            // Muletilla española
+            'bueno',           // Muletilla española
+            'vale',            // Muletilla española
+        ];
+        // Coincidencia exacta con una sola muletilla
+        if (fillers.includes(cleaned)) return true;
+        // También detectar si es solo repeticiones de vocales/consonantes sin sentido (ej: "uuuh", "aaah")
+        if (/^[aeiou]+h*$/i.test(cleaned) && cleaned.length <= 6) return true;
+        if (/^[hm]+$/i.test(cleaned) && cleaned.length <= 6) return true;
+        return false;
+    }
+
     const conversation = {
 
 
@@ -12329,6 +12361,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             conversation.recognition.interimResults = true;
 
             let isProcessing = false;
+            let convoFillerRestart = false; // Flag para reinicio por muletilla
 
             conversation.recognition.onresult = (e) => {
                 if (isProcessing) return;
@@ -12339,9 +12372,18 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                     transcript = result[0].transcript;
                     
                     if (result.isFinal) {
-                        isProcessing = true;
                         const finalResult = transcript.trim();
+                        // ── Detección de muletilla: el usuario está pensando ──
+                        if (finalResult.length > 0 && isFillerSound(finalResult)) {
+                            console.log('🤔 Muletilla detectada:', finalResult, '→ ampliando tiempo...');
+                            convoFillerRestart = true;
+                            document.getElementById('convo-spoken-text').innerHTML = 
+                                '🤔 <span style="color:var(--cyber-warn);">Estás pensando... ¡Tómate tu tiempo!</span>';
+                            try { conversation.recognition.stop(); } catch(ex) {}
+                            return;
+                        }
                         if (finalResult.length > 0) {
+                            isProcessing = true;
                             conversation.recognition.stop();
                             conversation.handleUserReply(finalResult);
                             return;
@@ -12352,6 +12394,21 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             };
 
             conversation.recognition.onend = () => {
+                // Si se detuvo por muletilla, reiniciar automáticamente
+                if (convoFillerRestart) {
+                    convoFillerRestart = false;
+                    isProcessing = false;
+                    try {
+                        conversation.recognition.start();
+                        conversation.startTimer(); // Reinicia el timer visual
+                        console.log('🔄 Reconocimiento reiniciado tras muletilla');
+                    } catch(ex) {
+                        console.error('No se pudo reiniciar tras muletilla:', ex);
+                        btn.classList.remove('listening');
+                        conversation.stopTimer();
+                    }
+                    return;
+                }
                 btn.classList.remove('listening');
                 conversation.stopTimer();
             };
@@ -12359,6 +12416,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
             conversation.recognition.onerror = (e) => {
                 console.error('Error en el micrófono:', e.error);
                 if (e.error !== 'no-speech') {
+                    convoFillerRestart = false;
                     btn.classList.remove('listening');
                     conversation.stopTimer();
                 }
@@ -16294,6 +16352,7 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 academy.recognition.interimResults = true;
 
                 let isProcessing = false;
+                let academyFillerRestart = false; // Flag para reinicio por muletilla
 
                 academy.recognition.onresult = (e) => {
                     if (isProcessing) return;
@@ -16302,9 +16361,18 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                         const result = e.results[i];
                         transcript = result[0].transcript;
                         if (result.isFinal) {
-                            isProcessing = true;
                             const finalResult = transcript.trim();
+                            // ── Detección de muletilla: el usuario está pensando ──
+                            if (finalResult.length > 0 && isFillerSound(finalResult)) {
+                                console.log('🤔 Muletilla detectada (academy):', finalResult, '→ ampliando tiempo...');
+                                academyFillerRestart = true;
+                                document.getElementById('academy-spoken-text').innerHTML = 
+                                    '🤔 <span style="color:var(--cyber-warn);">Estás pensando... ¡Tómate tu tiempo!</span>';
+                                try { academy.recognition.stop(); } catch(ex) {}
+                                return;
+                            }
                             if (finalResult.length > 0) {
+                                isProcessing = true;
                                 academy.recognition.stop();
                                 academy.handleUserReply(finalResult);
                                 return;
@@ -16317,6 +16385,21 @@ Devuelve SOLO la traducción directa e impecable. Responde SIEMPRE con un objeto
                 academy.recognition.onstart = () => { isProcessing = false; };
 
                 academy.recognition.onend = () => {
+                    // Si se detuvo por muletilla, reiniciar automáticamente
+                    if (academyFillerRestart) {
+                        academyFillerRestart = false;
+                        isProcessing = false;
+                        try {
+                            academy.recognition.start();
+                            academy.startTimer(); // Reinicia el timer visual
+                            console.log('🔄 Reconocimiento reiniciado (academy) tras muletilla');
+                        } catch(ex) {
+                            console.error('No se pudo reiniciar tras muletilla (academy):', ex);
+                            document.getElementById('mic-btn-academy').classList.remove('listening');
+                            academy.stopTimer();
+                        }
+                        return;
+                    }
                     document.getElementById('mic-btn-academy').classList.remove('listening');
                     academy.stopTimer();
                 };
