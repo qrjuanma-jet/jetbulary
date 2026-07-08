@@ -2485,114 +2485,72 @@
 
             <div class="hud-card" style="background: rgba(0,0,0,0.85); border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow); max-width: 560px; margin: 0 auto;">
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                    <h3 class="tech" style="margin: 0; color: var(--neon-cyan); letter-spacing: 0.2em; font-size: 1.2rem;">[ ACTIVAR JETBULARY ]</h3>
-                </div>
+                <h3 class="tech" style="margin: 0 0 20px 0; color: var(--neon-cyan); letter-spacing: 0.2em; font-size: 1.2rem; text-align: center;">[ ACTIVAR JETBULARY ]</h3>
 
-                <!-- PASOS -->
-                <div id="acceso-pasos" style="margin-bottom: 24px;">
+                <!-- 5 Pasos siempre visibles -->
+                <p style="font-size: 0.75rem; color: #555; margin-bottom: 12px; letter-spacing: 0.08em; font-family: monospace;">EN LA PÁGINA DE GROQ:</p>
 
-                    <!-- Paso 1 -->
-                    <div id="paso1" style="text-align: center; padding: 8px 0 10px 0;">
+                <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px;">
 
-                        <!-- Mini tutorial de pasos -->
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 6px; margin-bottom: 20px; font-size: 0.72rem; color: #555; font-family: monospace; flex-wrap: wrap;">
-                            <span style="background: rgba(0,243,255,0.08); border: 1px solid rgba(0,243,255,0.2); border-radius: 4px; padding: 4px 8px; color: #aaa;">1. Clic en el botón</span>
-                            <span style="color: #333;">→</span>
-                            <span style="background: rgba(0,243,255,0.08); border: 1px solid rgba(0,243,255,0.2); border-radius: 4px; padding: 4px 8px; color: #aaa;">2. Accede con Google</span>
-                            <span style="color: #333;">→</span>
-                            <span style="background: rgba(0,243,255,0.08); border: 1px solid rgba(0,243,255,0.2); border-radius: 4px; padding: 4px 8px; color: #aaa;">3. Copia tu clave</span>
-                            <span style="color: #333;">→</span>
-                            <span style="background: rgba(0,243,255,0.15); border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; padding: 4px 8px; color: var(--neon-cyan); font-weight: bold;">✓ Listo solo</span>
-                        </div>
-
-                        <!-- Botón Google estilizado -->
-                        <button id="btn-ir-groq" onclick="app.irAGroq()" style="width: 100%; padding: 16px 20px; font-size: 1rem; border: 2px solid #4285F4; background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(52,168,83,0.08)); color: #fff; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 0.02em; transition: all 0.3s; box-shadow: 0 0 20px rgba(66,133,244,0.3), 0 4px 15px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; gap: 12px;">
-                            <!-- Logo Google SVG -->
-                            <svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
-                                <path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/>
-                                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/>
-                                <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/>
-                            </svg>
-                            <span>Acceder con Google → Obtener clave gratis</span>
-                        </button>
-
-                        <p style="font-size: 0.75rem; margin-top: 10px; color: #444; line-height: 1.5;">Si ya usas <strong style="color:#888;">Chrome con tu cuenta Google</strong>, solo necesitas 1 clic en Groq.<br>Al volver aquí, la clave se activa <strong style="color:#666;">sola automáticamente</strong>.</p>
-
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
+                        <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">1</span>
+                        <span style="font-size: 0.85rem; color: #bbb;">Pulsa en <strong style="color: var(--neon-cyan); font-family: monospace;">+ Create API Key</strong></span>
                     </div>
 
-                    <!-- Paso 2 (oculto hasta que el usuario vuelve) -->
-                    <div id="paso2" style="display:none; text-align: left; padding: 8px 0 10px 0;">
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
+                        <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">2</span>
+                        <span style="font-size: 0.85rem; color: #bbb;">En <strong style="color: #ccc;">Display Name</strong> escribe <strong style="color: var(--neon-cyan); font-family: monospace;">Jetbulary</strong></span>
+                    </div>
 
-                        <!-- Instrucciones exactas en Groq -->
-                        <p style="font-size: 0.78rem; color: #666; margin-bottom: 10px; text-align: center; letter-spacing: 0.05em; font-family: monospace;">EN LA PÁGINA DE GROQ:</p>
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
+                        <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">3</span>
+                        <span style="font-size: 0.85rem; color: #bbb;">En <strong style="color: #ccc;">Expiration</strong> elige <strong style="color: var(--neon-cyan); font-family: monospace;">No Expiration</strong></span>
+                    </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px;">
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
+                        <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">4</span>
+                        <span style="font-size: 0.85rem; color: #bbb;">Pulsa <strong style="color: var(--neon-cyan); font-family: monospace;">Submit</strong></span>
+                    </div>
 
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                                <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">1</span>
-                                <span style="font-size: 0.85rem; color: #bbb;">Pulsa en <strong style="color: var(--neon-cyan); font-family: monospace;">+ Create API Key</strong></span>
-                            </div>
-
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                                <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">2</span>
-                                <span style="font-size: 0.85rem; color: #bbb;">En <strong style="color: #ccc;">Display Name</strong> escribe <strong style="color: var(--neon-cyan); font-family: monospace;">Jetbulary</strong></span>
-                            </div>
-
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                                <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">3</span>
-                                <span style="font-size: 0.85rem; color: #bbb;">En <strong style="color: #ccc;">Expiration</strong> elige <strong style="color: var(--neon-cyan); font-family: monospace;">No Expiration</strong></span>
-                            </div>
-
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                                <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">4</span>
-                                <span style="font-size: 0.85rem; color: #bbb;">Pulsa <strong style="color: var(--neon-cyan); font-family: monospace;">Submit</strong></span>
-                            </div>
-
-                            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.3); border-radius: 6px;">
-                                <span style="background: #34D399; color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">5</span>
-                                <span style="font-size: 0.85rem; color: #bbb;">Pulsa <strong style="color: #34D399; font-family: monospace;">Copy</strong> → ¡Vuelve aquí!</span>
-                            </div>
-
-                        </div>
-
-                        <!-- Botón Google: ir a Groq logueado -->
-                        <button onclick="app.irAGroq()" style="width: 100%; padding: 14px 20px; font-size: 0.92rem; border: 2px solid #4285F4; background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(52,168,83,0.08)); color: #fff; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; transition: all 0.3s; box-shadow: 0 0 16px rgba(66,133,244,0.25); display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px;">
-                            <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
-                                <path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/>
-                                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/>
-                                <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/>
-                            </svg>
-                            <span>Accede con Google <span style="color: rgba(255,255,255,0.45); font-weight: 400; font-size: 0.8rem;">(no guardamos tus datos)</span></span>
-                        </button>
-
-                        <!-- Status autodetección -->
-                        <div id="autodetect-status" style="padding: 14px 16px; border-radius: 8px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.25); margin-bottom: 14px; font-size: 0.88rem; color: #aaa; line-height: 1.5; transition: all 0.5s; text-align: center;">🔍 Cuando vuelvas, la clave se activará sola automáticamente</div>
-
-                        <!-- Campo manual (fallback) -->
-                        <details style="text-align: left; margin-bottom: 10px;">
-                            <summary style="font-size: 0.8rem; color: #4a4a4a; cursor: pointer; padding: 6px 0; list-style: none; display: flex; align-items: center; gap: 6px;">
-                                <span style="color: #3a3a3a;">▸</span> ¿No se detectó sola? Pégala aquí
-                            </summary>
-                            <div style="padding-top: 12px;">
-                                <div style="position: relative; margin-bottom: 10px;">
-                                    <input type="password" id="api-key-input" placeholder="Pega aquí tu clave (gsk_...)" style="font-family: monospace; letter-spacing: 1px; border-color: var(--neon-cyan); color: var(--neon-cyan); padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
-                                    <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.3rem; z-index: 10;" title="Mostrar/Ocultar">👁️</span>
-                                </div>
-                                <button class="success" onclick="app.saveApiKey()" id="btn-sincronizar" style="width: 100%; border-width: 2px; font-size: 1rem; padding: 16px; opacity: 0.5; pointer-events: none;">SINCRONIZAR</button>
-                            </div>
-                        </details>
-
-                        <p style="margin-top: 8px; font-size: 0.73rem; color: #3a3a3a; text-align: center;"><a onclick="app.volverPaso1()" style="color: #484848; cursor:pointer; text-decoration: underline;">← Volver al paso anterior</a></p>
+                    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.3); border-radius: 6px;">
+                        <span style="background: #34D399; color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">5</span>
+                        <span style="font-size: 0.85rem; color: #bbb;">Pulsa <strong style="color: #34D399; font-family: monospace;">Copy</strong> → ¡Vuelve aquí!</span>
                     </div>
 
                 </div>
+
+                <!-- Botón Google -->
+                <button id="btn-ir-groq" onclick="app.irAGroq()" style="width: 100%; padding: 15px 20px; font-size: 0.95rem; border: 2px solid #4285F4; background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(52,168,83,0.08)); color: #fff; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; transition: all 0.3s; box-shadow: 0 0 20px rgba(66,133,244,0.3); display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px;">
+                    <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/>
+                        <path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/>
+                        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/>
+                        <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/>
+                    </svg>
+                    <span>Accede con Google <span style="color: rgba(255,255,255,0.4); font-weight: 400; font-size: 0.78rem;">(no guardamos tus datos)</span></span>
+                </button>
+
+                <!-- Status autodetección (cambia dinámicamente) -->
+                <div id="autodetect-status" style="padding: 12px 16px; border-radius: 8px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.2); margin-bottom: 14px; font-size: 0.84rem; color: #666; line-height: 1.5; transition: all 0.5s; text-align: center;">🔍 Al volver, la clave se activará sola automáticamente</div>
+
+                <!-- Campo manual (fallback colapsable) -->
+                <details style="margin-bottom: 4px;">
+                    <summary style="font-size: 0.78rem; color: #3a3a3a; cursor: pointer; padding: 6px 0; list-style: none; display: flex; align-items: center; gap: 6px;">
+                        <span style="color: #333;">▸</span> ¿No se detectó sola? Pégala aquí
+                    </summary>
+                    <div style="padding-top: 12px;">
+                        <div style="position: relative; margin-bottom: 10px;">
+                            <input type="password" id="api-key-input" placeholder="Pega aquí tu clave (gsk_...)" style="font-family: monospace; letter-spacing: 1px; border-color: var(--neon-cyan); color: var(--neon-cyan); padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
+                            <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.3rem; z-index: 10;" title="Mostrar/Ocultar">👁️</span>
+                        </div>
+                        <button class="success" onclick="app.saveApiKey()" id="btn-sincronizar" style="width: 100%; border-width: 2px; font-size: 1rem; padding: 16px; opacity: 0.5; pointer-events: none;">SINCRONIZAR</button>
+                    </div>
+                </details>
 
             </div>
 
         </section>
+
 
 
 
