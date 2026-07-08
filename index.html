@@ -2479,66 +2479,46 @@
 
 
 
-        <!-- 2. FORMULARIO DE ACCESO (PUNTO CRÃTICO) -->
-
-
+        <!-- 2. FORMULARIO DE ACCESO AUTOMATICO -->
 
         <section id="acceso" class="premium-section" style="padding: 40px 0; background: transparent; border: none;">
 
+            <div class="hud-card" style="background: rgba(0,0,0,0.85); border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow); max-width: 560px; margin: 0 auto;">
 
-
-            <div class="hud-card" style="background: rgba(0,0,0,0.8); border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
-
-
-
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: 0; flex-wrap: wrap; gap: 10px;">
-                    <h3 class="tech" style="margin: 0; color: var(--neon-cyan); letter-spacing: 0.3em; font-size: 1.4rem;">[ ACCESO A JETBULARY ]</h3>
-                    <a href="Instrucciones_API_KEY.pdf" target="_blank" style="display: inline-block; padding: 8px 12px; background: rgba(0,243,255,0.15); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); text-decoration: none; font-size: 0.8rem; border-radius: 4px; font-weight: bold; font-family: monospace; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2);">📖 GUÍA PDF</a>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h3 class="tech" style="margin: 0; color: var(--neon-cyan); letter-spacing: 0.2em; font-size: 1.2rem;">[ ACTIVAR JETBULARY ]</h3>
+                    <a href="Instrucciones_API_KEY.pdf" target="_blank" style="display: inline-block; padding: 6px 10px; background: rgba(0,243,255,0.1); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); text-decoration: none; font-size: 0.75rem; border-radius: 4px; font-weight: bold; font-family: monospace;">📖 GUÍA</a>
                 </div>
 
-                <p style="font-size: 0.9rem; color: #888; font-style: italic; margin-bottom: 25px;">Introduce tu API gratuita y para siempre de Groq para usar Jetbulary sin límites.</p>
+                <!-- PASOS -->
+                <div id="acceso-pasos" style="margin-bottom: 24px;">
 
+                    <!-- Paso 1 -->
+                    <div id="paso1" style="text-align: center; padding: 10px 0 18px 0;">
+                        <div style="font-size: 0.8rem; color: #555; letter-spacing: 0.15em; margin-bottom: 10px; font-family: monospace;">PASO 1 DE 2</div>
+                        <p style="font-size: 1rem; color: #ccc; margin-bottom: 18px; line-height: 1.5;">Consigue tu clave Groq <strong style="color: var(--neon-cyan);">gratis</strong> en 30 segundos.<br><span style="font-size:0.82rem; color:#666;">Solo necesitas una cuenta gratuita.</span></p>
+                        <button id="btn-ir-groq" onclick="app.irAGroq()" style="width: 100%; padding: 20px; font-size: 1.05rem; border: 2px solid var(--neon-cyan); background: rgba(0,243,255,0.12); color: var(--neon-cyan); border-radius: 6px; cursor: pointer; font-family: monospace; letter-spacing: 0.1em; transition: all 0.3s; box-shadow: var(--cyber-glow);">
+                            🔑 IR A GROQ Y OBTENER CLAVE GRATIS
+                        </button>
+                        <p style="font-size: 0.78rem; margin-top: 12px; color: #555;">Se abrirá la web de Groq. Crea tu clave y <strong style="color:#888;">cópiala</strong>. Al volver aquí se activará sola.</p>
+                    </div>
 
-
-                
-
-
-
-                <div style="position: relative; margin-bottom: 5px;">
-
-
-
-                    <input type="password" id="api-key-input" placeholder="CLAVE..." style="font-family: monospace; letter-spacing: 2px; border-color: var(--neon-cyan); color: var(--neon-cyan); padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()">
-
-
-
-                    <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.5rem; z-index: 10; filter: drop-shadow(var(--cyber-glow));" title="Mostrar/Ocultar API Key">👁️</span>
-
-
+                    <!-- Paso 2 (oculto hasta que el usuario vuelve) -->
+                    <div id="paso2" style="display:none; text-align: center; padding: 10px 0 18px 0;">
+                        <div style="font-size: 0.8rem; color: #555; letter-spacing: 0.15em; margin-bottom: 10px; font-family: monospace;">PASO 2 DE 2</div>
+                        <div id="autodetect-status" style="padding: 16px; border-radius: 6px; background: rgba(0,243,255,0.07); border: 1px solid rgba(0,243,255,0.3); margin-bottom: 16px; font-size: 0.9rem; color: #aaa;">🔍 Buscando tu clave en el portapapeles...</div>
+                        <p style="font-size: 0.85rem; color: #666; margin-bottom: 14px;">¿No se detectó sola? Pégala aquí:</p>
+                        <div style="position: relative; margin-bottom: 10px;">
+                            <input type="password" id="api-key-input" placeholder="Pega aquí tu clave (gsk_...)" style="font-family: monospace; letter-spacing: 1px; border-color: var(--neon-cyan); color: var(--neon-cyan); padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
+                            <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.4rem; z-index: 10;" title="Mostrar/Ocultar">👁️</span>
+                        </div>
+                        <button class="success" onclick="app.saveApiKey()" id="btn-sincronizar" style="width: 100%; border-width: 2px; font-size: 1rem; padding: 18px; opacity: 0.5; pointer-events: none;">SINCRONIZAR</button>
+                        <p style="margin-top: 14px; font-size: 0.75rem; color: #444;"><a onclick="app.volverPaso1()" style="color: #555; cursor:pointer; text-decoration: underline;">← Volver al paso 1</a></p>
+                    </div>
 
                 </div>
-
-
-
-                
-
-
-
-                <p style="font-size: 13px; margin-top: 0; margin-bottom: 20px; color: #666; text-align: left;">¿SIN SEÑAL? <a href="https://console.groq.com/keys" target="_blank" style="color: var(--neon-cyan); text-decoration: none; border-bottom: 1px solid var(--neon-cyan); font-weight: bold;">[ HAZ CLIC AQUÍ PARA ABRIR TUS CLAVES DE Groq ]</a></p>
-
-
-
-                
-
-
-
-                <button class="success" onclick="app.saveApiKey()" style="width: 100%; border-width: 2px; font-size: 1.1rem; padding: 22px;">SINCRONIZAR AHORA</button>
-
-
 
             </div>
-
-
 
         </section>
 
@@ -7075,77 +7055,123 @@
 
 
 
-        saveApiKey: () => {
-
-
+        saveApiKey: (keyOverride) => {
 
             try {
 
-
-
                 const input = document.getElementById('api-key-input');
+                const k = (keyOverride || (input ? input.value : '')).trim();
 
-
-
-                if (!input) return alert("Error crítico: No se encuentra el campo de API Key.");
-
-
-
-                const k = input.value.trim();
-
-
-
-                if(k) {
-
-
+                if(k && k.length > 10) {
 
                     localStorage.setItem(API_KEY_STORAGE, k);
-
-
-
                     app.showDashboard();
-
-
 
                 } else {
 
-
-
-                    alert("Introduce una API Key válida.");
-
-
+                    // Mostrar paso 2 con aviso
+                    app.mostrarPaso2('⚠️ Clave no válida. Cópiala desde Groq e intenta de nuevo.');
 
                 }
 
-
-
             } catch (err) {
-
-
 
                 alert("Error al guardar la clave: " + err.message);
 
-
-
             }
-
-
 
         },
 
+        onApiKeyInput: (val) => {
 
+            const btn = document.getElementById('btn-sincronizar');
+            if (!btn) return;
+            const valido = val && val.trim().length > 10;
+            btn.style.opacity = valido ? '1' : '0.5';
+            btn.style.pointerEvents = valido ? 'auto' : 'none';
+
+        },
+
+        irAGroq: () => {
+
+            // Mostrar paso 2 antes de abrir para que al volver ya esté listo
+            app.mostrarPaso2('🔍 Esperando que copies tu clave en Groq...');
+            window.open('https://console.groq.com/keys', '_blank');
+
+            // Cuando el usuario vuelve a esta pestaña, leer portapapeles
+            const onFocus = async () => {
+                window.removeEventListener('focus', onFocus);
+                await app.intentarLeerPortapapeles();
+            };
+            window.addEventListener('focus', onFocus);
+
+        },
+
+        volverPaso1: () => {
+
+            const p1 = document.getElementById('paso1');
+            const p2 = document.getElementById('paso2');
+            if (p1) p1.style.display = 'block';
+            if (p2) p2.style.display = 'none';
+
+        },
+
+        mostrarPaso2: (mensaje) => {
+
+            const p1 = document.getElementById('paso1');
+            const p2 = document.getElementById('paso2');
+            const status = document.getElementById('autodetect-status');
+            if (p1) p1.style.display = 'none';
+            if (p2) p2.style.display = 'block';
+            if (status) status.textContent = mensaje;
+
+        },
+
+        intentarLeerPortapapeles: async () => {
+
+            const status = document.getElementById('autodetect-status');
+            try {
+
+                const texto = await navigator.clipboard.readText();
+                const trimmed = texto ? texto.trim() : '';
+
+                // Una key de Groq empieza por gsk_ y tiene bastante longitud
+                if (trimmed && trimmed.startsWith('gsk_') && trimmed.length > 20) {
+
+                    if (status) status.innerHTML = '✅ <strong style="color:var(--neon-cyan)">¡Clave detectada!</strong> Activando automáticamente...';
+
+                    // Rellenar input y activar con pequeño delay visual
+                    const input = document.getElementById('api-key-input');
+                    if (input) { input.value = trimmed; app.onApiKeyInput(trimmed); }
+
+                    setTimeout(() => app.saveApiKey(trimmed), 800);
+
+                } else if (trimmed && trimmed.length > 20) {
+
+                    // Podría ser una key aunque no empiece por gsk_ (en caso de cambio de formato)
+                    if (status) status.innerHTML = '📋 Clave detectada en portapapeles. Comprueba que es correcta y pulsa SINCRONIZAR.';
+                    const input = document.getElementById('api-key-input');
+                    if (input) { input.value = trimmed; app.onApiKeyInput(trimmed); }
+
+                } else {
+
+                    if (status) status.textContent = '📋 No se detectó clave. Pega tu clave de Groq en el campo de abajo.';
+
+                }
+
+            } catch (e) {
+
+                // El navegador puede denegar el acceso al portapapeles si el usuario no lo permite
+                if (status) status.textContent = '📋 Pega tu clave de Groq en el campo de abajo (el navegador no permitió leer el portapapeles automáticamente).';
+
+            }
+
+        },
 
         toggleApiKeyVisibility: () => {
 
-
-
             const input = document.getElementById('api-key-input');
-
-
-
-            input.type = input.type === 'password' ? 'text' : 'password';
-
-
+            if (input) input.type = input.type === 'password' ? 'text' : 'password';
 
         },
 
