@@ -629,12 +629,16 @@
 
         renderWordsOverview: () => {
             const container = document.getElementById('session-words-overview');
-            container.innerHTML = session.currentWords.map((w, i) => `
+            container.innerHTML = session.currentWords.map((w, i) => {
+                const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
+                return `
                 <div class="session-word-card ${i === 0 ? 'active' : ''}" id="session-card-${i}">
-                    <div class="word-en">${w.english.includes('(') ? w.english.split('(')[0].trim() : w.english}</div>
+                    <div class="word-en">${cleanWord}</div>
                     <div class="word-es">${w.spanish}</div>
+                    <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="display:inline-block; margin-top:6px; font-size:0.7rem; color:var(--neon-cyan); text-decoration:none; border:1px solid rgba(0,243,255,0.3); padding:2px 6px; border-radius:3px;" onclick="event.stopPropagation();">👂 YouGlish</a>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         },
 
         onWordComplete: () => {
@@ -1056,14 +1060,18 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             }).sort((a,b) => a.score - b.score);
 
             list.innerHTML = words.map(w => {
+                const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
                 const badge = w.score === -1 ? '<span class="tech" style="color:#888; font-size:0.7rem; border:1px solid #888; padding:2px 5px;">[NEW]</span>' :
                     w.score < 50 ? '<span class="tech" style="color:var(--cyber-danger); font-size:0.7rem; border:1px solid var(--cyber-danger); padding:2px 5px;">[HARD]</span>' :
                     w.score < 80 ? '<span class="tech" style="color:var(--cyber-warn); font-size:0.7rem; border:1px solid var(--cyber-warn); padding:2px 5px;">[MEDIUM]</span>' :
                     '<span class="tech" style="color:var(--neon-cyan); font-size:0.7rem; border:1px solid var(--neon-cyan); padding:2px 5px;">[OK]</span>';
                 return `<div class="vocab-item">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="color:var(--neon-cyan); font-weight:700; cursor:pointer;" onclick="game.speakText('${w.english.replace(/'/g, "\\'")}')">${w.english}</span>
-                        ${badge}
+                        <span style="color:var(--neon-cyan); font-weight:700; cursor:pointer;" onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')">${w.english}</span>
+                        <div>
+                            <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="font-size:0.7rem; color:var(--neon-cyan); text-decoration:none; border:1px solid rgba(0,243,255,0.3); padding:2px 6px; border-radius:3px; margin-right:5px;">👂 YouGlish</a>
+                            ${badge}
+                        </div>
                     </div>
                     <div style="color:var(--neon-pink); font-size:0.85rem; margin-top:4px;">${w.spanish}</div>
                     <div style="color:#666; font-size:0.8rem; margin-top:4px; cursor:pointer;" onclick="game.speakText('${w.sentence_en?.replace(/'/g, "\\'") || ''}')">${w.sentence_en || ''}</div>
