@@ -109,7 +109,7 @@
         .feedback.incorrect { background: rgba(255,0,85,0.15); color: var(--cyber-danger); border: 1px solid var(--cyber-danger); }
 
         /* --- WORD TARGET --- */
-        .word-target { font-size: 2rem; font-weight: 700; color: var(--neon-cyan); text-shadow: var(--cyber-glow); margin: 15px 0; }
+        .word-target { font-size: 2.8rem; font-weight: 800; color: var(--neon-cyan); text-shadow: var(--cyber-glow-strong); margin: 20px 0 8px; letter-spacing: 0.5px; }
         .sentence { font-size: 1.1rem; color: var(--cyber-text); margin-bottom: 5px; line-height: 1.6; }
 
         /* --- TIMER --- */
@@ -141,15 +141,16 @@
         .hud-card { background: rgba(18,18,20,0.95); border: 1px solid var(--cyber-border); padding: 30px; border-radius: 4px; margin-bottom: 20px; }
 
         /* --- SESSION WORDS GRID --- */
-        .session-words { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .session-words { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0 20px; }
         .session-word-card {
-            padding: 15px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.2);
-            border-radius: 4px; text-align: center; transition: all 0.3s; cursor: pointer;
+            padding: 16px 12px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.25);
+            border-radius: 8px; text-align: center; transition: all 0.3s; cursor: pointer;
         }
-        .session-word-card.active { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow); background: rgba(0,243,255,0.1); }
-        .session-word-card.done { border-color: var(--cyber-ok); background: rgba(0,255,149,0.05); }
-        .session-word-card .word-en { color: var(--neon-cyan); font-weight: 700; font-size: 1.1rem; }
-        .session-word-card .word-es { color: var(--neon-pink); font-size: 0.8rem; margin-top: 5px; }
+        .session-word-card.active { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow-strong); background: rgba(0,243,255,0.15); transform: scale(1.03); }
+        .session-word-card.done { border-color: var(--cyber-ok); background: rgba(0,255,149,0.06); opacity: 0.65; }
+        .session-word-card .word-en { color: var(--neon-cyan); font-weight: 800; font-size: 1.35rem; letter-spacing: 0.5px; }
+        .session-word-card .word-ipa { color: #00f3ff; font-size: 0.9rem; font-family: 'Orbitron', monospace; margin: 3px 0; opacity: 0.9; }
+        .session-word-card .word-es { color: var(--neon-pink); font-size: 0.95rem; margin-top: 4px; font-weight: 500; }
 
         /* --- CONVERSATION AREA --- */
         .convo-history { max-height: 400px; overflow-y: auto; margin: 15px 0; text-align: left; }
@@ -194,9 +195,13 @@
 
     <!-- ====== VIEW: API KEY ====== -->
     <div id="view-apikey" class="container">
-        <img src="icon.png" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px;">
-        <h2 class="tech" style="margin-bottom: 10px;">JETBULARY</h2>
-        <p style="margin-bottom: 25px; font-size: 0.9rem;">Learn English vocabulary with AI-powered immersive sessions.</p>
+        <!-- TOP HEADER: LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px auto 18px;">
+            <img src="icon.png" alt="Jetbulary Logo" style="width: 75px; height: 75px; border-radius: 14px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
+            <div class="avatar-container" id="avatar-init" style="width: 85px; height: 85px; margin: 0;"></div>
+        </div>
+        <h2 class="tech" style="margin-bottom: 8px;">JETBULARY</h2>
+        <p style="margin-bottom: 22px; font-size: 0.9rem;">Learn English vocabulary with AI-powered immersive sessions.</p>
 
         <div class="hud-card" style="text-align: left;">
             <h3 class="tech" style="color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 20px; text-align: center;">[ ACTIVATE JETBULARY ]</h3>
@@ -243,24 +248,37 @@
 
     <!-- ====== VIEW: DASHBOARD ====== -->
     <div id="view-dashboard" class="container hidden">
-        <img src="icon.png" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
+        <!-- TOP HEADER: LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px auto 18px;">
+            <img src="icon.png" alt="Jetbulary Logo" style="width: 75px; height: 75px; border-radius: 14px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
+            <div class="avatar-container" id="avatar-dash" style="width: 85px; height: 85px; margin: 0;"></div>
+        </div>
 
-        <!-- COLLAPSIBLE ACADEMY LEVEL -->
-        <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); margin-bottom: 15px; border-radius: 6px; overflow: hidden;">
+        <!-- COLLAPSIBLE ACADEMY LEVEL & VOICE SPEED -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); margin-bottom: 18px; border-radius: 6px; overflow: hidden;">
             <div onclick="app.toggleLevelPicker()" style="padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
                 <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.9rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF;"></span></span>
                 <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.8rem; transition: transform 0.3s;">▼</span>
             </div>
-            <div id="level-picker-body" class="hidden" style="padding: 15px; border-top: 1px solid rgba(0,243,255,0.2); background: rgba(0,0,0,0.4);">
-                <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
-                <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: #888; margin-top: 8px;">
-                    <span>A0 (Zero)</span><span>A1-A2</span><span>B1</span><span>B2</span><span>C1+ (Pro)</span>
+            <div id="level-picker-body" class="hidden" style="padding: 18px; border-top: 1px solid rgba(0,243,255,0.2); background: rgba(0,0,0,0.5);">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-family: 'Orbitron'; font-size: 0.75rem; color: var(--neon-cyan); margin-bottom: 8px;">🎓 LEVEL SELECTION</label>
+                    <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
+                    <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: #888; margin-top: 6px;">
+                        <span>A0 (Zero)</span><span>A1-A2</span><span>B1</span><span>B2</span><span>C1+ (Pro)</span>
+                    </div>
+                </div>
+
+                <!-- SPEED SLIDER INSIDE LEVEL DROPDOWN -->
+                <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 14px; margin-top: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="font-family: 'Orbitron'; font-size: 0.75rem; color: var(--neon-cyan);">🔊 VOICE SPEED</label>
+                        <span class="speed-value" id="speed-value-label" style="color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.85rem; font-weight: bold;">0.70x</span>
+                    </div>
+                    <input type="range" id="speech-speed-slider" min="0.3" max="1.2" step="0.05" value="0.7" style="width: 100%; cursor: pointer;" oninput="app.updateSpeedLabel(this.value)">
                 </div>
             </div>
         </div>
-
-        <!-- AVATAR -->
-        <div class="avatar-container" id="avatar-dash" style="margin: 15px auto;"></div>
 
         <!-- LIST SELECTOR -->
         <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px; background: rgba(0,243,255,0.05); padding: 12px 15px; border: 1px solid var(--neon-cyan); border-radius: 4px;">
@@ -281,24 +299,17 @@
 
     <!-- ====== VIEW: GAME (VOCABULARY TRAINING) ====== -->
     <div id="view-game" class="container hidden" style="position: relative;">
-        <img src="icon.png" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
-        <div class="avatar-container" id="avatar"></div>
-
-        <!-- Session words overview -->
-        <div id="session-words-overview" class="session-words"></div>
-
-        <div class="word-target" id="word-display" style="margin: 20px 0 5px 0;"></div>
-        <div id="word-ipa" class="tech" style="color: #888; font-size: 0.95rem; margin-bottom: 15px;"></div>
-
-        <!-- YOUGLISH NATIVE PRONUNCIATION BUTTON -->
-        <div style="margin: 10px 0 20px 0;">
-            <a id="youglish-link" href="#" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid var(--neon-cyan); background: rgba(0, 243, 255, 0.08); color: var(--neon-cyan); text-decoration: none; border-radius: 4px; font-size: 0.85rem; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2);">
-                <span>👂 HEAR NATIVES (YOUGLISH)</span>
-            </a>
+        <!-- TOP HEADER: LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px auto 15px;">
+            <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 65px; height: 65px; border-radius: 12px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Back to Dashboard">
+            <div class="avatar-container" id="avatar" style="width: 75px; height: 75px; margin: 0;"></div>
         </div>
 
+        <!-- Session words overview (Cards with English, IPA, and Spanish) -->
+        <div id="session-words-overview" class="session-words"></div>
+
         <!-- Controls: Slow / Mic / Speak -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 25px 0 15px;">
             <button onclick="game.speakWordSlow()" class="secondary" title="Hear slowly" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-pink); color: var(--neon-pink);">
                 <span style="font-size: 1.5rem;">🐢</span>
             </button>
@@ -308,26 +319,10 @@
             </button>
         </div>
 
-        <!-- SPEED SLIDER -->
-        <div class="speed-control">
-            <label>🔊 SPEED</label>
-            <input type="range" id="speech-speed-slider" min="0.3" max="1.2" step="0.05" value="0.7" oninput="app.updateSpeedLabel(this.value)">
-            <span class="speed-value" id="speed-value-label">0.7x</span>
-        </div>
-
         <p id="prompt-pronounce" style="margin-top: 5px; color: #888; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Press the mic to speak</p>
         <div id="timer-container" class="hidden"><div id="timer-bar"></div></div>
         <p id="spoken-text" style="color:#555; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
         <div id="feedback-msg" class="feedback"></div>
-
-        <div style="margin: 20px 0; border: 1px solid var(--cyber-border); background: var(--cyber-surface); border-radius: 8px; padding: 15px;">
-            <div style="display: flex; gap: 5px; justify-content: center; width: 100%; flex-wrap: wrap;">
-                <button id="btn-game-auto-on" onclick="game.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-                <button id="btn-game-auto-off" onclick="game.setAutoMic(false)" class="secondary" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-                <button onclick="game.next()" class="warning" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Skip ➡️</button>
-                <button onclick="app.showDashboard()" class="danger" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Exit</button>
-            </div>
-        </div>
 
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
             <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;">🔄 Retry</button>
@@ -340,18 +335,15 @@
 
     <!-- ====== VIEW: CONVERSATION ====== -->
     <div id="view-conversation" class="container hidden">
-        <img src="icon.png" alt="Jetbulary Logo" class="app-logo" onclick="app.showDashboard()" style="border-radius: 0 0 20px 20px;">
-        <div class="avatar-container" id="avatar-convo"></div>
+        <!-- TOP HEADER: LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px auto 15px;">
+            <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 65px; height: 65px; border-radius: 12px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Back to Dashboard">
+            <div class="avatar-container" id="avatar-convo" style="width: 75px; height: 75px; margin: 0;"></div>
+        </div>
+
         <h2>Conversation: <span id="conversation-topic-title"></span></h2>
 
         <div id="conversation-history" class="convo-history"></div>
-
-        <!-- SPEED SLIDER (conversation) -->
-        <div class="speed-control">
-            <label>🔊 SPEED</label>
-            <input type="range" id="speech-speed-slider-convo" min="0.3" max="1.2" step="0.05" value="0.7" oninput="app.updateSpeedLabel(this.value, 'convo')">
-            <span class="speed-value" id="speed-value-label-convo">0.7x</span>
-        </div>
 
         <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0;">
             <button onclick="conversation.repeat()" class="secondary" style="width: 55px; height: 55px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;"><span style="font-size:1.3rem;">🔊</span></button>
@@ -361,18 +353,17 @@
 
         <p id="convo-spoken-text" style="color:#555; font-style:italic; min-height: 20px; margin: 10px 0;">...</p>
         <div id="convo-feedback" class="feedback"></div>
-
-        <div style="display: flex; gap: 5px; margin-top: 15px;">
-            <button id="btn-convo-auto-on" onclick="conversation.setAutoMic(true)" class="auto-mic-on" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Auto ON</button>
-            <button id="btn-convo-auto-off" onclick="conversation.setAutoMic(false)" class="secondary" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Auto OFF</button>
-            <button onclick="app.showDashboard()" class="danger" style="font-size: 0.8rem; padding: 10px; flex: 1; border-radius: 10px;">Exit</button>
-        </div>
     </div>
 
     <!-- ====== VIEW: VOCABULARY ====== -->
     <div id="view-vocab" class="container hidden" style="text-align: left; padding-bottom: 80px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2 style="margin: 0; text-align: left;">📚 Vocabulary</h2>
+        <!-- TOP HEADER: LOGO + TEACHER + BACK -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 50px; height: 50px; border-radius: 10px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Back to Dashboard">
+                <div class="avatar-container" id="avatar-vocab" style="width: 55px; height: 55px; margin: 0;"></div>
+                <h2 style="margin: 0; font-size: 1.2rem; color: var(--neon-cyan);">📚 Vocabulary</h2>
+            </div>
             <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Back</button>
         </div>
 
@@ -404,32 +395,87 @@
 
         <!-- WORD LIST -->
         <div id="vocab-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+
     <!-- ====== VIEW: PRIVACY ====== -->
     <div id="view-privacy" class="container hidden" style="text-align: left;">
-        <h2>Política de Privacidad</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Back to Dashboard">
+                <div class="avatar-container" id="avatar-privacy" style="width: 50px; height: 50px; margin: 0;"></div>
+                <h2 style="margin: 0; font-size: 1.15rem;">Política de Privacidad</h2>
+            </div>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
+        </div>
         <div class="hud-card">
             <p style="color:#AAA;">Tu clave de API (Groq API Key) se utiliza exclusivamente para conectar de forma directa con el motor de inferencia de Groq y no se almacena en ningún servidor externo.</p>
             <p style="color:#AAA; margin-top:10px;">No recopilamos ni compartimos datos personales. Todo el progreso se guarda localmente en tu navegador mediante localStorage.</p>
             <p style="color:#AAA; margin-top:10px;">Esta aplicación utiliza Google AdSense para la optimización de publicidad. Google puede utilizar cookies para anuncios personalizados.</p>
             <p style="color:#AAA; margin-top:10px;">Contacto de soporte: <a href="mailto:soporte@jetbulary.com" style="color:var(--neon-cyan);">soporte@jetbulary.com</a></p>
         </div>
-        <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
     <!-- ====== VIEW: TERMS ====== -->
     <div id="view-terms" class="container hidden" style="text-align: left;">
-        <h2>Términos de Uso</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 48px; height: 48px; border-radius: 10px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Back to Dashboard">
+                <div class="avatar-container" id="avatar-terms" style="width: 50px; height: 50px; margin: 0;"></div>
+                <h2 style="margin: 0; font-size: 1.15rem;">Términos de Uso</h2>
+            </div>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
+        </div>
         <div class="hud-card">
             <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
             <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
             <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:soporte@jetbulary.com" style="color:var(--neon-cyan);">soporte@jetbulary.com</a>.</p>
         </div>
-        <button onclick="app.showDashboard()" class="secondary">Volver</button>
+    </div>
+
+    <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR ====== -->
+    <div id="modal-teacher-select" class="hidden" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div class="hud-card" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0;">
+            <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;">✕</button>
+            <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.05rem; margin-bottom: 6px;">[ CHOOSE YOUR TEACHER ]</h3>
+            <p style="color: #888; font-size: 0.82rem; margin-bottom: 20px;">Tap a teacher to switch language and sessions</p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- ENGLISH (EMMA) -->
+                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇬🇧 Emma (English)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">English Teacher</div>
+                    </div>
+                    <span class="lang-check" id="check-en" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold;">✓</span>
+                </div>
+
+                <!-- GERMAN (GRETA) -->
+                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Deutschlehrerin</div>
+                    </div>
+                    <span class="lang-check" id="check-de" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- FRENCH (CAMILLE) -->
+                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇫🇷 Camille (Français)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professeure de Français</div>
+                    </div>
+                    <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ====== GLOBAL FOOTER ====== -->
-    <footer style="max-width: 700px; margin: 40px auto 30px; padding: 20px 15px; border-top: 1px solid rgba(0,243,255,0.15); text-align: center; font-size: 0.8rem; color: #888;">
-        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+    <footer id="global-footer" style="max-width: 700px; margin: 30px auto 40px; padding: 25px 15px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.82rem; color: #888; position: relative; z-index: 1000;">
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;">
             <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
             <span style="color: #444;">|</span>
             <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
@@ -450,89 +496,140 @@
         });
     }
 
-    // ====== DATABASE ======
+    // ====== DATABASE & LANGUAGES ======
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
     let db = { topics: [], words: [], progress: [], grammar_courses: {}, academy_tips: [], academy_level: 0, reported_errors: [] };
-    const currentLang = 'en'; // FIXED: English only
+    let currentLang = localStorage.getItem('jetbulary_current_lang') || 'en';
 
-    // ====== AUDIO FEEDBACK ======
-    const audio = {
-        ctx: null,
-        init() { if (!this.ctx) try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} },
-        success() {
-            this.init(); if (!this.ctx) return;
-            const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-            osc.type = 'sine'; osc.frequency.setValueAtTime(880, this.ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1320, this.ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.3);
+    const LANGUAGES = {
+        en: {
+            code: 'en',
+            name: 'English',
+            teacherName: 'Emma',
+            flag: 'flag_en.jpg',
+            face: 'face_en.jpg',
+            gif: 'gif_en.gif',
+            speechLang: 'en-US',
+            femaleVoices: ['female', 'woman', 'girl', 'samantha', 'zira', 'google', 'english'],
+            youglishLang: 'english',
+            teacherTitle: 'English Teacher',
+            aiPromptLang: 'English'
         },
-        fail() {
-            this.init(); if (!this.ctx) return;
-            const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + 0.3);
+        de: {
+            code: 'de',
+            name: 'Deutsch',
+            teacherName: 'Greta',
+            flag: 'flag_de.jpg',
+            face: 'face_de.jpg',
+            gif: 'gif_de.gif',
+            speechLang: 'de-DE',
+            femaleVoices: ['female', 'woman', 'katja', 'hedda', 'marlene', 'vicki', 'google deutsch', 'deutsch'],
+            youglishLang: 'german',
+            teacherTitle: 'Deutschlehrerin',
+            aiPromptLang: 'German (Deutsch)'
+        },
+        fr: {
+            code: 'fr',
+            name: 'Français',
+            teacherName: 'Camille',
+            flag: 'flag_fr.jpg',
+            face: 'face_fr.jpg',
+            gif: 'gif_fr.gif',
+            speechLang: 'fr-FR',
+            femaleVoices: ['female', 'woman', 'hortense', 'julie', 'celine', 'google français', 'français'],
+            youglishLang: 'french',
+            teacherTitle: 'Professeure de Français',
+            aiPromptLang: 'French (Français)'
         }
     };
 
-    // ====== DEFAULT TOPICS ======
-    const defaultTopics = [
-        { name: "CONNECTORS (LINKING WORDS)", words: [
-            { english: "however", spanish: "sin embargo", ipa: "/haʊˈevər/", sentence_en: "However, she decided to go anyway.", sentence_es: "Sin embargo, ella decidió ir de todos modos." },
-            { english: "therefore", spanish: "por lo tanto", ipa: "/ˈðerfɔːr/", sentence_en: "We do not have enough money; therefore, we cannot buy it.", sentence_es: "No tenemos suficiente dinero; por lo tanto, no podemos comprarlo." },
-            { english: "although", spanish: "aunque", ipa: "/ɔːlˈðoʊ/", sentence_en: "Although it was raining, they went for a walk.", sentence_es: "Aunque estaba lloviendo, salieron a caminar." },
-            { english: "furthermore", spanish: "además", ipa: "/ˌfɜːrðərˈmɔːr/", sentence_en: "Furthermore, we need to consider the cost.", sentence_es: "Además, necesitamos considerar el costo." },
-            { english: "meanwhile", spanish: "mientras tanto", ipa: "/ˈmiːnwaɪl/", sentence_en: "Meanwhile, the teacher was writing on the board.", sentence_es: "Mientras tanto, el profesor estaba escribiendo en la pizarra." }
-        ]},
-        { name: "VERB TENSES & CONDITIONALS", words: [
-            { english: "go (went / gone)", spanish: "ir", ipa: "/ɡoʊ/", sentence_en: "If I had time, I would go to the gym.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
-            { english: "take (took / taken)", spanish: "tomar / llevar", ipa: "/teɪk/", sentence_en: "She has taken the test three times.", sentence_es: "Ella ha tomado el examen tres veces." },
-            { english: "speak (spoke / spoken)", spanish: "hablar", ipa: "/spiːk/", sentence_en: "I spoke to him yesterday.", sentence_es: "Hablé con él ayer." },
-            { english: "write (wrote / written)", spanish: "escribir", ipa: "/raɪt/", sentence_en: "If she writes a book, she will succeed.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
-            { english: "see (saw / seen)", spanish: "ver", ipa: "/siː/", sentence_en: "I would have gone if I had seen the sign.", sentence_es: "Habría ido si hubiera visto la señal." }
-        ]},
-        { name: "PREPOSITIONS", words: [
-            { english: "in", spanish: "en (dentro de)", ipa: "/ɪn/", sentence_en: "She is in the classroom.", sentence_es: "Ella está en el salón de clases." },
-            { english: "on", spanish: "en (sobre)", ipa: "/ɒn/", sentence_en: "The book is on the table.", sentence_es: "El libro está en la mesa." },
-            { english: "at", spanish: "en (punto)", ipa: "/æt/", sentence_en: "We will meet at the station.", sentence_es: "Nos reuniremos en la estación." },
-            { english: "under", spanish: "debajo de", ipa: "/ˈʌndər/", sentence_en: "The cat is sleeping under the bed.", sentence_es: "Debajo de la cama el gato duerme." },
-            { english: "between", spanish: "entre", ipa: "/bɪˈtwiːn/", sentence_en: "She sat between her two friends.", sentence_es: "Ella se sentó entre sus dos amigos." }
-        ]},
-        { name: "COLLOCATIONS", words: [
-            { english: "make a mistake", spanish: "cometer un error", ipa: "/meɪk ə mɪsˈteɪk/", sentence_en: "Don't worry, everyone makes a mistake sometimes.", sentence_es: "No te preocupes, todos cometen un error a veces." },
-            { english: "do homework", spanish: "hacer la tarea", ipa: "/duː ˈhoʊmwɜːrk/", sentence_en: "I have to do my homework tonight.", sentence_es: "Tengo que hacer mi tarea esta noche." },
-            { english: "take a shower", spanish: "ducharse", ipa: "/teɪk ə ˈʃaʊər/", sentence_en: "I always take a shower in the morning.", sentence_es: "Siempre me ducho por la mañana." },
-            { english: "give a presentation", spanish: "hacer una presentación", ipa: "/ɡɪv ə ˌpreznˈteɪʃn/", sentence_en: "He has to give a presentation tomorrow.", sentence_es: "Él tiene que hacer una presentación mañana." },
-            { english: "keep a secret", spanish: "guardar un secreto", ipa: "/kiːp ə ˈsiːkrət/", sentence_en: "Can you keep a secret?", sentence_es: "¿Puedes guardar un secreto?" }
-        ]},
-        { name: "SLANG", words: [
-            { english: "cool", spanish: "genial", ipa: "/kuːl/", sentence_en: "That car is really cool.", sentence_es: "Ese coche está muy genial." },
-            { english: "chill", spanish: "relajarse", ipa: "/tʃɪl/", sentence_en: "We are just chilling at home.", sentence_es: "Sólo nos estamos relajando en casa." },
-            { english: "buck", spanish: "dólar", ipa: "/bʌk/", sentence_en: "It only costs five bucks.", sentence_es: "Sólo cuesta cinco dólares." },
-            { english: "shady", spanish: "sospechoso", ipa: "/ˈʃeɪdi/", sentence_en: "That deal looks a bit shady.", sentence_es: "Ese trato parece un poco sospechoso." },
-            { english: "crash", spanish: "quedarse dormido", ipa: "/kræʃ/", sentence_en: "Can I crash on your couch tonight?", sentence_es: "¿Puedo quedarme a dormir en tu sofá esta noche?" }
-        ]},
-        { name: "IDIOMS", words: [
-            { english: "bite the bullet", spanish: "hacer de tripas corazón", ipa: "/baɪt ðə ˈbʊlɪt/", sentence_en: "I guess I have to bite the bullet and go to the dentist.", sentence_es: "Supongo que tengo que hacer de tripas corazón e ir al dentista." },
-            { english: "break a leg", spanish: "buena suerte", ipa: "/breɪk ə leɡ/", sentence_en: "Break a leg tonight on stage!", sentence_es: "¡Buena suerte esta noche en el escenario!" },
-            { english: "under the weather", spanish: "indispuesto", ipa: "/ˈʌndər ðə ˈweðər/", sentence_en: "I'm feeling a bit under the weather today.", sentence_es: "Me siento un poco indispuesto hoy." },
-            { english: "spill the beans", spanish: "soltar la lengua", ipa: "/spɪl ðə biːnz/", sentence_en: "Don't spill the beans about the party.", sentence_es: "No reveles el secreto sobre la fiesta." },
-            { english: "cost an arm and a leg", spanish: "costar un ojo de la cara", ipa: "/kɔːst ən ɑːrm ənd ə leɡ/", sentence_en: "This new watch cost me an arm and a leg.", sentence_es: "Este reloj nuevo me costó un ojo de la cara." }
-        ]},
-        { name: "IRREGULAR VERBS", words: [
-            { english: "be (was-were / been)", spanish: "ser / estar", ipa: "/biː/", sentence_en: "They have been friends for years.", sentence_es: "Han sido amigos durante años." },
-            { english: "do (did / done)", spanish: "hacer", ipa: "/duː/", sentence_en: "She did her best to win.", sentence_es: "Ella hizo todo lo posible para ganar." },
-            { english: "have (had / had)", spanish: "tener / haber", ipa: "/hæv/", sentence_en: "I have had a long day.", sentence_es: "He tenido un día largo." },
-            { english: "run (ran / run)", spanish: "correr", ipa: "/rʌn/", sentence_en: "He ran five miles yesterday.", sentence_es: "Él corrió cinco millas ayer." },
-            { english: "sing (sang / sung)", spanish: "cantar", ipa: "/sɪŋ/", sentence_en: "She sang beautifully last night.", sentence_es: "Ella cantó hermosamente anoche." }
-        ]}
-    ];
+    // ====== DEFAULT TOPICS BY LANGUAGE ======
+    const defaultTopicsByLang = {
+        en: [
+            { name: "CONNECTORS (LINKING WORDS)", words: [
+                { english: "however", spanish: "sin embargo", ipa: "/haʊˈevər/", sentence_en: "However, she decided to go anyway.", sentence_es: "Sin embargo, ella decidió ir de todos modos." },
+                { english: "therefore", spanish: "por lo tanto", ipa: "/ˈðerfɔːr/", sentence_en: "We do not have enough money; therefore, we cannot buy it.", sentence_es: "No tenemos suficiente dinero; por lo tanto, no podemos comprarlo." },
+                { english: "although", spanish: "aunque", ipa: "/ɔːlˈðoʊ/", sentence_en: "Although it was raining, they went for a walk.", sentence_es: "Aunque estaba lloviendo, salieron a caminar." },
+                { english: "furthermore", spanish: "además", ipa: "/ˌfɜːrðərˈmɔːr/", sentence_en: "Furthermore, we need to consider the cost.", sentence_es: "Además, necesitamos considerar el costo." },
+                { english: "meanwhile", spanish: "mientras tanto", ipa: "/ˈmiːnwaɪl/", sentence_en: "Meanwhile, the teacher was writing on the board.", sentence_es: "Mientras tanto, el profesor estaba escribiendo en la pizarra." }
+            ]},
+            { name: "VERB TENSES & CONDITIONALS", words: [
+                { english: "go (went / gone)", spanish: "ir", ipa: "/ɡoʊ/", sentence_en: "If I had time, I would go to the gym.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "take (took / taken)", spanish: "tomar / llevar", ipa: "/teɪk/", sentence_en: "She has taken the test three times.", sentence_es: "Ella ha tomado el examen tres veces." },
+                { english: "speak (spoke / spoken)", spanish: "hablar", ipa: "/spiːk/", sentence_en: "I spoke to him yesterday.", sentence_es: "Hablé con él ayer." },
+                { english: "write (wrote / written)", spanish: "escribir", ipa: "/raɪt/", sentence_en: "If she writes a book, she will succeed.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
+                { english: "see (saw / seen)", spanish: "ver", ipa: "/siː/", sentence_en: "I would have gone if I had seen the sign.", sentence_es: "Habría ido si hubiera visto la señal." }
+            ]},
+            { name: "PREPOSITIONS", words: [
+                { english: "in", spanish: "en (dentro de)", ipa: "/ɪn/", sentence_en: "She is in the classroom.", sentence_es: "Ella está en el salón de clases." },
+                { english: "on", spanish: "en (sobre)", ipa: "/ɒn/", sentence_en: "The book is on the table.", sentence_es: "El libro está en la mesa." },
+                { english: "at", spanish: "en (punto)", ipa: "/æt/", sentence_en: "We will meet at the station.", sentence_es: "Nos reuniremos en la estación." },
+                { english: "under", spanish: "debajo de", ipa: "/ˈʌndər/", sentence_en: "The cat is sleeping under the bed.", sentence_es: "Debajo de la cama el gato duerme." },
+                { english: "between", spanish: "entre", ipa: "/bɪˈtwiːn/", sentence_en: "She sat between her two friends.", sentence_es: "Ella se sentó entre sus dos amigos." }
+            ]},
+            { name: "COLLOCATIONS", words: [
+                { english: "make a mistake", spanish: "cometer un error", ipa: "/meɪk ə mɪsˈteɪk/", sentence_en: "Don't worry, everyone makes a mistake sometimes.", sentence_es: "No te preocupes, todos cometen un error a veces." },
+                { english: "do homework", spanish: "hacer la tarea", ipa: "/duː ˈhoʊmwɜːrk/", sentence_en: "I have to do my homework tonight.", sentence_es: "Tengo que hacer mi tarea esta noche." },
+                { english: "take a shower", spanish: "ducharse", ipa: "/teɪk ə ˈʃaʊər/", sentence_en: "I always take a shower in the morning.", sentence_es: "Siempre me ducho por la mañana." },
+                { english: "give a presentation", spanish: "hacer una presentación", ipa: "/ɡɪv ə ˌpreznˈteɪʃn/", sentence_en: "He has to give a presentation tomorrow.", sentence_es: "Él tiene que hacer una presentación mañana." },
+                { english: "keep a secret", spanish: "guardar un secreto", ipa: "/kiːp ə ˈsiːkrət/", sentence_en: "Can you keep a secret?", sentence_es: "¿Puedes guardar un secreto?" }
+            ]},
+            { name: "SLANG & IDIOMS", words: [
+                { english: "cool", spanish: "genial", ipa: "/kuːl/", sentence_en: "That car is really cool.", sentence_es: "Ese coche está muy genial." },
+                { english: "chill", spanish: "relajarse", ipa: "/tʃɪl/", sentence_en: "We are just chilling at home.", sentence_es: "Sólo nos estamos relajando en casa." },
+                { english: "buck", spanish: "dólar", ipa: "/bʌk/", sentence_en: "It only costs five bucks.", sentence_es: "Sólo cuesta cinco dólares." },
+                { english: "bite the bullet", spanish: "hacer de tripas corazón", ipa: "/baɪt ðə ˈbʊlɪt/", sentence_en: "I have to bite the bullet and go to the dentist.", sentence_es: "Tengo que hacer de tripas corazón e ir al dentista." },
+                { english: "break a leg", spanish: "buena suerte", ipa: "/breɪk ə leɡ/", sentence_en: "Break a leg tonight on stage!", sentence_es: "¡Buena suerte esta noche en el escenario!" }
+            ]}
+        ],
+        de: [
+            { name: "KONNEKTOREN (VERBINDUNGSWÖRTER)", words: [
+                { english: "jedoch", spanish: "sin embargo", ipa: "/jeˈdɔx/", sentence_en: "Jedoch entschied sie sich zu gehen.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "deshalb", spanish: "por lo tanto", ipa: "/ˈdɛsˌhalp/", sentence_en: "Wir haben kein Geld; deshalb können wir es nicht kaufen.", sentence_es: "No tenemos dinero; por lo tanto, no podemos comprarlo." },
+                { english: "obwohl", spanish: "aunque", ipa: "/ɔpˈvoːl/", sentence_en: "Obwohl es regnete, gingen sie spazieren.", sentence_es: "Aunque llovía, salieron a pasear." },
+                { english: "außerdem", spanish: "además", ipa: "/ˈaʊ̯sɐˌdeːm/", sentence_en: "Außerdem müssen wir die Kosten bedenken.", sentence_es: "Además, debemos considerar los costes." },
+                { english: "inzwischen", spanish: "mientras tanto", ipa: "/ɪnˈtsvɪʃn̩/", sentence_en: "Inzwischen schrieb der Lehrer an die Tafel.", sentence_es: "Mientras tanto, el profesor escribía en la pizarra." }
+            ]},
+            { name: "UNREGELMÄßIGE VERBEN", words: [
+                { english: "gehen (ging / gegangen)", spanish: "ir", ipa: "/ˈɡeːən/", sentence_en: "Wenn ich Zeit hätte, würde ich ins Fitnessstudio gehen.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "nehmen (nahm / genommen)", spanish: "tomar / llevar", ipa: "/ˈneːmən/", sentence_en: "Sie hat den Test dreimal genommen.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "sprechen (sprach / gesprochen)", spanish: "hablar", ipa: "/ˈʃprɛçn̩/", sentence_en: "Ich habe gestern mit ihm gesprochen.", sentence_es: "Ayer hablé con él." },
+                { english: "schreiben (schrieb / geschrieben)", spanish: "escribir", ipa: "/ˈʃraɪ̯bn̩/", sentence_en: "Wenn sie ein Buch schreibt, wird sie Erfolg haben.", sentence_es: "Si escribe un libro, tendrá éxito." },
+                { english: "sehen (sah / gesehen)", spanish: "ver", ipa: "/ˈzeːən/", sentence_en: "Ich hätte es gesehen, wenn ich da gewesen wäre.", sentence_es: "Lo habría visto si hubiera estado allí." }
+            ]},
+            { name: "PRÄPOSITIONEN", words: [
+                { english: "in", spanish: "en (dentro de)", ipa: "/ɪn/", sentence_en: "Sie ist im Klassenzimmer.", sentence_es: "Ella está en el aula." },
+                { english: "auf", spanish: "sobre / en", ipa: "/aʊ̯f/", sentence_en: "Das Buch liegt auf dem Tisch.", sentence_es: "El libro está sobre la mesa." },
+                { english: "an", spanish: "en (un punto/límite)", ipa: "/an/", sentence_en: "Wir treffen uns am Bahnhof.", sentence_es: "Nos encontramos en la estación." },
+                { english: "unter", spanish: "debajo de", ipa: "/ˈʊntɐ/", sentence_en: "Die Katze schläft unter dem Bett.", sentence_es: "El gato duerme debajo de la cama." },
+                { english: "zwischen", spanish: "entre", ipa: "/ˈtsvɪʃn̩/", sentence_en: "Sie saß zwischen ihren Freunden.", sentence_es: "Ella se sentó entre sus amigos." }
+            ]}
+        ],
+        fr: [
+            { name: "CONNECTEURS LOGIQUES", words: [
+                { english: "cependant", spanish: "sin embargo", ipa: "/sə.pɑ̃.dɑ̃/", sentence_en: "Cependant, elle a décidé d'y aller quand même.", sentence_es: "Sin embargo, ella decidió ir de todos modos." },
+                { english: "donc", spanish: "por lo tanto", ipa: "/dɔ̃k/", sentence_en: "Nous n'avons pas d'argent, donc nous ne pouvons pas l'acheter.", sentence_es: "No tenemos dinero, por lo tanto no podemos comprarlo." },
+                { english: "bien que", spanish: "aunque", ipa: "/bjɛ̃ kə/", sentence_en: "Bien qu'il pleuvait, ils sont allés se promener.", sentence_es: "Aunque llovía, salieron a pasear." },
+                { english: "en outre", spanish: "además", ipa: "/ɑ̃.n‿utʁ/", sentence_en: "En outre, nous devons considérer le coût.", sentence_es: "Además, debemos considerar el coste." },
+                { english: "pendant ce temps", spanish: "mientras tanto", ipa: "/pɑ̃.dɑ̃ sə tɑ̃/", sentence_en: "Pendant ce temps, le professeur écrivait au tableau.", sentence_es: "Mientras tanto, el profesor escribía en la pizarra." }
+            ]},
+            { name: "VERBES IRRÉGULIERS", words: [
+                { english: "aller (allé)", spanish: "ir", ipa: "/a.le/", sentence_en: "Si j'avais le temps, j'irais au gymnase.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "prendre (pris)", spanish: "tomar / coger", ipa: "/pʁɑ̃dʁ/", sentence_en: "Elle a passé l'examen trois fois.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "parler (parlé)", spanish: "hablar", ipa: "/paʁ.le/", sentence_en: "Je lui ai parlé hier.", sentence_es: "Hablé con él ayer." },
+                { english: "écrire (écrit)", spanish: "escribir", ipa: "/e.kʁiʁ/", sentence_en: "Si elle écrit un livre, elle réussira.", sentence_es: "Si escribe un libro, tendrá éxito." },
+                { english: "voir (vu)", spanish: "ver", ipa: "/vwaʁ/", sentence_en: "Je l'aurais vu si j'étais venu.", sentence_es: "Lo habría visto si hubiera venido." }
+            ]},
+            { name: "PRÉPOSITIONS", words: [
+                { english: "dans", spanish: "en (dentro de)", ipa: "/dɑ̃/", sentence_en: "Elle est dans la classe.", sentence_es: "Ella está en la clase." },
+                { english: "sur", spanish: "sobre / en", ipa: "/syʁ/", sentence_en: "Le livre est sur la table.", sentence_es: "El libro está sobre la mesa." },
+                { english: "à", spanish: "en / a", ipa: "/a/", sentence_en: "Nous nous retrouverons à la gare.", sentence_es: "Nos encontraremos en la estación." },
+                { english: "sous", spanish: "debajo de", ipa: "/su/", sentence_en: "Le chat dort sous le lit.", sentence_es: "El gato duerme debajo de la cama." },
+                { english: "entre", spanish: "entre", ipa: "/ɑ̃tʁ/", sentence_en: "Elle était assise entre ses deux amis.", sentence_es: "Ella estaba sentada entre sus dos amigos." }
+            ]}
+        ]
+    };
 
     // ====== SESSION MANAGER (4 WORDS AT A TIME) ======
     const session = {
@@ -620,8 +717,8 @@
                 return `
                 <div class="session-word-card ${i === 0 ? 'active' : ''}" id="session-card-${i}">
                     <div class="word-en">${cleanWord}</div>
+                    ${w.ipa ? `<div class="tech word-ipa">/${w.ipa.replace(/\//g, '')}/</div>` : ''}
                     <div class="word-es">${w.spanish}</div>
-                    <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="display:inline-block; margin-top:6px; font-size:0.7rem; color:var(--neon-cyan); text-decoration:none; border:1px solid rgba(0,243,255,0.3); padding:2px 6px; border-radius:3px;" onclick="event.stopPropagation();">👂 YouGlish</a>
                 </div>
                 `;
             }).join('');
@@ -675,6 +772,48 @@
             }
         },
 
+        openTeacherModal: () => {
+            const modal = document.getElementById('modal-teacher-select');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            document.querySelectorAll('.lang-check').forEach(el => el.style.display = 'none');
+            const activeCheck = document.getElementById(`check-${currentLang}`);
+            if (activeCheck) activeCheck.style.display = 'inline';
+        },
+
+        closeTeacherModal: () => {
+            const modal = document.getElementById('modal-teacher-select');
+            if (modal) modal.classList.add('hidden');
+        },
+
+        setLanguage: (langCode) => {
+            if (!LANGUAGES[langCode]) return;
+            currentLang = langCode;
+            localStorage.setItem('jetbulary_current_lang', langCode);
+            app.closeTeacherModal();
+
+            // Refresh UI and Avatars
+            game.updateAvatar();
+            
+            // Auto select first topic in this language if previous selection is incompatible
+            const topicsInLang = db.topics.filter(t => (t.lang || 'en') === currentLang);
+            if (topicsInLang.length > 0) {
+                const currentTopic = db.topics.find(t => t.id == session.selectedListId);
+                if (!currentTopic || (currentTopic.lang || 'en') !== currentLang) {
+                    session.selectList(topicsInLang[0].id);
+                }
+            } else {
+                session.selectList(null);
+            }
+
+            app.renderDashboardLists();
+            if (!document.getElementById('view-vocab').classList.contains('hidden')) {
+                vocab.activeTopicId = 'all';
+                vocab.selectedIds.clear();
+                vocab.render();
+            }
+        },
+
         saveAcademyLevel: (val) => { db.academy_level = parseInt(val); app.saveDB(); app.updateAcademyLevelDisplay(val); },
         updateAcademyLevelDisplay: (val) => {
             const display = document.getElementById('academy-level-display');
@@ -689,19 +828,24 @@
 
         ensureDefaultTopics: () => {
             let modified = false;
-            defaultTopics.forEach((def, defIdx) => {
-                let topic = db.topics.find(t => t.name.toUpperCase() === def.name.toUpperCase() && (t.lang || 'en') === 'en');
-                if (!topic) {
-                    topic = { id: 999000 + defIdx, name: def.name, lang: 'en' };
-                    db.topics.push(topic);
-                    modified = true;
-                }
-                def.words.forEach((w, wIdx) => {
-                    const exists = db.words.some(word => word.topic_id === topic.id && word.english.toLowerCase() === w.english.toLowerCase());
-                    if (!exists) {
-                        db.words.push({ ...w, id: 9990000 + (defIdx * 100) + wIdx, topic_id: topic.id });
+            ['en', 'de', 'fr'].forEach(langKey => {
+                const list = defaultTopicsByLang[langKey] || [];
+                list.forEach((def, defIdx) => {
+                    let topic = db.topics.find(t => t.name.toUpperCase() === def.name.toUpperCase() && (t.lang || 'en') === langKey);
+                    if (!topic) {
+                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : 2000;
+                        topic = { id: 999000 + offset + defIdx, name: def.name, lang: langKey };
+                        db.topics.push(topic);
                         modified = true;
                     }
+                    def.words.forEach((w, wIdx) => {
+                        const targetWord = (w.english || '').toLowerCase();
+                        const exists = db.words.some(word => word.topic_id === topic.id && (word.english || '').toLowerCase() === targetWord);
+                        if (!exists) {
+                            db.words.push({ ...w, id: 9990000 + (topic.id * 10) + wIdx, topic_id: topic.id });
+                            modified = true;
+                        }
+                    });
                 });
             });
             if (modified) app.saveDB();
@@ -718,8 +862,10 @@
             // Restore speed
             const savedSpeed = localStorage.getItem('jetbulary_speech_speed');
             if (savedSpeed) {
-                document.querySelectorAll('#speech-speed-slider, #speech-speed-slider-convo').forEach(s => s.value = savedSpeed);
-                document.querySelectorAll('#speed-value-label, #speed-value-label-convo').forEach(l => l.textContent = parseFloat(savedSpeed).toFixed(2) + 'x');
+                const slider = document.getElementById('speech-speed-slider');
+                const label = document.getElementById('speed-value-label');
+                if (slider) slider.value = savedSpeed;
+                if (label) label.textContent = parseFloat(savedSpeed).toFixed(2) + 'x';
             }
 
             setTimeout(() => {
@@ -735,12 +881,18 @@
                 app.switchView('view-apikey', 'replace');
             }
 
-            // Restore selected list
+            // Restore selected list or pick first of current lang
             const savedList = localStorage.getItem('jetbulary_selected_list');
-            if (savedList) session.selectedListId = savedList;
+            if (savedList && db.topics.some(t => t.id == savedList && (t.lang || 'en') === currentLang)) {
+                session.selectedListId = savedList;
+            } else {
+                const firstTopic = db.topics.find(t => (t.lang || 'en') === currentLang);
+                if (firstTopic) session.selectList(firstTopic.id);
+            }
 
             app.checkCookies();
             app.renderDashboardLists();
+            if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
 
             window.onpopstate = (event) => {
                 if (event.state && event.state.view) {
@@ -750,13 +902,12 @@
             };
         },
 
-        updateSpeedLabel: (val, suffix = '') => {
-            const id = suffix ? `speed-value-label-${suffix}` : 'speed-value-label';
-            document.getElementById(id).textContent = parseFloat(val).toFixed(2) + 'x';
+        updateSpeedLabel: (val) => {
+            const label = document.getElementById('speed-value-label');
+            if (label) label.textContent = parseFloat(val).toFixed(2) + 'x';
             localStorage.setItem('jetbulary_speech_speed', val);
-            // Sync both sliders
-            document.querySelectorAll('#speech-speed-slider, #speech-speed-slider-convo').forEach(s => s.value = val);
-            document.querySelectorAll('#speed-value-label, #speed-value-label-convo').forEach(l => l.textContent = parseFloat(val).toFixed(2) + 'x');
+            const slider = document.getElementById('speech-speed-slider');
+            if (slider) slider.value = val;
         },
 
         showDashboard: (h) => {
@@ -774,7 +925,7 @@
         renderDashboardLists: () => {
             const selector = document.getElementById('dashboard-list-selector');
             if (!selector) return;
-            const topics = db.topics.filter(t => (t.lang || 'en') === 'en');
+            const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
             selector.innerHTML = '<option value="">Select a list...</option>' +
                 topics.map(t => {
                     const wordCount = db.words.filter(w => w.topic_id === t.id).length;
@@ -876,20 +1027,21 @@
         },
 
         generateVocabList: async (topic, levelLabel = "Intermediate") => {
-            const topicDesc = topic ? `topic: ${topic}` : `a NEW and ESSENTIAL VOCABULARY topic that a "${levelLabel}" level English student must know. PRIORITIZE basic structural vocabulary (family, home, food, work, travel, etc.).`;
-            const prompt = `Act as an expert linguist. Generate a list of MINIMUM 40 common and essential English words related to ${topicDesc}.
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const topicDesc = topic ? `topic: ${topic}` : `a NEW and ESSENTIAL VOCABULARY topic that a "${levelLabel}" level ${langInfo.name} student must know. PRIORITIZE basic structural vocabulary (family, home, food, work, travel, etc.).`;
+            const prompt = `Act as an expert linguist. Generate a list of MINIMUM 40 common and essential ${langInfo.name} words related to ${topicDesc}.
 
 RULES:
 1. Include plenty of common verbs.
-2. ABSOLUTE RULE FOR VERBS: For EACH verb, write: 'infinitive (past / participle)'. Examples: "go (went / gone)", "play (played / played)"
+2. ABSOLUTE RULE FOR VERBS: For EACH verb, write the infinitive followed by its main forms in parentheses if applicable.
 3. Return ONLY a JSON object:
 {
   "topic": "[TOPIC IN UPPERCASE]",
   "words": [
-    {"english": "word or verb (past/participle if verb)", "spanish": "Spanish translation", "ipa": "/pronunciation/", "sentence_en": "Example sentence", "sentence_es": "Spanish translation"}
+    {"english": "word or verb in ${langInfo.name}", "spanish": "Spanish translation", "ipa": "/pronunciation/", "sentence_en": "Example sentence in ${langInfo.name}", "sentence_es": "Spanish translation"}
   ]
 }
-Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
+Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${levelLabel}".`;
 
             const btn = document.querySelector('button[onclick="app.generateListFromInput()"]');
             await app.callAI_Text(prompt, btn, (response) => {
@@ -898,13 +1050,13 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
                     const data = JSON.parse(jsonStr);
                     if (data.words && Array.isArray(data.words)) {
                         const finalTopicName = data.topic || (topic ? topic.toUpperCase() : "GENERATED TOPIC");
-                        let newTopic = topic ? db.topics.find(t => t.name.toLowerCase() === finalTopicName.toLowerCase() && (t.lang || 'en') === 'en') : null;
-                        if (!newTopic) { newTopic = { id: Date.now(), name: finalTopicName, lang: 'en' }; db.topics.push(newTopic); }
+                        let newTopic = topic ? db.topics.find(t => t.name.toLowerCase() === finalTopicName.toLowerCase() && (t.lang || 'en') === currentLang) : null;
+                        if (!newTopic) { newTopic = { id: Date.now(), name: finalTopicName, lang: currentLang }; db.topics.push(newTopic); }
                         data.words.forEach((w, i) => { db.words.push({ ...w, id: Date.now() + i + 1, topic_id: newTopic.id }); });
                         app.saveDB();
                         app.renderDashboardLists();
                         if (!document.getElementById('view-vocab').classList.contains('hidden')) vocab.render();
-                        alert(`✅ Added ${data.words.length} words about '${newTopic.name}'!`);
+                        alert(`✅ Added ${data.words.length} words in ${langInfo.name} about '${newTopic.name}'!`);
                     }
                 } catch (e) { console.error("Error:", e); alert("AI could not generate the list. Try again."); }
             });
@@ -1009,12 +1161,12 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         getFilteredWords: () => {
             return db.words.filter(w => {
                 const topic = db.topics.find(t => t.id === w.topic_id);
-                if (!topic || (topic.lang || 'en') !== 'en') return false;
+                if (!topic || (topic.lang || 'en') !== currentLang) return false;
                 if (vocab.activeTopicId !== 'all' && w.topic_id != vocab.activeTopicId) return false;
                 if (vocab.searchQuery) {
-                    const matchEn = w.english.toLowerCase().includes(vocab.searchQuery);
+                    const matchTarget = (w.english || '').toLowerCase().includes(vocab.searchQuery);
                     const matchEs = (w.spanish || '').toLowerCase().includes(vocab.searchQuery);
-                    if (!matchEn && !matchEs) return false;
+                    if (!matchTarget && !matchEs) return false;
                 }
                 return true;
             });
@@ -1025,7 +1177,8 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             const selector = document.getElementById('vocab-topic-selector');
             if (!list || !selector) return;
 
-            const topics = db.topics.filter(t => (t.lang || 'en') === 'en');
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
             selector.innerHTML = '<option value="all">ALL WORDS</option>' +
                 topics.map(t => `<option value="${t.id}" ${t.id == vocab.activeTopicId ? 'selected' : ''}>${t.name.toUpperCase()}</option>`).join('');
 
@@ -1038,7 +1191,7 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             vocab.updateSelectionUI();
 
             if (words.length === 0) {
-                list.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">No words found.</p>';
+                list.innerHTML = `<p style="text-align:center; color:#666; padding:20px;">No words found in ${langInfo.name}.</p>`;
                 return;
             }
 
@@ -1051,26 +1204,26 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
                     '<span class="tech" style="color:var(--cyber-ok); font-size:0.65rem; border:1px solid var(--cyber-ok); padding:2px 4px; border-radius:3px;">[OK]</span>';
 
                 return `
-                <div class="vocab-item" style="background: rgba(18,18,20,0.95); border: 1px solid ${isChecked ? 'var(--neon-cyan)' : 'var(--cyber-border)'}; border-radius: 6px; padding: 12px; box-shadow: ${isChecked ? 'var(--cyber-glow)' : 'none'}; transition: all 0.2s;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
-                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1;">
-                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="vocab.toggleSelect(${w.id})" style="width: 18px; height: 18px; accent-color: var(--neon-cyan); cursor: pointer;">
-                            <span style="color: var(--neon-cyan); font-weight: 700; font-size: 1.05rem;">${w.english}</span>
+                <div class="vocab-item" style="background: rgba(18,18,20,0.95); border: 1px solid ${isChecked ? 'var(--neon-cyan)' : 'var(--cyber-border)'}; border-radius: 6px; padding: 14px; box-shadow: ${isChecked ? 'var(--cyber-glow)' : 'none'}; transition: all 0.2s;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px;">
+                        <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1;">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="vocab.toggleSelect(${w.id})" style="width: 20px; height: 20px; accent-color: var(--neon-cyan); cursor: pointer;">
+                            <span style="color: var(--neon-cyan); font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px;">${w.english}</span>
                         </label>
                         ${badge}
                     </div>
-                    <div style="color: var(--neon-pink); font-size: 0.85rem; margin-left: 28px; margin-bottom: 10px;">${w.spanish}</div>
+                    <div style="color: var(--neon-pink); font-size: 0.95rem; margin-left: 32px; margin-bottom: 12px; font-weight: 500;">${w.spanish}</div>
                     
                     <!-- ACTION BUTTONS: WORD / SENTENCE / YOUGLISH -->
-                    <div style="display: flex; gap: 6px; margin-left: 28px; flex-wrap: wrap;">
-                        <button onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+                    <div style="display: flex; gap: 8px; margin-left: 32px; flex-wrap: wrap;">
+                        <button onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">
                             🔊 Word
                         </button>
                         ${w.sentence_en ? `
-                        <button onclick="game.speakText('${w.sentence_en.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: var(--cyber-warn); color: var(--cyber-warn);">
+                        <button onclick="game.speakText('${w.sentence_en.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--cyber-warn); color: var(--cyber-warn); font-weight: 600;">
                             💬 Sentence
                         </button>` : ''}
-                        <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 0.75rem; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,243,255,0.06); color: var(--neon-cyan); text-decoration: none; border-radius: 2px;">
+                        <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/${langInfo.youglishLang}" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; font-size: 0.8rem; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,243,255,0.08); color: var(--neon-cyan); text-decoration: none; border-radius: 4px; font-weight: 600;">
                             👂 Natives
                         </a>
                     </div>
@@ -1128,18 +1281,22 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         },
 
         updateAvatar: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             document.querySelectorAll('.avatar-container').forEach(c => {
                 c.innerHTML = '';
+                c.style.cursor = 'pointer';
+                c.title = `Teacher: ${langInfo.teacherName} (${langInfo.name}) - Click to change`;
+                c.onclick = () => app.openTeacherModal();
                 const img = new Image();
                 img.className = 'avatar-img face-img';
-                img.alt = 'Teacher';
-                img.dataset.idleSrc = 'face_en.jpg';
-                img.dataset.speakingSrc = 'gif_en.gif';
-                img.dataset.gifSrc = 'gif_en.gif';
-                img.onerror = function() { if (this.src.includes('gif_en.gif')) this.src = 'icon.png'; else this.src = 'gif_en.gif'; };
-                img.src = 'gif_en.gif';
+                img.alt = langInfo.teacherTitle;
+                img.dataset.idleSrc = langInfo.face;
+                img.dataset.speakingSrc = langInfo.gif;
+                img.dataset.gifSrc = langInfo.gif;
+                img.onerror = function() { if (this.src.includes('.gif')) this.src = 'icon.png'; else this.src = langInfo.gif; };
+                img.src = langInfo.gif;
                 img.onload = function() {
-                    if (this.src.includes('gif_en.gif') && !this.dataset.staticSrc) {
+                    if (this.src.includes('.gif') && !this.dataset.staticSrc) {
                         try {
                             const canvas = document.createElement('canvas');
                             canvas.width = this.naturalWidth; canvas.height = this.naturalHeight;
@@ -1168,15 +1325,10 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             game.currentRetries = 0;
 
             const cleanWord = item.english.includes('(') ? item.english.split('(')[0].trim() : item.english;
-            document.getElementById('word-display').innerHTML = `${cleanWord} <span style="color: var(--neon-pink); font-size: 0.6em;">(${item.spanish})</span>`;
-            
+            const displayEl = document.getElementById('word-display');
+            if (displayEl) displayEl.innerHTML = `${cleanWord} <span style="color: var(--neon-pink); font-size: 0.6em;">(${item.spanish})</span>`;
             const ipaEl = document.getElementById('word-ipa');
             if (ipaEl) ipaEl.innerText = item.ipa || '';
-
-            const ygLink = document.getElementById('youglish-link');
-            if (ygLink) {
-                ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english`;
-            }
 
             document.getElementById('prompt-pronounce').innerText = 'PRACTICE: SAY THE WORD';
             document.getElementById('feedback-msg').innerText = "";
@@ -1209,15 +1361,15 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             game.lastText = text;
             const u = new SpeechSynthesisUtterance(text);
             const voices = window.speechSynthesis.getVoices();
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
             // Rate from slider or override
             const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.7);
             u.rate = rateOverride !== undefined ? rateOverride : sliderRate;
-            u.lang = 'en-US';
+            u.lang = langInfo.speechLang;
 
-            const femaleNames = ['female', 'woman', 'girl', 'samantha', 'zira', 'google'];
-            let f = voices.find(v => v.lang.startsWith('en') && femaleNames.some(name => v.name.toLowerCase().includes(name)));
-            if (!f) f = voices.find(v => v.lang.startsWith('en'));
+            let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
+            if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code));
             if (f) u.voice = f;
 
             u.onstart = () => {
@@ -1251,6 +1403,7 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         },
 
         toggleMic: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             if (document.getElementById('mic-btn').classList.contains('listening')) { game.stopMic(); return; }
             if (!game.recognition) {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1259,7 +1412,7 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
                 game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
                 game.recognition.onend = () => { document.getElementById('mic-btn').classList.remove('listening'); game.stopTimer(); };
             }
-            game.recognition.lang = 'en-US';
+            game.recognition.lang = langInfo.speechLang;
             try {
                 document.getElementById('mic-btn').classList.add('listening');
                 game.recognition.start(); game.startTimer(); scrollToMicArea('mic-btn');
@@ -1315,9 +1468,10 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         },
 
         getSpecificAdvice: async (targetWord, spokenWord) => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const container = document.getElementById('ai-advice');
             container.innerHTML = "🤔 Analyzing your pronunciation..."; container.classList.remove('hidden');
-            const prompt = `I'm an English student. I tried to say "${targetWord}" but I said "${spokenWord}". Give me a very brief, practical tip (1-2 sentences) to correct my pronunciation. Be direct and friendly. Answer in English.`;
+            const prompt = `I'm a ${langInfo.aiPromptLang} student. I tried to say "${targetWord}" in ${langInfo.name} but I said "${spokenWord}". Give me a very brief, practical tip (1-2 sentences) to correct my pronunciation. Be direct and friendly. Answer in ${langInfo.name}.`;
             await app.callAI_Text(prompt, null, (text) => { container.innerHTML = `<strong>💡 Tip:</strong> ${text}`; });
         },
 
@@ -1364,6 +1518,7 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         start: async (words, topicTitle = "Conversation Practice") => {
             if (!words || words.length === 0) return alert("No words to practice.");
             conversation.targetWords = words;
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const wordsList = words.map(w => w.english.includes('(') ? w.english.split('(')[0].trim() : w.english).join(', ');
 
             app.switchView('view-conversation');
@@ -1371,7 +1526,7 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             document.getElementById('conversation-topic-title').innerText = topicTitle;
 
             const historyEl = document.getElementById('conversation-history');
-            historyEl.innerHTML = '<p style="color: var(--cyber-warn);">🎓 Teacher is preparing your conversation text...</p>';
+            historyEl.innerHTML = `<p style="color: var(--cyber-warn);">🎓 ${langInfo.teacherName} is preparing your conversation text in ${langInfo.name}...</p>`;
             document.getElementById('convo-spoken-text').innerText = '...';
 
             conversation.history = [];
@@ -1384,19 +1539,21 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             const level = levelMap[currentLevelNum];
             const isAdvanced = currentLevelNum >= 3; // B2 (3) and C1+ (4)
 
-            const systemPrompt = `You are a friendly English teacher. The student is practicing these vocabulary words: ${wordsList}. Their level is ${level}.
+            const systemPrompt = `You are ${langInfo.teacherName}, a friendly and expert ${langInfo.aiPromptLang} teacher.
+The student is practicing these vocabulary words: ${wordsList}.
+Their academic level is ${level}.
 
 YOUR TASK:
-Create a VERY SHORT, natural and coherent text in English of MAXIMUM 2 SENTENCES that naturally uses all the target words in context.
+Create a VERY SHORT, natural and coherent text in ${langInfo.aiPromptLang} of MAXIMUM 2 SENTENCES that naturally uses all the target words in context.
 Also provide its Spanish translation.
 
 CRITICAL: Respond ONLY with a valid JSON object:
 {
-  "speech": "Your short English text here (MAXIMUM 2 SENTENCES) using all words naturally",
+  "speech": "Your short ${langInfo.aiPromptLang} text here (MAXIMUM 2 SENTENCES) using all words naturally",
   "speech_trans": "Traducción completa al español del texto"
 }`;
 
-            const userPrompt = `Create a short context text (maximum 2 sentences) using these words: ${wordsList}.`;
+            const userPrompt = `Create a short context text in ${langInfo.aiPromptLang} (maximum 2 sentences) using these words: ${wordsList}.`;
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
                 conversation.expectedText = data.speech;
@@ -1407,14 +1564,14 @@ CRITICAL: Respond ONLY with a valid JSON object:
                     return `<span class="tech" style="display:inline-block; margin:2px 4px; padding:3px 8px; font-size:0.75rem; border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius:3px; background:rgba(0,243,255,0.08);">${clean}</span>`;
                 }).join('');
 
-                const teacherEnglishMarkup = isAdvanced ? `
+                const teacherAudioMarkup = isAdvanced ? `
                     <div class="convo-msg convo-msg-teacher">
-                        <strong>🔊 Teacher:</strong><br>
-                        <div style="margin-top:6px; font-size: 0.9rem; color: #888; font-style: italic;">🎧 [Escucha atentamente el audio en inglés. Al estar en nivel B2+, el texto en inglés permanece oculto. Traduce el texto en castellano de abajo al inglés]</div>
+                        <strong>🔊 ${langInfo.teacherName} (${langInfo.teacherTitle}):</strong><br>
+                        <div style="margin-top:6px; font-size: 0.9rem; color: #888; font-style: italic;">🎧 [Escucha atentamente el audio en ${langInfo.name}. Al estar en nivel B2+, el texto en ${langInfo.name} permanece oculto. Traduce el texto en castellano de abajo al ${langInfo.name}]</div>
                     </div>
                 ` : `
                     <div class="convo-msg convo-msg-teacher">
-                        <strong>🔊 Teacher (Listen carefully):</strong><br>
+                        <strong>🔊 ${langInfo.teacherName} (Listen carefully):</strong><br>
                         <div style="margin-top:8px; font-size: 1.15rem; color: #FFF; line-height: 1.6;">${data.speech}</div>
                     </div>
                 `;
@@ -1424,12 +1581,12 @@ CRITICAL: Respond ONLY with a valid JSON object:
                         🎯 <strong>Target Words:</strong><br>
                         <div style="margin-top:6px;">${wordsChips}</div>
                     </div>
-                    ${teacherEnglishMarkup}
+                    ${teacherAudioMarkup}
                     <div class="convo-msg convo-msg-system" style="border-left-color: var(--neon-pink);">
-                        <strong>📖 Texto en castellano${isAdvanced ? ' (Dilo en inglés):' : ':'}</strong><br>
+                        <strong>📖 Texto en castellano${isAdvanced ? ` (Dilo en ${langInfo.name}):` : ':'}</strong><br>
                         <div style="margin-top: 6px; font-size: 1.05rem; color: var(--neon-pink); font-weight: ${isAdvanced ? '600' : 'normal'};">${data.speech_trans}</div>
                     </div>
-                    <div class="convo-msg convo-msg-system">🎤 <strong>Tu turno:</strong> Pulsa el micrófono y di el texto en inglés como la profesora.</div>
+                    <div class="convo-msg convo-msg-system">🎤 <strong>Tu turno:</strong> Pulsa el micrófono y di el texto en ${langInfo.name} como la profesora.</div>
                 `;
 
                 game.speakText(data.speech);
@@ -1437,16 +1594,17 @@ CRITICAL: Respond ONLY with a valid JSON object:
         },
 
         toggleMic: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn-convo');
             if (micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
             if (!conversation.recognition) {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
                 if (!SR) return alert("Browser does not support speech recognition.");
                 conversation.recognition = new SR();
-                conversation.recognition.lang = 'en-US';
                 conversation.recognition.onresult = (e) => conversation.onResult(e.results[0][0].transcript);
                 conversation.recognition.onend = () => micBtn.classList.remove('listening');
             }
+            conversation.recognition.lang = langInfo.speechLang;
             try { micBtn.classList.add('listening'); conversation.recognition.start(); scrollToMicArea('mic-btn-convo'); }
             catch(e) { micBtn.classList.remove('listening'); }
         },
@@ -1458,11 +1616,12 @@ CRITICAL: Respond ONLY with a valid JSON object:
 
         onResult: async (transcript) => {
             conversation.stopMic();
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             document.getElementById('convo-spoken-text').innerText = `You said: "${transcript}"`;
             const historyEl = document.getElementById('conversation-history');
             historyEl.innerHTML += `<div class="convo-msg convo-msg-user"><strong>🎤 You said:</strong> "${transcript}"</div>`;
 
-            historyEl.innerHTML += `<div id="convo-analyzing" class="convo-msg convo-msg-system" style="color:var(--cyber-warn);">🧠 Analyzing your pronunciation and delivery with AI...</div>`;
+            historyEl.innerHTML += `<div id="convo-analyzing" class="convo-msg convo-msg-system" style="color:var(--cyber-warn);">🧠 Analyzing your pronunciation with AI...</div>`;
 
             conversation.history.push({ role: 'user', content: transcript });
             conversation.turn++;
@@ -1470,29 +1629,29 @@ CRITICAL: Respond ONLY with a valid JSON object:
             const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
             const level = levelMap[db.academy_level || 0];
 
-            const systemPrompt = `You are an elite AI English pronunciation coach evaluating a ${level} student.
-The student listened to this exact target English text:
+            const systemPrompt = `You are ${langInfo.teacherName}, an elite AI ${langInfo.aiPromptLang} pronunciation and speech coach evaluating a ${level} student.
+The student listened to this exact target ${langInfo.aiPromptLang} text:
 "${conversation.expectedText}"
 
 And the student repeated this via speech-to-text:
 "${transcript}"
 
 YOUR TASK:
-1. Deeply analyze the student's spoken accuracy and pronunciation.
+1. Deeply analyze the student's spoken accuracy and pronunciation in ${langInfo.aiPromptLang}.
 2. Calculate an accuracy score percentage (0-100).
-3. Give friendly, spoken coaching in English pointing out what was pronounced well, and specific phonetics/sounds to improve.
+3. Give friendly, spoken coaching in ${langInfo.aiPromptLang} pointing out what was pronounced well, and specific phonetics/sounds to improve.
 4. Provide Spanish translation of your coaching.
 
 CRITICAL: Return ONLY a valid JSON object:
 {
   "accuracy": 88,
   "verdict": "Excellent / Great Job / Good Effort / Needs Practice",
-  "feedback_speech": "Spoken English coaching feedback",
+  "feedback_speech": "Spoken ${langInfo.aiPromptLang} coaching feedback",
   "feedback_trans": "Traducción al español del feedback",
-  "tips": "Specific pronunciation tip for difficult sounds"
+  "tips": "Specific pronunciation tip for difficult sounds in ${langInfo.aiPromptLang}"
 }`;
 
-            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: `Evaluate student pronunciation.`}], null, (data) => {
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: `Evaluate student pronunciation in ${langInfo.aiPromptLang}.`}], null, (data) => {
                 const analyzingEl = document.getElementById('convo-analyzing');
                 if (analyzingEl) analyzingEl.remove();
 
@@ -1503,7 +1662,7 @@ CRITICAL: Return ONLY a valid JSON object:
                 historyEl.innerHTML += `
                     <div class="convo-msg convo-msg-teacher" style="border-left: 3px solid ${scoreColor};">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <strong style="color:var(--neon-cyan);">🎓 AI Pronunciation Analysis:</strong>
+                            <strong style="color:var(--neon-cyan);">🎓 AI Pronunciation Analysis (${langInfo.teacherName}):</strong>
                             <span class="tech" style="color:${scoreColor}; font-size:1rem; font-weight:bold; border:1px solid ${scoreColor}; padding:3px 8px; border-radius:4px;">
                                 ${score}% [${verdict}]
                             </span>
