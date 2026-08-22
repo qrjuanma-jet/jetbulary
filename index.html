@@ -244,55 +244,38 @@
     <!-- ====== VIEW: DASHBOARD ====== -->
     <div id="view-dashboard" class="container hidden">
         <img src="icon.png" alt="Jetbulary Logo" class="app-logo" style="border-radius: 0 0 20px 20px; border: 1px solid var(--neon-cyan); box-shadow: var(--cyber-glow);">
-        <h2 class="tech" style="text-shadow: var(--cyber-glow-strong);">CORE STATUS: ACTIVE</h2>
 
-        <!-- ACADEMY LEVEL -->
-        <div style="background: rgba(0,0,0,0.4); padding: 15px; border: 1px solid var(--neon-cyan); margin-bottom: 20px; border-radius: 4px;">
-            <label class="tech" style="color: var(--neon-cyan); font-weight: bold; display: block; margin-bottom: 15px;">[ ACADEMIC LEVEL ] <span id="academy-level-display" style="color: white; float: right; font-size: 0.9rem;"></span></label>
-            <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
-            <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: #888; margin-top: 5px;">
-                <span>A0</span><span>A1-A2</span><span>B1</span><span>B2</span><span>C1+</span>
+        <!-- COLLAPSIBLE ACADEMY LEVEL -->
+        <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); margin-bottom: 15px; border-radius: 6px; overflow: hidden;">
+            <div onclick="app.toggleLevelPicker()" style="padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
+                <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.9rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF;"></span></span>
+                <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.8rem; transition: transform 0.3s;">▼</span>
+            </div>
+            <div id="level-picker-body" class="hidden" style="padding: 15px; border-top: 1px solid rgba(0,243,255,0.2); background: rgba(0,0,0,0.4);">
+                <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
+                <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: #888; margin-top: 8px;">
+                    <span>A0 (Zero)</span><span>A1-A2</span><span>B1</span><span>B2</span><span>C1+ (Pro)</span>
+                </div>
             </div>
         </div>
 
         <!-- AVATAR -->
-        <div class="avatar-container" id="avatar-dash"></div>
+        <div class="avatar-container" id="avatar-dash" style="margin: 15px auto;"></div>
 
         <!-- LIST SELECTOR -->
-        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px; background: rgba(0,243,255,0.05); padding: 15px; border: 1px solid var(--neon-cyan); border-radius: 4px;">
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px; background: rgba(0,243,255,0.05); padding: 12px 15px; border: 1px solid var(--neon-cyan); border-radius: 4px;">
             <span class="tech" style="color: var(--neon-cyan); font-size: 0.8rem; white-space: nowrap;">[ LIST ]</span>
-            <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="flex: 1; background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 10px; font-family: 'Orbitron'; cursor: pointer;">
+            <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="flex: 1; background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 8px 10px; font-family: 'Orbitron'; cursor: pointer;">
                 <option value="">Select a list...</option>
             </select>
         </div>
 
-        <!-- SESSION BUTTONS -->
-        <button onclick="session.start()" class="success" style="width: 100%; padding: 22px; font-size: 1.2rem; margin-bottom: 12px; font-weight: bold;">🚀 START TODAY'S SESSION</button>
-        <button onclick="session.reviewAll()" class="warning" style="width: 100%; padding: 18px; font-size: 1rem; margin-bottom: 12px;">📖 REVIEW ALL WORDS</button>
+        <!-- MAIN ACTION BUTTONS -->
+        <button onclick="session.start()" class="success" style="width: 100%; padding: 22px; font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px;">🚀 START</button>
+        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 VOCABULARY</button>
 
-        <!-- GENERATE NEW LIST -->
-        <div style="display:flex; flex-direction: column; gap: 10px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-            <button onclick="app.generateListFromInput()" class="warning" style="width: 100%; padding: 15px; font-weight: bold; border-color: var(--neon-pink); color: var(--neon-pink);">[ GENERATE NEW LIST ]</button>
-            <input type="text" id="list-topic-input" placeholder="TYPE A TOPIC HERE (OPTIONAL)" style="background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 15px; font-family: 'Orbitron'; font-size: 0.9rem;"
-                onkeydown="if(event.key==='Enter'){event.preventDefault(); app.generateListFromInput();}">
-            <p class="tech" style="font-size: 0.75rem; color: #888; line-height: 1.4; border-left: 2px solid var(--neon-pink); padding-left: 10px; text-align: left;">
-                * If left empty, the teacher will pick an essential topic for your level.
-            </p>
-        </div>
-
-        <!-- MY NOTEBOOK -->
-        <details style="margin-bottom: 20px; border: 1px solid var(--cyber-ok); background: linear-gradient(45deg, #001100, #004d00); border-radius: 2px;">
-            <summary class="tech" style="padding: 20px; font-size: 1.1rem; cursor: pointer; color: var(--cyber-ok); text-align: center; list-style: none; font-weight: bold;">📚 MY NOTEBOOK</summary>
-            <div style="padding: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 15px; font-size: 1rem;">📚 VOCABULARY</button>
-                <button onclick="app.showStats()" class="secondary" style="width: 100%; padding: 15px; font-size: 1rem;">📊 STATISTICS</button>
-                <button onclick="app.exportDB()" class="secondary" style="width: 100%; padding: 15px; font-size: 0.9rem;">💾 SAVE PROGRESS</button>
-            </div>
-        </details>
-
-        <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--cyber-border);">
-            <button id="install-btn" onclick="app.installApp()" class="secondary hidden" style="width: 100%; margin-bottom: 12px; font-size: 0.85rem; border-color: var(--neon-cyan); color: var(--neon-cyan);">📲 INSTALL JETBULARY APP</button>
-            <button onclick="app.logout()" class="secondary" style="width: 100%; opacity: 0.6; font-size: 0.8rem;">CHANGE API KEY / LOGOUT</button>
+        <div style="text-align: center; padding: 15px; border-top: 1px solid rgba(0,243,255,0.15);">
+            <button onclick="app.logout()" class="secondary" style="width: auto; opacity: 0.6; font-size: 0.75rem; border: none; padding: 8px 16px;">CHANGE API KEY / LOGOUT</button>
         </div>
     </div>
 
@@ -387,71 +370,74 @@
     </div>
 
     <!-- ====== VIEW: VOCABULARY ====== -->
-    <div id="view-vocab" class="container hidden">
-        <h2>My Vocabulary</h2>
-        <div style="margin: 20px 0;">
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 20px; background: rgba(0,243,255,0.05); padding: 15px; border: 1px solid var(--neon-cyan); border-radius: 4px;">
-                <span class="tech" style="color: var(--neon-cyan); font-size: 0.8rem; white-space: nowrap;">[ LISTS ]</span>
-                <select id="vocab-topic-selector" onchange="vocab.changeTopic(this.value)" style="flex: 1; background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 10px; font-family: 'Orbitron'; cursor: pointer;">
-                    <option value="all">ALL WORDS</option>
-                </select>
-            </div>
-            <div id="active-topic-header" class="hidden" style="background: rgba(0,243,255,0.1); border: 1px solid var(--neon-cyan); padding: 15px; margin-bottom: 20px; border-radius: 4px; text-align: left;">
-                <h3 id="active-topic-name" class="tech" style="color: var(--neon-cyan); margin: 0 0 15px 0; font-size: 1.1rem;"></h3>
-                <button onclick="vocab.startTrainingFromList()" class="success" style="width: 100%; padding: 15px; font-weight: bold;">🚀 TRAIN WITH THIS LIST</button>
-            </div>
+    <div id="view-vocab" class="container hidden" style="text-align: left; padding-bottom: 80px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0; text-align: left;">📚 Vocabulary</h2>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Back</button>
+        </div>
 
-            <!-- GENERATE NEW LIST -->
-            <div style="display:flex; flex-direction: column; gap: 10px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                <button onclick="app.generateListFromInput()" class="warning" style="width: 100%; padding: 15px; font-weight: bold; border-color: var(--neon-pink); color: var(--neon-pink);">[ GENERATE NEW LIST ]</button>
-                <input type="text" id="list-topic-input-vocab" placeholder="TYPE A TOPIC (OPTIONAL)" style="background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 15px; font-family: 'Orbitron'; font-size: 0.9rem;"
-                    onkeydown="if(event.key==='Enter'){event.preventDefault(); app.generateListFromInput();}">
+        <p style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Select words to practice in conversation, or use the audio buttons to hear pronunciations.</p>
+
+        <!-- SEARCH & LIST FILTER -->
+        <div style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;">
+            <select id="vocab-topic-selector" onchange="vocab.changeTopic(this.value)" style="flex: 1; min-width: 140px; background: #000; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 8px; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer;">
+                <option value="all">ALL WORDS</option>
+            </select>
+            <input type="text" id="vocab-search" placeholder="🔍 Search word..." oninput="vocab.onSearch(this.value)" style="flex: 1; min-width: 140px; padding: 8px; font-size: 0.85rem;">
+        </div>
+
+        <!-- SELECTION CONTROLS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.8rem;">
+            <span id="vocab-selection-count" class="tech" style="color: var(--neon-cyan);">0 words selected</span>
+            <div style="display: flex; gap: 8px;">
+                <button onclick="vocab.selectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;">Select All</button>
+                <button onclick="vocab.deselectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;">Clear</button>
             </div>
         </div>
-        <div id="vocab-list" style="max-height: 400px; overflow-y: auto;"></div>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Back</button>
-    </div>
 
-    <!-- ====== VIEW: STATS ====== -->
-    <div id="view-stats" class="container hidden">
-        <h2>📊 Statistics</h2>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-            <div class="hud-card" style="text-align: center;"><p class="tech" style="color: var(--neon-cyan); font-size: 2rem;" id="stat-total">0</p><p style="font-size: 0.8rem;">Words Practiced</p></div>
-            <div class="hud-card" style="text-align: center;"><p class="tech" style="color: var(--cyber-ok); font-size: 2rem;" id="stat-acc">0%</p><p style="font-size: 0.8rem;">Accuracy</p></div>
+        <!-- STICKY ACTION BUTTON TO START CONVERSATION -->
+        <div style="position: sticky; top: 10px; z-index: 100; margin-bottom: 15px;">
+            <button id="btn-convo-selected" onclick="vocab.startSelectedConversation()" class="success" style="width: 100%; padding: 14px; font-size: 0.95rem; font-weight: bold; box-shadow: var(--cyber-glow); opacity: 0.5; pointer-events: none;">
+                💬 CONVERSATION WITH SELECTED WORDS
+            </button>
         </div>
-        <button onclick="app.showDashboard()" class="secondary" style="margin-top:10px;">Back</button>
-    </div>
 
+        <!-- WORD LIST -->
+        <div id="vocab-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
     <!-- ====== VIEW: PRIVACY ====== -->
     <div id="view-privacy" class="container hidden" style="text-align: left;">
-        <h2>Privacy Policy</h2>
+        <h2>Política de Privacidad</h2>
         <div class="hud-card">
-            <p style="color:#AAA;">Your API Key is used solely to connect with the Groq inference engine.</p>
-            <p style="color:#AAA; margin-top:10px;">We do not collect, store, or share personal data. All data is stored locally in your browser using localStorage.</p>
-            <p style="color:#AAA; margin-top:10px;">This app uses Google AdSense for advertising. Google may use cookies for personalized ads.</p>
+            <p style="color:#AAA;">Tu clave de API (Groq API Key) se utiliza exclusivamente para conectar de forma directa con el motor de inferencia de Groq y no se almacena en ningún servidor externo.</p>
+            <p style="color:#AAA; margin-top:10px;">No recopilamos ni compartimos datos personales. Todo el progreso se guarda localmente en tu navegador mediante localStorage.</p>
+            <p style="color:#AAA; margin-top:10px;">Esta aplicación utiliza Google AdSense para la optimización de publicidad. Google puede utilizar cookies para anuncios personalizados.</p>
+            <p style="color:#AAA; margin-top:10px;">Contacto de soporte: <a href="mailto:soporte@jetbulary.com" style="color:var(--neon-cyan);">soporte@jetbulary.com</a></p>
         </div>
-        <button onclick="app.showDashboard()" class="secondary">Back</button>
+        <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
     <!-- ====== VIEW: TERMS ====== -->
     <div id="view-terms" class="container hidden" style="text-align: left;">
-        <h2>Terms of Service</h2>
+        <h2>Términos de Uso</h2>
         <div class="hud-card">
-            <p style="color:#AAA;">By using Jetbulary, you agree to use the service responsibly and within the terms of the Groq API.</p>
-            <p style="color:#AAA; margin-top:10px;">This is a free educational tool. No warranties are provided.</p>
+            <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
+            <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
+            <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:soporte@jetbulary.com" style="color:var(--neon-cyan);">soporte@jetbulary.com</a>.</p>
         </div>
-        <button onclick="app.showDashboard()" class="secondary">Back</button>
+        <button onclick="app.showDashboard()" class="secondary">Volver</button>
     </div>
 
-    <!-- COOKIE BANNER -->
-    <div id="cookie-banner" class="hidden">
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
-            <p>🍪 <span class="tech" style="color:var(--neon-cyan); font-size:0.7rem;">[COOKIES]</span> We use cookies for ads optimization. By continuing, you accept our <a href="#" onclick="app.showPrivacy()" style="color: var(--neon-cyan);">Privacy Policy</a>.</p>
-            <button onclick="app.acceptCookies()" class="success" style="padding: 10px 25px; font-size: 0.8rem; margin: 0;">ACCEPT</button>
+    <!-- ====== GLOBAL FOOTER ====== -->
+    <footer style="max-width: 700px; margin: 40px auto 30px; padding: 20px 15px; border-top: 1px solid rgba(0,243,255,0.15); text-align: center; font-size: 0.8rem; color: #888;">
+        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+            <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
+            <span style="color: #444;">|</span>
+            <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
+            <span style="color: #444;">|</span>
+            <a href="mailto:soporte@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">Soporte: soporte@jetbulary.com</a>
         </div>
-    </div>
-
-    </div>
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM</p>
+    </footer>
 
 <script>
     // ====== SCROLL TO MIC ======
@@ -669,66 +655,26 @@
 
         startConversationPhase: () => {
             session.phase = 'conversation';
-            const wordsList = session.currentWords.map(w => w.english.includes('(') ? w.english.split('(')[0].trim() : w.english).join(', ');
-
-            app.switchView('view-conversation');
-            game.updateAvatar();
-            document.getElementById('conversation-topic-title').innerText = 'Today\'s Words';
-
-            const historyEl = document.getElementById('conversation-history');
-            historyEl.innerHTML = '<p style="color: var(--cyber-warn);">🎓 Starting conversation phase...</p>';
-            document.getElementById('convo-spoken-text').innerText = '...';
-
-            conversation.history = [];
-            conversation.turn = 0;
-            conversation.autoMic = true;
-            conversation.setAutoMic(true);
-
-            const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
-            const level = levelMap[db.academy_level || 0];
-
-            const systemPrompt = `You are a friendly English teacher. The student just practiced these 4 vocabulary words: ${wordsList}. Their level is ${level}.
-
-YOUR TASK:
-1. First, explain in English what the exercise will be (keep it simple and encouraging).
-2. Then create a VERY SHORT coherent text (2-3 sentences max) that naturally uses all 4 words in context.
-3. Say this text clearly so the student can hear it.
-
-CRITICAL: Respond ALWAYS in English. The "speech" field must NEVER contain Spanish.
-
-Respond with a JSON object: {"speech": "Your English text here", "speech_trans": "Spanish translation", "context_text_en": "The short text using all 4 words", "context_text_es": "Spanish translation of the text"}`;
-
-            const userPrompt = `Start the conversation exercise with the words: ${wordsList}. Explain what we'll do, then say the short text.`;
-
-            (async () => {
-                await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
-                    conversation.history.push({ role: 'teacher', content: data.speech, trans: data.speech_trans });
-
-                    historyEl.innerHTML = `
-                        <div class="convo-msg convo-msg-system">🎓 <strong>Exercise:</strong> Listen to the text, then repeat it in English.</div>
-                        <div class="convo-msg convo-msg-teacher">
-                            <strong>🔊 Teacher:</strong><br>
-                            <div style="margin-top:8px; font-size: 1.05rem;">${data.speech}</div>
-                            ${data.speech_trans ? `<div style="margin-top:8px; color: var(--neon-pink); font-size: 0.85rem;">📝 ${data.speech_trans}</div>` : ''}
-                        </div>
-                        ${data.context_text_en ? `
-                        <div class="convo-msg convo-msg-system" style="border-left-color: var(--neon-cyan);">
-                            <strong>📖 Text to repeat:</strong><br>
-                            <div style="margin-top: 8px; font-size: 1.1rem; color: var(--neon-cyan);">${data.context_text_en}</div>
-                            ${data.context_text_es ? `<div style="margin-top: 8px; color: var(--neon-pink); font-size: 0.9rem;">${data.context_text_es}</div>` : ''}
-                        </div>` : ''}
-                        <div class="convo-msg convo-msg-system">🎤 <strong>Your turn!</strong> Repeat the text in English.</div>
-                    `;
-
-                    conversation.expectedText = data.context_text_en || data.speech;
-                    game.speakText(data.speech);
-                });
-            })();
+            conversation.start(session.currentWords, "Today's Words");
         }
     };
 
     // ====== APP OBJECT ======
     const app = {
+        toggleLevelPicker: () => {
+            const body = document.getElementById('level-picker-body');
+            const chevron = document.getElementById('level-chevron');
+            if (!body) return;
+            const isHidden = body.classList.contains('hidden');
+            if (isHidden) {
+                body.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        },
+
         saveAcademyLevel: (val) => { db.academy_level = parseInt(val); app.saveDB(); app.updateAcademyLevelDisplay(val); },
         updateAcademyLevelDisplay: (val) => {
             const display = document.getElementById('academy-level-display');
@@ -1015,68 +961,130 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
     // ====== VOCAB OBJECT ======
     const vocab = {
         activeTopicId: 'all',
+        selectedIds: new Set(),
+        searchQuery: '',
 
-        startTrainingFromList: () => {
-            const topic = db.topics.find(t => t.id == vocab.activeTopicId);
-            if (topic) {
-                session.selectedListId = topic.id;
-                session.start();
-            } else { alert("Select a list first"); }
+        onSearch: (q) => {
+            vocab.searchQuery = (q || '').trim().toLowerCase();
+            vocab.render();
         },
 
         changeTopic: (val) => {
             vocab.activeTopicId = val;
-            const header = document.getElementById('active-topic-header');
-            if (val !== 'all') {
-                const topic = db.topics.find(t => t.id == val);
-                if (topic) {
-                    document.getElementById('active-topic-name').innerText = topic.name;
-                    header.classList.remove('hidden');
-                }
-            } else { header.classList.add('hidden'); }
             vocab.render();
+        },
+
+        toggleSelect: (id) => {
+            if (vocab.selectedIds.has(id)) {
+                vocab.selectedIds.delete(id);
+            } else {
+                vocab.selectedIds.add(id);
+            }
+            vocab.updateSelectionUI();
+        },
+
+        selectAll: () => {
+            const visibleWords = vocab.getFilteredWords();
+            visibleWords.forEach(w => vocab.selectedIds.add(w.id));
+            vocab.render();
+        },
+
+        deselectAll: () => {
+            vocab.selectedIds.clear();
+            vocab.render();
+        },
+
+        updateSelectionUI: () => {
+            const count = vocab.selectedIds.size;
+            const countEl = document.getElementById('vocab-selection-count');
+            const btn = document.getElementById('btn-convo-selected');
+            if (countEl) countEl.innerText = `${count} word${count === 1 ? '' : 's'} selected`;
+            if (btn) {
+                btn.style.opacity = count > 0 ? '1' : '0.5';
+                btn.style.pointerEvents = count > 0 ? 'auto' : 'none';
+                btn.innerHTML = `💬 START CONVERSATION WITH (${count}) SELECTED WORDS`;
+            }
+        },
+
+        getFilteredWords: () => {
+            return db.words.filter(w => {
+                const topic = db.topics.find(t => t.id === w.topic_id);
+                if (!topic || (topic.lang || 'en') !== 'en') return false;
+                if (vocab.activeTopicId !== 'all' && w.topic_id != vocab.activeTopicId) return false;
+                if (vocab.searchQuery) {
+                    const matchEn = w.english.toLowerCase().includes(vocab.searchQuery);
+                    const matchEs = (w.spanish || '').toLowerCase().includes(vocab.searchQuery);
+                    if (!matchEn && !matchEs) return false;
+                }
+                return true;
+            });
         },
 
         render: () => {
             const list = document.getElementById('vocab-list');
             const selector = document.getElementById('vocab-topic-selector');
-            if (!selector) return;
+            if (!list || !selector) return;
 
             const topics = db.topics.filter(t => (t.lang || 'en') === 'en');
             selector.innerHTML = '<option value="all">ALL WORDS</option>' +
                 topics.map(t => `<option value="${t.id}" ${t.id == vocab.activeTopicId ? 'selected' : ''}>${t.name.toUpperCase()}</option>`).join('');
 
-            let words = db.words.filter(w => {
-                const topic = db.topics.find(t => t.id === w.topic_id);
-                if (!topic || (topic.lang || 'en') !== 'en') return false;
-                if (vocab.activeTopicId !== 'all' && w.topic_id != vocab.activeTopicId) return false;
-                return true;
-            });
-
-            words = words.map(w => {
+            let words = vocab.getFilteredWords().map(w => {
                 const p = db.progress.find(pr => pr.word_id === w.id);
-                const score = p && p.attempts > 0 ? Math.round((p.successes/p.attempts)*100) : -1;
+                const score = p && p.attempts > 0 ? Math.round((p.successes / p.attempts) * 100) : -1;
                 return { ...w, score };
             }).sort((a,b) => a.score - b.score);
 
+            vocab.updateSelectionUI();
+
+            if (words.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">No words found.</p>';
+                return;
+            }
+
             list.innerHTML = words.map(w => {
                 const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
-                const badge = w.score === -1 ? '<span class="tech" style="color:#888; font-size:0.7rem; border:1px solid #888; padding:2px 5px;">[NEW]</span>' :
-                    w.score < 50 ? '<span class="tech" style="color:var(--cyber-danger); font-size:0.7rem; border:1px solid var(--cyber-danger); padding:2px 5px;">[HARD]</span>' :
-                    w.score < 80 ? '<span class="tech" style="color:var(--cyber-warn); font-size:0.7rem; border:1px solid var(--cyber-warn); padding:2px 5px;">[MEDIUM]</span>' :
-                    '<span class="tech" style="color:var(--neon-cyan); font-size:0.7rem; border:1px solid var(--neon-cyan); padding:2px 5px;">[OK]</span>';
-                return `<div class="vocab-item">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="color:var(--neon-cyan); font-weight:700; cursor:pointer;" onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')">${w.english}</span>
-                        <div>
-                            <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="font-size:0.7rem; color:var(--neon-cyan); text-decoration:none; border:1px solid rgba(0,243,255,0.3); padding:2px 6px; border-radius:3px; margin-right:5px;">👂 YouGlish</a>
-                            ${badge}
-                        </div>
+                const isChecked = vocab.selectedIds.has(w.id);
+                const badge = w.score === -1 ? '<span class="tech" style="color:#888; font-size:0.65rem; border:1px solid #888; padding:2px 4px; border-radius:3px;">[NEW]</span>' :
+                    w.score < 50 ? '<span class="tech" style="color:var(--cyber-danger); font-size:0.65rem; border:1px solid var(--cyber-danger); padding:2px 4px; border-radius:3px;">[HARD]</span>' :
+                    w.score < 80 ? '<span class="tech" style="color:var(--cyber-warn); font-size:0.65rem; border:1px solid var(--cyber-warn); padding:2px 4px; border-radius:3px;">[MEDIUM]</span>' :
+                    '<span class="tech" style="color:var(--cyber-ok); font-size:0.65rem; border:1px solid var(--cyber-ok); padding:2px 4px; border-radius:3px;">[OK]</span>';
+
+                return `
+                <div class="vocab-item" style="background: rgba(18,18,20,0.95); border: 1px solid ${isChecked ? 'var(--neon-cyan)' : 'var(--cyber-border)'}; border-radius: 6px; padding: 12px; box-shadow: ${isChecked ? 'var(--cyber-glow)' : 'none'}; transition: all 0.2s;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; flex: 1;">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="vocab.toggleSelect(${w.id})" style="width: 18px; height: 18px; accent-color: var(--neon-cyan); cursor: pointer;">
+                            <span style="color: var(--neon-cyan); font-weight: 700; font-size: 1.05rem;">${w.english}</span>
+                        </label>
+                        ${badge}
                     </div>
-                    <div style="color:var(--neon-pink); font-size:0.85rem; margin-top:4px;">${w.spanish}</div>
-                    <div style="color:#666; font-size:0.8rem; margin-top:4px; cursor:pointer;" onclick="game.speakText('${w.sentence_en?.replace(/'/g, "\\'") || ''}')">${w.sentence_en || ''}</div>
+                    <div style="color: var(--neon-pink); font-size: 0.85rem; margin-left: 28px; margin-bottom: 10px;">${w.spanish}</div>
+                    
+                    <!-- ACTION BUTTONS: WORD / SENTENCE / YOUGLISH -->
+                    <div style="display: flex; gap: 6px; margin-left: 28px; flex-wrap: wrap;">
+                        <button onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+                            🔊 Word
+                        </button>
+                        ${w.sentence_en ? `
+                        <button onclick="game.speakText('${w.sentence_en.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: var(--cyber-warn); color: var(--cyber-warn);">
+                            💬 Sentence
+                        </button>` : ''}
+                        <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 0.75rem; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,243,255,0.06); color: var(--neon-cyan); text-decoration: none; border-radius: 2px;">
+                            👂 Natives
+                        </a>
+                    </div>
                 </div>`;
             }).join('');
+        },
+
+        startSelectedConversation: () => {
+            if (vocab.selectedIds.size === 0) {
+                alert('Please select at least one word from the list.');
+                return;
+            }
+            const selectedWords = db.words.filter(w => vocab.selectedIds.has(w.id));
+            conversation.start(selectedWords, "Custom Vocabulary Practice");
         }
     };
 
@@ -1339,9 +1347,9 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); }
     };
 
-    // ====== CONVERSATION OBJECT ======
+    // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
     const conversation = {
-        history: [], turn: 0, recognition: null, autoMic: true, expectedText: '',
+        history: [], turn: 0, recognition: null, autoMic: true, expectedText: '', targetWords: [],
 
         repeat: () => { if (game.lastText) game.speakText(game.lastText); },
         repeatSlow: () => { if (game.lastText) game.speakText(game.lastText, 0.4); },
@@ -1351,6 +1359,81 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             const btnOn = document.getElementById('btn-convo-auto-on');
             const btnOff = document.getElementById('btn-convo-auto-off');
             if (btnOn && btnOff) { btnOn.className = state ? 'auto-mic-on' : 'secondary'; btnOff.className = state ? 'secondary' : 'auto-mic-on'; }
+        },
+
+        start: async (words, topicTitle = "Conversation Practice") => {
+            if (!words || words.length === 0) return alert("No words to practice.");
+            conversation.targetWords = words;
+            const wordsList = words.map(w => w.english.includes('(') ? w.english.split('(')[0].trim() : w.english).join(', ');
+
+            app.switchView('view-conversation');
+            game.updateAvatar();
+            document.getElementById('conversation-topic-title').innerText = topicTitle;
+
+            const historyEl = document.getElementById('conversation-history');
+            historyEl.innerHTML = '<p style="color: var(--cyber-warn);">🎓 Teacher is preparing your conversation text...</p>';
+            document.getElementById('convo-spoken-text').innerText = '...';
+
+            conversation.history = [];
+            conversation.turn = 0;
+            conversation.autoMic = true;
+            conversation.setAutoMic(true);
+
+            const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
+            const currentLevelNum = db.academy_level || 0;
+            const level = levelMap[currentLevelNum];
+            const isAdvanced = currentLevelNum >= 3; // B2 (3) and C1+ (4)
+
+            const systemPrompt = `You are a friendly English teacher. The student is practicing these vocabulary words: ${wordsList}. Their level is ${level}.
+
+YOUR TASK:
+Create a VERY SHORT, natural and coherent text in English of MAXIMUM 2 SENTENCES that naturally uses all the target words in context.
+Also provide its Spanish translation.
+
+CRITICAL: Respond ONLY with a valid JSON object:
+{
+  "speech": "Your short English text here (MAXIMUM 2 SENTENCES) using all words naturally",
+  "speech_trans": "Traducción completa al español del texto"
+}`;
+
+            const userPrompt = `Create a short context text (maximum 2 sentences) using these words: ${wordsList}.`;
+
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
+                conversation.expectedText = data.speech;
+                conversation.history.push({ role: 'teacher', content: data.speech, trans: data.speech_trans });
+
+                const wordsChips = words.map(w => {
+                    const clean = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
+                    return `<span class="tech" style="display:inline-block; margin:2px 4px; padding:3px 8px; font-size:0.75rem; border:1px solid var(--neon-cyan); color:var(--neon-cyan); border-radius:3px; background:rgba(0,243,255,0.08);">${clean}</span>`;
+                }).join('');
+
+                const teacherEnglishMarkup = isAdvanced ? `
+                    <div class="convo-msg convo-msg-teacher">
+                        <strong>🔊 Teacher:</strong><br>
+                        <div style="margin-top:6px; font-size: 0.9rem; color: #888; font-style: italic;">🎧 [Escucha atentamente el audio en inglés. Al estar en nivel B2+, el texto en inglés permanece oculto. Traduce el texto en castellano de abajo al inglés]</div>
+                    </div>
+                ` : `
+                    <div class="convo-msg convo-msg-teacher">
+                        <strong>🔊 Teacher (Listen carefully):</strong><br>
+                        <div style="margin-top:8px; font-size: 1.15rem; color: #FFF; line-height: 1.6;">${data.speech}</div>
+                    </div>
+                `;
+
+                historyEl.innerHTML = `
+                    <div class="convo-msg convo-msg-system">
+                        🎯 <strong>Target Words:</strong><br>
+                        <div style="margin-top:6px;">${wordsChips}</div>
+                    </div>
+                    ${teacherEnglishMarkup}
+                    <div class="convo-msg convo-msg-system" style="border-left-color: var(--neon-pink);">
+                        <strong>📖 Texto en castellano${isAdvanced ? ' (Dilo en inglés):' : ':'}</strong><br>
+                        <div style="margin-top: 6px; font-size: 1.05rem; color: var(--neon-pink); font-weight: ${isAdvanced ? '600' : 'normal'};">${data.speech_trans}</div>
+                    </div>
+                    <div class="convo-msg convo-msg-system">🎤 <strong>Tu turno:</strong> Pulsa el micrófono y di el texto en inglés como la profesora.</div>
+                `;
+
+                game.speakText(data.speech);
+            });
         },
 
         toggleMic: () => {
@@ -1377,39 +1460,65 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             conversation.stopMic();
             document.getElementById('convo-spoken-text').innerText = `You said: "${transcript}"`;
             const historyEl = document.getElementById('conversation-history');
-            historyEl.innerHTML += `<div class="convo-msg convo-msg-user"><strong>🎤 You:</strong> ${transcript}</div>`;
+            historyEl.innerHTML += `<div class="convo-msg convo-msg-user"><strong>🎤 You said:</strong> "${transcript}"</div>`;
+
+            historyEl.innerHTML += `<div id="convo-analyzing" class="convo-msg convo-msg-system" style="color:var(--cyber-warn);">🧠 Analyzing your pronunciation and delivery with AI...</div>`;
 
             conversation.history.push({ role: 'user', content: transcript });
             conversation.turn++;
 
-            // Ask AI to correct
             const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
             const level = levelMap[db.academy_level || 0];
 
-            const messages = [
-                { role: "system", content: `You are a friendly English teacher correcting a ${level} student. The student was asked to repeat a text. Compare what they said with what was expected, and give encouraging, specific feedback in English. If they did well, praise them! If they made mistakes, gently point out the differences.
+            const systemPrompt = `You are an elite AI English pronunciation coach evaluating a ${level} student.
+The student listened to this exact target English text:
+"${conversation.expectedText}"
 
-CRITICAL: Always respond in English only.
-Respond with JSON: {"speech": "Your correction/feedback in English", "speech_trans": "Spanish translation", "score": "good/needs_work"}` },
-                { role: "user", content: `Expected text: "${conversation.expectedText}"\nStudent said: "${transcript}"\n\nGive feedback.` }
-            ];
+And the student repeated this via speech-to-text:
+"${transcript}"
 
-            await app.callAI_Conversation(messages, null, (data) => {
-                conversation.history.push({ role: 'teacher', content: data.speech });
+YOUR TASK:
+1. Deeply analyze the student's spoken accuracy and pronunciation.
+2. Calculate an accuracy score percentage (0-100).
+3. Give friendly, spoken coaching in English pointing out what was pronounced well, and specific phonetics/sounds to improve.
+4. Provide Spanish translation of your coaching.
 
-                const scoreColor = data.score === 'good' ? 'var(--cyber-ok)' : 'var(--cyber-warn)';
+CRITICAL: Return ONLY a valid JSON object:
+{
+  "accuracy": 88,
+  "verdict": "Excellent / Great Job / Good Effort / Needs Practice",
+  "feedback_speech": "Spoken English coaching feedback",
+  "feedback_trans": "Traducción al español del feedback",
+  "tips": "Specific pronunciation tip for difficult sounds"
+}`;
+
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: `Evaluate student pronunciation.`}], null, (data) => {
+                const analyzingEl = document.getElementById('convo-analyzing');
+                if (analyzingEl) analyzingEl.remove();
+
+                const score = data.accuracy || 85;
+                const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--cyber-danger)';
+                const verdict = data.verdict || (score >= 80 ? 'Great Job!' : 'Keep Practicing!');
+
                 historyEl.innerHTML += `
-                    <div class="convo-msg convo-msg-teacher">
-                        <strong>🎓 Teacher:</strong><br>
-                        <div style="margin-top:8px;">${data.speech}</div>
-                        ${data.speech_trans ? `<div style="margin-top:8px; color: var(--neon-pink); font-size: 0.85rem;">📝 ${data.speech_trans}</div>` : ''}
-                        <div style="margin-top:8px; color: ${scoreColor}; font-weight: bold;">${data.score === 'good' ? '✅ Great job!' : '🔄 Try to improve'}</div>
+                    <div class="convo-msg convo-msg-teacher" style="border-left: 3px solid ${scoreColor};">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <strong style="color:var(--neon-cyan);">🎓 AI Pronunciation Analysis:</strong>
+                            <span class="tech" style="color:${scoreColor}; font-size:1rem; font-weight:bold; border:1px solid ${scoreColor}; padding:3px 8px; border-radius:4px;">
+                                ${score}% [${verdict}]
+                            </span>
+                        </div>
+                        <div style="margin-top:8px; line-height:1.5;">${data.feedback_speech}</div>
+                        ${data.feedback_trans ? `<div style="margin-top:8px; color: var(--neon-pink); font-size: 0.85rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">📝 ${data.feedback_trans}</div>` : ''}
+                        ${data.tips ? `<div style="margin-top:6px; color: var(--cyber-warn); font-size: 0.85rem;">💡 <strong>Tip:</strong> ${data.tips}</div>` : ''}
                     </div>
-                    <div style="text-align: center; margin: 15px 0;">
-                        <button onclick="app.showDashboard()" class="success" style="width: auto; padding: 15px 30px;">✅ FINISH SESSION</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap;">
+                        <button onclick="conversation.repeat()" class="secondary" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🔊 Listen Again</button>
+                        <button onclick="conversation.toggleMic()" class="warning" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🎤 Retry Speaking</button>
+                        <button onclick="app.showDashboard()" class="success" style="width: auto; padding: 12px 24px; font-weight: bold; font-size: 0.9rem;">✅ Finish Practice</button>
                     </div>
                 `;
-                game.speakText(data.speech);
+                game.speakText(data.feedback_speech);
             });
         }
     };
