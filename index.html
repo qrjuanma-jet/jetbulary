@@ -291,6 +291,7 @@
         </details>
 
         <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--cyber-border);">
+            <button id="install-btn" onclick="app.installApp()" class="secondary hidden" style="width: 100%; margin-bottom: 12px; font-size: 0.85rem; border-color: var(--neon-cyan); color: var(--neon-cyan);">📲 INSTALL JETBULARY APP</button>
             <button onclick="app.logout()" class="secondary" style="width: 100%; opacity: 0.6; font-size: 0.8rem;">CHANGE API KEY / LOGOUT</button>
         </div>
     </div>
@@ -303,17 +304,23 @@
         <!-- Session words overview -->
         <div id="session-words-overview" class="session-words"></div>
 
-        <p class="sentence" id="sentence-display"></p>
-        <small id="sentence-translation" style="display:block; margin-bottom: 20px; color: #666; font-size: 16px;"></small>
-        <div class="word-target" id="word-display"></div>
+        <div class="word-target" id="word-display" style="margin: 20px 0 5px 0;"></div>
+        <div id="word-ipa" class="tech" style="color: #888; font-size: 0.95rem; margin-bottom: 15px;"></div>
+
+        <!-- YOUGLISH NATIVE PRONUNCIATION BUTTON -->
+        <div style="margin: 10px 0 20px 0;">
+            <a id="youglish-link" href="#" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid var(--neon-cyan); background: rgba(0, 243, 255, 0.08); color: var(--neon-cyan); text-decoration: none; border-radius: 4px; font-size: 0.85rem; transition: all 0.3s; box-shadow: 0 0 10px rgba(0,243,255,0.2);">
+                <span>👂 HEAR NATIVES (YOUGLISH)</span>
+            </a>
+        </div>
 
         <!-- Controls: Slow / Mic / Speak -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 25px 0;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0;">
             <button onclick="game.speakWordSlow()" class="secondary" title="Hear slowly" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-pink); color: var(--neon-pink);">
                 <span style="font-size: 1.5rem;">🐢</span>
             </button>
             <button class="mic-btn" id="mic-btn" onclick="game.toggleMic()" style="margin: 0;">🎤</button>
-            <button onclick="game.speak()" class="secondary" title="Hear sentence" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-cyan); color: var(--neon-cyan);">
+            <button onclick="game.speak()" class="secondary" title="Hear word" style="width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--neon-cyan); color: var(--neon-cyan);">
                 <span style="font-size: 1.5rem;">🔊</span>
             </button>
         </div>
@@ -345,7 +352,6 @@
         </div>
 
         <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #AAA; font-size: 17px;"></div>
-        <a id="youglish-link" href="#" target="_blank" style="display:none;"></a>
         <button id="next-btn" class="success hidden" onclick="game.next()">Next ➡</button>
     </div>
 
@@ -445,8 +451,7 @@
         </div>
     </div>
 
-    <!-- INSTALL BUTTON -->
-    <button id="install-btn" onclick="app.installApp()" class="hidden" style="position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); width: auto; padding: 12px 24px; z-index: 4000;">📲 Install Jetbulary</button>
+    </div>
 
 <script>
     // ====== SCROLL TO MIC ======
@@ -1146,15 +1151,18 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
             const item = game.data[game.index];
             game.currentRetries = 0;
 
-            document.getElementById('sentence-display').innerHTML = item.sentence_en || '';
-            document.getElementById('sentence-translation').innerText = item.sentence_es || '';
-            document.getElementById('word-display').innerHTML = `${item.english} <span style="color: var(--neon-pink); font-size: 0.6em;">(${item.spanish})</span>`;
-
             const cleanWord = item.english.includes('(') ? item.english.split('(')[0].trim() : item.english;
-            const ygLink = document.getElementById('youglish-link');
-            ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english`;
+            document.getElementById('word-display').innerHTML = `${cleanWord} <span style="color: var(--neon-pink); font-size: 0.6em;">(${item.spanish})</span>`;
+            
+            const ipaEl = document.getElementById('word-ipa');
+            if (ipaEl) ipaEl.innerText = item.ipa || '';
 
-            document.getElementById('prompt-pronounce').innerText = 'SCAN MODE: ENGLISH';
+            const ygLink = document.getElementById('youglish-link');
+            if (ygLink) {
+                ygLink.href = `https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/english`;
+            }
+
+            document.getElementById('prompt-pronounce').innerText = 'PRACTICE: SAY THE WORD';
             document.getElementById('feedback-msg').innerText = "";
             document.getElementById('ai-advice').classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
@@ -1168,12 +1176,15 @@ Ensure minimum 40 real, useful words aligned to level "${levelLabel}".`;
         speak: () => {
             const item = game.data[game.index];
             if (!item) return;
-            game.speakText(item.sentence_en || item.english);
+            const cleanWord = item.english.includes('(') ? item.english.split('(')[0].trim() : item.english;
+            game.speakText(cleanWord);
         },
 
         speakWordSlow: () => {
-            if (!game.data[game.index]) return;
-            game.speakText(game.data[game.index].english, 0.4);
+            const item = game.data[game.index];
+            if (!item) return;
+            const cleanWord = item.english.includes('(') ? item.english.split('(')[0].trim() : item.english;
+            game.speakText(cleanWord, 0.4);
         },
 
         speakText: (text, rateOverride) => {
