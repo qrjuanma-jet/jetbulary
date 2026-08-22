@@ -438,110 +438,74 @@
         <div id="vocab-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
     </div>
 
-    <!-- ====== VIEW: TRANSLATOR (REAL-TIME CONVERSATION & FACE-TO-FACE APAISADO) ====== -->
-    <div id="view-translator" class="container hidden" style="text-align: left; padding-bottom: 80px; max-width: 920px;">
-        <!-- TOP COMPACT HEADER -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 14px; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="icon.png" alt="Jetbulary Logo" onclick="app.showDashboard()" style="width: 55px; height: 55px; border-radius: 12px; border: 1.5px solid var(--neon-cyan); cursor: pointer;" title="Back to Dashboard">
-                <div class="avatar-container" id="avatar-trans" onclick="app.openTeacherModal()" style="width: 60px; height: 60px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
-                <div>
-                    <h2 style="margin: 0; font-size: 1.2rem; color: var(--neon-cyan); text-align: left;">🎙️ Traductor Manos Libres [Apaisado]</h2>
-                    <div style="font-size: 0.75rem; color: #888;">Modo Conversación Fluida Cara a Cara</div>
-                </div>
+    <!-- ====== VIEW: TRANSLATOR (CLEAN, MINIMALIST, GIANT LETTERS APAISADO) ====== -->
+    <div id="view-translator" class="container hidden" style="text-align: center; padding: 15px 15px 60px; max-width: 1000px; width: 100%;">
+        
+        <!-- MINIMALIST TOP BAR -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px;">
+            <button onclick="translator.exitToDashboard()" class="secondary" style="width: auto; padding: 10px 20px; font-size: 0.95rem; font-weight: bold; border-color: var(--neon-pink); color: #FFF; border-radius: 8px;">
+                ⬅ ATRÁS
+            </button>
+
+            <!-- LIVE STATUS (PAUSADO & CLARO) -->
+            <div id="trans-listening-status" style="flex: 1; margin: 0 10px; padding: 10px 14px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 1rem; background: rgba(0,243,255,0.12); border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.25);">
+                🔴 <strong>Escuchando en Español...</strong>
             </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button onclick="translator.saveFullConversation()" class="success" style="width: auto; padding: 10px 16px; font-size: 0.82rem; font-weight: bold; border-radius: 8px; box-shadow: 0 0 14px rgba(0,255,149,0.35); display: flex; align-items: center; gap: 6px;" title="Guardar y descargar el diálogo completo">
-                    <span>💾</span> <span>Guardar Conversación</span>
-                </button>
-                <button onclick="translator.toggleAutoLoop()" id="btn-auto-conversation" class="warning" style="width: auto; padding: 10px 16px; font-size: 0.82rem; font-weight: bold; border-radius: 8px;">
-                    <span id="auto-conv-icon">⏹️</span> <span id="auto-conv-label">Pausar / Reanudar</span>
-                </button>
-                <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 10px 16px; font-size: 0.82rem;">⬅ Salir</button>
-            </div>
+
+            <button onclick="translator.saveFullConversation()" class="success" style="width: auto; padding: 10px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; box-shadow: 0 0 14px rgba(0,255,149,0.3);" title="Guardar y descargar la conversación">
+                💾 Guardar
+            </button>
         </div>
 
-        <!-- LIVE STATUS BANNER -->
-        <div id="trans-listening-status" style="margin-bottom: 14px; padding: 14px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 1.05rem; background: rgba(0,243,255,0.15); border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.25); animation: pulse-cyber 1.2s infinite alternate;">
-            🔴 <strong>ESCUCHANDO EN ESPAÑOL</strong> (Habla tú ahora...)
-        </div>
-
-        <!-- SETTINGS & SPEED CONTROLS (COMPACT) -->
-        <div class="hud-card" style="margin-bottom: 14px; padding: 10px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0,243,255,0.2);">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div>
-                    <span style="font-size: 0.72rem; color: #888;">IDIOMA NATIVO:</span>
-                    <span id="trans-target-lang-label" style="font-weight: bold; color: var(--neon-cyan); font-size: 0.92rem; cursor: pointer; margin-left: 6px;" onclick="app.openTeacherModal()" title="Cambiar idioma">🇬🇧 English (Emma) ▾</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.8rem; color: #CCC;">
-                        <input type="checkbox" id="chk-trans-autospeak" checked style="width: 16px; height: 16px; accent-color: var(--neon-pink);">
-                        <span>🔊 Auto-Voz</span>
-                    </label>
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <span style="font-size: 0.75rem; color: #888;">Velocidad:</span>
-                        <button type="button" onclick="translator.setSpeed(0.7)" id="btn-speed-07" class="secondary" style="width: auto; padding: 3px 8px; font-size: 0.7rem;">0.7x</button>
-                        <button type="button" onclick="translator.setSpeed(0.85)" id="btn-speed-085" class="secondary auto-mic-on" style="width: auto; padding: 3px 8px; font-size: 0.7rem;">0.85x</button>
-                        <button type="button" onclick="translator.setSpeed(1.0)" id="btn-speed-10" class="secondary" style="width: auto; padding: 3px 8px; font-size: 0.7rem;">1.0x</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- DUAL FACE-TO-FACE CARDS (APAISADO / CARA A CARA CON LETRAS GIGANTES) -->
-        <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px;">
+        <!-- MAIN STAGE: SOLO LO QUE SE HABLA EN EL MOMENTO Y LA TRADUCCIÓN ABAJO EN OTRO COLOR -->
+        <div class="hud-card" style="border: 3px solid var(--neon-cyan); padding: 30px 20px; background: rgba(0,243,255,0.04); border-radius: 20px; box-shadow: var(--cyber-glow-strong); margin-bottom: 20px; text-align: left;">
             
-            <!-- CARD 1: NATIVE SPEAKER (Facing opposite / Inverted 180° by default for table conversation) -->
-            <div id="card-native-speaker" class="hud-card card-inverted" style="border: 3px solid var(--neon-cyan); padding: 22px 20px; background: rgba(0,243,255,0.06); border-radius: 16px; box-shadow: 0 0 25px rgba(0,243,255,0.2); transition: transform 0.3s;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span id="badge-foreign-flag" style="font-size: 1.6rem;">🇬🇧</span>
-                        <strong id="badge-foreign-name" style="color: var(--neon-cyan); font-size: 1.15rem; letter-spacing: 0.5px;">NATIVE (English)</strong>
-                    </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="translator.saveCurrentForeignToVocab()" class="success" style="width: auto; padding: 6px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 6px;" title="Guardar esta palabra en tu lista de vocabulario">⭐ Guardar Palabra</button>
-                        <button onclick="translator.toggleInvertNativeCard()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: rgba(0,243,255,0.5); font-weight: bold;" title="Girar para leer derecho">🔄 Girar</button>
-                        <button onclick="translator.speakCurrentForeign()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; font-weight: bold;">🔊 Repetir</button>
-                    </div>
+            <!-- SPEAKER BADGE -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span id="trans-current-speaker-badge" style="font-size: 1.15rem; font-weight: 900; color: var(--neon-pink); letter-spacing: 1px;">
+                    🇪🇸 TÚ (Español)
+                </span>
+                <span id="trans-target-lang-label" onclick="app.openTeacherModal()" style="font-size: 0.85rem; color: #888; cursor: pointer;" title="Cambiar idioma">
+                    🇬🇧 English (Emma) ▾
+                </span>
+            </div>
+
+            <!-- TEXTO QUE HABLA LA PERSONA EN EL MOMENTO (LETRAS GIGANTES EN BLANCO) -->
+            <div id="trans-current-spoken" class="giant-speech-text" style="min-height: 70px; margin: 10px 0 20px; font-size: clamp(2.2rem, 5vw, 3.8rem) !important; color: #FFFFFF !important; line-height: 1.25;">
+                "..."
+            </div>
+
+            <!-- TRADUCCIÓN ABAJO EN OTRO COLOR (LETRAS GRANDES) -->
+            <div style="border-top: 2px dashed rgba(0,243,255,0.3); padding-top: 18px; margin-top: 10px;">
+                <div style="font-size: 0.85rem; font-weight: bold; color: #888; margin-bottom: 6px; letter-spacing: 1px;">
+                    ➔ TRADUCCIÓN:
                 </div>
-
-                <!-- LATEST NATIVE TEXT & TRANSLATION (GIANT LETTERS) -->
-                <div id="live-native-text" class="giant-speech-text" style="min-height: 48px;">"..."</div>
-                <div id="live-native-translation" class="giant-translation-text" style="color: var(--neon-pink); min-height: 32px; border-top: 1.5px dashed rgba(255,255,255,0.2); margin-top: 8px; padding-top: 8px;">Traducción al español aparecerá aquí...</div>
-            </div>
-
-            <!-- CARD 2: YOU / SPANISH SPEAKER (Facing you) -->
-            <div id="card-spanish-speaker" class="hud-card" style="border: 3px solid var(--neon-pink); padding: 22px 20px; background: rgba(255,0,85,0.06); border-radius: 16px; box-shadow: 0 0 25px rgba(255,0,85,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.6rem;">🇪🇸</span>
-                        <strong style="color: var(--neon-pink); font-size: 1.15rem; letter-spacing: 0.5px;">TÚ (Español)</strong>
-                    </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="translator.saveCurrentSpanishToVocab()" class="success" style="width: auto; padding: 6px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 6px; box-shadow: 0 0 12px rgba(0,255,149,0.3);" title="Guardar lo que dijiste en tu vocabulario">⭐ Guardar en Vocabulario</button>
-                        <button onclick="translator.speakCurrentSpanish()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem; border-color: var(--neon-pink); color: var(--neon-pink); font-weight: bold;">🔊 Repetir</button>
-                    </div>
+                <div id="trans-current-translated" class="giant-translation-text" style="min-height: 50px; font-size: clamp(1.8rem, 4vw, 3rem) !important; color: var(--neon-cyan) !important; font-weight: 800; line-height: 1.3;">
+                    Esperando voz...
                 </div>
+            </div>
 
-                <!-- LATEST SPANISH TEXT & TRANSLATION (GIANT LETTERS) -->
-                <div id="live-spanish-text" class="giant-speech-text" style="min-height: 48px;">"..."</div>
-                <div id="live-spanish-translation" class="giant-translation-text" style="color: var(--neon-cyan); min-height: 32px; border-top: 1.5px dashed rgba(255,255,255,0.2); margin-top: 8px; padding-top: 8px;">Traducción al idioma del nativo aparecerá aquí...</div>
+            <!-- BOTONES DE ACCIÓN: AÑADIR A VOCABULARIO Y REPETIR -->
+            <div style="display: flex; gap: 12px; margin-top: 25px; flex-wrap: wrap;">
+                <button onclick="translator.saveCurrentToVocab()" class="success" style="flex: 2; min-width: 200px; padding: 16px; font-size: 1rem; font-weight: 900; border-radius: 10px; box-shadow: 0 0 20px rgba(0,255,149,0.4); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">⭐</span>
+                    <span>AÑADIR A MI VOCABULARIO</span>
+                </button>
+                <button onclick="translator.speakCurrentAudio()" class="secondary" style="flex: 1; min-width: 120px; padding: 16px; font-size: 0.95rem; font-weight: bold; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span>🔊</span>
+                    <span>Repetir</span>
+                </button>
             </div>
 
         </div>
 
-        <!-- FULL DIALOGUE STREAM -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-            <span class="tech" style="color: var(--neon-cyan); font-size: 0.8rem;">[ REGISTRO DEL DIÁLOGO ]</span>
-            <div style="display: flex; gap: 8px;">
-                <button onclick="translator.saveFullConversation()" class="success" style="width: auto; padding: 5px 12px; font-size: 0.72rem; font-weight: bold; border-radius: 6px; box-shadow: 0 0 10px rgba(0,255,149,0.25);">💾 Guardar Conversación</button>
-                <button onclick="translator.clearStream()" class="secondary" style="width: auto; padding: 5px 10px; font-size: 0.72rem; border: none; opacity: 0.6;">🗑️ Limpiar</button>
-            </div>
+        <!-- BOTTOM PLAY/PAUSE CONTROL -->
+        <div style="display: flex; justify-content: center; gap: 12px;">
+            <button id="btn-auto-conversation" onclick="translator.toggleAutoLoop()" class="warning" style="width: auto; padding: 12px 26px; font-size: 0.9rem; font-weight: bold; border-radius: 10px;">
+                <span id="auto-conv-icon">⏹️</span> <span id="auto-conv-label">Pausar / Reanudar Traductora</span>
+            </button>
         </div>
 
-        <div id="translator-stream" style="display: flex; flex-direction: column; gap: 10px; min-height: 100px;">
-            <p style="text-align:center; color:#666; padding:15px 10px; font-size: 0.85rem;">La conversación automática está activa. Hablad por turnos.</p>
-        </div>
     </div>
 
     <!-- ====== VIEW: PRIVACY ====== -->
@@ -1079,6 +1043,10 @@
 
         showDashboard: (h) => {
             window.speechSynthesis.cancel();
+            if (typeof translator !== 'undefined') {
+                translator.stop();
+                translator.autoLoopActive = false;
+            }
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') {
                 if (conversation.recognition) try { conversation.recognition.stop(); } catch(e){}
@@ -1880,43 +1848,41 @@ CRITICAL: Return ONLY a valid JSON object:
         }
     };
 
-    // ====== ADVANCED LIVE TRANSLATOR ENGINE ======
+    // ====== TRANSLATOR (REAL-TIME CONVERSATION & MINIMALIST APAISADO) ======
     const translator = {
+        recognition: null,
         activeMic: null,
         autoLoopActive: false,
-        recognition: null,
-        wakeLock: null,
         speed: 0.85,
-        lastForeignOriginal: '',
-        lastForeignTranslation: '',
-        lastSpanishOriginal: '',
-        lastSpanishTranslation: '',
+        wakeLock: null,
+        conversationHistory: [],
+        lastForeign: '',
+        lastSpanish: '',
+        lastSpokenMode: 'es',
 
         init: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const targetLabel = document.getElementById('trans-target-lang-label');
             if (targetLabel) targetLabel.innerText = `${langInfo.name} (${langInfo.teacherName}) ▾`;
             
-            const badgeFlag = document.getElementById('badge-foreign-flag');
-            const badgeName = document.getElementById('badge-foreign-name');
-            if (badgeFlag) badgeFlag.innerText = currentLang === 'en' ? '🇬🇧' : currentLang === 'de' ? '🇩🇪' : '🇫🇷';
-            if (badgeName) badgeName.innerText = `NATIVE (${langInfo.name} - ${langInfo.teacherName})`;
-
-            const btnForeign = document.getElementById('trans-foreign-btn-label');
-            if (btnForeign) btnForeign.innerText = `TOCAR PARA HABLAR (${langInfo.name.toUpperCase()})`;
+            const badge = document.getElementById('trans-current-speaker-badge');
+            if (badge) badge.innerHTML = `<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>`;
+            
+            const spokenEl = document.getElementById('trans-current-spoken');
+            if (spokenEl) spokenEl.innerText = '"..."';
+            
+            const transEl = document.getElementById('trans-current-translated');
+            if (transEl) transEl.innerText = 'Esperando voz...';
         },
 
-        setSpeed: (val) => {
-            translator.speed = val;
-            document.querySelectorAll('#btn-speed-07, #btn-speed-085, #btn-speed-10').forEach(b => b.classList.remove('auto-mic-on'));
-            if (val === 0.7) document.getElementById('btn-speed-07')?.classList.add('auto-mic-on');
-            else if (val === 0.85) document.getElementById('btn-speed-085')?.classList.add('auto-mic-on');
-            else if (val === 1.0) document.getElementById('btn-speed-10')?.classList.add('auto-mic-on');
-        },
-
-        toggleInvertNativeCard: () => {
-            const card = document.getElementById('card-native-speaker');
-            if (card) card.classList.toggle('card-inverted');
+        exitToDashboard: () => {
+            translator.stop();
+            translator.autoLoopActive = false;
+            if (translator.wakeLock) {
+                try { translator.wakeLock.release(); } catch(e){}
+                translator.wakeLock = null;
+            }
+            app.showDashboard();
         },
 
         requestWakeLock: async () => {
@@ -1941,12 +1907,9 @@ CRITICAL: Return ONLY a valid JSON object:
             const btn = document.getElementById('btn-auto-conversation');
             const icon = document.getElementById('auto-conv-icon');
             const label = document.getElementById('auto-conv-label');
-            if (btn) {
-                btn.className = 'warning';
-                btn.style.boxShadow = '0 0 20px rgba(255,184,0,0.5)';
-            }
+            if (btn) btn.className = 'warning';
             if (icon) icon.innerText = '⏹️';
-            if (label) label.innerText = 'DETENER MODO MANOS LIBRES';
+            if (label) label.innerText = 'Pausar Traductora';
 
             // Start by listening to Spanish speaker (user)
             translator.startListening('es');
@@ -1959,12 +1922,12 @@ CRITICAL: Return ONLY a valid JSON object:
             const btn = document.getElementById('btn-auto-conversation');
             const icon = document.getElementById('auto-conv-icon');
             const label = document.getElementById('auto-conv-label');
-            if (btn) {
-                btn.className = 'success';
-                btn.style.boxShadow = 'var(--cyber-glow)';
-            }
-            if (icon) icon.innerText = '🚀';
-            if (label) label.innerText = 'INICIAR MODO MANOS LIBRES AUTOMÁTICO';
+            if (btn) btn.className = 'success';
+            if (icon) icon.innerText = '▶️';
+            if (label) label.innerText = 'Reanudar Traductora';
+
+            const statusEl = document.getElementById('trans-listening-status');
+            if (statusEl) statusEl.innerHTML = '⏸️ <strong>Traductora en pausa</strong>';
         },
 
         toggleForeignMic: () => {
@@ -1997,17 +1960,17 @@ CRITICAL: Return ONLY a valid JSON object:
 
             translator.requestWakeLock();
 
-            const btnForeign = document.getElementById('btn-mic-foreign');
-            const btnEs = document.getElementById('btn-mic-es');
-            if (mode === 'target' && btnForeign) btnForeign.classList.add('listening');
-            if (mode === 'es' && btnEs) btnEs.classList.add('listening');
-
             const statusEl = document.getElementById('trans-listening-status');
+            const badge = document.getElementById('trans-current-speaker-badge');
             if (statusEl) {
                 statusEl.innerHTML = mode === 'es' 
                     ? '🔴 <strong>ESCUCHANDO EN ESPAÑOL</strong> (Habla tú ahora...)' 
                     : `🔵 <strong>ESCUCHANDO AL NATIVO EN ${langInfo.name.toUpperCase()}</strong> (Habla tu interlocutor...)`;
-                statusEl.classList.remove('hidden');
+            }
+            if (badge) {
+                badge.innerHTML = mode === 'es'
+                    ? '<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>'
+                    : `<span style="color:var(--neon-cyan);">🌐 NATIVO (${langInfo.name})</span>`;
             }
 
             translator.recognition.onresult = (e) => {
@@ -2020,14 +1983,11 @@ CRITICAL: Return ONLY a valid JSON object:
                 if (translator.autoLoopActive) {
                     setTimeout(() => {
                         if (translator.autoLoopActive) translator.startListening(mode);
-                    }, 1000);
+                    }, 1200);
                 }
             };
 
             translator.recognition.onend = () => {
-                if (btnForeign) btnForeign.classList.remove('listening');
-                if (btnEs) btnEs.classList.remove('listening');
-                if (!translator.autoLoopActive && statusEl) statusEl.classList.add('hidden');
                 translator.activeMic = null;
             };
 
@@ -2044,40 +2004,39 @@ CRITICAL: Return ONLY a valid JSON object:
             if (translator.recognition) {
                 try { translator.recognition.stop(); } catch(e) {}
             }
-            document.querySelectorAll('#btn-mic-foreign, #btn-mic-es').forEach(b => b.classList.remove('listening'));
             translator.activeMic = null;
         },
 
         stop: () => {
             translator.stopRecognitionOnly();
             window.speechSynthesis.cancel();
-            const statusEl = document.getElementById('trans-listening-status');
-            if (statusEl) statusEl.classList.add('hidden');
         },
 
         handleSpokenInput: async (text, mode) => {
             if (!text || text.trim().length === 0) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const isFromSpanish = mode === 'es';
+            translator.lastSpokenMode = mode;
 
             const statusEl = document.getElementById('trans-listening-status');
+            const badge = document.getElementById('trans-current-speaker-badge');
+            const spokenEl = document.getElementById('trans-current-spoken');
+            const transEl = document.getElementById('trans-current-translated');
+
             if (statusEl) {
-                statusEl.innerHTML = `⚡ <strong>TRADUCIENDO AL ${isFromSpanish ? langInfo.name.toUpperCase() : 'ESPAÑOL'} CON IA...</strong>`;
+                statusEl.innerHTML = `⚡ <strong>Traduciendo al ${isFromSpanish ? langInfo.name.toUpperCase() : 'ESPAÑOL'}...</strong>`;
             }
 
-            // Update live card immediately with original spoken text
-            if (isFromSpanish) {
-                translator.lastSpanishOriginal = text;
-                const spEl = document.getElementById('live-spanish-text');
-                if (spEl) spEl.innerText = `"${text}"`;
-                const transEl = document.getElementById('live-spanish-translation');
-                if (transEl) transEl.innerText = "Traduciendo...";
-            } else {
-                translator.lastForeignOriginal = text;
-                const foEl = document.getElementById('live-native-text');
-                if (foEl) foEl.innerText = `"${text}"`;
-                const transEl = document.getElementById('live-native-translation');
-                if (transEl) transEl.innerText = "Traduciendo...";
+            if (badge) {
+                badge.innerHTML = isFromSpanish
+                    ? '<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>'
+                    : `<span style="color:var(--neon-cyan);">🌐 NATIVO (${langInfo.name})</span>`;
+            }
+
+            if (spokenEl) spokenEl.innerText = `"${text}"`;
+            if (transEl) {
+                transEl.innerText = "Traduciendo...";
+                transEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : 'var(--neon-pink)';
             }
 
             const prompt = `You are a lightning-fast live conversation interpreter.
@@ -2092,86 +2051,45 @@ CRITICAL: Return ONLY a JSON object:
             await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate: "${text}"`}], null, (data) => {
                 const transResult = data.translation || '';
                 
-                // Update live cards with translation
+                if (transEl) transEl.innerText = `"${transResult}"`;
+
                 if (isFromSpanish) {
-                    translator.lastSpanishTranslation = transResult;
-                    const transEl = document.getElementById('live-spanish-translation');
-                    if (transEl) transEl.innerHTML = `<strong style="color:var(--neon-cyan);">${langInfo.name}:</strong> "${transResult}"`;
+                    translator.lastSpanish = text;
+                    translator.lastForeign = transResult;
                 } else {
-                    translator.lastForeignTranslation = transResult;
-                    const transEl = document.getElementById('live-native-translation');
-                    if (transEl) transEl.innerHTML = `<strong style="color:var(--neon-pink);">Español:</strong> "${transResult}"`;
+                    translator.lastForeign = text;
+                    translator.lastSpanish = transResult;
                 }
 
-                // Append to Full Stream Log
-                const stream = document.getElementById('translator-stream');
-                if (stream) {
-                    if (stream.innerHTML.includes('Inicia el modo manos libres') || stream.innerHTML.includes('La conversación automática está activa')) stream.innerHTML = '';
-                    const cleanOriginal = text.replace(/'/g, "\\'");
-                    const cleanTrans = transResult.replace(/'/g, "\\'");
+                translator.conversationHistory = translator.conversationHistory || [];
+                translator.conversationHistory.push({
+                    time: new Date().toLocaleTimeString().slice(0,5),
+                    speaker: isFromSpanish ? 'user' : 'native',
+                    original: text,
+                    translation: transResult,
+                    lang: currentLang
+                });
 
-                    translator.conversationHistory = translator.conversationHistory || [];
-                    translator.conversationHistory.push({
-                        time: new Date().toLocaleTimeString().slice(0,5),
-                        speaker: isFromSpanish ? 'user' : 'native',
-                        original: text,
-                        translation: transResult,
-                        lang: currentLang
+                if (isFromSpanish) {
+                    if (statusEl) statusEl.innerHTML = `🔊 <strong>Hablando en ${langInfo.name}...</strong>`;
+                    translator.speakForeign(transResult, () => {
+                        if (translator.autoLoopActive) {
+                            if (statusEl) statusEl.innerHTML = `⏳ <strong>Pausa... Escuchando al Nativo</strong>`;
+                            setTimeout(() => {
+                                if (translator.autoLoopActive) translator.startListening('target');
+                            }, 1400);
+                        }
                     });
-
-                    const logItem = `
-                        <div class="convo-msg ${isFromSpanish ? 'convo-msg-user' : 'convo-msg-teacher'}" style="border-left: 3px solid ${isFromSpanish ? 'var(--neon-pink)' : 'var(--neon-cyan)'}; padding: 10px 12px; margin-bottom: 8px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                                <strong style="font-size: 0.85rem; color: ${isFromSpanish ? 'var(--neon-pink)' : 'var(--neon-cyan)'};">
-                                    ${isFromSpanish ? '🇪🇸 Tú (Español)' : `🌐 Interlocutor (${langInfo.name})`}
-                                </strong>
-                                <span class="tech" style="font-size: 0.68rem; color: #888;">${new Date().toLocaleTimeString().slice(0,5)}</span>
-                            </div>
-                            <div style="font-size: 1rem; color: #FFF; margin-bottom: 4px;">"${text}"</div>
-                            <div style="font-size: 1.05rem; font-weight: bold; color: ${isFromSpanish ? 'var(--neon-cyan)' : 'var(--neon-pink)'}; margin-bottom: 6px;">
-                                ➔ "${transResult}"
-                            </div>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <button onclick="${isFromSpanish ? `translator.speakForeign('${cleanTrans}')` : `translator.speakSpanish('${cleanTrans}')`}" class="secondary" style="width: auto; padding: 4px 10px; font-size: 0.72rem; font-weight: bold;">
-                                    🔊 Pronunciar (${isFromSpanish ? langInfo.name : 'Español'})
-                                </button>
-                                <button onclick="translator.saveItemToVocab('${isFromSpanish ? cleanTrans : cleanOriginal}', '${isFromSpanish ? cleanOriginal : cleanTrans}')" class="secondary" style="width: auto; padding: 4px 10px; font-size: 0.72rem; border-color: var(--cyber-ok); color: var(--cyber-ok); font-weight: bold;">
-                                    ⭐ Guardar en Vocabulario
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    stream.innerHTML = logItem + stream.innerHTML;
-                }
-
-                const autoSpeakCheck = document.getElementById('chk-trans-autospeak');
-                const shouldSpeak = autoSpeakCheck ? autoSpeakCheck.checked : true;
-
-                if (shouldSpeak) {
-                    if (statusEl) {
-                        statusEl.innerHTML = isFromSpanish 
-                            ? `🔊 <strong>HABLANDO EN ${langInfo.name.toUpperCase()} AL NATIVO...</strong>` 
-                            : '🔊 <strong>HABLANDO LA TRADUCCIÓN EN ESPAÑOL...</strong>';
-                    }
-
-                    if (isFromSpanish) {
-                        translator.speakForeign(transResult, () => {
-                            if (translator.autoLoopActive) {
-                                setTimeout(() => translator.startListening('target'), 400);
-                            }
-                        });
-                    } else {
-                        translator.speakSpanish(transResult, () => {
-                            if (translator.autoLoopActive) {
-                                setTimeout(() => translator.startListening('es'), 400);
-                            }
-                        });
-                    }
                 } else {
-                    if (translator.autoLoopActive) {
-                        const nextMode = isFromSpanish ? 'target' : 'es';
-                        setTimeout(() => translator.startListening(nextMode), 1000);
-                    }
+                    if (statusEl) statusEl.innerHTML = `🔊 <strong>Hablando en Español...</strong>`;
+                    translator.speakSpanish(transResult, () => {
+                        if (translator.autoLoopActive) {
+                            if (statusEl) statusEl.innerHTML = `⏳ <strong>Pausa... Escuchándote a ti</strong>`;
+                            setTimeout(() => {
+                                if (translator.autoLoopActive) translator.startListening('es');
+                            }, 1400);
+                        }
+                    });
                 }
             });
         },
@@ -2205,37 +2123,18 @@ CRITICAL: Return ONLY a JSON object:
             window.speechSynthesis.speak(u);
         },
 
-        speakCurrentForeign: () => {
-            if (translator.lastForeignOriginal) translator.speakForeign(translator.lastForeignOriginal);
-            else if (translator.lastSpanishTranslation) translator.speakForeign(translator.lastSpanishTranslation);
+        speakCurrentAudio: () => {
+            if (translator.lastForeign) translator.speakForeign(translator.lastForeign);
         },
 
-        speakCurrentSpanish: () => {
-            if (translator.lastSpanishOriginal) translator.speakSpanish(translator.lastSpanishOriginal);
-            else if (translator.lastForeignTranslation) translator.speakSpanish(translator.lastForeignTranslation);
-        },
-
-        saveCurrentSpanishToVocab: () => {
-            if (!translator.lastSpanishOriginal || !translator.lastSpanishTranslation || translator.lastSpanishOriginal === '...') {
-                return alert("Habla primero una palabra o frase en Español en la traductora para poder guardarla.");
+        saveCurrentToVocab: () => {
+            if (!translator.lastForeign || !translator.lastSpanish || translator.lastForeign === '...' || translator.lastSpanish === '...') {
+                return alert("Habla primero una palabra o frase para poder guardarla en tu vocabulario.");
             }
-            translator.saveItemToVocab(translator.lastSpanishTranslation, translator.lastSpanishOriginal);
-        },
-
-        saveCurrentForeignToVocab: () => {
-            if (!translator.lastForeignOriginal || !translator.lastForeignTranslation || translator.lastForeignOriginal === '...') {
-                return alert("Aún no se ha detectado ninguna palabra del nativo para guardar.");
-            }
-            translator.saveItemToVocab(translator.lastForeignOriginal, translator.lastForeignTranslation);
-        },
-
-        saveItemToVocab: (foreignWord, spanishWord) => {
-            if (!foreignWord || !spanishWord || foreignWord === '...' || spanishWord === '...') return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
-            // Clean strings
-            const cleanForeign = foreignWord.replace(/^"|"$/g, '').trim();
-            const cleanSpanish = spanishWord.replace(/^"|"$/g, '').trim();
+            const cleanForeign = translator.lastForeign.replace(/^"|"$/g, '').trim();
+            const cleanSpanish = translator.lastSpanish.replace(/^"|"$/g, '').trim();
 
             const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
             let topicObj = topics.find(t => t.id == session.selectedListId) || topics[0];
@@ -2246,7 +2145,7 @@ CRITICAL: Return ONLY a JSON object:
 
             let existing = db.words.find(w => w.topic_id === topicObj.id && (w.english.toLowerCase() === cleanForeign.toLowerCase() || w.spanish.toLowerCase() === cleanSpanish.toLowerCase()));
             if (existing) {
-                alert(`ℹ️ La palabra "${cleanForeign}" ya está guardada en tu lista "${topicObj.name}".`);
+                alert(`ℹ️ "${cleanForeign}" ya está en tu vocabulario (${topicObj.name}).`);
                 return;
             }
 
@@ -2275,7 +2174,7 @@ CRITICAL: Return ONLY a JSON object:
 
             // Floating banner notification
             const notif = document.createElement('div');
-            notif.style.cssText = "position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,255,149,0.95); color: #000; padding: 12px 24px; border-radius: 30px; font-weight: 900; font-size: 0.95rem; z-index: 10000; box-shadow: 0 0 25px rgba(0,255,149,0.8); text-align: center;";
+            notif.style.cssText = "position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,255,149,0.95); color: #000; padding: 14px 28px; border-radius: 30px; font-weight: 900; font-size: 1rem; z-index: 10000; box-shadow: 0 0 25px rgba(0,255,149,0.85); text-align: center;";
             notif.innerHTML = `⭐ ¡Guardada en tu Vocabulario (${topicObj.name})!<br><span style="font-size:0.85rem; font-weight:bold;">"${cleanForeign}" = "${cleanSpanish}"</span>`;
             document.body.appendChild(notif);
             setTimeout(() => notif.remove(), 3500);
@@ -2305,7 +2204,7 @@ CRITICAL: Return ONLY a JSON object:
                 `JETBULARY - CONVERSACIÓN GUARDADA\n` +
                 `Fecha: ${convoRecord.date}\n` +
                 `Idioma: ${langInfo.name} (${langInfo.teacherName})\n` +
-                `Total intervenciones: ${translator.conversationHistory.length}\n` +
+                `Total frases: ${translator.conversationHistory.length}\n` +
                 `========================================\n\n`;
 
             translator.conversationHistory.forEach((item) => {
@@ -2331,23 +2230,9 @@ CRITICAL: Return ONLY a JSON object:
             // Floating feedback banner
             const notif = document.createElement('div');
             notif.style.cssText = "position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,255,149,0.95); color: #000; padding: 14px 26px; border-radius: 30px; font-weight: 900; font-size: 1rem; z-index: 10000; box-shadow: 0 0 25px rgba(0,255,149,0.85); text-align: center;";
-            notif.innerHTML = `💾 ¡Conversación guardada y descargada!<br><span style="font-size:0.85rem; font-weight:normal;">(${translator.conversationHistory.length} intervenciones registradas)</span>`;
+            notif.innerHTML = `💾 ¡Conversación guardada y descargada!<br><span style="font-size:0.85rem; font-weight:normal;">(${translator.conversationHistory.length} frases registradas)</span>`;
             document.body.appendChild(notif);
             setTimeout(() => notif.remove(), 4000);
-        },
-
-        clearStream: () => {
-            translator.conversationHistory = [];
-            const stream = document.getElementById('translator-stream');
-            if (stream) stream.innerHTML = '<p style="text-align:center; color:#666; padding:15px 10px; font-size: 0.85rem;">La conversación automática está activa. Hablad por turnos.</p>';
-            const spEl = document.getElementById('live-spanish-text');
-            const spTr = document.getElementById('live-spanish-translation');
-            const foEl = document.getElementById('live-native-text');
-            const foTr = document.getElementById('live-native-translation');
-            if (spEl) spEl.innerText = '"..."';
-            if (spTr) spTr.innerText = 'Traducción al idioma del nativo aparecerá aquí...';
-            if (foEl) foEl.innerText = '"..."';
-            if (foTr) foTr.innerText = 'Traducción al español aparecerá aquí...';
         }
     };
 
