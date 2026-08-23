@@ -109,7 +109,7 @@
 
         .card-inverted { transform: rotate(180deg); }
 
-        /* --- LETRAS GIGANTES PARA MODO APAISADO --- */
+        /* --- LETRAS GIGANTES Y MODO APAISADO --- */
         .giant-speech-text {
             font-size: clamp(1.8rem, 4.2vw, 3.2rem) !important;
             font-weight: 900 !important;
@@ -124,6 +124,19 @@
             font-weight: 700 !important;
             line-height: 1.3 !important;
             padding: 6px 0;
+        }
+
+        /* --- MODO APAISADO FORZADO (ROTACIÓN 90° EN VERTICAL) --- */
+        #view-translator.apaisado-forced {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 100dvh !important;
+            height: 100dvw !important;
+            transform: translate(-50%, -50%) rotate(90deg) !important;
+            transform-origin: center center !important;
+            z-index: 99999 !important;
+            box-sizing: border-box !important;
         }
 
         /* --- MIC BUTTON --- */
@@ -438,71 +451,31 @@
         <div id="vocab-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
     </div>
 
-    <!-- ====== VIEW: TRANSLATOR (CLEAN, MINIMALIST, GIANT LETTERS APAISADO) ====== -->
-    <div id="view-translator" class="container hidden" style="text-align: center; padding: 15px 15px 60px; max-width: 1000px; width: 100%;">
+    <!-- ====== VIEW: TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION IN GIANT LETTERS + SPEAKER BUTTON) ====== -->
+    <div id="view-translator" class="hidden" style="position: fixed; inset: 0; width: 100vw; height: 100dvh; background: #05050a; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 25px 35px; box-sizing: border-box;">
         
-        <!-- MINIMALIST TOP BAR -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px;">
-            <button onclick="translator.exitToDashboard()" class="secondary" style="width: auto; padding: 10px 20px; font-size: 0.95rem; font-weight: bold; border-color: var(--neon-pink); color: #FFF; border-radius: 8px;">
-                ⬅ ATRÁS
+        <!-- TOP MINIMAL BAR: EXIT ONLY & SUBTLE STATUS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <button onclick="translator.exitToDashboard()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.25); color: #AAA; border-radius: 8px; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; cursor: pointer;" title="Volver al menú principal">
+                ⬅ Salir
             </button>
-
-            <!-- LIVE STATUS (PAUSADO & CLARO) -->
-            <div id="trans-listening-status" style="flex: 1; margin: 0 10px; padding: 10px 14px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 1rem; background: rgba(0,243,255,0.12); border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.25);">
-                🔴 <strong>Escuchando en Español...</strong>
+            <div id="trans-indicator-badge" style="font-size: 0.95rem; font-weight: 800; color: var(--neon-cyan); display: flex; align-items: center; gap: 8px;">
+                <span id="trans-indicator-dot" style="width: 10px; height: 10px; border-radius: 50%; background: var(--neon-pink); display: inline-block; animation: pulse-mic 1s infinite alternate;"></span>
+                <span id="trans-indicator-text">Escuchando en Español...</span>
             </div>
-
-            <button onclick="translator.saveFullConversation()" class="success" style="width: auto; padding: 10px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; box-shadow: 0 0 14px rgba(0,255,149,0.3);" title="Guardar y descargar la conversación">
-                💾 Guardar
-            </button>
         </div>
 
-        <!-- MAIN STAGE: SOLO LO QUE SE HABLA EN EL MOMENTO Y LA TRADUCCIÓN ABAJO EN OTRO COLOR -->
-        <div class="hud-card" style="border: 3px solid var(--neon-cyan); padding: 30px 20px; background: rgba(0,243,255,0.04); border-radius: 20px; box-shadow: var(--cyber-glow-strong); margin-bottom: 20px; text-align: left;">
-            
-            <!-- SPEAKER BADGE -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <span id="trans-current-speaker-badge" style="font-size: 1.15rem; font-weight: 900; color: var(--neon-pink); letter-spacing: 1px;">
-                    🇪🇸 TÚ (Español)
-                </span>
-                <span id="trans-target-lang-label" onclick="app.openTeacherModal()" style="font-size: 0.85rem; color: #888; cursor: pointer;" title="Cambiar idioma">
-                    🇬🇧 English (Emma) ▾
-                </span>
+        <!-- CENTER STAGE: TEXTO EN EL OTRO IDIOMA EN LETRAS GIGANTES -->
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; overflow-y: auto;">
+            <div id="trans-translated-text" style="font-size: clamp(2.8rem, 6.8vw, 5.2rem); font-weight: 900; color: var(--neon-cyan); line-height: 1.25; text-shadow: 0 0 35px rgba(0,243,255,0.6); word-break: break-word; max-width: 1200px; margin: auto;">
+                "Habla ahora..."
             </div>
-
-            <!-- TEXTO QUE HABLA LA PERSONA EN EL MOMENTO (LETRAS GIGANTES EN BLANCO) -->
-            <div id="trans-current-spoken" class="giant-speech-text" style="min-height: 70px; margin: 10px 0 20px; font-size: clamp(2.2rem, 5vw, 3.8rem) !important; color: #FFFFFF !important; line-height: 1.25;">
-                "..."
-            </div>
-
-            <!-- TRADUCCIÓN ABAJO EN OTRO COLOR (LETRAS GRANDES) -->
-            <div style="border-top: 2px dashed rgba(0,243,255,0.3); padding-top: 18px; margin-top: 10px;">
-                <div style="font-size: 0.85rem; font-weight: bold; color: #888; margin-bottom: 6px; letter-spacing: 1px;">
-                    ➔ TRADUCCIÓN:
-                </div>
-                <div id="trans-current-translated" class="giant-translation-text" style="min-height: 50px; font-size: clamp(1.8rem, 4vw, 3rem) !important; color: var(--neon-cyan) !important; font-weight: 800; line-height: 1.3;">
-                    Esperando voz...
-                </div>
-            </div>
-
-            <!-- BOTONES DE ACCIÓN: AÑADIR A VOCABULARIO Y REPETIR -->
-            <div style="display: flex; gap: 12px; margin-top: 25px; flex-wrap: wrap;">
-                <button onclick="translator.saveCurrentToVocab()" class="success" style="flex: 2; min-width: 200px; padding: 16px; font-size: 1rem; font-weight: 900; border-radius: 10px; box-shadow: 0 0 20px rgba(0,255,149,0.4); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span style="font-size: 1.3rem;">⭐</span>
-                    <span>AÑADIR A MI VOCABULARIO</span>
-                </button>
-                <button onclick="translator.speakCurrentAudio()" class="secondary" style="flex: 1; min-width: 120px; padding: 16px; font-size: 0.95rem; font-weight: bold; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                    <span>🔊</span>
-                    <span>Repetir</span>
-                </button>
-            </div>
-
         </div>
 
-        <!-- BOTTOM PLAY/PAUSE CONTROL -->
-        <div style="display: flex; justify-content: center; gap: 12px;">
-            <button id="btn-auto-conversation" onclick="translator.toggleAutoLoop()" class="warning" style="width: auto; padding: 12px 26px; font-size: 0.9rem; font-weight: bold; border-radius: 10px;">
-                <span id="auto-conv-icon">⏹️</span> <span id="auto-conv-label">Pausar / Reanudar Traductora</span>
+        <!-- BOTTOM ACTION: ÚNICAMENTE EL BOTÓN DE ALTAVOZ PARA LEER EN ALTO -->
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding-bottom: 15px;">
+            <button onclick="translator.speakCurrentTranslation()" style="width: 85px; height: 85px; border-radius: 50%; font-size: 2.6rem; background: rgba(0,243,255,0.15); border: 2.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 30px rgba(0,243,255,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;" title="Leer en voz alta">
+                🔊
             </button>
         </div>
 
@@ -589,7 +562,7 @@
         <!-- PWA INSTALL BUTTON -->
         <div style="margin-bottom: 16px;">
             <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; font-size: 0.85rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
-                📲 Instalar Jetbulary en Android
+                📲 Instalar Jetbulary
             </button>
         </div>
 
@@ -1069,24 +1042,19 @@
         },
 
         showVocab: () => { app.switchView('view-vocab'); vocab.render(); },
-        showTranslator: () => {
+        showTranslator: async () => {
             window.speechSynthesis.cancel();
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') conversation.stopMic();
             app.switchView('view-translator');
-            if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
-            if (typeof translator !== 'undefined') translator.init();
+            if (typeof translator !== 'undefined') await translator.init();
         },
-        startDirectHandsFree: () => {
+        startDirectHandsFree: async () => {
             window.speechSynthesis.cancel();
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') conversation.stopMic();
             app.switchView('view-translator');
-            if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
-            if (typeof translator !== 'undefined') {
-                translator.init();
-                translator.startAutoLoop();
-            }
+            if (typeof translator !== 'undefined') await translator.init();
         },
         showStats: () => {
             app.switchView('view-stats');
@@ -1225,6 +1193,14 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         },
 
         installApp: () => {
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            if (isStandalone) {
+                alert("✅ Jetbulary ya está instalada y ejecutándose como aplicación en tu dispositivo.");
+                return;
+            }
+
             if (window.deferredPrompt) {
                 window.deferredPrompt.prompt();
                 window.deferredPrompt.userChoice.then((choiceResult) => {
@@ -1233,8 +1209,10 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                     }
                     window.deferredPrompt = null;
                 });
+            } else if (isIOS) {
+                alert("📲 Para instalar Jetbulary en tu iPhone / iPad (iOS):\n\n1. Abre esta página en Safari.\n2. Pulsa en el botón 'Compartir' (icono de un cuadrado con flecha hacia arriba ⎋ abajo en la barra).\n3. Desliza hacia abajo y pulsa en 'Añadir a la pantalla de inicio' ➕.\n4. Pulsa 'Añadir' en la esquina superior derecha.\n\n¡Listo! Aparecerá el icono de Jetbulary en tu pantalla de inicio.");
             } else {
-                alert("📲 Para instalar Jetbulary en tu móvil Android:\n\n1. Pulsa en los 3 puntos (⋮) arriba a la derecha en Chrome.\n2. Selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.");
+                alert("📲 Para instalar Jetbulary en tu móvil Android:\n\n1. Pulsa en los 3 puntos (⋮) arriba a la derecha en Chrome.\n2. Selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.\n3. Confirma la instalación.");
             }
         },
 
@@ -1848,36 +1826,77 @@ CRITICAL: Return ONLY a valid JSON object:
         }
     };
 
-    // ====== TRANSLATOR (REAL-TIME CONVERSATION & MINIMALIST APAISADO) ======
+    // ====== TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION + SPEAKER) ======
     const translator = {
         recognition: null,
         activeMic: null,
         autoLoopActive: false,
+        isSpeaking: false,
+        restartTimer: null,
         speed: 0.85,
         wakeLock: null,
-        conversationHistory: [],
-        lastForeign: '',
-        lastSpanish: '',
-        lastSpokenMode: 'es',
+        currentTranslation: '',
+        currentTranslationLang: 'target',
 
-        init: () => {
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            const targetLabel = document.getElementById('trans-target-lang-label');
-            if (targetLabel) targetLabel.innerText = `${langInfo.name} (${langInfo.teacherName}) ▾`;
-            
-            const badge = document.getElementById('trans-current-speaker-badge');
-            if (badge) badge.innerHTML = `<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>`;
-            
-            const spokenEl = document.getElementById('trans-current-spoken');
-            if (spokenEl) spokenEl.innerText = '"..."';
-            
-            const transEl = document.getElementById('trans-current-translated');
-            if (transEl) transEl.innerText = 'Esperando voz...';
+        requestMicPermissionIfNeeded: async () => {
+            if (localStorage.getItem('jetbulary_mic_granted') === '1') {
+                return true;
+            }
+
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const res = await navigator.permissions.query({ name: 'microphone' });
+                    if (res.state === 'granted') {
+                        localStorage.setItem('jetbulary_mic_granted', '1');
+                        return true;
+                    }
+                } catch(e){}
+            }
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+                    localStorage.setItem('jetbulary_mic_granted', '1');
+                    return true;
+                } catch(err) {
+                    console.warn("Microphone permission prompt cancelled or denied:", err);
+                    return false;
+                }
+            }
+            return true;
+        },
+
+        init: async () => {
+            const textEl = document.getElementById('trans-translated-text');
+            if (textEl) {
+                textEl.innerText = '"Habla ahora..."';
+                textEl.style.color = '#FFFFFF';
+            }
+            translator.currentTranslation = '';
+            translator.currentTranslationLang = 'target';
+
+            // Auto apaisado on portrait
+            if (screen.orientation && screen.orientation.lock) {
+                try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
+            } else if (window.innerHeight > window.innerWidth) {
+                const transView = document.getElementById('view-translator');
+                if (transView) transView.classList.add('apaisado-forced');
+            }
+
+            await translator.requestMicPermissionIfNeeded();
+            translator.startAutoLoop();
         },
 
         exitToDashboard: () => {
-            translator.stop();
             translator.autoLoopActive = false;
+            translator.stop();
+            clearTimeout(translator.restartTimer);
+            const transView = document.getElementById('view-translator');
+            if (transView) transView.classList.remove('apaisado-forced');
+            if (screen.orientation && screen.orientation.unlock) {
+                try { screen.orientation.unlock(); } catch(e){}
+            }
             if (translator.wakeLock) {
                 try { translator.wakeLock.release(); } catch(e){}
                 translator.wakeLock = null;
@@ -1892,123 +1911,122 @@ CRITICAL: Return ONLY a valid JSON object:
             }
         },
 
-        toggleAutoLoop: () => {
-            if (translator.autoLoopActive) {
-                translator.stopAutoLoop();
-            } else {
-                translator.startAutoLoop();
-            }
-        },
-
         startAutoLoop: () => {
             translator.autoLoopActive = true;
             translator.requestWakeLock();
-
-            const btn = document.getElementById('btn-auto-conversation');
-            const icon = document.getElementById('auto-conv-icon');
-            const label = document.getElementById('auto-conv-label');
-            if (btn) btn.className = 'warning';
-            if (icon) icon.innerText = '⏹️';
-            if (label) label.innerText = 'Pausar Traductora';
-
-            // Start by listening to Spanish speaker (user)
             translator.startListening('es');
         },
 
         stopAutoLoop: () => {
             translator.autoLoopActive = false;
+            clearTimeout(translator.restartTimer);
             translator.stop();
-
-            const btn = document.getElementById('btn-auto-conversation');
-            const icon = document.getElementById('auto-conv-icon');
-            const label = document.getElementById('auto-conv-label');
-            if (btn) btn.className = 'success';
-            if (icon) icon.innerText = '▶️';
-            if (label) label.innerText = 'Reanudar Traductora';
-
-            const statusEl = document.getElementById('trans-listening-status');
-            if (statusEl) statusEl.innerHTML = '⏸️ <strong>Traductora en pausa</strong>';
-        },
-
-        toggleForeignMic: () => {
-            if (translator.activeMic === 'target') translator.stop();
-            else {
-                if (translator.autoLoopActive) translator.stopAutoLoop();
-                translator.startListening('target');
-            }
-        },
-
-        toggleSpanishMic: () => {
-            if (translator.activeMic === 'es') translator.stop();
-            else {
-                if (translator.autoLoopActive) translator.stopAutoLoop();
-                translator.startListening('es');
-            }
         },
 
         startListening: (mode) => {
             translator.stopRecognitionOnly();
+            clearTimeout(translator.restartTimer);
+
+            if (!translator.autoLoopActive || translator.isSpeaking) return;
+
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) return alert("Tu navegador no soporta reconocimiento de voz.");
 
             translator.activeMic = mode;
-            translator.recognition = new SR();
-            translator.recognition.lang = mode === 'es' ? 'es-ES' : langInfo.speechLang;
-            translator.recognition.continuous = false;
-            translator.recognition.interimResults = false;
+            let recognitionInstance;
+            try {
+                recognitionInstance = new SR();
+            } catch(e) {
+                console.error("SpeechRecognition error:", e);
+                return;
+            }
 
+            recognitionInstance.lang = mode === 'es' ? 'es-ES' : langInfo.speechLang;
+            recognitionInstance.continuous = false;
+            recognitionInstance.interimResults = true;
+            recognitionInstance.maxAlternatives = 1;
+
+            translator.recognition = recognitionInstance;
             translator.requestWakeLock();
 
-            const statusEl = document.getElementById('trans-listening-status');
-            const badge = document.getElementById('trans-current-speaker-badge');
-            if (statusEl) {
-                statusEl.innerHTML = mode === 'es' 
-                    ? '🔴 <strong>ESCUCHANDO EN ESPAÑOL</strong> (Habla tú ahora...)' 
-                    : `🔵 <strong>ESCUCHANDO AL NATIVO EN ${langInfo.name.toUpperCase()}</strong> (Habla tu interlocutor...)`;
-            }
-            if (badge) {
-                badge.innerHTML = mode === 'es'
-                    ? '<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>'
-                    : `<span style="color:var(--neon-cyan);">🌐 NATIVO (${langInfo.name})</span>`;
+            const dot = document.getElementById('trans-indicator-dot');
+            const label = document.getElementById('trans-indicator-text');
+            if (dot && label) {
+                if (mode === 'es') {
+                    dot.style.background = 'var(--neon-pink)';
+                    label.innerText = 'Escuchando en Español... (Habla tú)';
+                    label.style.color = 'var(--neon-pink)';
+                } else {
+                    dot.style.background = 'var(--neon-cyan)';
+                    label.innerText = `Escuchando en ${langInfo.name}... (Habla tu interlocutor)`;
+                    label.style.color = 'var(--neon-cyan)';
+                }
             }
 
-            translator.recognition.onresult = (e) => {
-                const transcript = e.results[0][0].transcript;
-                translator.handleSpokenInput(transcript, mode);
-            };
+            let hasProcessedFinal = false;
 
-            translator.recognition.onerror = (err) => {
-                console.log("Recognition error:", err);
-                if (translator.autoLoopActive) {
-                    setTimeout(() => {
-                        if (translator.autoLoopActive) translator.startListening(mode);
-                    }, 1200);
+            recognitionInstance.onresult = (e) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = e.resultIndex; i < e.results.length; ++i) {
+                    const res = e.results[i];
+                    if (res.isFinal) {
+                        finalTranscript += res[0].transcript;
+                    } else {
+                        interimTranscript += res[0].transcript;
+                    }
+                }
+
+                if (finalTranscript && finalTranscript.trim().length > 0 && !hasProcessedFinal) {
+                    hasProcessedFinal = true;
+                    translator.stopRecognitionOnly();
+                    translator.handleSpokenInput(finalTranscript.trim(), mode);
                 }
             };
 
-            translator.recognition.onend = () => {
+            recognitionInstance.onerror = (err) => {
+                console.log("Speech recognition error:", err.error);
+                if (err.error === 'not-allowed' || err.error === 'service-not-allowed') {
+                    translator.stopAutoLoop();
+                    alert("Acceso al micrófono denegado. Permite el acceso en los ajustes de tu navegador.");
+                }
+            };
+
+            recognitionInstance.onend = () => {
                 translator.activeMic = null;
+                if (translator.autoLoopActive && !hasProcessedFinal && !translator.isSpeaking) {
+                    clearTimeout(translator.restartTimer);
+                    translator.restartTimer = setTimeout(() => {
+                        if (translator.autoLoopActive && !translator.isSpeaking && !translator.activeMic) {
+                            translator.startListening(mode);
+                        }
+                    }, 800);
+                }
             };
 
             try {
-                translator.recognition.start();
+                recognitionInstance.start();
             } catch(e) {
-                if (btnForeign) btnForeign.classList.remove('listening');
-                if (btnEs) btnEs.classList.remove('listening');
+                console.log("Recognition start catch:", e);
                 translator.activeMic = null;
             }
         },
 
         stopRecognitionOnly: () => {
             if (translator.recognition) {
+                try { translator.recognition.abort(); } catch(e) {}
                 try { translator.recognition.stop(); } catch(e) {}
+                translator.recognition = null;
             }
             translator.activeMic = null;
         },
 
         stop: () => {
+            clearTimeout(translator.restartTimer);
             translator.stopRecognitionOnly();
+            translator.isSpeaking = false;
             window.speechSynthesis.cancel();
         },
 
@@ -2016,86 +2034,58 @@ CRITICAL: Return ONLY a valid JSON object:
             if (!text || text.trim().length === 0) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const isFromSpanish = mode === 'es';
-            translator.lastSpokenMode = mode;
 
-            const statusEl = document.getElementById('trans-listening-status');
-            const badge = document.getElementById('trans-current-speaker-badge');
-            const spokenEl = document.getElementById('trans-current-spoken');
-            const transEl = document.getElementById('trans-current-translated');
-
-            if (statusEl) {
-                statusEl.innerHTML = `⚡ <strong>Traduciendo al ${isFromSpanish ? langInfo.name.toUpperCase() : 'ESPAÑOL'}...</strong>`;
+            const textEl = document.getElementById('trans-translated-text');
+            if (textEl) {
+                textEl.innerText = "Traduciendo...";
+                textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
             }
 
-            if (badge) {
-                badge.innerHTML = isFromSpanish
-                    ? '<span style="color:var(--neon-pink);">🇪🇸 TÚ (Español)</span>'
-                    : `<span style="color:var(--neon-cyan);">🌐 NATIVO (${langInfo.name})</span>`;
-            }
-
-            if (spokenEl) spokenEl.innerText = `"${text}"`;
-            if (transEl) {
-                transEl.innerText = "Traduciendo...";
-                transEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : 'var(--neon-pink)';
-            }
-
-            const prompt = `You are a lightning-fast live conversation interpreter.
+            const prompt = `You are an instant simultaneous interpreter.
 Source text: "${text}"
-${isFromSpanish ? `Translate from Spanish into ${langInfo.name}.` : `Translate from ${langInfo.name} into Spanish.`}
+${isFromSpanish ? `Translate from Spanish directly into ${langInfo.name}.` : `Translate from ${langInfo.name} directly into Spanish.`}
 
 CRITICAL: Return ONLY a JSON object:
 {
-  "translation": "natural conversational translated text here"
+  "translation": "translated text here"
 }`;
 
             await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate: "${text}"`}], null, (data) => {
-                const transResult = data.translation || '';
+                const transResult = (data.translation || '').trim();
                 
-                if (transEl) transEl.innerText = `"${transResult}"`;
-
-                if (isFromSpanish) {
-                    translator.lastSpanish = text;
-                    translator.lastForeign = transResult;
-                } else {
-                    translator.lastForeign = text;
-                    translator.lastSpanish = transResult;
+                if (textEl) {
+                    textEl.innerText = `"${transResult}"`;
+                    textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
                 }
 
-                translator.conversationHistory = translator.conversationHistory || [];
-                translator.conversationHistory.push({
-                    time: new Date().toLocaleTimeString().slice(0,5),
-                    speaker: isFromSpanish ? 'user' : 'native',
-                    original: text,
-                    translation: transResult,
-                    lang: currentLang
-                });
+                translator.currentTranslation = transResult;
+                translator.currentTranslationLang = isFromSpanish ? currentLang : 'es';
 
-                if (isFromSpanish) {
-                    if (statusEl) statusEl.innerHTML = `🔊 <strong>Hablando en ${langInfo.name}...</strong>`;
-                    translator.speakForeign(transResult, () => {
-                        if (translator.autoLoopActive) {
-                            if (statusEl) statusEl.innerHTML = `⏳ <strong>Pausa... Escuchando al Nativo</strong>`;
-                            setTimeout(() => {
-                                if (translator.autoLoopActive) translator.startListening('target');
-                            }, 1400);
+                // Next turn: switch to the other speaker after 1.2s
+                if (translator.autoLoopActive) {
+                    setTimeout(() => {
+                        if (translator.autoLoopActive && !translator.isSpeaking) {
+                            translator.startListening(isFromSpanish ? 'target' : 'es');
                         }
-                    });
-                } else {
-                    if (statusEl) statusEl.innerHTML = `🔊 <strong>Hablando en Español...</strong>`;
-                    translator.speakSpanish(transResult, () => {
-                        if (translator.autoLoopActive) {
-                            if (statusEl) statusEl.innerHTML = `⏳ <strong>Pausa... Escuchándote a ti</strong>`;
-                            setTimeout(() => {
-                                if (translator.autoLoopActive) translator.startListening('es');
-                            }, 1400);
-                        }
-                    });
+                    }, 1200);
                 }
             });
         },
 
+        speakCurrentTranslation: () => {
+            if (!translator.currentTranslation) return;
+            if (translator.currentTranslationLang === 'es') {
+                translator.speakSpanish(translator.currentTranslation);
+            } else {
+                translator.speakForeign(translator.currentTranslation);
+            }
+        },
+
         speakForeign: (text, onEndCallback) => {
+            translator.stopRecognitionOnly();
+            translator.isSpeaking = true;
             window.speechSynthesis.cancel();
+
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const u = new SpeechSynthesisUtterance(text);
             u.lang = langInfo.speechLang;
@@ -2105,12 +2095,23 @@ CRITICAL: Return ONLY a JSON object:
             let voice = voices.find(v => v.lang === langInfo.speechLang || v.lang.startsWith(currentLang));
             if (voice) u.voice = voice;
 
-            if (onEndCallback) u.onend = onEndCallback;
+            u.onend = () => {
+                translator.isSpeaking = false;
+                if (onEndCallback) onEndCallback();
+            };
+            u.onerror = () => {
+                translator.isSpeaking = false;
+                if (onEndCallback) onEndCallback();
+            };
+
             window.speechSynthesis.speak(u);
         },
 
         speakSpanish: (text, onEndCallback) => {
+            translator.stopRecognitionOnly();
+            translator.isSpeaking = true;
             window.speechSynthesis.cancel();
+
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'es-ES';
             u.rate = translator.speed || 0.85;
@@ -2119,124 +2120,20 @@ CRITICAL: Return ONLY a JSON object:
             let esVoice = voices.find(v => v.lang.startsWith('es'));
             if (esVoice) u.voice = esVoice;
 
-            if (onEndCallback) u.onend = onEndCallback;
+            u.onend = () => {
+                translator.isSpeaking = false;
+                if (onEndCallback) onEndCallback();
+            };
+            u.onerror = () => {
+                translator.isSpeaking = false;
+                if (onEndCallback) onEndCallback();
+            };
+
             window.speechSynthesis.speak(u);
-        },
-
-        speakCurrentAudio: () => {
-            if (translator.lastForeign) translator.speakForeign(translator.lastForeign);
-        },
-
-        saveCurrentToVocab: () => {
-            if (!translator.lastForeign || !translator.lastSpanish || translator.lastForeign === '...' || translator.lastSpanish === '...') {
-                return alert("Habla primero una palabra o frase para poder guardarla en tu vocabulario.");
-            }
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-
-            const cleanForeign = translator.lastForeign.replace(/^"|"$/g, '').trim();
-            const cleanSpanish = translator.lastSpanish.replace(/^"|"$/g, '').trim();
-
-            const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
-            let topicObj = topics.find(t => t.id == session.selectedListId) || topics[0];
-            if (!topicObj) {
-                topicObj = { id: Date.now(), name: `⭐ MIS PALABRAS (${langInfo.name.toUpperCase()})`, lang: currentLang };
-                db.topics.push(topicObj);
-            }
-
-            let existing = db.words.find(w => w.topic_id === topicObj.id && (w.english.toLowerCase() === cleanForeign.toLowerCase() || w.spanish.toLowerCase() === cleanSpanish.toLowerCase()));
-            if (existing) {
-                alert(`ℹ️ "${cleanForeign}" ya está en tu vocabulario (${topicObj.name}).`);
-                return;
-            }
-
-            const newWord = {
-                id: Date.now() + Math.floor(Math.random() * 1000),
-                topic_id: topicObj.id,
-                english: cleanForeign,
-                spanish: cleanSpanish,
-                ipa: '',
-                sentence_en: cleanForeign,
-                sentence_es: cleanSpanish
-            };
-
-            db.words.push(newWord);
-            app.saveDB();
-            app.renderDashboardLists();
-
-            // Background IPA phonetic enrichment
-            const prompt = `Provide the IPA phonetics for the ${langInfo.name} word/phrase: "${cleanForeign}". Return ONLY the IPA phonetics string like "/.../".`;
-            app.callAI_Text(prompt, null, (ipaRes) => {
-                if (ipaRes) {
-                    newWord.ipa = ipaRes.replace(/```/g, '').trim();
-                    app.saveDB();
-                }
-            });
-
-            // Floating banner notification
-            const notif = document.createElement('div');
-            notif.style.cssText = "position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,255,149,0.95); color: #000; padding: 14px 28px; border-radius: 30px; font-weight: 900; font-size: 1rem; z-index: 10000; box-shadow: 0 0 25px rgba(0,255,149,0.85); text-align: center;";
-            notif.innerHTML = `⭐ ¡Guardada en tu Vocabulario (${topicObj.name})!<br><span style="font-size:0.85rem; font-weight:bold;">"${cleanForeign}" = "${cleanSpanish}"</span>`;
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 3500);
-
-            game.speakText(cleanForeign);
-        },
-
-        saveFullConversation: () => {
-            if (!translator.conversationHistory || translator.conversationHistory.length === 0) {
-                return alert("Aún no hay mensajes en la conversación para guardar.");
-            }
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            db.saved_conversations = db.saved_conversations || [];
-            
-            const convoRecord = {
-                id: Date.now(),
-                date: new Date().toLocaleString(),
-                lang: currentLang,
-                teacher: langInfo.teacherName,
-                turns: [...translator.conversationHistory]
-            };
-            db.saved_conversations.unshift(convoRecord);
-            app.saveDB();
-
-            // Generate clean text export
-            let txtContent = `========================================\n` +
-                `JETBULARY - CONVERSACIÓN GUARDADA\n` +
-                `Fecha: ${convoRecord.date}\n` +
-                `Idioma: ${langInfo.name} (${langInfo.teacherName})\n` +
-                `Total frases: ${translator.conversationHistory.length}\n` +
-                `========================================\n\n`;
-
-            translator.conversationHistory.forEach((item) => {
-                if (item.speaker === 'user') {
-                    txtContent += `[${item.time}] 🇪🇸 Tú (Español):\n"${item.original}"\n➔ ${langInfo.name}: "${item.translation}"\n\n`;
-                } else {
-                    txtContent += `[${item.time}] 🌐 Nativo (${langInfo.name}):\n"${item.original}"\n➔ 🇪🇸 Español: "${item.translation}"\n\n`;
-                }
-            });
-
-            txtContent += `========================================\n` +
-                `Generado con Jetbulary.com\n` +
-                `========================================\n`;
-
-            const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `jetbulary_conversacion_${new Date().toISOString().slice(0,10)}_${Date.now().toString().slice(-4)}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            // Floating feedback banner
-            const notif = document.createElement('div');
-            notif.style.cssText = "position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: rgba(0,255,149,0.95); color: #000; padding: 14px 26px; border-radius: 30px; font-weight: 900; font-size: 1rem; z-index: 10000; box-shadow: 0 0 25px rgba(0,255,149,0.85); text-align: center;";
-            notif.innerHTML = `💾 ¡Conversación guardada y descargada!<br><span style="font-size:0.85rem; font-weight:normal;">(${translator.conversationHistory.length} frases registradas)</span>`;
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 4000);
         }
     };
 
-    // ====== PWA INSTALL ======
+    // ====== PWA INSTALL & SERVICE WORKER ======
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         window.deferredPrompt = e;
