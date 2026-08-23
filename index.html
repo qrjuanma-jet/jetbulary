@@ -571,7 +571,7 @@
             <span style="color: #444;">|</span>
             <a href="mailto:soporte@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">Soporte: soporte@jetbulary.com</a>
         </div>
-        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.0</span></p>
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.1</span></p>
     </footer>
 
 <script>
@@ -1667,16 +1667,76 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         timerInterval: null, wasAutoMic: false, lastText: '', isSessionMode: false, sessionCycle: 0,
 
         isCloseMatch: (target, spoken) => {
-            if (spoken.includes(target)) return true;
-            const a = target, b = spoken;
-            if (a.length === 0) return b.length === 0;
-            const matrix = [];
-            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-            for (let i = 1; i <= b.length; i++)
-                for (let j = 1; j <= a.length; j++)
-                    matrix[i][j] = b.charAt(i-1) == a.charAt(j-1) ? matrix[i-1][j-1] : Math.min(matrix[i-1][j-1]+1, matrix[i][j-1]+1, matrix[i-1][j]+1);
-            return (1 - matrix[b.length][a.length] / Math.max(a.length, b.length)) > 0.35;
+            if (!target || !spoken) return false;
+            
+            // Clean & normalize both strings
+            const normalize = (str) => str.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove accents
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'’]/g, " ") // remove punctuation
+                .replace(/\s+/g, " ").trim();
+
+            const cleanTarget = normalize(target);
+            const cleanSpoken = normalize(spoken);
+
+            if (cleanTarget === cleanSpoken) return true;
+            if (cleanSpoken.includes(cleanTarget)) return true;
+
+            // Split into words
+            const targetWords = cleanTarget.split(' ').filter(w => w.length > 0);
+            const spokenWords = cleanSpoken.split(' ').filter(w => w.length > 0);
+
+            // Filter out common helper articles
+            const commonArticles = new Set(['to', 'the', 'a', 'an', 'der', 'die', 'das', 'den', 'dem', 'des', 'ein', 'eine', 'le', 'la', 'les', 'un', 'une', 'du', 'de', 'el', 'la', 'los', 'las', 'un', 'una']);
+            const meaningfulTargetWords = targetWords.filter(w => !commonArticles.has(w));
+            const meaningfulSpokenWords = spokenWords.filter(w => !commonArticles.has(w));
+
+            // Check direct match on any meaningful word
+            for (const tw of (meaningfulTargetWords.length > 0 ? meaningfulTargetWords : targetWords)) {
+                for (const sw of (meaningfulSpokenWords.length > 0 ? meaningfulSpokenWords : spokenWords)) {
+                    if (sw === tw || sw.includes(tw) || tw.includes(sw)) return true;
+                }
+            }
+
+            // Levenshtein similarity calculation
+            const levDist = (s1, s2) => {
+                const costs = [];
+                for (let i = 0; i <= s1.length; i++) {
+                    let lastValue = i;
+                    for (let j = 0; j <= s2.length; j++) {
+                        if (i === 0) costs[j] = j;
+                        else if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            }
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                    if (i > 0) costs[s2.length] = lastValue;
+                }
+                return costs[s2.length];
+            };
+
+            const mainTarget = (meaningfulTargetWords.length > 0 ? meaningfulTargetWords.join(' ') : cleanTarget);
+            const mainSpoken = (meaningfulSpokenWords.length > 0 ? meaningfulSpokenWords.join(' ') : cleanSpoken);
+            const maxLen = Math.max(mainTarget.length, mainSpoken.length);
+            if (maxLen === 0) return true;
+            
+            const dist = levDist(mainTarget, mainSpoken);
+            const similarity = 1 - (dist / maxLen);
+
+            // Level-dependent tolerance thresholds:
+            // Level 0 (A0): 0.20 threshold (very forgiving for beginners)
+            // Level 1 (A1-A2): 0.30 threshold
+            // Level 2 (B1): 0.40 threshold
+            // Level 3 (B2): 0.55 threshold
+            // Level 4 (C1+): 0.70 threshold (strict for advanced)
+            const levelNum = db.academy_level || 0;
+            const thresholds = [0.20, 0.30, 0.40, 0.55, 0.70];
+            const requiredThreshold = thresholds[levelNum] !== undefined ? thresholds[levelNum] : 0.25;
+
+            return similarity >= requiredThreshold;
         },
 
         start: (topicId) => {
@@ -2066,25 +2126,30 @@ CRITICAL: Respond ONLY with a valid JSON object:
             conversation.turn++;
 
             const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
-            const level = levelMap[db.academy_level || 0];
+            const currentLevelNum = db.academy_level || 0;
+            const level = levelMap[currentLevelNum];
 
-            const systemPrompt = `You are ${langInfo.teacherName}, an elite AI ${langInfo.aiPromptLang} pronunciation and speech coach evaluating a ${level} student.
+            const systemPrompt = `You are ${langInfo.teacherName}, an encouraging and expert AI ${langInfo.aiPromptLang} pronunciation and speech coach evaluating a ${level} student.
 The student listened to this exact target ${langInfo.aiPromptLang} text:
 "${conversation.expectedText}"
 
 And the student repeated this via speech-to-text:
 "${transcript}"
 
+STUDENT LEVEL GRADING:
+The student is at level "${level}".
+${currentLevelNum <= 1 ? "BE HIGHLY GENEROUS AND ENCOURAGING. If the student attempted the words, award 85-98% accuracy and praise their effort warmly with 1 simple tip." : currentLevelNum === 2 ? "Be balanced, encouraging, and give practical feedback." : "Be thorough, professional, and point out native phonetics nuance."}
+
 YOUR TASK:
-1. Deeply analyze the student's spoken accuracy and pronunciation in ${langInfo.aiPromptLang}.
+1. Analyze the student's spoken accuracy and pronunciation in ${langInfo.aiPromptLang} appropriately for a ${level} student.
 2. Calculate an accuracy score percentage (0-100).
-3. Give friendly, spoken coaching in ${langInfo.aiPromptLang} pointing out what was pronounced well, and specific phonetics/sounds to improve.
+3. Give friendly, spoken coaching in ${langInfo.aiPromptLang} pointing out what was pronounced well, and specific sounds to improve.
 4. Provide Spanish translation of your coaching.
 
 CRITICAL: Return ONLY a valid JSON object:
 {
-  "accuracy": 88,
-  "verdict": "Excellent / Great Job / Good Effort / Needs Practice",
+  "accuracy": 90,
+  "verdict": "Great Job / Excellent / Good Effort / Keep Practicing",
   "feedback_speech": "Spoken ${langInfo.aiPromptLang} coaching feedback",
   "feedback_trans": "Traducción al español del feedback",
   "tips": "Specific pronunciation tip for difficult sounds in ${langInfo.aiPromptLang}"
