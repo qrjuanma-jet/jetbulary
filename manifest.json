@@ -1,7 +1,7 @@
 {
-  "name": "Jetbulary Cyberpunk HUD",
+  "name": "Jetbulary — Learn Languages with AI",
   "short_name": "Jetbulary",
-  "description": "Aprende vocabulario inmersivo con IA en un entorno Cyberpunk HUD.",
+  "description": "Aprende vocabulario inmersivo en inglés y otros idiomas con IA en tiempo real.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#050505",

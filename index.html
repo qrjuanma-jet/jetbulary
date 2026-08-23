@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
-    <title>Jetbulary — Learn English with AI</title>
-    <meta name="description" content="Learn English vocabulary with AI. Jetbulary helps you learn through immersive sessions with pronunciation practice and contextual conversations.">
-    <meta name="keywords" content="learn English, AI vocabulary, pronunciation practice, English conversation, language learning app">
+    <title>Jetbulary — Learn Languages with AI</title>
+    <meta name="description" content="Aprende vocabulario inmersivo en inglés y otros idiomas con IA en tiempo real. Práctica de pronunciación y traducción directa.">
+    <meta name="keywords" content="Jetbulary, learn English, learn German, learn French, AI language learning, real time translation">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -251,48 +250,47 @@
             </button>
         </div>
         <h2 class="tech" style="margin-bottom: 8px;">JETBULARY</h2>
-        <p style="margin-bottom: 22px; font-size: 0.9rem;">Learn English vocabulary with AI-powered immersive sessions.</p>
+        <p style="margin-bottom: 22px; font-size: 0.9rem; color: #AAA;">Aprende vocabulario e idiomas con inteligencia artificial en tiempo real.</p>
 
-        <div class="hud-card" style="text-align: left;">
-            <h3 class="tech" style="color: var(--neon-cyan); font-size: 0.9rem; margin-bottom: 20px; text-align: center;">[ ACTIVATE JETBULARY ]</h3>
-
-            <p style="font-size: 0.75rem; color: #555; margin-bottom: 12px; font-family: monospace;">ON THE GROQ PAGE:</p>
-
-            <div style="display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px;">
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                    <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">1</span>
-                    <span style="font-size: 0.85rem; color: #bbb;">Click <strong style="color: var(--neon-cyan); font-family: monospace;">+ Create API Key</strong></span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                    <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">2</span>
-                    <span style="font-size: 0.85rem; color: #bbb;">In <strong style="color: #ccc;">Display Name</strong> type <strong style="color: var(--neon-cyan); font-family: monospace;">Jetbulary</strong></span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                    <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">3</span>
-                    <span style="font-size: 0.85rem; color: #bbb;">Set <strong style="color: #ccc;">Expiration</strong> to <strong style="color: var(--neon-cyan); font-family: monospace;">No Expiration</strong></span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.15); border-radius: 6px;">
-                    <span style="background: var(--neon-cyan); color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">4</span>
-                    <span style="font-size: 0.85rem; color: #bbb;">Click <strong style="color: var(--neon-cyan); font-family: monospace;">Submit</strong></span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.3); border-radius: 6px;">
-                    <span style="background: #34D399; color: #000; font-weight: 900; font-size: 0.7rem; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: monospace; flex-shrink: 0;">5</span>
-                    <span style="font-size: 0.85rem; color: #bbb;">Click <strong style="color: #34D399; font-family: monospace;">Copy</strong> → Come back here!</span>
-                </div>
+        <!-- COLLAPSIBLE API KEY CARD -->
+        <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--cyber-glow);">
+            <div onclick="app.toggleApiKeySection()" style="padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.08); user-select: none;">
+                <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.95rem;">🔑 ACTIVAR API KEY (GROQ)</span>
+                <span id="apikey-chevron" style="color: var(--neon-cyan); font-size: 0.85rem; transition: transform 0.3s;">▼</span>
             </div>
+            
+            <div id="apikey-body" style="padding: 20px 18px; background: rgba(18,18,20,0.95); text-align: left;">
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <div style="position: relative; flex: 1;">
+                        <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí (gsk_...)" style="font-family: monospace; letter-spacing: 1px; padding-right: 45px; width: 100%; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
+                        <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.25rem; z-index: 10;" title="Mostrar / Ocultar">👁️</span>
+                    </div>
+                    <button onclick="app.toggleApiKeyHelp()" class="secondary" style="width: auto; padding: 0 16px; font-size: 1.1rem; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center;" title="¿Cómo conseguir la API Key?">
+                        ❓
+                    </button>
+                </div>
 
-            <button onclick="window.open('https://console.groq.com/keys', '_blank'); app.waitForClipboard();" style="width: 100%; padding: 15px; font-size: 0.95rem; border: 2px solid #4285F4; background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(52,168,83,0.08)); color: #fff; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 12px;">
-                <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
-                <span>Open Groq Console <span style="color: rgba(255,255,255,0.4); font-weight: 400; font-size: 0.78rem;">(free, we don't store your data)</span></span>
-            </button>
+                <!-- COLLAPSIBLE HELP STEPS -->
+                <div id="apikey-help-box" class="hidden" style="margin-bottom: 16px; padding: 14px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px;">
+                    <h4 style="color: var(--neon-cyan); font-size: 0.85rem; margin-top: 0; margin-bottom: 10px;">📋 Pasos para conseguir tu API Key Gratis:</h4>
+                    <ol style="font-size: 0.82rem; color: #CCC; margin: 0 0 14px 18px; padding: 0; line-height: 1.6;">
+                        <li>Pulsa el botón <strong>Open Groq Console</strong> de abajo.</li>
+                        <li>Inicia sesión con tu cuenta de Google o email.</li>
+                        <li>Haz clic en <strong style="color: var(--neon-cyan);">+ Create API Key</strong>.</li>
+                        <li>Pon de nombre <strong>Jetbulary</strong> y pulsa <strong>Submit</strong>.</li>
+                        <li>Copia la clave (<code style="color: var(--neon-pink);">gsk_...</code>) y pégala arriba.</li>
+                    </ol>
+                    <button onclick="window.open('https://console.groq.com/keys', '_blank'); app.waitForClipboard();" class="secondary" style="width: 100%; padding: 12px; font-size: 0.85rem; border: 1px solid #4285F4; background: rgba(66,133,244,0.15); color: #FFF; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
+                        <span>Open Groq Console (Gratis)</span>
+                    </button>
+                    <div id="autodetect-status" style="margin-top: 10px; font-size: 0.78rem; color: #777; text-align: center;">🔍 Al volver de Groq, la clave se detectará automáticamente</div>
+                </div>
 
-            <div id="autodetect-status" style="padding: 12px; border-radius: 8px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.2); margin-bottom: 14px; font-size: 0.84rem; color: #666; text-align: center;">🔍 When you return, the key will be detected automatically</div>
-
-            <div style="position: relative; margin-bottom: 10px;">
-                <input type="password" id="api-key-input" placeholder="Paste your key here (gsk_...)" style="font-family: monospace; letter-spacing: 1px; padding-right: 50px;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
-                <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.3rem; z-index: 10;" title="Show/Hide">👁️</span>
+                <button class="success" onclick="app.saveApiKey()" id="btn-sync" style="width: 100%; font-size: 0.95rem; font-weight: bold; padding: 14px; opacity: 0.5; pointer-events: none; box-shadow: var(--cyber-glow);">
+                    🚀 ACTIVAR Y COMENZAR
+                </button>
             </div>
-            <button class="success" onclick="app.saveApiKey()" id="btn-sync" style="width: 100%; font-size: 1rem; padding: 16px; opacity: 0.5; pointer-events: none;">START LEARNING</button>
         </div>
     </div>
 
@@ -573,7 +571,7 @@
             <span style="color: #444;">|</span>
             <a href="mailto:soporte@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">Soporte: soporte@jetbulary.com</a>
         </div>
-        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM</p>
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V2.1</span></p>
     </footer>
 
 <script>
@@ -873,11 +871,15 @@
             document.querySelectorAll('.lang-check').forEach(el => el.style.display = 'none');
             const activeCheck = document.getElementById(`check-${currentLang}`);
             if (activeCheck) activeCheck.style.display = 'inline';
+            history.pushState({ modal: 'teacher' }, null, '#teacher');
         },
 
-        closeTeacherModal: () => {
+        closeTeacherModal: (skipHistoryBack = false) => {
             const modal = document.getElementById('modal-teacher-select');
             if (modal) modal.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'teacher') {
+                history.back();
+            }
         },
 
         setLanguage: (langCode) => {
@@ -999,9 +1001,27 @@
             app.updateHeaderTranslatorBtn();
 
             window.onpopstate = (event) => {
+                // 1. If teacher / language modal is open, close it
+                const teacherModal = document.getElementById('modal-teacher-select');
+                if (teacherModal && !teacherModal.classList.contains('hidden')) {
+                    teacherModal.classList.add('hidden');
+                    return;
+                }
+
+                // 2. If in translator view, exit cleanly to dashboard
+                const transView = document.getElementById('view-translator');
+                if (transView && !transView.classList.contains('hidden')) {
+                    translator.exitToDashboard();
+                    return;
+                }
+
+                // 3. Switch to previous view if present in state, otherwise go to dashboard
                 if (event.state && event.state.view) {
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
                     else app.switchView(event.state.view, 'none');
+                } else {
+                    const isDash = !document.getElementById('view-dashboard').classList.contains('hidden');
+                    if (!isDash) app.showDashboard('none');
                 }
             };
         },
@@ -1083,6 +1103,25 @@
 
         logout: () => {
             if (confirm("Change API Key?")) { localStorage.removeItem(API_KEY_STORAGE); app.switchView('view-apikey'); }
+        },
+
+        toggleApiKeySection: () => {
+            const body = document.getElementById('apikey-body');
+            const chevron = document.getElementById('apikey-chevron');
+            if (!body) return;
+            const isHidden = body.classList.contains('hidden');
+            if (isHidden) {
+                body.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                body.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            }
+        },
+
+        toggleApiKeyHelp: () => {
+            const box = document.getElementById('apikey-help-box');
+            if (box) box.classList.toggle('hidden');
         },
 
         saveApiKey: (keyOverride) => {
@@ -1531,7 +1570,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                         if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
                             game.toggleMic(); scrollToMicArea('mic-btn');
                         }
-                    }, 300);
+                    }, 800);
                 }
                 // Auto mic for conversation
                 if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
@@ -1539,7 +1578,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                         if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
                             conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
                         }
-                    }, 1500);
+                    }, 1200);
                 }
             };
             u.onerror = u.onend;
@@ -1548,19 +1587,88 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
         toggleMic: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            if (document.getElementById('mic-btn').classList.contains('listening')) { game.stopMic(); return; }
-            if (!game.recognition) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) return alert("Browser does not support speech recognition.");
-                game.recognition = new SR();
-                game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
-                game.recognition.onend = () => { document.getElementById('mic-btn').classList.remove('listening'); game.stopTimer(); };
+            const micBtn = document.getElementById('mic-btn');
+            const spokenTextEl = document.getElementById('spoken-text');
+            if (micBtn && micBtn.classList.contains('listening')) { game.stopMic(); return; }
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return alert("Browser does not support speech recognition.");
+
+            game.stopMic();
+            window.speechSynthesis.cancel();
+
+            const recognition = new SR();
+            recognition.lang = langInfo.speechLang;
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let handled = false;
+
+            if (spokenTextEl) {
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Micro activo... Di "${(game.data[game.index]?.english || '').split('(')[0].trim()}"...</span>`;
             }
-            game.recognition.lang = langInfo.speechLang;
+
+            recognition.onaudiostart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan);">🎙️ Micro grabando... Habla ahora...</span>`;
+                }
+            };
+
+            recognition.onspeechstart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🗣️ Voz detectada...</span>`;
+                }
+            };
+
+            recognition.onresult = (e) => {
+                finalTranscript = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (spokenTextEl && liveText) {
+                    spokenTextEl.innerHTML = `🗣️ <strong style="color:#FFF;">"${liveText}"</strong>`;
+                }
+            };
+
+            recognition.onerror = (ev) => {
+                console.log('Game mic error:', ev.error);
+                if (micBtn) micBtn.classList.remove('listening');
+                game.stopTimer();
+                if (spokenTextEl && ev.error === 'no-speech' && !finalTranscript && !interimTranscript) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Vuelve a pulsar el micro para hablar.</span>';
+                }
+            };
+
+            recognition.onend = () => {
+                if (micBtn) micBtn.classList.remove('listening');
+                game.stopTimer();
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && !handled) {
+                    handled = true;
+                    game.check(captured);
+                } else if (!captured && spokenTextEl && spokenTextEl.innerText.includes('Micro')) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Pulsa el micro para reintentar.</span>';
+                }
+            };
+
+            game.recognition = recognition;
             try {
-                document.getElementById('mic-btn').classList.add('listening');
-                game.recognition.start(); game.startTimer(); scrollToMicArea('mic-btn');
-            } catch(e) { document.getElementById('mic-btn').classList.remove('listening'); }
+                if (micBtn) micBtn.classList.add('listening');
+                recognition.start();
+                game.startTimer();
+                scrollToMicArea('mic-btn');
+            } catch(e) {
+                console.log('Game mic start error:', e);
+                if (micBtn) micBtn.classList.remove('listening');
+            }
         },
 
         check: (transcript) => {
@@ -1740,17 +1848,84 @@ CRITICAL: Respond ONLY with a valid JSON object:
         toggleMic: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn-convo');
-            if (micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
-            if (!conversation.recognition) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) return alert("Browser does not support speech recognition.");
-                conversation.recognition = new SR();
-                conversation.recognition.onresult = (e) => conversation.onResult(e.results[0][0].transcript);
-                conversation.recognition.onend = () => micBtn.classList.remove('listening');
+            const spokenTextEl = document.getElementById('convo-spoken-text');
+            if (micBtn && micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return alert("Browser does not support speech recognition.");
+
+            conversation.stopMic();
+            window.speechSynthesis.cancel();
+
+            const recognition = new SR();
+            recognition.lang = langInfo.speechLang;
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let handled = false;
+
+            if (spokenTextEl) {
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Micro activo... Di la frase en ${langInfo.name}...</span>`;
             }
-            conversation.recognition.lang = langInfo.speechLang;
-            try { micBtn.classList.add('listening'); conversation.recognition.start(); scrollToMicArea('mic-btn-convo'); }
-            catch(e) { micBtn.classList.remove('listening'); }
+
+            recognition.onaudiostart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan);">🎙️ Micro grabando... Habla ahora...</span>`;
+                }
+            };
+
+            recognition.onspeechstart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🗣️ Voz detectada...</span>`;
+                }
+            };
+
+            recognition.onresult = (e) => {
+                finalTranscript = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (spokenTextEl && liveText) {
+                    spokenTextEl.innerHTML = `🗣️ <strong style="color:#FFF;">"${liveText}"</strong>`;
+                }
+            };
+
+            recognition.onerror = (ev) => {
+                console.log('Convo mic error:', ev.error);
+                if (micBtn) micBtn.classList.remove('listening');
+                if (spokenTextEl && ev.error === 'no-speech' && !finalTranscript && !interimTranscript) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se detectó voz. Vuelve a pulsar el micrófono para hablar.</span>';
+                }
+            };
+
+            recognition.onend = () => {
+                if (micBtn) micBtn.classList.remove('listening');
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && !handled) {
+                    handled = true;
+                    conversation.onResult(captured);
+                } else if (!captured && spokenTextEl && spokenTextEl.innerText.includes('Micro')) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se detectó voz. Vuelve a pulsar el micrófono.</span>';
+                }
+            };
+
+            conversation.recognition = recognition;
+            try {
+                if (micBtn) micBtn.classList.add('listening');
+                recognition.start();
+                scrollToMicArea('mic-btn-convo');
+            } catch(e) {
+                console.log('Convo mic start error:', e);
+                if (micBtn) micBtn.classList.remove('listening');
+            }
         },
 
         stopMic: () => {
@@ -1838,36 +2013,7 @@ CRITICAL: Return ONLY a valid JSON object:
         currentTranslation: '',
         currentTranslationLang: 'target',
 
-        requestMicPermissionIfNeeded: async () => {
-            if (localStorage.getItem('jetbulary_mic_granted') === '1') {
-                return true;
-            }
-
-            if (navigator.permissions && navigator.permissions.query) {
-                try {
-                    const res = await navigator.permissions.query({ name: 'microphone' });
-                    if (res.state === 'granted') {
-                        localStorage.setItem('jetbulary_mic_granted', '1');
-                        return true;
-                    }
-                } catch(e){}
-            }
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    stream.getTracks().forEach(track => track.stop());
-                    localStorage.setItem('jetbulary_mic_granted', '1');
-                    return true;
-                } catch(err) {
-                    console.warn("Microphone permission prompt cancelled or denied:", err);
-                    return false;
-                }
-            }
-            return true;
-        },
-
-        init: async () => {
+        init: () => {
             const textEl = document.getElementById('trans-translated-text');
             if (textEl) {
                 textEl.innerText = '"Habla ahora..."';
@@ -1884,7 +2030,6 @@ CRITICAL: Return ONLY a valid JSON object:
                 if (transView) transView.classList.add('apaisado-forced');
             }
 
-            await translator.requestMicPermissionIfNeeded();
             translator.startAutoLoop();
         },
 
@@ -1934,6 +2079,8 @@ CRITICAL: Return ONLY a valid JSON object:
             if (!SR) return alert("Tu navegador no soporta reconocimiento de voz.");
 
             translator.activeMic = mode;
+            window.speechSynthesis.cancel();
+
             let recognitionInstance;
             try {
                 recognitionInstance = new SR();
@@ -1952,6 +2099,8 @@ CRITICAL: Return ONLY a valid JSON object:
 
             const dot = document.getElementById('trans-indicator-dot');
             const label = document.getElementById('trans-indicator-text');
+            const textEl = document.getElementById('trans-translated-text');
+
             if (dot && label) {
                 if (mode === 'es') {
                     dot.style.background = 'var(--neon-pink)';
@@ -1964,25 +2113,38 @@ CRITICAL: Return ONLY a valid JSON object:
                 }
             }
 
-            let hasProcessedFinal = false;
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let hasHandled = false;
+
+            recognitionInstance.onaudiostart = () => {
+                if (textEl && (!textEl.innerText || textEl.innerText.includes('Habla ahora'))) {
+                    textEl.innerText = '"🎙️ Micro activo... Habla..."';
+                    textEl.style.color = '#777777';
+                }
+            };
+
+            recognitionInstance.onspeechstart = () => {
+                if (textEl) {
+                    textEl.innerText = '"🗣️ Voz detectada..."';
+                    textEl.style.color = '#AAAAAA';
+                }
+            };
 
             recognitionInstance.onresult = (e) => {
-                let interimTranscript = '';
-                let finalTranscript = '';
-
-                for (let i = e.resultIndex; i < e.results.length; ++i) {
-                    const res = e.results[i];
-                    if (res.isFinal) {
-                        finalTranscript += res[0].transcript;
+                finalTranscript = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
                     } else {
-                        interimTranscript += res[0].transcript;
+                        interimTranscript += e.results[i][0].transcript + ' ';
                     }
                 }
-
-                if (finalTranscript && finalTranscript.trim().length > 0 && !hasProcessedFinal) {
-                    hasProcessedFinal = true;
-                    translator.stopRecognitionOnly();
-                    translator.handleSpokenInput(finalTranscript.trim(), mode);
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (textEl && liveText && !hasHandled) {
+                    textEl.innerText = `"${liveText}"`;
+                    textEl.style.color = mode === 'es' ? 'var(--neon-pink)' : 'var(--neon-cyan)';
                 }
             };
 
@@ -1990,19 +2152,23 @@ CRITICAL: Return ONLY a valid JSON object:
                 console.log("Speech recognition error:", err.error);
                 if (err.error === 'not-allowed' || err.error === 'service-not-allowed') {
                     translator.stopAutoLoop();
-                    alert("Acceso al micrófono denegado. Permite el acceso en los ajustes de tu navegador.");
                 }
             };
 
             recognitionInstance.onend = () => {
                 translator.activeMic = null;
-                if (translator.autoLoopActive && !hasProcessedFinal && !translator.isSpeaking) {
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && captured.length > 0 && !hasHandled) {
+                    hasHandled = true;
+                    translator.stopRecognitionOnly();
+                    translator.handleSpokenInput(captured, mode);
+                } else if (translator.autoLoopActive && !translator.isSpeaking) {
                     clearTimeout(translator.restartTimer);
                     translator.restartTimer = setTimeout(() => {
                         if (translator.autoLoopActive && !translator.isSpeaking && !translator.activeMic) {
                             translator.startListening(mode);
                         }
-                    }, 800);
+                    }, 500);
                 }
             };
 
