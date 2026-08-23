@@ -872,11 +872,15 @@
             document.querySelectorAll('.lang-check').forEach(el => el.style.display = 'none');
             const activeCheck = document.getElementById(`check-${currentLang}`);
             if (activeCheck) activeCheck.style.display = 'inline';
+            history.pushState({ modal: 'teacher' }, null, '#teacher');
         },
 
-        closeTeacherModal: () => {
+        closeTeacherModal: (skipHistoryBack = false) => {
             const modal = document.getElementById('modal-teacher-select');
             if (modal) modal.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'teacher') {
+                history.back();
+            }
         },
 
         setLanguage: (langCode) => {
@@ -998,9 +1002,27 @@
             app.updateHeaderTranslatorBtn();
 
             window.onpopstate = (event) => {
+                // 1. If teacher / language modal is open, close it
+                const teacherModal = document.getElementById('modal-teacher-select');
+                if (teacherModal && !teacherModal.classList.contains('hidden')) {
+                    teacherModal.classList.add('hidden');
+                    return;
+                }
+
+                // 2. If in translator view, exit cleanly to dashboard
+                const transView = document.getElementById('view-translator');
+                if (transView && !transView.classList.contains('hidden')) {
+                    translator.exitToDashboard();
+                    return;
+                }
+
+                // 3. Switch to previous view if present in state, otherwise go to dashboard
                 if (event.state && event.state.view) {
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
                     else app.switchView(event.state.view, 'none');
+                } else {
+                    const isDash = !document.getElementById('view-dashboard').classList.contains('hidden');
+                    if (!isDash) app.showDashboard('none');
                 }
             };
         },
@@ -1547,40 +1569,58 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
         toggleMic: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            if (document.getElementById('mic-btn').classList.contains('listening')) { game.stopMic(); return; }
+            const micBtn = document.getElementById('mic-btn');
+            const spokenTextEl = document.getElementById('spoken-text');
+            if (micBtn && micBtn.classList.contains('listening')) { game.stopMic(); return; }
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) return alert("Browser does not support speech recognition.");
 
             game.stopMic();
+            window.speechSynthesis.cancel();
+
             const recognition = new SR();
             recognition.lang = langInfo.speechLang;
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
+            if (spokenTextEl) {
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Escuchando... Di "${(game.data[game.index]?.english || '').split('(')[0].trim()}"...</span>`;
+            }
+
             recognition.onresult = (e) => {
-                if (e.results && e.results[0] && e.results[0][0]) {
-                    game.check(e.results[0][0].transcript);
+                let full = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i][0] && e.results[i][0].transcript) {
+                        full += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const transcript = full.trim();
+                if (transcript) {
+                    game.check(transcript);
                 }
             };
             recognition.onerror = (ev) => {
                 console.log('Game mic error:', ev.error);
-                document.getElementById('mic-btn').classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
                 game.stopTimer();
+                if (spokenTextEl && ev.error === 'no-speech') {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Vuelve a pulsar el micro.</span>';
+                }
             };
             recognition.onend = () => {
-                document.getElementById('mic-btn').classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
                 game.stopTimer();
             };
             game.recognition = recognition;
             try {
-                document.getElementById('mic-btn').classList.add('listening');
+                if (micBtn) micBtn.classList.add('listening');
                 recognition.start();
                 game.startTimer();
                 scrollToMicArea('mic-btn');
             } catch(e) {
                 console.log('Game mic start error:', e);
-                document.getElementById('mic-btn').classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
             }
         },
 
@@ -1761,37 +1801,54 @@ CRITICAL: Respond ONLY with a valid JSON object:
         toggleMic: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn-convo');
-            if (micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
+            const spokenTextEl = document.getElementById('convo-spoken-text');
+            if (micBtn && micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) return alert("Browser does not support speech recognition.");
 
             conversation.stopMic();
+            window.speechSynthesis.cancel();
+
             const recognition = new SR();
             recognition.lang = langInfo.speechLang;
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
+            if (spokenTextEl) {
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Escuchando... Di la frase en ${langInfo.name}...</span>`;
+            }
+
             recognition.onresult = (e) => {
-                if (e.results && e.results[0] && e.results[0][0]) {
-                    conversation.onResult(e.results[0][0].transcript);
+                let full = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i][0] && e.results[i][0].transcript) {
+                        full += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const transcript = full.trim();
+                if (transcript) {
+                    conversation.onResult(transcript);
                 }
             };
             recognition.onerror = (ev) => {
                 console.log('Convo mic error:', ev.error);
-                micBtn.classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
+                if (spokenTextEl && ev.error === 'no-speech') {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se detectó voz. Vuelve a pulsar el micrófono para hablar.</span>';
+                }
             };
             recognition.onend = () => {
-                micBtn.classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
             };
             conversation.recognition = recognition;
             try {
-                micBtn.classList.add('listening');
+                if (micBtn) micBtn.classList.add('listening');
                 recognition.start();
                 scrollToMicArea('mic-btn-convo');
             } catch(e) {
                 console.log('Convo mic start error:', e);
-                micBtn.classList.remove('listening');
+                if (micBtn) micBtn.classList.remove('listening');
             }
         },
 
@@ -1977,12 +2034,16 @@ CRITICAL: Return ONLY a valid JSON object:
             }
 
             recognitionInstance.onresult = (e) => {
-                if (e.results && e.results[0] && e.results[0][0]) {
-                    const transcript = e.results[0][0].transcript;
-                    if (transcript && transcript.trim().length > 0) {
-                        translator.stopRecognitionOnly();
-                        translator.handleSpokenInput(transcript.trim(), mode);
+                let full = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i][0] && e.results[i][0].transcript) {
+                        full += e.results[i][0].transcript + ' ';
                     }
+                }
+                const transcript = full.trim();
+                if (transcript && transcript.length > 0) {
+                    translator.stopRecognitionOnly();
+                    translator.handleSpokenInput(transcript, mode);
                 }
             };
 
