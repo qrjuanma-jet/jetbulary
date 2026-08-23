@@ -571,7 +571,7 @@
             <span style="color: #444;">|</span>
             <a href="mailto:soporte@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">Soporte: soporte@jetbulary.com</a>
         </div>
-        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V2.4</span></p>
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V2.5</span></p>
     </footer>
 
 <script>
@@ -1630,19 +1630,46 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn');
             if (micBtn && micBtn.classList.contains('listening')) { game.stopMic(); return; }
-            if (!game.recognition) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) return alert("Browser does not support speech recognition.");
-                game.recognition = new SR();
-                game.recognition.onresult = (e) => game.check(e.results[0][0].transcript);
-                game.recognition.onerror = () => { if (micBtn) micBtn.classList.remove('listening'); game.stopTimer(); };
-                game.recognition.onend = () => { if (micBtn) micBtn.classList.remove('listening'); game.stopTimer(); };
-            }
-            game.recognition.lang = langInfo.speechLang;
+
+            game.stopMic();
+            window.speechSynthesis.cancel();
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return alert("Tu navegador no soporta reconocimiento de voz.");
+
+            const recognition = new SR();
+            recognition.lang = langInfo.speechLang;
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = (e) => {
+                if (e.results && e.results[0] && e.results[0][0]) {
+                    const transcript = e.results[0][0].transcript;
+                    if (transcript) {
+                        game.stopMic();
+                        game.check(transcript);
+                    }
+                }
+            };
+            recognition.onerror = (err) => {
+                console.log("Game mic error:", err);
+                game.stopMic();
+            };
+            recognition.onend = () => {
+                game.stopMic();
+            };
+
+            game.recognition = recognition;
             try {
                 if (micBtn) micBtn.classList.add('listening');
-                game.recognition.start(); game.startTimer(); scrollToMicArea('mic-btn');
-            } catch(e) { if (micBtn) micBtn.classList.remove('listening'); }
+                recognition.start();
+                game.startTimer();
+                scrollToMicArea('mic-btn');
+            } catch(e) {
+                console.error("Mic start failed:", e);
+                game.stopMic();
+            }
         },
 
         check: (transcript) => {
@@ -1656,12 +1683,19 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             if (!prog) { prog = { word_id: wId, attempts: 0, successes: 0 }; db.progress.push(prog); }
             prog.attempts++;
             if (correct) prog.successes++;
-            app.saveDB(); game.stopMic();
+            app.saveDB();
+            game.stopMic();
             if (correct) game.handleCorrect(); else game.handleIncorrect(target, clean);
         },
 
         stopMic: () => {
-            if (game.recognition) { try { game.recognition.stop(); } catch(e) {} document.getElementById('mic-btn').classList.remove('listening'); game.stopTimer(); }
+            if (game.recognition) {
+                try { game.recognition.abort(); } catch(e) {}
+                try { game.recognition.stop(); } catch(e) {}
+                game.recognition = null;
+            }
+            document.getElementById('mic-btn')?.classList.remove('listening');
+            game.stopTimer();
         },
 
         handleCorrect: () => {
@@ -1823,23 +1857,53 @@ CRITICAL: Respond ONLY with a valid JSON object:
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn-convo');
             if (micBtn && micBtn.classList.contains('listening')) { conversation.stopMic(); return; }
-            if (!conversation.recognition) {
-                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SR) return alert("Browser does not support speech recognition.");
-                conversation.recognition = new SR();
-                conversation.recognition.onresult = (e) => conversation.onResult(e.results[0][0].transcript);
-                conversation.recognition.onerror = () => { if (micBtn) micBtn.classList.remove('listening'); };
-                conversation.recognition.onend = () => { if (micBtn) micBtn.classList.remove('listening'); };
-            }
-            conversation.recognition.lang = langInfo.speechLang;
+
+            conversation.stopMic();
+            window.speechSynthesis.cancel();
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) return alert("Tu navegador no soporta reconocimiento de voz.");
+
+            const recognition = new SR();
+            recognition.lang = langInfo.speechLang;
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = (e) => {
+                if (e.results && e.results[0] && e.results[0][0]) {
+                    const transcript = e.results[0][0].transcript;
+                    if (transcript) {
+                        conversation.stopMic();
+                        conversation.onResult(transcript);
+                    }
+                }
+            };
+            recognition.onerror = (err) => {
+                console.log("Convo mic error:", err);
+                conversation.stopMic();
+            };
+            recognition.onend = () => {
+                conversation.stopMic();
+            };
+
+            conversation.recognition = recognition;
             try {
                 if (micBtn) micBtn.classList.add('listening');
-                conversation.recognition.start(); scrollToMicArea('mic-btn-convo');
-            } catch(e) { if (micBtn) micBtn.classList.remove('listening'); }
+                recognition.start();
+                scrollToMicArea('mic-btn-convo');
+            } catch(e) {
+                console.error("Convo mic start failed:", e);
+                conversation.stopMic();
+            }
         },
 
         stopMic: () => {
-            if (conversation.recognition) try { conversation.recognition.stop(); } catch(e) {}
+            if (conversation.recognition) {
+                try { conversation.recognition.abort(); } catch(e) {}
+                try { conversation.recognition.stop(); } catch(e) {}
+                conversation.recognition = null;
+            }
             document.getElementById('mic-btn-convo')?.classList.remove('listening');
         },
 
