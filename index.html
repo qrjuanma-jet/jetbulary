@@ -1838,33 +1838,64 @@ CRITICAL: Return ONLY a valid JSON object:
         currentTranslation: '',
         currentTranslationLang: 'target',
 
-        requestMicPermissionIfNeeded: async () => {
-            if (localStorage.getItem('jetbulary_mic_granted') === '1') {
-                return true;
-            }
-
-            if (navigator.permissions && navigator.permissions.query) {
-                try {
-                    const res = await navigator.permissions.query({ name: 'microphone' });
-                    if (res.state === 'granted') {
-                        localStorage.setItem('jetbulary_mic_granted', '1');
-                        return true;
-                    }
-                } catch(e){}
-            }
-
+        requestMicPermission: async () => {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     stream.getTracks().forEach(track => track.stop());
-                    localStorage.setItem('jetbulary_mic_granted', '1');
                     return true;
                 } catch(err) {
                     console.warn("Microphone permission prompt cancelled or denied:", err);
+                    translator.showPermissionModal();
                     return false;
                 }
             }
             return true;
+        },
+
+        showPermissionModal: () => {
+            const existing = document.getElementById('mic-permission-modal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'mic-permission-modal';
+            modal.style.cssText = "position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px;";
+            modal.innerHTML = `
+                <div class="hud-card" style="max-width: 480px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: 0 0 30px rgba(0,243,255,0.4); padding: 25px; border-radius: 16px;">
+                    <div style="font-size: 3rem; margin-bottom: 10px;">🎤</div>
+                    <h3 style="color: var(--neon-cyan); font-size: 1.2rem; margin-bottom: 12px;">Activar Micrófono en Jetbulary</h3>
+                    <p style="color: #DDD; font-size: 0.95rem; line-height: 1.4; margin-bottom: 18px;">
+                        Para traducir en tiempo real, <strong>Jetbulary</strong> necesita permiso para usar el micrófono de tu móvil.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+                        <button onclick="translator.requestPermissionDirect()" class="success" style="width: 100%; padding: 15px; font-size: 1rem; font-weight: bold; border-radius: 8px; box-shadow: 0 0 20px rgba(0,255,149,0.4);">
+                            👉 Pulsa aquí para Permitir Micrófono
+                        </button>
+                    </div>
+                    <p style="font-size: 0.82rem; color: #888; text-align: left; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; line-height: 1.4;">
+                        💡 <strong>En Android:</strong> También puedes activarlo en:<br>
+                        <em>Ajustes de Android ➔ Aplicaciones ➔ Jetbulary ➔ Permisos ➔ Micrófono ➔ "Permitir solo mientras se usa la app"</em>.
+                    </p>
+                    <button onclick="document.getElementById('mic-permission-modal').remove()" class="secondary" style="margin-top: 15px; width: 100%; padding: 10px; font-size: 0.85rem;">
+                        Cerrar
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        },
+
+        requestPermissionDirect: async () => {
+            const modal = document.getElementById('mic-permission-modal');
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+                    if (modal) modal.remove();
+                    translator.startAutoLoop();
+                } catch(e) {
+                    alert("Aún no se ha concedido el permiso. Puedes activarlo directamente en Ajustes de tu móvil ➔ Aplicaciones ➔ Jetbulary ➔ Permisos ➔ Micrófono.");
+                }
+            }
         },
 
         init: async () => {
@@ -1884,8 +1915,10 @@ CRITICAL: Return ONLY a valid JSON object:
                 if (transView) transView.classList.add('apaisado-forced');
             }
 
-            await translator.requestMicPermissionIfNeeded();
-            translator.startAutoLoop();
+            const ok = await translator.requestMicPermission();
+            if (ok) {
+                translator.startAutoLoop();
+            }
         },
 
         exitToDashboard: () => {
