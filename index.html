@@ -1552,7 +1552,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                         if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
                             game.toggleMic(); scrollToMicArea('mic-btn');
                         }
-                    }, 300);
+                    }, 800);
                 }
                 // Auto mic for conversation
                 if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
@@ -1560,7 +1560,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                         if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
                             conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
                         }
-                    }, 1500);
+                    }, 1200);
                 }
             };
             u.onerror = u.onend;
@@ -1581,37 +1581,66 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const recognition = new SR();
             recognition.lang = langInfo.speechLang;
             recognition.continuous = false;
-            recognition.interimResults = false;
+            recognition.interimResults = true;
             recognition.maxAlternatives = 1;
 
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let handled = false;
+
             if (spokenTextEl) {
-                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Escuchando... Di "${(game.data[game.index]?.english || '').split('(')[0].trim()}"...</span>`;
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Micro activo... Di "${(game.data[game.index]?.english || '').split('(')[0].trim()}"...</span>`;
             }
 
-            recognition.onresult = (e) => {
-                let full = '';
-                for (let i = 0; i < e.results.length; i++) {
-                    if (e.results[i][0] && e.results[i][0].transcript) {
-                        full += e.results[i][0].transcript + ' ';
-                    }
-                }
-                const transcript = full.trim();
-                if (transcript) {
-                    game.check(transcript);
+            recognition.onaudiostart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan);">🎙️ Micro grabando... Habla ahora...</span>`;
                 }
             };
+
+            recognition.onspeechstart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🗣️ Voz detectada...</span>`;
+                }
+            };
+
+            recognition.onresult = (e) => {
+                finalTranscript = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (spokenTextEl && liveText) {
+                    spokenTextEl.innerHTML = `🗣️ <strong style="color:#FFF;">"${liveText}"</strong>`;
+                }
+            };
+
             recognition.onerror = (ev) => {
                 console.log('Game mic error:', ev.error);
                 if (micBtn) micBtn.classList.remove('listening');
                 game.stopTimer();
-                if (spokenTextEl && ev.error === 'no-speech') {
-                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Vuelve a pulsar el micro.</span>';
+                if (spokenTextEl && ev.error === 'no-speech' && !finalTranscript && !interimTranscript) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Vuelve a pulsar el micro para hablar.</span>';
                 }
             };
+
             recognition.onend = () => {
                 if (micBtn) micBtn.classList.remove('listening');
                 game.stopTimer();
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && !handled) {
+                    handled = true;
+                    game.check(captured);
+                } else if (!captured && spokenTextEl && spokenTextEl.innerText.includes('Micro')) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se escuchó voz. Pulsa el micro para reintentar.</span>';
+                }
             };
+
             game.recognition = recognition;
             try {
                 if (micBtn) micBtn.classList.add('listening');
@@ -1812,35 +1841,64 @@ CRITICAL: Respond ONLY with a valid JSON object:
             const recognition = new SR();
             recognition.lang = langInfo.speechLang;
             recognition.continuous = false;
-            recognition.interimResults = false;
+            recognition.interimResults = true;
             recognition.maxAlternatives = 1;
 
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let handled = false;
+
             if (spokenTextEl) {
-                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Escuchando... Di la frase en ${langInfo.name}...</span>`;
+                spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎙️ Micro activo... Di la frase en ${langInfo.name}...</span>`;
             }
 
-            recognition.onresult = (e) => {
-                let full = '';
-                for (let i = 0; i < e.results.length; i++) {
-                    if (e.results[i][0] && e.results[i][0].transcript) {
-                        full += e.results[i][0].transcript + ' ';
-                    }
-                }
-                const transcript = full.trim();
-                if (transcript) {
-                    conversation.onResult(transcript);
+            recognition.onaudiostart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan);">🎙️ Micro grabando... Habla ahora...</span>`;
                 }
             };
+
+            recognition.onspeechstart = () => {
+                if (spokenTextEl && !interimTranscript && !finalTranscript) {
+                    spokenTextEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🗣️ Voz detectada...</span>`;
+                }
+            };
+
+            recognition.onresult = (e) => {
+                finalTranscript = '';
+                interimTranscript = '';
+                for (let i = 0; i < e.results.length; i++) {
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += e.results[i][0].transcript + ' ';
+                    }
+                }
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (spokenTextEl && liveText) {
+                    spokenTextEl.innerHTML = `🗣️ <strong style="color:#FFF;">"${liveText}"</strong>`;
+                }
+            };
+
             recognition.onerror = (ev) => {
                 console.log('Convo mic error:', ev.error);
                 if (micBtn) micBtn.classList.remove('listening');
-                if (spokenTextEl && ev.error === 'no-speech') {
+                if (spokenTextEl && ev.error === 'no-speech' && !finalTranscript && !interimTranscript) {
                     spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se detectó voz. Vuelve a pulsar el micrófono para hablar.</span>';
                 }
             };
+
             recognition.onend = () => {
                 if (micBtn) micBtn.classList.remove('listening');
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && !handled) {
+                    handled = true;
+                    conversation.onResult(captured);
+                } else if (!captured && spokenTextEl && spokenTextEl.innerText.includes('Micro')) {
+                    spokenTextEl.innerHTML = '<span style="color:var(--cyber-warn);">⚠️ No se detectó voz. Vuelve a pulsar el micrófono.</span>';
+                }
             };
+
             conversation.recognition = recognition;
             try {
                 if (micBtn) micBtn.classList.add('listening');
@@ -2003,6 +2061,8 @@ CRITICAL: Return ONLY a valid JSON object:
             if (!SR) return alert("Tu navegador no soporta reconocimiento de voz.");
 
             translator.activeMic = mode;
+            window.speechSynthesis.cancel();
+
             let recognitionInstance;
             try {
                 recognitionInstance = new SR();
@@ -2013,7 +2073,7 @@ CRITICAL: Return ONLY a valid JSON object:
 
             recognitionInstance.lang = mode === 'es' ? 'es-ES' : langInfo.speechLang;
             recognitionInstance.continuous = false;
-            recognitionInstance.interimResults = false;
+            recognitionInstance.interimResults = true;
             recognitionInstance.maxAlternatives = 1;
 
             translator.recognition = recognitionInstance;
@@ -2021,6 +2081,8 @@ CRITICAL: Return ONLY a valid JSON object:
 
             const dot = document.getElementById('trans-indicator-dot');
             const label = document.getElementById('trans-indicator-text');
+            const textEl = document.getElementById('trans-translated-text');
+
             if (dot && label) {
                 if (mode === 'es') {
                     dot.style.background = 'var(--neon-pink)';
@@ -2033,17 +2095,38 @@ CRITICAL: Return ONLY a valid JSON object:
                 }
             }
 
+            let finalTranscript = '';
+            let interimTranscript = '';
+            let hasHandled = false;
+
+            recognitionInstance.onaudiostart = () => {
+                if (textEl && (!textEl.innerText || textEl.innerText.includes('Habla ahora'))) {
+                    textEl.innerText = '"🎙️ Micro activo... Habla..."';
+                    textEl.style.color = '#777777';
+                }
+            };
+
+            recognitionInstance.onspeechstart = () => {
+                if (textEl) {
+                    textEl.innerText = '"🗣️ Voz detectada..."';
+                    textEl.style.color = '#AAAAAA';
+                }
+            };
+
             recognitionInstance.onresult = (e) => {
-                let full = '';
+                finalTranscript = '';
+                interimTranscript = '';
                 for (let i = 0; i < e.results.length; i++) {
-                    if (e.results[i][0] && e.results[i][0].transcript) {
-                        full += e.results[i][0].transcript + ' ';
+                    if (e.results[i].isFinal) {
+                        finalTranscript += e.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscript += e.results[i][0].transcript + ' ';
                     }
                 }
-                const transcript = full.trim();
-                if (transcript && transcript.length > 0) {
-                    translator.stopRecognitionOnly();
-                    translator.handleSpokenInput(transcript, mode);
+                const liveText = (finalTranscript || interimTranscript).trim();
+                if (textEl && liveText && !hasHandled) {
+                    textEl.innerText = `"${liveText}"`;
+                    textEl.style.color = mode === 'es' ? 'var(--neon-pink)' : 'var(--neon-cyan)';
                 }
             };
 
@@ -2056,7 +2139,12 @@ CRITICAL: Return ONLY a valid JSON object:
 
             recognitionInstance.onend = () => {
                 translator.activeMic = null;
-                if (translator.autoLoopActive && !translator.isSpeaking) {
+                const captured = (finalTranscript || interimTranscript).trim();
+                if (captured && captured.length > 0 && !hasHandled) {
+                    hasHandled = true;
+                    translator.stopRecognitionOnly();
+                    translator.handleSpokenInput(captured, mode);
+                } else if (translator.autoLoopActive && !translator.isSpeaking) {
                     clearTimeout(translator.restartTimer);
                     translator.restartTimer = setTimeout(() => {
                         if (translator.autoLoopActive && !translator.isSpeaking && !translator.activeMic) {
