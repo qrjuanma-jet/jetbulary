@@ -571,7 +571,7 @@
             <span style="color: #444;">|</span>
             <a href="mailto:soporte@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">Soporte: soporte@jetbulary.com</a>
         </div>
-        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V2.3</span></p>
+        <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V2.4</span></p>
     </footer>
 
 <script>
@@ -804,10 +804,11 @@
 
         renderWordsOverview: () => {
             const container = document.getElementById('session-words-overview');
+            if (!container || !session.currentWords) return;
             container.innerHTML = session.currentWords.map((w, i) => {
                 const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
                 return `
-                <div class="session-word-card ${i === 0 ? 'active' : ''}" id="session-card-${i}">
+                <div class="session-word-card ${i === game.index ? 'active' : ''}" id="session-card-${i}" onclick="session.selectWordCard(${i})" style="cursor: pointer;">
                     <div class="word-en">${cleanWord}</div>
                     ${w.ipa ? `<div class="tech word-ipa">/${w.ipa.replace(/\//g, '')}/</div>` : ''}
                     <div class="word-es">${w.spanish}</div>
@@ -816,10 +817,45 @@
             }).join('');
         },
 
+        selectWordCard: (idx) => {
+            if (idx < 0 || !game.data || idx >= game.data.length) return;
+            game.stopMic();
+            window.speechSynthesis.cancel();
+            game.index = idx;
+            document.querySelectorAll('.session-word-card').forEach((card, i) => {
+                if (i === idx) { card.classList.add('active'); card.classList.remove('done'); }
+                else { card.classList.remove('active'); }
+            });
+            game.loadCard();
+        },
+
+        markCurrentWordsAsLearned: () => {
+            if (!session.currentWords || session.currentWords.length === 0) return;
+            session.currentWords.forEach(w => {
+                let prog = db.progress.find(p => p.word_id === w.id);
+                if (!prog) {
+                    prog = { word_id: w.id, attempts: 1, successes: 1 };
+                    db.progress.push(prog);
+                } else if (prog.attempts === 0) {
+                    prog.attempts = 1;
+                    prog.successes = 1;
+                }
+            });
+            app.saveDB();
+        },
+
         onWordComplete: () => {
             // Mark current card as done
             const card = document.getElementById(`session-card-${game.index}`);
             if (card) { card.classList.remove('active'); card.classList.add('done'); }
+
+            // Ensure current word is marked as learned in DB
+            if (game.data && game.data[game.index]) {
+                const wId = game.data[game.index].id;
+                let prog = db.progress.find(p => p.word_id === wId);
+                if (!prog) { prog = { word_id: wId, attempts: 1, successes: 1 }; db.progress.push(prog); }
+                app.saveDB();
+            }
 
             // If we haven't finished all words in this cycle
             if (game.index + 1 < game.data.length) {
@@ -829,6 +865,7 @@
                 game.loadCard();
             } else {
                 // Cycle complete
+                session.markCurrentWordsAsLearned();
                 game.sessionCycle = (game.sessionCycle || 0) + 1;
                 if (game.sessionCycle < 2) {
                     // Second cycle: repeat all words
@@ -843,6 +880,7 @@
         },
 
         startConversationPhase: () => {
+            session.markCurrentWordsAsLearned();
             session.phase = 'conversation';
             conversation.start(session.currentWords, "Today's Words");
         }
@@ -1036,6 +1074,9 @@
 
         showDashboard: (h) => {
             window.speechSynthesis.cancel();
+            if (typeof session !== 'undefined' && session.markCurrentWordsAsLearned) {
+                session.markCurrentWordsAsLearned();
+            }
             if (typeof translator !== 'undefined') {
                 translator.stop();
                 translator.autoLoopActive = false;
