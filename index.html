@@ -2860,11 +2860,17 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
     // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
     const conversation = {
-        history: [], turn: 0, recognition: null, autoMic: true, expectedText: '', targetWords: [],
+        history: [], turn: 0, recognition: null, autoMic: true, expectedText: '', expectedTrans: '', targetWords: [],
         convoType: 'lesson', currentLessonFailures: 0,
 
-        repeat: () => { if (game.lastText) game.speakText(game.lastText); },
-        repeatSlow: () => { if (game.lastText) game.speakText(game.lastText, 0.35); },
+        repeat: () => { 
+            if (conversation.expectedText) game.speakText(conversation.expectedText);
+            else if (game.lastText) game.speakText(game.lastText); 
+        },
+        repeatSlow: () => { 
+            if (conversation.expectedText) game.speakText(conversation.expectedText, 0.35);
+            else if (game.lastText) game.speakText(game.lastText, 0.35); 
+        },
 
         setAutoMic: (state) => {
             conversation.autoMic = state;
@@ -2917,6 +2923,7 @@ CRITICAL: Respond ONLY with a valid JSON object:
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
                 conversation.expectedText = data.speech;
+                conversation.expectedTrans = data.speech_trans || '';
                 conversation.history.push({ role: 'teacher', content: data.speech, trans: data.speech_trans });
 
                 const wordsChips = words.map(w => {
@@ -3003,6 +3010,7 @@ Respond ONLY with a valid JSON object:
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: "Start our conversational lesson."}], null, (data) => {
                 conversation.expectedText = data.speech;
+                conversation.expectedTrans = data.speech_trans || '';
                 conversation.history.push({ role: 'teacher', content: data.speech, trans: data.speech_trans });
 
                 historyEl.innerHTML = `
@@ -3074,6 +3082,7 @@ Respond ONLY with a valid JSON object:
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: "Start the level assessment test."}], null, (data) => {
                 conversation.expectedText = data.speech;
+                conversation.expectedTrans = data.speech_trans || '';
                 conversation.assessmentHistory.push({ role: 'teacher', content: data.speech });
 
                 historyEl.innerHTML = `
@@ -3125,6 +3134,7 @@ Respond ONLY with a valid JSON object:
                 if (analyzingEl) analyzingEl.remove();
 
                 conversation.expectedText = data.speech;
+                conversation.expectedTrans = data.speech_trans || '';
                 conversation.assessmentHistory.push({ role: 'teacher', content: data.speech });
 
                 historyEl.innerHTML += `
@@ -3357,12 +3367,27 @@ CRITICAL: Return ONLY a valid JSON object:
                         <div style="margin-top:8px; line-height:1.5;">${data.feedback_speech}</div>
                         ${data.feedback_trans ? `<div style="margin-top:8px; color: var(--neon-pink); font-size: 0.85rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">📝 ${data.feedback_trans}</div>` : ''}
                         ${data.tips ? `<div style="margin-top:6px; color: var(--cyber-warn); font-size: 0.85rem;">💡 <strong>Tip:</strong> ${data.tips}</div>` : ''}
+
+                        <!-- TARGET TEXT ALWAYS VISIBLE FOR EASY PRONUNCIATION REPETITION -->
+                        ${conversation.expectedText ? `
+                        <div style="margin-top:14px; padding:12px 14px; background:rgba(0,243,255,0.06); border:1.5px solid var(--neon-cyan); border-radius:6px; box-shadow:var(--cyber-glow);">
+                            <div style="font-size:0.75rem; color:var(--neon-cyan); font-weight:bold; letter-spacing:1px; margin-bottom:5px;">
+                                🎯 TEXTO A REPETIR (${langInfo.name}):
+                            </div>
+                            <div style="font-size:1.18rem; font-weight:bold; color:#FFFFFF; line-height:1.5;">
+                                ${conversation.expectedText}
+                            </div>
+                            ${conversation.expectedTrans ? `
+                            <div style="font-size:0.88rem; color:var(--neon-pink); margin-top:5px; font-weight:500;">
+                                📖 ${conversation.expectedTrans}
+                            </div>` : ''}
+                        </div>` : ''}
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap;">
-                        <button onclick="conversation.repeat()" class="secondary" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🔊 Listen Again</button>
-                        <button onclick="conversation.repeatSlow()" class="secondary" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🐢 Listen Very Slow</button>
-                        <button onclick="conversation.toggleMic()" class="warning" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🎤 Retry Speaking</button>
-                        <button onclick="app.showDashboard()" class="success" style="width: auto; padding: 12px 24px; font-weight: bold; font-size: 0.9rem;">✅ Finish Lesson</button>
+                        <button onclick="conversation.repeat()" class="secondary" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🔊 Escuchar Texto</button>
+                        <button onclick="conversation.repeatSlow()" class="secondary" style="width: auto; padding: 12px 20px; font-size: 0.85rem;">🐢 Escuchar Lento</button>
+                        <button onclick="conversation.toggleMic()" class="warning" style="width: auto; padding: 12px 20px; font-size: 0.85rem; font-weight: bold;">🎤 Volver a Repetir</button>
+                        <button onclick="app.showDashboard()" class="success" style="width: auto; padding: 12px 24px; font-weight: bold; font-size: 0.9rem;">✅ Finalizar Lección</button>
                     </div>
                 `;
 
