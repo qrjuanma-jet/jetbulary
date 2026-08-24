@@ -2093,42 +2093,74 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             }
         },
 
-        // ====== AI API CALLS ======
+        // ====== AI API CALLS WITH DYNAMIC MODEL DISCOVERY & CASCADING FALLBACK ======
+        getAvailableGroqModels: async (key) => {
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/models", {
+                    headers: { "Authorization": `Bearer ${key}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const availableIds = (data.data || []).map(m => m.id);
+                    if (availableIds.length > 0) return availableIds;
+                }
+            } catch(e) {}
+            return [];
+        },
+
         callAI_Text: async (prompt, btn, callback) => {
             const rawKey = localStorage.getItem(API_KEY_STORAGE);
             const key = rawKey ? rawKey.trim().replace(/^['"`\s]+|['"`\s]+$/g, '') : '';
             if (!key) return alert("Falta la API Key de Groq. Actívala en la pantalla de inicio.");
             let originalText = "";
             if (btn) { originalText = btn.innerText; btn.disabled = true; btn.innerText = "..."; }
+
+            const userModels = await app.getAvailableGroqModels(key);
+            const defaultCandidates = [
+                'llama-3.3-70b-versatile',
+                'llama-3.1-8b-instant',
+                'llama3-70b-8192',
+                'llama3-8b-8192',
+                'mixtral-8x7b-32768',
+                'gemma2-9b-it',
+                'openai/gpt-oss-20b'
+            ];
+            
+            const candidates = userModels.length > 0
+                ? defaultCandidates.filter(m => userModels.includes(m)).concat(userModels.filter(m => !m.includes('whisper') && !m.includes('guard') && !m.includes('tts') && !m.includes('vision')))
+                : defaultCandidates;
+
+            let lastError = null;
             try {
-                let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
-                    body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{role:"user", content: prompt}], temperature: 0.7 })
-                });
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        throw new Error("Tu API Key de Groq es inválida o ha caducado. Pulsa 'Cambio Key' e introduce tu clave correcta (gsk_...).");
-                    }
-                    const errJson = await res.json().catch(() => ({}));
-                    if (res.status === 429 || res.status >= 500) {
-                        res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                for (const modelName of candidates) {
+                    try {
+                        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                             method: "POST",
                             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
-                            body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{role:"user", content: prompt}], temperature: 0.7 })
+                            body: JSON.stringify({ model: modelName, messages: [{role:"user", content: prompt}], temperature: 0.7 })
                         });
-                        if (!res.ok) {
-                            const fbErr = await res.json().catch(() => ({}));
-                            throw new Error(fbErr?.error?.message || errJson?.error?.message || `Error ${res.status}`);
+                        if (res.ok) {
+                            const data = await res.json();
+                            callback(data.choices[0].message.content);
+                            return;
                         }
-                    } else {
-                        throw new Error(errJson?.error?.message || `Error ${res.status}: ${res.statusText}`);
+                        if (res.status === 401) {
+                            throw new Error("Tu API Key de Groq es inválida o ha caducado. Pulsa 'Cambio Key' e introduce tu clave correcta (gsk_...).");
+                        }
+                        const errJson = await res.json().catch(() => ({}));
+                        lastError = errJson?.error?.message || `HTTP ${res.status}`;
+                        console.warn(`Groq model ${modelName} failed (${lastError}), trying next candidate...`);
+                    } catch(e) {
+                        if (e.message && e.message.includes('API Key')) throw e;
+                        lastError = e.message;
                     }
                 }
-                const data = await res.json();
-                callback(data.choices[0].message.content);
-            } catch(e) { alert("AI Error: " + e.message); }
-            finally { if (btn) { btn.disabled = false; btn.innerText = originalText; } }
+                throw new Error(lastError || "No se pudo conectar con ningún modelo de Groq");
+            } catch(e) {
+                alert("Error de IA: " + e.message);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
+            }
         },
 
         callAI_Conversation: async (messages, btn, callback) => {
@@ -2145,53 +2177,61 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 sanitizedMessages[0].content += " (Respond in valid JSON format)";
             }
 
-            const sendRequest = async (modelName) => {
-                return await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
-                    body: JSON.stringify({
-                        model: modelName,
-                        messages: sanitizedMessages,
-                        temperature: 0.7,
-                        response_format: { type: "json_object" }
-                    })
-                });
-            };
+            const userModels = await app.getAvailableGroqModels(key);
+            const defaultCandidates = [
+                'llama-3.3-70b-versatile',
+                'llama-3.1-8b-instant',
+                'llama3-70b-8192',
+                'llama3-8b-8192',
+                'mixtral-8x7b-32768',
+                'gemma2-9b-it',
+                'openai/gpt-oss-20b'
+            ];
+            
+            const candidates = userModels.length > 0
+                ? defaultCandidates.filter(m => userModels.includes(m)).concat(userModels.filter(m => !m.includes('whisper') && !m.includes('guard') && !m.includes('tts') && !m.includes('vision')))
+                : defaultCandidates;
 
+            let lastError = null;
             try {
-                // Primary model: llama-3.3-70b-versatile
-                let res = await sendRequest("llama-3.3-70b-versatile");
-                
-                if (!res.ok) {
-                    if (res.status === 401) {
-                        throw new Error("Tu API Key de Groq es inválida o ha caducado. Pulsa 'Cambio Key' e introduce tu clave correcta (gsk_...).");
-                    }
-                    const errBody = await res.json().catch(() => ({}));
-                    console.warn("Groq 70b failed, trying 8b instant fallback on rate limit/server error:", errBody);
-                    if (res.status === 429 || res.status >= 500) {
-                        res = await sendRequest("llama-3.1-8b-instant");
-                        if (!res.ok) {
-                            const fbErrBody = await res.json().catch(() => ({}));
-                            const errMsg = fbErrBody?.error?.message || errBody?.error?.message || `Error ${res.status}: ${res.statusText}`;
-                            throw new Error(errMsg);
+                for (const modelName of candidates) {
+                    try {
+                        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                            body: JSON.stringify({
+                                model: modelName,
+                                messages: sanitizedMessages,
+                                temperature: 0.7,
+                                response_format: { type: "json_object" }
+                            })
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const content = data.choices[0].message.content;
+                            let parsed = null;
+                            try {
+                                parsed = JSON.parse(content);
+                            } catch(pe) {
+                                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                                if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+                                else throw pe;
+                            }
+                            callback(parsed);
+                            return;
                         }
-                    } else {
-                        const errMsg = errBody?.error?.message || `Error ${res.status}: ${res.statusText}`;
-                        throw new Error(errMsg);
+                        if (res.status === 401) {
+                            throw new Error("Tu API Key de Groq es inválida o ha caducado. Pulsa 'Cambio Key' e introduce tu clave correcta (gsk_...).");
+                        }
+                        const errBody = await res.json().catch(() => ({}));
+                        lastError = errBody?.error?.message || `HTTP ${res.status}`;
+                        console.warn(`Groq conversation model ${modelName} failed (${lastError}), trying next candidate...`);
+                    } catch(e) {
+                        if (e.message && e.message.includes('API Key')) throw e;
+                        lastError = e.message;
                     }
                 }
-
-                const data = await res.json();
-                const content = data.choices[0].message.content;
-                let parsed = null;
-                try {
-                    parsed = JSON.parse(content);
-                } catch(pe) {
-                    const jsonMatch = content.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-                    else throw pe;
-                }
-                callback(parsed);
+                throw new Error(lastError || "No se pudo conectar con ningún modelo de Groq");
             } catch(e) {
                 console.error("AI Error:", e);
                 alert("Error de IA: " + e.message);
