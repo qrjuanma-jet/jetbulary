@@ -337,14 +337,6 @@
                     </div>
                     <input type="range" id="speech-speed-slider" min="0.3" max="1.2" step="0.05" value="0.7" style="width: 100%; cursor: pointer;" oninput="app.updateSpeedLabel(this.value)">
                 </div>
-
-                <!-- TEST DE NIVEL BUTTON INSIDE ACCORDION -->
-                <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 14px; margin-top: 14px;">
-                    <button onclick="conversation.startLevelAssessment()" class="tech" style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--cyber-warn); background: linear-gradient(135deg, rgba(255,184,0,0.18), rgba(0,243,255,0.08)); color: #FFF; border-radius: 6px; box-shadow: 0 0 14px rgba(255,184,0,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
-                        <span style="color: var(--cyber-warn); font-size: 0.92rem; font-weight: 900; letter-spacing: 1px;">🎯 PRUEBA DE NIVEL / ASSESSMENT</span>
-                        <span style="font-size: 0.72rem; color: #DDD; text-transform: none;">Conversación &lt; 2 min con la profesora para evaluar y desbloquear niveles</span>
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -358,17 +350,19 @@
 
         <!-- MAIN ACTION BUTTONS -->
         <button onclick="session.start()" class="success" style="width: 100%; padding: 22px; font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px;">🚀 START</button>
-        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 15px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 VOCABULARY</button>
+        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 VOCABULARY</button>
 
-        <!-- PROMINENT LEVEL ASSESSMENT BUTTON ON DASHBOARD -->
-        <button onclick="conversation.startLevelAssessment()" class="tech" style="width: 100%; padding: 16px 18px; margin-bottom: 20px; border: 2px solid var(--cyber-warn); background: linear-gradient(135deg, rgba(255,184,0,0.18), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 18px rgba(255,184,0,0.3); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
-            <span style="color: var(--cyber-warn); font-size: 1.1rem; font-weight: 900; letter-spacing: 1.5px;">🎯 PRUEBA DE NIVEL (EVALUACIÓN)</span>
-            <span style="font-size: 0.76rem; color: #EEE; text-transform: none; letter-spacing: 0;">Habla &lt; 2 min con la profesora para que evalúe y desbloquee tus niveles</span>
-        </button>
-
-        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 15px; border-top: 1px solid rgba(0,243,255,0.15);">
-            <button onclick="app.openBackupModal()" class="secondary" style="width: auto; opacity: 0.85; font-size: 0.75rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 8px 14px;">💾 COPIA DE SEGURIDAD</button>
-            <button onclick="app.logout()" class="secondary" style="width: auto; opacity: 0.6; font-size: 0.75rem; border: none; padding: 8px 14px;">CAMBIAR API KEY</button>
+        <!-- BOTTOM UTILITY BAR: CLEAN, SMALL & SEPARATED FROM GAME -->
+        <div style="margin-top: 35px; padding-top: 18px; border-top: 1px dashed rgba(0,243,255,0.2); display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button onclick="conversation.startLevelAssessment()" class="tech" style="width: auto; padding: 6px 14px; font-size: 0.72rem; font-weight: bold; border: 1px solid var(--cyber-warn); color: var(--cyber-warn); background: rgba(255,184,0,0.08); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                🎯 Prueba Nivel
+            </button>
+            <button onclick="app.openBackupModal()" class="tech" style="width: auto; padding: 6px 14px; font-size: 0.72rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.06); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                💾 Copia Seguridad
+            </button>
+            <button onclick="app.logout()" class="tech" style="width: auto; padding: 6px 14px; font-size: 0.72rem; border: 1px solid rgba(255,255,255,0.25); color: #888; background: transparent; border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                🔑 Cambio Key
+            </button>
         </div>
     </div>
 
@@ -653,6 +647,12 @@
                 </div>
             </div>
 
+            <button onclick="app.closeApiKeyInfoModal()" class="success" style="width: 100%; padding: 14px; font-weight: bold; font-size: 0.95rem; letter-spacing: 1px;">
+                ✓ ENTENDIDO / CERRAR
+            </button>
+        </div>
+    </div>
+
     <!-- ====== MODAL: BACKUP & RESTORE MANAGER ====== -->
     <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
         <div class="hud-card" style="max-width: 520px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
@@ -698,7 +698,7 @@
     </div>
 
     <!-- ====== GLOBAL FOOTER ====== -->
-    <footer id="global-footer" style="max-width: 700px; width: 100%; margin: auto auto 0 auto; padding: 25px 15px 35px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.82rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
+    <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 30px auto 0 auto; padding: 25px 15px 35px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.82rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
         <!-- PWA INSTALL BUTTON -->
         <div style="margin-bottom: 16px;">
             <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; font-size: 0.85rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
@@ -2017,16 +2017,28 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         // ====== AI API CALLS ======
         callAI_Text: async (prompt, btn, callback) => {
             const key = localStorage.getItem(API_KEY_STORAGE);
-            if (!key) return alert("Missing API Key");
+            if (!key) return alert("Falta la API Key de Groq. Actívala en la pantalla de inicio.");
             let originalText = "";
             if (btn) { originalText = btn.innerText; btn.disabled = true; btn.innerText = "..."; }
             try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
                     body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{role:"user", content: prompt}], temperature: 0.7 })
                 });
-                if (!res.ok) throw new Error("Groq API error");
+                if (!res.ok) {
+                    console.warn("70b model failed, trying fallback to llama-3.1-8b-instant...");
+                    res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                        body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{role:"user", content: prompt}], temperature: 0.7 })
+                    });
+                }
+                if (!res.ok) {
+                    const errJson = await res.json().catch(() => ({}));
+                    const errMsg = errJson?.error?.message || `HTTP ${res.status} ${res.statusText}`;
+                    throw new Error(errMsg);
+                }
                 const data = await res.json();
                 callback(data.choices[0].message.content);
             } catch(e) { alert("AI Error: " + e.message); }
@@ -2035,20 +2047,63 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
         callAI_Conversation: async (messages, btn, callback) => {
             const key = localStorage.getItem(API_KEY_STORAGE);
-            if (!key) return alert("Missing API Key");
+            if (!key) return alert("Falta la API Key de Groq. Actívala en la pantalla de inicio.");
             let originalText = "";
             if (btn) { originalText = btn.innerText; btn.disabled = true; btn.innerText = "..."; }
-            try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+
+            // Ensure JSON is explicitly mentioned in the messages so Groq's json_object mode succeeds
+            const sanitizedMessages = messages.map(m => ({ ...m }));
+            const hasJsonMention = sanitizedMessages.some(m => /json/i.test(m.content));
+            if (!hasJsonMention && sanitizedMessages.length > 0) {
+                sanitizedMessages[0].content += " (Respond in valid JSON format)";
+            }
+
+            const sendRequest = async (modelName) => {
+                return await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
-                    body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: messages, temperature: 0.7, response_format: { type: "json_object" } })
+                    body: JSON.stringify({
+                        model: modelName,
+                        messages: sanitizedMessages,
+                        temperature: 0.7,
+                        response_format: { type: "json_object" }
+                    })
                 });
-                if (!res.ok) throw new Error("Groq API error");
+            };
+
+            try {
+                // Primary model: llama-3.3-70b-versatile
+                let res = await sendRequest("llama-3.3-70b-versatile");
+                
+                // Fallback to llama-3.1-8b-instant if rate-limited or error
+                if (!res.ok) {
+                    const errBody = await res.json().catch(() => ({}));
+                    console.warn("Groq 70b failed, trying 8b instant fallback:", errBody);
+                    res = await sendRequest("llama-3.1-8b-instant");
+                    if (!res.ok) {
+                        const fbErrBody = await res.json().catch(() => ({}));
+                        const errMsg = fbErrBody?.error?.message || errBody?.error?.message || `Error ${res.status}: ${res.statusText}`;
+                        throw new Error(errMsg);
+                    }
+                }
+
                 const data = await res.json();
-                callback(JSON.parse(data.choices[0].message.content));
-            } catch(e) { alert("AI Error: " + e.message); }
-            finally { if (btn) { btn.disabled = false; btn.innerText = originalText; } }
+                const content = data.choices[0].message.content;
+                let parsed = null;
+                try {
+                    parsed = JSON.parse(content);
+                } catch(pe) {
+                    const jsonMatch = content.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
+                    else throw pe;
+                }
+                callback(parsed);
+            } catch(e) {
+                console.error("AI Error:", e);
+                alert("Error de IA: " + e.message);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
+            }
         },
 
         transcribeAudioWithGroq: async (audioBlob, langCode) => {
@@ -2382,12 +2437,28 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             game.speakText(cleanWord, 0.4);
         },
 
+        primeAudio: () => {
+            try {
+                if (window.AudioContext || window.webkitAudioContext) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    const ctx = new AudioCtx();
+                    if (ctx.state === 'suspended') ctx.resume();
+                }
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                    const u = new SpeechSynthesisUtterance(' ');
+                    u.volume = 0.01;
+                    window.speechSynthesis.speak(u);
+                }
+            } catch(e) {}
+        },
+
         speakText: (text, rateOverride) => {
+            if (!text) return;
             game.stopMic();
             window.speechSynthesis.cancel();
             game.lastText = text;
             const u = new SpeechSynthesisUtterance(text);
-            const voices = window.speechSynthesis.getVoices();
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
             // Rate from slider or override
@@ -2395,38 +2466,58 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             u.rate = rateOverride !== undefined ? rateOverride : sliderRate;
             u.lang = langInfo.speechLang;
 
-            let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
-            if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code));
-            if (f) u.voice = f;
+            const applyVoiceAndSpeak = () => {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices && voices.length > 0) {
+                    let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
+                    if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code) || v.lang.replace('_', '-').startsWith(langInfo.code));
+                    if (f) u.voice = f;
+                }
 
-            u.onstart = () => {
-                document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
-                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
+                u.onstart = () => {
+                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
+                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
+                };
+
+                u.onend = () => {
+                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
+
+                    // Auto mic for game view
+                    if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
+                        setTimeout(() => {
+                            if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
+                                game.toggleMic(); scrollToMicArea('mic-btn');
+                            }
+                        }, 500);
+                    }
+                    // Auto mic for conversation
+                    if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                        setTimeout(() => {
+                            if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                                conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
+                            }
+                        }, 1000);
+                    }
+                };
+
+                u.onerror = (e) => {
+                    console.warn("Speech error:", e);
+                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+                };
+
+                window.speechSynthesis.speak(u);
             };
 
-            u.onend = () => {
-                document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
-
-                // Auto mic for game view
-                if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
-                    setTimeout(() => {
-                        if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
-                            game.toggleMic(); scrollToMicArea('mic-btn');
-                        }
-                    }, 500);
-                }
-                // Auto mic for conversation
-                if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                    setTimeout(() => {
-                        if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                            conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
-                        }
-                    }, 1000);
-                }
-            };
-            u.onerror = u.onend;
-            window.speechSynthesis.speak(u);
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.onvoiceschanged = null;
+                    applyVoiceAndSpeak();
+                };
+                setTimeout(applyVoiceAndSpeak, 100);
+            } else {
+                applyVoiceAndSpeak();
+            }
         },
 
         toggleMic: () => {
@@ -2795,6 +2886,7 @@ Respond ONLY with a valid JSON object:
         },
 
         startLevelAssessment: async () => {
+            if (typeof game !== 'undefined' && game.primeAudio) game.primeAudio();
             conversation.convoType = 'assessment';
             conversation.assessmentTurn = 0;
             conversation.assessmentHistory = [];
