@@ -2861,7 +2861,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
     // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
     const conversation = {
         history: [], turn: 0, recognition: null, autoMic: true, expectedText: '', expectedTrans: '', targetWords: [],
-        convoType: 'lesson', currentLessonFailures: 0,
+        convoType: 'lesson', currentLessonFailures: 0, bestScoreThisExercise: 0, bestPointsThisExercise: 0,
 
         repeat: () => { 
             if (conversation.expectedText) game.speakText(conversation.expectedText);
@@ -2884,6 +2884,8 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             conversation.targetWords = words;
             conversation.convoType = 'lesson';
             conversation.currentLessonFailures = 0;
+            conversation.bestScoreThisExercise = 0;
+            conversation.bestPointsThisExercise = 0;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const wordsList = words.map(w => w.english.includes('(') ? w.english.split('(')[0].trim() : w.english).join(', ');
 
@@ -2973,6 +2975,8 @@ CRITICAL: Respond ONLY with a valid JSON object:
 
         startFreeConversation: async () => {
             conversation.convoType = 'free';
+            conversation.bestScoreThisExercise = 0;
+            conversation.bestPointsThisExercise = 0;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const learnedWords = db.words.filter(w => {
                 const prog = db.progress.find(p => p.word_id === w.id);
@@ -3310,63 +3314,54 @@ CRITICAL: Return ONLY a valid JSON object:
             const currentLevelNum = db.academy_level || 0;
             const level = levelMap[currentLevelNum];
 
-            const systemPrompt = `You are ${langInfo.teacherName}, an encouraging and expert AI ${langInfo.aiPromptLang} pronunciation and speech coach evaluating a ${level} student.
-The student practiced this target ${langInfo.aiPromptLang} context:
-"${conversation.expectedText}"
+            const systemPrompt = `You are ${langInfo.teacherName}, an encouraging and friendly AI pronunciation evaluator for a ${level} student.
+Target phrase to repeat: "${conversation.expectedText}"
+Student spoken input: "${transcript}"
 
-And the student spoke this via speech-to-text:
-"${transcript}"
+GRADING POLICY (SIMPLE, ENCOURAGING & EASY TO EARN POINTS):
+- Award a generous accuracy score (0-100%). Any genuine attempt gets between 75-98%.
+- Keep advice very short, practical and in Spanish.
+- Do NOT include long speeches.
 
-STUDENT LEVEL GRADING:
-The student is at level "${level}".
-${currentLevelNum <= 1 ? "BE HIGHLY GENEROUS AND ENCOURAGING. If the student attempted the words, award 85-98% accuracy and praise their effort warmly." : currentLevelNum === 2 ? "Be balanced, encouraging, and give practical feedback." : "Be thorough, professional, and point out native phonetics nuance."}
-
-YOUR TASK:
-1. Analyze the student's spoken accuracy and pronunciation in ${langInfo.aiPromptLang} appropriately for a ${level} student.
-2. Calculate an accuracy score percentage (0-100).
-3. Give friendly, spoken coaching in ${langInfo.aiPromptLang}.
-4. Provide Spanish translation of your coaching.
-
-CRITICAL: Return ONLY a valid JSON object:
+Return ONLY a valid JSON object:
 {
   "accuracy": 90,
-  "verdict": "Great Job / Excellent / Good Effort / Keep Practicing",
-  "feedback_speech": "Spoken ${langInfo.aiPromptLang} coaching feedback",
-  "feedback_trans": "Traducción al español del feedback",
-  "tips": "Specific pronunciation tip in ${langInfo.aiPromptLang}"
+  "verdict": "¡Excelente! / ¡Muy bien! / ¡Buen intento!",
+  "tips": "Breve consejo de mejora en pronunciación"
 }`;
 
-            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: `Evaluate student speech in ${langInfo.aiPromptLang}.`}], null, (data) => {
+            await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: `Evaluate student speech.`}], null, (data) => {
                 const analyzingEl = document.getElementById('convo-analyzing');
                 if (analyzingEl) analyzingEl.remove();
 
                 const score = data.accuracy || 85;
-                const isSuccess = score >= 60;
-                
-                if (isSuccess) {
-                    const bonusPts = conversation.convoType === 'free' ? 20 : 15;
-                    app.addLevelPoints(db.academy_level, bonusPts);
-                } else {
-                    conversation.currentLessonFailures++;
-                    if (conversation.currentLessonFailures >= 3) {
-                        app.addLevelPoints(db.academy_level, -2);
-                    }
+                const totalPtsForScore = score >= 80 ? 5 : (score >= 50 ? 3 : 2);
+
+                // Solo se consiguen puntos adicionales al repetir si se supera la puntuacion anterior
+                let earnedPts = 0;
+                if (score > conversation.bestScoreThisExercise) {
+                    earnedPts = Math.max(0, totalPtsForScore - conversation.bestPointsThisExercise);
+                    conversation.bestScoreThisExercise = score;
+                    conversation.bestPointsThisExercise = Math.max(conversation.bestPointsThisExercise, totalPtsForScore);
                 }
 
-                const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--cyber-danger)';
-                const verdict = data.verdict || (score >= 80 ? 'Great Job!' : 'Keep Practicing!');
+                if (earnedPts > 0) {
+                    app.addLevelPoints(db.academy_level, earnedPts);
+                }
+
+                const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--neon-cyan)';
+                const verdict = data.verdict || (score >= 80 ? '¡Excelente!' : '¡Buen intento!');
+                const ptsText = earnedPts > 0 ? `(+${earnedPts} pts)` : `(+0 pts - Récord: ${conversation.bestScoreThisExercise}%)`;
 
                 historyEl.innerHTML += `
                     <div class="convo-msg convo-msg-teacher" style="border-left: 3px solid ${scoreColor};">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <strong style="color:var(--neon-cyan);">🎓 AI Pronunciation Analysis (${langInfo.teacherName}):</strong>
-                            <span class="tech" style="color:${scoreColor}; font-size:1rem; font-weight:bold; border:1px solid ${scoreColor}; padding:3px 8px; border-radius:4px;">
-                                ${score}% [${verdict}] ${isSuccess ? `(+${conversation.convoType === 'free' ? 20 : 15} pts)` : ''}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                            <strong style="color:var(--neon-cyan);">🎓 Evaluación (${langInfo.teacherName}):</strong>
+                            <span class="tech" style="color:${scoreColor}; font-size:1rem; font-weight:bold; border:1px solid ${scoreColor}; padding:3px 10px; border-radius:4px; background:rgba(0,0,0,0.4);">
+                                Nota: ${score}% [${verdict}] ${ptsText}
                             </span>
                         </div>
-                        <div style="margin-top:8px; line-height:1.5;">${data.feedback_speech}</div>
-                        ${data.feedback_trans ? `<div style="margin-top:8px; color: var(--neon-pink); font-size: 0.85rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">📝 ${data.feedback_trans}</div>` : ''}
-                        ${data.tips ? `<div style="margin-top:6px; color: var(--cyber-warn); font-size: 0.85rem;">💡 <strong>Tip:</strong> ${data.tips}</div>` : ''}
+                        ${data.tips ? `<div style="margin-top:6px; color: var(--cyber-warn); font-size: 0.9rem; line-height: 1.4;">💡 <strong>Consejo:</strong> ${data.tips}</div>` : ''}
 
                         <!-- TARGET TEXT ALWAYS VISIBLE FOR EASY PRONUNCIATION REPETITION -->
                         ${conversation.expectedText ? `
@@ -3392,7 +3387,6 @@ CRITICAL: Return ONLY a valid JSON object:
                 `;
 
                 conversation.scrollThreeLineWindow();
-                game.speakText(data.feedback_speech);
             });
         }
     };
