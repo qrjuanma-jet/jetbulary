@@ -540,16 +540,16 @@
 
     <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR ====== -->
     <div id="modal-teacher-select" class="hidden" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div class="hud-card" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0;">
+        <div class="hud-card" style="max-width: 440px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px 18px;">
             <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;">✕</button>
             <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.05rem; margin-bottom: 6px;">[ CHOOSE YOUR TEACHER ]</h3>
-            <p style="color: #888; font-size: 0.82rem; margin-bottom: 20px;">Tap a teacher to switch language and sessions</p>
+            <p style="color: #AAA; font-size: 0.8rem; margin-bottom: 18px;">Toca para cambiar de idioma o <strong style="color:var(--neon-cyan);">mantén pulsado</strong> para ver su vídeo de bienvenida</p>
 
             <div style="display: flex; flex-direction: column; gap: 12px;">
                 <!-- ENGLISH (EMMA) -->
-                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
+                <div class="teacher-select-card" data-lang="en" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
                         <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇬🇧 Emma (English)</div>
                         <div style="font-size: 0.78rem; color: var(--neon-cyan);">English Teacher</div>
                     </div>
@@ -557,9 +557,9 @@
                 </div>
 
                 <!-- GERMAN (GRETA) -->
-                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
+                <div class="teacher-select-card" data-lang="de" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
                         <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
                         <div style="font-size: 0.78rem; color: var(--neon-cyan);">Deutschlehrerin</div>
                     </div>
@@ -567,16 +567,52 @@
                 </div>
 
                 <!-- FRENCH (CAMILLE) -->
-                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
+                <div class="teacher-select-card" data-lang="fr" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
                         <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇫🇷 Camille (Français)</div>
                         <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professeure de Français</div>
                     </div>
                     <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
                 </div>
+
+                <!-- PORTUGUESE (INÊS) -->
+                <div class="teacher-select-card" data-lang="pt" id="lang-card-pt" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_pt.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇵🇹 Inês (Português)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professora de Português</div>
+                    </div>
+                    <span class="lang-check" id="check-pt" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- ITALIAN (SOFIA) -->
+                <div class="teacher-select-card" data-lang="it" id="lang-card-it" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_it.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇮🇹 Sofia (Italiano)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Insegnante di Italiano</div>
+                    </div>
+                    <span class="lang-check" id="check-it" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- RUSSIAN (NADIA) -->
+                <div class="teacher-select-card" data-lang="ru" id="lang-card-ru" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_ru.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇷🇺 Nadia (Русский)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Учитель русского языка</div>
+                    </div>
+                    <span class="lang-check" id="check-ru" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- ====== FULLSCREEN TEACHER WELCOME VIDEO ====== -->
+    <div id="modal-teacher-video" class="hidden" style="position: fixed; inset: 0; z-index: 999999; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100vw; height: 100dvh;" onclick="app.closeTeacherVideoAndGoHome()">
+        <video id="teacher-fullscreen-video" playsinline webkit-playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000;" onended="app.closeTeacherVideoAndGoHome()"></video>
+        <button onclick="event.stopPropagation(); app.closeTeacherVideoAndGoHome();" style="position: absolute; top: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.65); border: 1.5px solid var(--neon-cyan); color: #FFF; border-radius: 50%; width: 44px; height: 44px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--cyber-glow);" title="Cerrar vídeo">✕</button>
     </div>
 
     <!-- ====== MODAL: API KEY INFO & PRIVACY EXPLANATION ====== -->
@@ -898,6 +934,48 @@
             teacherTitle: 'Professeure de Français',
             aiPromptLang: 'French (Français)',
             translatorBtnLabel: 'TRADUCTRICE'
+        },
+        pt: {
+            code: 'pt',
+            name: 'Português',
+            teacherName: 'Inês',
+            flag: 'flag_pt.jpg',
+            face: 'face_pt.jpg',
+            gif: 'gif_pt.gif',
+            speechLang: 'pt-PT',
+            femaleVoices: ['female', 'woman', 'joana', 'inês', 'fernanda', 'luciana', 'google português', 'português', 'portuguese'],
+            youglishLang: 'portuguese',
+            teacherTitle: 'Professora de Português',
+            aiPromptLang: 'Portuguese (Português)',
+            translatorBtnLabel: 'TRADUTORA'
+        },
+        it: {
+            code: 'it',
+            name: 'Italiano',
+            teacherName: 'Sofia',
+            flag: 'flag_it.jpg',
+            face: 'face_it.jpg',
+            gif: 'gif_it.gif',
+            speechLang: 'it-IT',
+            femaleVoices: ['female', 'woman', 'elsa', 'cosimo', 'google italiano', 'italiano', 'italian'],
+            youglishLang: 'italian',
+            teacherTitle: 'Insegnante di Italiano',
+            aiPromptLang: 'Italian (Italiano)',
+            translatorBtnLabel: 'TRADUTTRICE'
+        },
+        ru: {
+            code: 'ru',
+            name: 'Русский',
+            teacherName: 'Nadia',
+            flag: 'flag_ru.jpg',
+            face: 'face_ru.jpg',
+            gif: 'gif_ru.gif',
+            speechLang: 'ru-RU',
+            femaleVoices: ['female', 'woman', 'nadia', 'nadezhda', 'tatyana', 'irina', 'google русский', 'русский', 'russian'],
+            youglishLang: 'russian',
+            teacherTitle: 'Учитель русского языка',
+            aiPromptLang: 'Russian (Русский)',
+            translatorBtnLabel: 'ПЕРЕВОДЧИЦА'
         }
     };
 
@@ -1062,6 +1140,114 @@
                 { english: "donc", spanish: "por lo tanto", ipa: "/dɔ̃k/", sentence_en: "Donc nous ne pouvons pas l'acheter.", sentence_es: "Por lo tanto, no podemos comprarlo." },
                 { english: "bien que", spanish: "aunque", ipa: "/bjɛ̃ kə/", sentence_en: "Bien qu'il pleuvait, ils sont sortis.", sentence_es: "Aunque llovía, salieron." },
                 { english: "en outre", spanish: "además", ipa: "/ɑ̃.n‿utʁ/", sentence_en: "En outre, nous devons économiser.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        pt: [
+            // Level 0: A0 (Starter)
+            { name: "SAUDAÇÕES BÁSICAS (A0)", level: 0, words: [
+                { english: "olá", spanish: "hola", ipa: "/oˈla/", sentence_en: "Olá, como você está?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "por favor", spanish: "por favor", ipa: "/poɾ fɐˈvoɾ/", sentence_en: "Um café, por favor.", sentence_es: "Un café, por favor." },
+                { english: "obrigado", spanish: "gracias", ipa: "/oβɾiˈɣaðu/", sentence_en: "Muito obrigado por tudo.", sentence_es: "Muchas gracias por todo." },
+                { english: "adeus", spanish: "adiós", ipa: "/ɐˈðewʃ/", sentence_en: "Adeus e tenha um bom dia!", sentence_es: "¡Adiós y que tenga un buen día!" }
+            ]},
+            { name: "NÚMEROS & OBJETOS (A0)", level: 0, words: [
+                { english: "um", spanish: "uno", ipa: "/ũ/", sentence_en: "Eu tenho um bilhete de trem.", sentence_es: "Tengo un billete de tren." },
+                { english: "água", spanish: "agua", ipa: "/ˈaɡwɐ/", sentence_en: "Eu gostaria de um copo de água.", sentence_es: "Quisiera un vaso de agua." },
+                { english: "casa", spanish: "casa", ipa: "/ˈkazɐ/", sentence_en: "Esta é a minha nova casa.", sentence_es: "Esta es mi nueva casa." },
+                { english: "livro", spanish: "libro", ipa: "/ˈlivɾu/", sentence_en: "O livro está em cima da mesa.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "VIDA QUOTIDIANA & VERBOS (A1-A2)", level: 1, words: [
+                { english: "morar", spanish: "vivir / residir", ipa: "/muˈɾaɾ/", sentence_en: "Eu moro em Lisboa.", sentence_es: "Vivo en Lisboa." },
+                { english: "trabalhar", spanish: "trabajar", ipa: "/tɾɐbɐˈʎaɾ/", sentence_en: "Ele trabalha em um escritório.", sentence_es: "Él trabaja en una oficina." },
+                { english: "comer", spanish: "comer", ipa: "/kuˈmeɾ/", sentence_en: "Nós comemos juntos ao meio-dia.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "beber", spanish: "beber", ipa: "/bɨˈbeɾ/", sentence_en: "Ela bebe chá verde.", sentence_es: "Ella bebe té verde." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "VERBOS IRREGULARES & TEMPOS (B1)", level: 2, words: [
+                { english: "ir (foi / ido)", spanish: "ir", ipa: "/iɾ/", sentence_en: "Se eu tivesse tempo, iria à academia.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "tomar (tomado)", spanish: "tomar / coger", ipa: "/tuˈmaɾ/", sentence_en: "Ela fez o exame três vezes.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "falar (falado)", spanish: "hablar", ipa: "/fɐˈlaɾ/", sentence_en: "Eu falei com ele ontem.", sentence_es: "Hablé con él ayer." },
+                { english: "escrever (escrito)", spanish: "escribir", ipa: "/ɨʃkɾɨˈveɾ/", sentence_en: "Se ela escrever um livro, terá sucesso.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "CONECTORES LÓGICOS & IDIOMAS (B2)", level: 3, words: [
+                { english: "no entanto", spanish: "sin embargo", ipa: "/nu ẽˈtɐ̃tu/", sentence_en: "No entanto, ela decidiu ir.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "portanto", spanish: "por lo tanto", ipa: "/puɾˈtɐ̃tu/", sentence_en: "Portanto, não podemos comprar.", sentence_es: "Por lo tanto, não podemos comprarlo." },
+                { english: "embora", spanish: "aunque", ipa: "/ẽˈbɔɾɐ/", sentence_en: "Embora chovesse, eles saíram.", sentence_es: "Aunque llovía, salieron." },
+                { english: "além disso", spanish: "además", ipa: "/ɐˈlɐ̃j ˈdisu/", sentence_en: "Além disso, precisamos economizar.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        it: [
+            // Level 0: A0 (Starter)
+            { name: "SALUTI DI BASE (A0)", level: 0, words: [
+                { english: "ciao", spanish: "hola / adiós", ipa: "/ˈtʃa.o/", sentence_en: "Ciao, come stai?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "per favore", spanish: "por favor", ipa: "/per faˈvo.re/", sentence_en: "Un caffè, per favore.", sentence_es: "Un café, por favor." },
+                { english: "grazie", spanish: "gracias", ipa: "/ˈɡrat.tsje/", sentence_en: "Grazie mille per tutto.", sentence_es: "Muchas gracias por todo." },
+                { english: "arrivederci", spanish: "hasta la vista", ipa: "/ar.ri.veˈder.tʃi/", sentence_en: "Arrivederci e buona giornata!", sentence_es: "¡Adiós y que tengas un buen día!" }
+            ]},
+            { name: "NUMERI & OGGETTI (A0)", level: 0, words: [
+                { english: "uno", spanish: "uno", ipa: "/ˈu.no/", sentence_en: "Ho un biglietto per il treno.", sentence_es: "Tengo un billete de tren." },
+                { english: "acqua", spanish: "agua", ipa: "/ˈak.kwa/", sentence_en: "Vorrei un bicchiere d'acqua.", sentence_es: "Quisiera un vaso de agua." },
+                { english: "casa", spanish: "casa", ipa: "/ˈka.sa/", sentence_en: "Questa è la mia nuova casa.", sentence_es: "Esta es mi nueva casa." },
+                { english: "libro", spanish: "libro", ipa: "/ˈli.bro/", sentence_en: "Il libro è sul tavolo.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "VITA QUOTIDIANA & VERBI (A1-A2)", level: 1, words: [
+                { english: "abitare", spanish: "vivir / residir", ipa: "/a.biˈta.re/", sentence_en: "Abito a Roma.", sentence_es: "Vivo en Roma." },
+                { english: "lavorare", spanish: "trabajar", ipa: "/la.voˈra.re/", sentence_en: "Lui lavora in un ufficio.", sentence_es: "Él trabaja en una oficina." },
+                { english: "mangiare", spanish: "comer", ipa: "/manˈdʒa.re/", sentence_en: "Mangiamo insieme a pranzo.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "bere", spanish: "beber", ipa: "/ˈbe.re/", sentence_en: "Lei beve tè caldo.", sentence_es: "Ella bebe té caliente." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "VERBI IRREGOLARI & TEMPI (B1)", level: 2, words: [
+                { english: "andare (andato)", spanish: "ir", ipa: "/anˈda.re/", sentence_en: "Se avessi tempo, andrei in palestra.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "prendere (preso)", spanish: "tomar / coger", ipa: "/ˈprɛn.de.re/", sentence_en: "Ha sostenuto l'esame tre volte.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "parlare (parlato)", spanish: "hablar", ipa: "/parˈla.re/", sentence_en: "Ho parlato con lui ieri.", sentence_es: "Hablé con él ayer." },
+                { english: "scrivere (scritto)", spanish: "escribir", ipa: "/ˈskri.ve.re/", sentence_en: "Se scriverà un libro, avrà successo.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "CONNETTORI LOGICI & IDIOMI (B2)", level: 3, words: [
+                { english: "tuttavia", spanish: "sin embargo", ipa: "/tut.taˈvi.a/", sentence_en: "Tuttavia, ha deciso di andare.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "quindi", spanish: "por lo tanto", ipa: "/ˈkwin.di/", sentence_en: "Quindi non possiamo comprarlo.", sentence_es: "Por lo tanto, no podemos comprarlo." },
+                { english: "sebbene", spanish: "aunque", ipa: "/sebˈbɛ.ne/", sentence_en: "Sebbene piovesse, sono usciti.", sentence_es: "Aunque llovía, salieron." },
+                { english: "inoltre", spanish: "además", ipa: "/iˈnol.tre/", sentence_en: "Inoltre, dobbiamo risparmiare.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        ru: [
+            // Level 0: A0 (Starter)
+            { name: "ОСНОВНЫЕ ПРИВЕТСТВИЯ (A0)", level: 0, words: [
+                { english: "привет", spanish: "hola", ipa: "/prʲɪˈvʲet/", sentence_en: "Привет, как дела?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "пожалуйста", spanish: "por favor", ipa: "/pɐˈʐalʊjstə/", sentence_en: "Один кофе, пожалуйста.", sentence_es: "Un café, por favor." },
+                { english: "спасибо", spanish: "gracias", ipa: "/spɐˈsʲibə/", sentence_en: "Большое спасибо за помощь.", sentence_es: "Muchas gracias por la ayuda." },
+                { english: "до свидания", spanish: "adiós", ipa: "/də svʲɪˈdanʲɪjə/", sentence_en: "До свидания, до завтра!", sentence_es: "¡Adiós, hasta mañana!" }
+            ]},
+            { name: "ЧИСЛА & ПРЕДМЕТЫ (A0)", level: 0, words: [
+                { english: "один", spanish: "uno", ipa: "/ɐˈdʲin/", sentence_en: "У меня один билет на поезд.", sentence_es: "Tengo un billete de tren." },
+                { english: "вода", spanish: "agua", ipa: "/vɐˈda/", sentence_en: "Я хочу стакан воды.", sentence_es: "Quiero un vaso de agua." },
+                { english: "дом", spanish: "casa", ipa: "/dom/", sentence_en: "Это мой новый дом.", sentence_es: "Esta es mi nueva casa." },
+                { english: "книга", spanish: "libro", ipa: "/ˈknʲiɡə/", sentence_en: "Книга лежит на столе.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "ПОВСЕДНЕВНАЯ ЖИЗНЬ & ГЛАГОЛЫ (A1-A2)", level: 1, words: [
+                { english: "жить", spanish: "vivir / residir", ipa: "/ʐɨtʲ/", sentence_en: "Я живу в Москве.", sentence_es: "Vivo en Moscú." },
+                { english: "работать", spanish: "trabajar", ipa: "/rɐˈbotətʲ/", sentence_en: "Он работает в офисе.", sentence_es: "Él trabaja en una oficina." },
+                { english: "есть", spanish: "comer", ipa: "/jesʲtʲ/", sentence_en: "Мы едим вместе в обед.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "пить", spanish: "beber", ipa: "/pʲitʲ/", sentence_en: "Она пьет горячий чай.", sentence_es: "Ella bebe té caliente." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "ГЛАГОЛЫ ДВИЖЕНИЯ & ВРЕМЕНА (B1)", level: 2, words: [
+                { english: "идти (пошел)", spanish: "ir", ipa: "/ɪtʲˈtʲi/", sentence_en: "Если бы у меня было время, я бы пошел в спортзал.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "брать (взял)", spanish: "tomar / coger", ipa: "/bratʲ/", sentence_en: "Она сдавала экзамен три раза.", sentence_es: "Ella ha hecho el examen три veces." },
+                { english: "говорить (сказал)", spanish: "hablar", ipa: "/ɡəvɐˈrʲitʲ/", sentence_en: "Я говорил с ним вчера.", sentence_es: "Hablé con él ayer." },
+                { english: "писать (написал)", spanish: "escribir", ipa: "/pʲɪˈsatʲ/", sentence_en: "Если она напишет книгу, она добьется успеха.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "СОЮЗЫ & ВВОДНЫЕ СЛОВА (B2)", level: 3, words: [
+                { english: "однако", spanish: "sin embargo", ipa: "/ɐdˈnakə/", sentence_en: "Однако она решила пойти.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "поэтому", spanish: "por lo tanto", ipa: "/pɐˈɛtəmʊ/", sentence_en: "Поэтому мы не можем это купить.", sentence_es: "Por lo tanto, no podemos comprarlo." },
+                { english: "хотя", spanish: "aunque", ipa: "/xɐˈtʲa/", sentence_en: "Хотя шел дождь, они вышли.", sentence_es: "Aunque llovía, salieron." },
+                { english: "кроме того", spanish: "además", ipa: "/ˈkromʲɪ təˈvo/", sentence_en: "Кроме того, нам нужно экономить.", sentence_es: "Además, debemos ahorrar." }
             ]}
         ]
     };
@@ -1446,6 +1632,7 @@
             document.querySelectorAll('.lang-check').forEach(el => el.style.display = 'none');
             const activeCheck = document.getElementById(`check-${currentLang}`);
             if (activeCheck) activeCheck.style.display = 'inline';
+            app.setupTeacherCards();
             history.pushState({ modal: 'teacher' }, null, '#teacher');
         },
 
@@ -1614,6 +1801,9 @@
             if (lessonLbl) {
                 if (currentLang === 'de') lessonLbl.innerText = 'LEKTION';
                 else if (currentLang === 'fr') lessonLbl.innerText = 'LEÇON';
+                else if (currentLang === 'pt') lessonLbl.innerText = 'LIÇÃO';
+                else if (currentLang === 'it') lessonLbl.innerText = 'LEZIONE';
+                else if (currentLang === 'ru') lessonLbl.innerText = 'УРОК';
                 else lessonLbl.innerText = 'LESSON';
             }
         },
@@ -1628,12 +1818,12 @@
 
         ensureDefaultTopics: () => {
             let modified = false;
-            ['en', 'de', 'fr'].forEach(langKey => {
+            ['en', 'de', 'fr', 'pt', 'it', 'ru'].forEach(langKey => {
                 const list = defaultTopicsByLang[langKey] || [];
                 list.forEach((def, defIdx) => {
                     let topic = db.topics.find(t => t.name.toUpperCase() === def.name.toUpperCase() && (t.lang || 'en') === langKey);
                     if (!topic) {
-                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : 2000;
+                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : langKey === 'fr' ? 2000 : langKey === 'pt' ? 2500 : langKey === 'it' ? 3000 : 4000;
                         topic = { id: 999000 + offset + defIdx, name: def.name, lang: langKey, level: def.level !== undefined ? def.level : 0 };
                         db.topics.push(topic);
                         modified = true;
@@ -1777,6 +1967,87 @@
             });
         },
 
+        setupTeacherCards: () => {
+            document.querySelectorAll('.teacher-select-card').forEach(card => {
+                const lang = card.getAttribute('data-lang');
+                if (!lang) return;
+
+                let pressTimer = null;
+                let isLongPress = false;
+
+                const startPress = () => {
+                    isLongPress = false;
+                    if (pressTimer) clearTimeout(pressTimer);
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        if (navigator.vibrate) try { navigator.vibrate(50); } catch(err) {}
+                        app.playTeacherVideo(lang);
+                    }, 500);
+                };
+
+                const cancelPress = () => {
+                    if (pressTimer) {
+                        clearTimeout(pressTimer);
+                        pressTimer = null;
+                    }
+                };
+
+                card.onclick = (e) => {
+                    if (isLongPress) {
+                        isLongPress = false;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                    }
+                    app.setLanguage(lang);
+                };
+
+                card.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    app.playTeacherVideo(lang);
+                };
+
+                card.addEventListener('touchstart', startPress, { passive: true });
+                card.addEventListener('touchend', cancelPress, { passive: true });
+                card.addEventListener('touchcancel', cancelPress, { passive: true });
+                card.addEventListener('mousedown', startPress);
+                card.addEventListener('mouseup', cancelPress);
+                card.addEventListener('mouseleave', cancelPress);
+            });
+        },
+
+        playTeacherVideo: (lang) => {
+            app.setLanguage(lang);
+            const modal = document.getElementById('modal-teacher-video');
+            const video = document.getElementById('teacher-fullscreen-video');
+            if (!modal || !video) return;
+
+            app.closeTeacherModal();
+            video.src = `video_${lang}.mp4`;
+            modal.classList.remove('hidden');
+
+            video.currentTime = 0;
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log("Video playback catch:", e);
+                });
+            }
+        },
+
+        closeTeacherVideoAndGoHome: () => {
+            const modal = document.getElementById('modal-teacher-video');
+            const video = document.getElementById('teacher-fullscreen-video');
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+                video.src = '';
+            }
+            if (modal) modal.classList.add('hidden');
+            app.closeTeacherModal();
+            app.showDashboard();
+        },
+
         init: async () => {
             if (navigator.storage && navigator.storage.persist) {
                 try { navigator.storage.persist(); } catch(e) {}
@@ -1829,9 +2100,15 @@
             app.updateHeaderTranslatorBtn();
             app.updateLessonButtonsVisibility();
             app.setupLogos();
+            app.setupTeacherCards();
             app.updateInstallButtonVisibility();
 
             window.onpopstate = (event) => {
+                const videoModal = document.getElementById('modal-teacher-video');
+                if (videoModal && !videoModal.classList.contains('hidden')) {
+                    app.closeTeacherVideoAndGoHome();
+                    return;
+                }
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
                     shareModal.classList.add('hidden');
@@ -2572,6 +2849,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
         updateAvatar: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const gifUrl = langInfo.gif || 'gif_en.gif';
             document.querySelectorAll('.avatar-container').forEach(c => {
                 c.innerHTML = '';
                 c.style.cursor = 'pointer';
@@ -2580,11 +2858,41 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 const img = document.createElement('img');
                 img.className = 'avatar-img face-img';
                 img.alt = langInfo.teacherTitle || 'Teacher';
-                img.src = langInfo.gif || 'gif_en.gif';
+                img.dataset.gifSrc = gifUrl;
+                img.src = gifUrl;
+
+                const stopAfterFirstLoop = () => {
+                    setTimeout(() => {
+                        if (!c.classList.contains('talking') && (!window.speechSynthesis || !window.speechSynthesis.speaking)) {
+                            if (img.dataset.staticSrc) {
+                                img.src = img.dataset.staticSrc;
+                            }
+                        }
+                    }, 2600);
+                };
+
+                img.onload = function() {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = this.naturalWidth || 250;
+                        canvas.height = this.naturalHeight || 250;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(this, 0, 0);
+                        const staticData = canvas.toDataURL('image/png');
+                        if (staticData && staticData.length > 50) {
+                            this.dataset.staticSrc = staticData;
+                        }
+                    } catch(e) {
+                        console.warn("Canvas capture skipped:", e);
+                    }
+                    stopAfterFirstLoop();
+                };
+
                 img.onerror = function() {
                     this.onerror = null;
-                    this.src = 'gif_en.gif';
+                    this.src = 'icon.png';
                 };
+
                 c.appendChild(img);
             });
         },
