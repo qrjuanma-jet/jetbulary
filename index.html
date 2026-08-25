@@ -29,18 +29,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
+            min-height: 100%;
             height: 100%;
-            height: 100dvh;
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--cyber-bg);
             color: var(--cyber-text);
-            height: 100dvh;
-            max-height: 100dvh;
+            min-height: 100vh;
+            min-height: 100dvh;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
@@ -289,6 +288,9 @@
                     ❓
                 </button>
             </div>
+        </div>
+    </div>
+
     <!-- ====== VIEW: DASHBOARD ====== -->
     <div id="view-dashboard" class="container hidden" style="padding: 10px 14px 6px; max-width: 550px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto;">
         <!-- TOP SECTION: LOGO + TEACHER + TRANSLATOR + LISTS + ACTION BUTTONS -->
