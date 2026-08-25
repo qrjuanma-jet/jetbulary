@@ -289,12 +289,12 @@
     <!-- ====== VIEW: DASHBOARD ====== -->
     <div id="view-dashboard" class="container hidden">
         <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 10px auto 20px; flex-wrap: wrap;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" style="width: 90px; height: 90px; border-radius: 18px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 100px; height: 100px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
-            <button onclick="app.startDirectHandsFree()" class="tech" style="width: auto; padding: 12px 18px; font-size: 0.82rem; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 12px; box-shadow: 0 0 18px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s;" title="Iniciar traductora en tiempo real">
-                <span style="font-size: 1.5rem;">🎙️</span>
-                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.85rem; font-weight: 900; letter-spacing: 1px;">TRANSLATOR</span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin: 10px auto 20px; flex-wrap: nowrap; max-width: 100%;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" style="width: 85px; height: 85px; min-width: 85px; border-radius: 18px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 85px; height: 85px; min-width: 85px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
+            <button onclick="app.startDirectHandsFree()" class="tech" style="width: 85px; height: 85px; min-width: 85px; padding: 6px 4px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 18px; box-shadow: 0 0 18px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
+                <span style="font-size: 1.4rem; line-height: 1;">🎙️</span>
+                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 78px;">TRANSLATOR</span>
             </button>
         </div>
 
@@ -309,8 +309,8 @@
         </div>
 
         <!-- MAIN ACTION BUTTONS -->
-        <button onclick="session.start()" class="success" style="width: 100%; padding: 22px; font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px;">🚀 START</button>
-        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 VOCABULARY</button>
+        <button onclick="session.start()" class="success" style="width: 100%; padding: 22px; font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px;">🚀 <span id="lbl-start-btn">START</span></button>
+        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
 
         <!-- SECONDARY / CONFIGURATION AREA (DISPLACED DOWN FROM MAIN ACTIONS) -->
         <div style="margin-top: 110px; padding-top: 35px; border-top: 1px dashed rgba(0,243,255,0.2);">
@@ -906,7 +906,9 @@
             youglishLang: 'english',
             teacherTitle: 'English Teacher',
             aiPromptLang: 'English',
-            translatorBtnLabel: 'TRANSLATOR'
+            translatorBtnLabel: 'TRANSLATOR',
+            startBtnLabel: 'START',
+            vocabBtnLabel: 'VOCABULARY'
         },
         de: {
             code: 'de',
@@ -920,7 +922,9 @@
             youglishLang: 'german',
             teacherTitle: 'Deutschlehrerin',
             aiPromptLang: 'German (Deutsch)',
-            translatorBtnLabel: 'ÜBERSETZERIN'
+            translatorBtnLabel: 'ÜBERSETZERIN',
+            startBtnLabel: 'STARTEN',
+            vocabBtnLabel: 'WORTSCHATZ'
         },
         fr: {
             code: 'fr',
@@ -934,7 +938,9 @@
             youglishLang: 'french',
             teacherTitle: 'Professeure de Français',
             aiPromptLang: 'French (Français)',
-            translatorBtnLabel: 'TRADUCTRICE'
+            translatorBtnLabel: 'TRADUCTRICE',
+            startBtnLabel: 'DÉMARRER',
+            vocabBtnLabel: 'VOCABULAIRE'
         },
         pt: {
             code: 'pt',
@@ -948,7 +954,9 @@
             youglishLang: 'portuguese',
             teacherTitle: 'Professora de Português',
             aiPromptLang: 'Portuguese (Português)',
-            translatorBtnLabel: 'TRADUTORA'
+            translatorBtnLabel: 'TRADUTORA',
+            startBtnLabel: 'INICIAR',
+            vocabBtnLabel: 'VOCABULÁRIO'
         },
         it: {
             code: 'it',
@@ -962,7 +970,9 @@
             youglishLang: 'italian',
             teacherTitle: 'Insegnante di Italiano',
             aiPromptLang: 'Italian (Italiano)',
-            translatorBtnLabel: 'TRADUTTRICE'
+            translatorBtnLabel: 'TRADUTTRICE',
+            startBtnLabel: 'INIZIA',
+            vocabBtnLabel: 'VOCABOLARIO'
         },
         ru: {
             code: 'ru',
@@ -976,7 +986,9 @@
             youglishLang: 'russian',
             teacherTitle: 'Учитель русского языка',
             aiPromptLang: 'Russian (Русский)',
-            translatorBtnLabel: 'ПЕРЕВОДЧИЦА'
+            translatorBtnLabel: 'ПЕРЕВОДЧИЦА',
+            startBtnLabel: 'НАЧАТЬ',
+            vocabBtnLabel: 'СЛОВАРЬ'
         },
         eu: {
             code: 'eu',
@@ -990,7 +1002,9 @@
             youglishLang: 'basque',
             teacherTitle: 'Euskara Irakaslea',
             aiPromptLang: 'Basque (Euskara)',
-            translatorBtnLabel: 'ITZULTZAILEA'
+            translatorBtnLabel: 'ITZULTZAILEA',
+            startBtnLabel: 'HASI',
+            vocabBtnLabel: 'HIZTEGIA'
         },
         ca: {
             code: 'ca',
@@ -1004,7 +1018,9 @@
             youglishLang: 'catalan',
             teacherTitle: 'Professora de Català',
             aiPromptLang: 'Catalan (Català)',
-            translatorBtnLabel: 'TRADUCTORA'
+            translatorBtnLabel: 'TRADUCTORA',
+            startBtnLabel: 'COMENÇAR',
+            vocabBtnLabel: 'VOCABULARI'
         },
         gl: {
             code: 'gl',
@@ -1018,7 +1034,9 @@
             youglishLang: 'galician',
             teacherTitle: 'Profesora de Galego',
             aiPromptLang: 'Galician (Galego)',
-            translatorBtnLabel: 'TRADUTORA'
+            translatorBtnLabel: 'TRADUTORA',
+            startBtnLabel: 'COMEZAR',
+            vocabBtnLabel: 'VOCABULARIO'
         }
     };
 
@@ -1922,8 +1940,7 @@
 
             // Refresh UI, Avatars, Buttons and Translator
             game.updateAvatar();
-            app.updateHeaderTranslatorBtn();
-            app.updateLessonButtonsVisibility();
+            app.updateActionButtons();
             
             // Update CEFR Levels & Points for the new language
             app.autoSelectNextPendingTopic(currentLang);
@@ -2124,6 +2141,18 @@
             document.querySelectorAll('.lbl-translator-btn').forEach(el => {
                 el.innerText = label;
             });
+        },
+
+        updateActionButtons: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const startLbl = document.getElementById('lbl-start-btn');
+            if (startLbl) startLbl.innerText = langInfo.startBtnLabel || 'START';
+
+            const vocabLbl = document.getElementById('lbl-vocab-btn');
+            if (vocabLbl) vocabLbl.innerText = langInfo.vocabBtnLabel || 'VOCABULARY';
+
+            app.updateHeaderTranslatorBtn();
+            app.updateLessonButtonsVisibility();
         },
 
         updateLessonButtonsVisibility: () => {
@@ -2570,8 +2599,7 @@
 
             app.checkCookies();
             app.renderDashboardLists();
-            app.updateHeaderTranslatorBtn();
-            app.updateLessonButtonsVisibility();
+            app.updateActionButtons();
             app.setupLogos();
             app.setupTeacherAvatars();
             app.setupTeacherCards();
