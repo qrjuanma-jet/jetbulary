@@ -725,8 +725,8 @@
     </div>
 
     <!-- ====== MODAL: SHARE JETBULARY (WHATSAPP, TELEGRAM, QR, CAFÉ) ====== -->
-    <div id="modal-share" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
-        <div class="hud-card" style="max-width: 360px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
+    <div id="modal-share" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;" onclick="app.closeShareModal()">
+        <div class="hud-card" style="max-width: 360px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;" onclick="event.stopPropagation()">
             <button onclick="app.closeShareModal()" style="position: absolute; top: 10px; right: 12px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
             
             <img src="icon.png" alt="Jetbulary" style="width: 65px; height: 65px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); margin: 0 auto 10px; display: block;">
@@ -2420,12 +2420,16 @@
         openShareModal: () => {
             const modal = document.getElementById('modal-share');
             if (modal) modal.classList.remove('hidden');
+            history.pushState({ modal: 'share' }, null, '#share');
         },
-        closeShareModal: () => {
+        closeShareModal: (skipHistoryBack = false) => {
             const modal = document.getElementById('modal-share');
             if (modal) modal.classList.add('hidden');
             const qrBox = document.getElementById('qr-display-box');
             if (qrBox) qrBox.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'share') {
+                history.back();
+            }
         },
         shareApp: () => {
             app.openShareModal();
@@ -2497,7 +2501,12 @@
                         e.stopPropagation();
                         return false;
                     }
-                    app.showDashboard();
+                    const isDashboard = !document.getElementById('view-dashboard').classList.contains('hidden');
+                    if (isDashboard) {
+                        app.openShareModal();
+                    } else {
+                        app.showDashboard();
+                    }
                 };
 
                 img.oncontextmenu = (e) => {
@@ -2761,7 +2770,7 @@
                 }
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
-                    shareModal.classList.add('hidden');
+                    app.closeShareModal(true);
                     return;
                 }
                 const backupModal = document.getElementById('modal-backup-manager');
