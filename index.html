@@ -240,62 +240,47 @@
 
     <!-- ====== VIEW: API KEY ====== -->
     <div id="view-apikey" class="container">
-        <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 10px auto 20px; flex-wrap: wrap;">
+        <!-- TOP HEADER: LOGO + TEACHER (NO TRANSLATOR UNTIL KEY IS ACTIVE) -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px auto 20px;">
             <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" style="width: 90px; height: 90px; border-radius: 18px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-init" onclick="app.openTeacherModal()" style="width: 100px; height: 100px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
-            <button onclick="app.startDirectHandsFree()" class="tech" style="width: auto; padding: 12px 18px; font-size: 0.82rem; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 12px; box-shadow: 0 0 18px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; font-weight: bold; transition: all 0.2s;" title="Iniciar traductora en tiempo real">
-                <span style="font-size: 1.5rem;">🎙️</span>
-                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.85rem; font-weight: 900; letter-spacing: 1px;">TRANSLATOR</span>
-            </button>
+            <div class="avatar-container" id="avatar-init" onclick="app.openTeacherModal()" style="width: 100px; height: 100px; margin: 0; cursor: pointer;" title="Tap to change teacher / language">
+                <img src="gif_en.gif" alt="English Teacher" class="avatar-img face-img" onerror="this.src='icon.png'">
+            </div>
         </div>
         <h2 class="tech" style="margin-bottom: 8px;">JETBULARY</h2>
         <p style="margin-bottom: 22px; font-size: 0.9rem; color: #AAA;">Aprende vocabulario e idiomas con inteligencia artificial en tiempo real.</p>
 
-        <!-- COLLAPSIBLE API KEY CARD -->
-        <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: var(--cyber-glow);">
-            <div onclick="app.toggleApiKeySection()" style="padding: 14px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.08); user-select: none;">
-                <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.95rem;">🔑 ACTIVAR API KEY (GROQ)</span>
-                <span id="apikey-chevron" style="color: var(--neon-cyan); font-size: 0.85rem; transition: transform 0.3s;">▼</span>
+        <!-- CLEAN API KEY CARD (NO TITLES, DIRECT INPUT + ACTIVAR & ? BUTTON) -->
+        <div style="background: rgba(18,18,20,0.95); border: 1.5px solid var(--neon-cyan); border-radius: 10px; padding: 22px 18px; margin-bottom: 20px; box-shadow: var(--cyber-glow); text-align: left;">
+            <div style="position: relative; width: 100%; margin-bottom: 15px;">
+                <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí (gsk_...)" style="font-family: monospace; letter-spacing: 1px; padding: 14px 45px 14px 14px; width: 100%; box-sizing: border-box; background: #000; color: #FFF; border: 1px solid var(--neon-cyan); border-radius: 6px; font-size: 0.95rem;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
+                <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.25rem; z-index: 10;" title="Mostrar / Ocultar">👁️</span>
             </div>
-            
-            <div id="apikey-body" style="padding: 20px 18px; background: rgba(18,18,20,0.95); text-align: left;">
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                    <div style="position: relative; flex: 1;">
-                        <input type="password" id="api-key-input" placeholder="Pega tu API Key aquí (gsk_...)" style="font-family: monospace; letter-spacing: 1px; padding-right: 45px; width: 100%; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') app.saveApiKey()" oninput="app.onApiKeyInput(this.value)">
-                        <span onclick="app.toggleApiKeyVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.25rem; z-index: 10;" title="Mostrar / Ocultar">👁️</span>
-                    </div>
-                    <button onclick="app.toggleApiKeyHelp()" class="secondary" style="width: auto; padding: 0 16px; font-size: 1.1rem; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center;" title="¿Cómo conseguir la API Key?">
-                        ❓
-                    </button>
-                </div>
 
-                <div onclick="app.openApiKeyInfoModal()" style="font-size: 0.8rem; color: var(--neon-cyan); cursor: pointer; text-decoration: underline; margin-bottom: 14px; display: inline-flex; align-items: center; gap: 5px;">
-                    ℹ️ ¿Quieres saber más sobre las API Keys y por qué es necesaria para Jetbulary?
-                </div>
+            <!-- COLLAPSIBLE HELP STEPS -->
+            <div id="apikey-help-box" class="hidden" style="margin-bottom: 16px; padding: 14px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px;">
+                <h4 style="color: var(--neon-cyan); font-size: 0.85rem; margin-top: 0; margin-bottom: 10px;">📋 Pasos para conseguir tu API Key Gratis:</h4>
+                <ol style="font-size: 0.82rem; color: #CCC; margin: 0 0 14px 18px; padding: 0; line-height: 1.6;">
+                    <li>Pulsa el botón <strong>Open Groq Console</strong> de abajo.</li>
+                    <li>Inicia sesión con tu cuenta de Google o email.</li>
+                    <li>Haz clic en <strong style="color: var(--neon-cyan);">+ Create API Key</strong>.</li>
+                    <li>Pon de nombre <strong>Jetbulary</strong> y pulsa <strong>Submit</strong>.</li>
+                    <li>Copia la clave (<code style="color: var(--neon-pink);">gsk_...</code>) y pégala arriba.</li>
+                </ol>
+                <button onclick="window.open('https://console.groq.com/keys', '_blank'); app.waitForClipboard();" class="secondary" style="width: 100%; padding: 12px; font-size: 0.85rem; border: 1px solid #4285F4; background: rgba(66,133,244,0.15); color: #FFF; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
+                    <span>Open Groq Console (Gratis)</span>
+                </button>
+                <div id="autodetect-status" style="margin-top: 10px; font-size: 0.78rem; color: #777; text-align: center;">🔍 Al volver de Groq, la clave se detectará automáticamente</div>
+            </div>
 
-                <!-- COLLAPSIBLE HELP STEPS -->
-                <div id="apikey-help-box" class="hidden" style="margin-bottom: 16px; padding: 14px; background: rgba(0,243,255,0.04); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px;">
-                    <h4 style="color: var(--neon-cyan); font-size: 0.85rem; margin-top: 0; margin-bottom: 10px;">📋 Pasos para conseguir tu API Key Gratis:</h4>
-                    <ol style="font-size: 0.82rem; color: #CCC; margin: 0 0 14px 18px; padding: 0; line-height: 1.6;">
-                        <li>Pulsa el botón <strong>Open Groq Console</strong> de abajo.</li>
-                        <li>Inicia sesión con tu cuenta de Google o email.</li>
-                        <li>Haz clic en <strong style="color: var(--neon-cyan);">+ Create API Key</strong>.</li>
-                        <li>Pon de nombre <strong>Jetbulary</strong> y pulsa <strong>Submit</strong>.</li>
-                        <li>Copia la clave (<code style="color: var(--neon-pink);">gsk_...</code>) y pégala arriba.</li>
-                    </ol>
-                    <button onclick="window.open('https://console.groq.com/keys', '_blank'); app.waitForClipboard();" class="secondary" style="width: 100%; padding: 12px; font-size: 0.85rem; border: 1px solid #4285F4; background: rgba(66,133,244,0.15); color: #FFF; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 20-9 20-20 0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l7 5.1C15 16.1 19.2 13 24 13c3 0 5.7 1.1 7.8 2.9l6-6C34.2 6.1 29.4 4 24 4c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.3-5.2C29.3 35.3 26.8 36 24 36c-5.2 0-9.7-3-11.7-7.3l-7 5.4C8.8 40.5 15.9 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.5-2.6 4.7-4.8 6.2l6.3 5.2C40.6 36 44 30.5 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
-                        <span>Open Groq Console (Gratis)</span>
-                    </button>
-                    <button onclick="app.openApiKeyInfoModal()" class="tech" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.8rem; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.08); color: var(--neon-cyan); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                        📖 ¿Por qué es necesaria la API Key y cómo protege tu privacidad?
-                    </button>
-                    <div id="autodetect-status" style="margin-top: 10px; font-size: 0.78rem; color: #777; text-align: center;">🔍 Al volver de Groq, la clave se detectará automáticamente</div>
-                </div>
-
-                <button class="success" onclick="app.saveApiKey()" id="btn-sync" style="width: 100%; font-size: 0.95rem; font-weight: bold; padding: 14px; opacity: 0.5; pointer-events: none; box-shadow: var(--cyber-glow);">
-                    🚀 ACTIVAR Y COMENZAR
+            <!-- ACTION ROW: ACTIVAR + ? HELP BUTTON -->
+            <div style="display: flex; gap: 10px; align-items: stretch;">
+                <button class="success" onclick="app.saveApiKey()" id="btn-sync" style="flex: 1; font-size: 1.1rem; font-weight: 800; padding: 14px; opacity: 0.5; pointer-events: none; box-shadow: var(--cyber-glow); letter-spacing: 1.5px;">
+                    ACTIVAR
+                </button>
+                <button onclick="app.toggleApiKeyHelp()" class="secondary" style="width: 55px; height: 55px; border-radius: 8px; font-size: 1.3rem; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; padding: 0;" title="¿Cómo conseguir la API Key?">
+                    ❓
                 </button>
             </div>
         </div>
@@ -447,7 +432,7 @@
     </div>
 
     <!-- ====== VIEW: VOCABULARY ====== -->
-    <div id="view-vocab" class="container hidden" style="text-align: left; padding-bottom: 80px;">
+    <div id="view-vocab" class="container hidden" onclick="app.onBackgroundClick(event)" style="text-align: left; padding-bottom: 80px; position: relative;">
         <!-- TOP HEADER: LOGO + TEACHER + BACK -->
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; gap: 16px;">
@@ -519,7 +504,7 @@
     </div>
 
     <!-- ====== VIEW: PRIVACY ====== -->
-    <div id="view-privacy" class="container hidden" style="text-align: left;">
+    <div id="view-privacy" class="container hidden" onclick="app.onBackgroundClick(event)" style="text-align: left; position: relative;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Jetbulary">
@@ -537,7 +522,7 @@
     </div>
 
     <!-- ====== VIEW: TERMS ====== -->
-    <div id="view-terms" class="container hidden" style="text-align: left;">
+    <div id="view-terms" class="container hidden" onclick="app.onBackgroundClick(event)" style="text-align: left; position: relative;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Jetbulary">
@@ -1827,6 +1812,8 @@
                 app.updateAcademyLevelDisplay(db.academy_level);
             }, 200);
 
+            if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
+
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
             if (savedKey) {
                 app.showDashboard('replace');
@@ -1839,7 +1826,6 @@
 
             app.checkCookies();
             app.renderDashboardLists();
-            if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
             app.updateHeaderTranslatorBtn();
             app.updateLessonButtonsVisibility();
             app.setupLogos();
@@ -1873,12 +1859,35 @@
                 }
                 if (event.state && event.state.view) {
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
+                    else if (event.state.view === 'view-apikey') app.switchView('view-apikey', 'none');
                     else app.switchView(event.state.view, 'none');
                 } else {
-                    const isDash = !document.getElementById('view-dashboard').classList.contains('hidden');
-                    if (!isDash) app.showDashboard('none');
+                    const isInitial = !document.getElementById('view-dashboard').classList.contains('hidden') || !document.getElementById('view-apikey').classList.contains('hidden');
+                    if (!isInitial) {
+                        const savedKey = localStorage.getItem(API_KEY_STORAGE);
+                        if (savedKey) app.showDashboard('none');
+                        else app.switchView('view-apikey', 'none');
+                    }
                 }
             };
+        },
+
+        goBack: () => {
+            const isInitial = !document.getElementById('view-dashboard').classList.contains('hidden') || !document.getElementById('view-apikey').classList.contains('hidden');
+            if (!isInitial) {
+                if (window.history.length > 1 && window.history.state && window.history.state.view) {
+                    window.history.back();
+                } else {
+                    app.showDashboard();
+                }
+            }
+        },
+
+        onBackgroundClick: (e) => {
+            if (e && e.target && (e.target.closest('button') || e.target.closest('.avatar-container') || e.target.closest('input') || e.target.closest('select') || e.target.closest('a') || e.target.closest('#modal-teacher-select') || e.target.closest('#modal-share') || e.target.closest('#modal-backup-manager') || e.target.closest('#modal-apikey-info') || e.target.closest('.vocab-item') || e.target.closest('.session-word-card'))) {
+                return;
+            }
+            app.goBack();
         },
 
         updateSpeedLabel: (val) => {
@@ -2044,14 +2053,14 @@
                         if (input) { input.value = trimmed; app.onApiKeyInput(trimmed); }
                         setTimeout(() => app.saveApiKey(trimmed), 800);
                     } else if (trimmed && trimmed.length > 20) {
-                        document.getElementById('autodetect-status').innerHTML = '📋 Key detected. Please verify and click START LEARNING.';
+                        document.getElementById('autodetect-status').innerHTML = '📋 Key detected. Please verify and click ACTIVAR.';
                         const input = document.getElementById('api-key-input');
                         if (input) { input.value = trimmed; app.onApiKeyInput(trimmed); }
                     } else {
-                        document.getElementById('autodetect-status').innerHTML = '📋 Paste your key in the field below and click START LEARNING.';
+                        document.getElementById('autodetect-status').innerHTML = '📋 Pega tu clave en el campo de arriba y pulsa ACTIVAR.';
                     }
                 } catch(e) {
-                    document.getElementById('autodetect-status').innerHTML = '📋 Paste your key in the field below and click START LEARNING.';
+                    document.getElementById('autodetect-status').innerHTML = '📋 Pega tu clave en el campo de arriba y pulsa ACTIVAR.';
                 }
             };
             const onVisibility = async () => { if (document.visibilityState === 'visible') { document.removeEventListener('visibilitychange', onVisibility); window.removeEventListener('focus', onReturn); onReturn(); } };
@@ -2568,24 +2577,13 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 c.style.cursor = 'pointer';
                 c.title = `Teacher: ${langInfo.teacherName} (${langInfo.name}) - Click to change`;
                 c.onclick = () => app.openTeacherModal();
-                const img = new Image();
+                const img = document.createElement('img');
                 img.className = 'avatar-img face-img';
-                img.alt = langInfo.teacherTitle;
-                img.dataset.idleSrc = langInfo.face;
-                img.dataset.speakingSrc = langInfo.gif;
-                img.dataset.gifSrc = langInfo.gif;
-                img.onerror = function() { if (this.src.includes('.gif')) this.src = 'icon.png'; else this.src = langInfo.gif; };
-                img.src = langInfo.gif;
-                img.onload = function() {
-                    if (this.src.includes('.gif') && !this.dataset.staticSrc) {
-                        try {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = this.naturalWidth; canvas.height = this.naturalHeight;
-                            canvas.getContext('2d').drawImage(this, 0, 0);
-                            this.dataset.staticSrc = canvas.toDataURL();
-                            if (!c.classList.contains('talking')) this.src = this.dataset.staticSrc;
-                        } catch(e) {}
-                    }
+                img.alt = langInfo.teacherTitle || 'Teacher';
+                img.src = langInfo.gif || 'gif_en.gif';
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'gif_en.gif';
                 };
                 c.appendChild(img);
             });
@@ -2920,7 +2918,13 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 if (pct >= 100) game.stopMic();
             }, 50);
         },
-        stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); }
+        stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); },
+        onBackgroundClick: (e) => {
+            if (e && e.target && (e.target.closest('button') || e.target.closest('.avatar-container') || e.target.closest('input') || e.target.closest('select') || e.target.closest('#modal-teacher-select') || e.target.closest('#modal-share') || e.target.closest('#modal-backup-manager') || e.target.closest('#modal-apikey-info') || e.target.closest('.session-word-card') || e.target.closest('.vocab-item'))) {
+                return;
+            }
+            app.goBack();
+        }
     };
 
     // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
@@ -3410,7 +3414,7 @@ Return ONLY a valid JSON object:
             if (e && e.target && (e.target.closest('button') || e.target.closest('.avatar-container') || e.target.closest('input') || e.target.closest('select') || e.target.closest('#modal-teacher-select') || e.target.closest('#modal-share') || e.target.closest('#modal-backup-manager') || e.target.closest('#modal-apikey-info'))) {
                 return;
             }
-            app.showDashboard();
+            app.goBack();
         }
     };
 
