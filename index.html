@@ -369,14 +369,12 @@
 
         <!-- LESSON & FREE CONVERSATION ACTION BUTTONS -->
         <div style="margin: 14px 0 10px; display: flex; flex-direction: column; gap: 10px;">
-            <button onclick="session.startLesson()" class="tech" style="width: 100%; padding: 14px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,149,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
-                <span style="color: var(--cyber-ok); font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">🎯 <span id="lbl-lesson-btn">LESSON</span></span>
-                <span style="font-size: 0.76rem; color: #CCC; text-transform: none; letter-spacing: 0;">Consigue puntos para subir de nivel</span>
+            <button onclick="session.startLesson()" class="tech" style="width: 100%; padding: 14px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: var(--cyber-ok); border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,149,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; font-weight: 900; letter-spacing: 1.5px;">
+                <span id="lbl-lesson-btn">LESSON</span>
             </button>
 
-            <button id="btn-free-conversation" onclick="conversation.startFreeConversation()" class="tech hidden" style="width: 100%; padding: 13px 18px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
-                <span style="color: var(--neon-pink); font-size: 1.05rem; font-weight: 900; letter-spacing: 1px;">💬 FREE CONVERSATION</span>
-                <span style="font-size: 0.74rem; color: #BBB; text-transform: none; letter-spacing: 0;">Gramática avanzada y repaso para subir nota</span>
+            <button id="btn-free-conversation" onclick="conversation.startFreeConversation()" class="tech hidden" style="width: 100%; padding: 13px 18px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: var(--neon-pink); border-radius: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 900; letter-spacing: 1px;">
+                <span>FREE CONVERSATION</span>
             </button>
         </div>
 
@@ -1436,6 +1434,125 @@
             setTimeout(() => audio.playTone(659.25, 'triangle', 0.15), 120);
             setTimeout(() => audio.playTone(783.99, 'triangle', 0.2), 240);
             setTimeout(() => audio.playTone(1046.50, 'triangle', 0.35), 360);
+        }
+    };
+
+    // ====== HIGH-FIDELITY NEURAL AUDIO TTS ENGINE (EUSKERA & NATIVE AUDIO ENGINE) ======
+    const ttsEngine = {
+        currentAudio: null,
+
+        hasNativeBrowserVoice: (langCode) => {
+            if (langCode === 'eu') {
+                const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+                return voices.some(v => (v.lang.startsWith('eu') || v.lang.replace('_', '-').startsWith('eu')) && !v.name.toLowerCase().includes('english') && !v.name.toLowerCase().includes('david') && !v.name.toLowerCase().includes('zira') && !v.name.toLowerCase().includes('microsoft'));
+            }
+            return true;
+        },
+
+        speak: (text, langCode, rate = 0.8, onStart, onEnd, onError) => {
+            ttsEngine.stop();
+
+            // For Basque (eu) or languages without a genuine native browser voice, use high-fidelity neural Google TTS
+            if (langCode === 'eu' || !ttsEngine.hasNativeBrowserVoice(langCode)) {
+                try {
+                    const cleanText = text.trim().replace(/[\r\n]+/g, ' ');
+                    const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=${langCode}&client=tw-ob`;
+                    const audioEl = new Audio();
+                    ttsEngine.currentAudio = audioEl;
+                    audioEl.src = ttsUrl;
+                    audioEl.playbackRate = Math.max(0.5, Math.min(1.5, rate || 0.8));
+
+                    audioEl.onplay = () => {
+                        if (onStart) onStart();
+                    };
+
+                    audioEl.onended = () => {
+                        ttsEngine.currentAudio = null;
+                        if (onEnd) onEnd();
+                    };
+
+                    audioEl.onerror = (err) => {
+                        console.warn("Neural TTS audio failed, using fallback:", err);
+                        ttsEngine.currentAudio = null;
+                        ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+                    };
+
+                    const playPromise = audioEl.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.warn("Audio play blocked or network error:", e);
+                            ttsEngine.currentAudio = null;
+                            ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+                        });
+                    }
+                    return;
+                } catch(e) {
+                    console.warn("Audio element initialization failed:", e);
+                }
+            }
+
+            ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+        },
+
+        fallbackWebSpeech: (text, langCode, rate, onStart, onEnd, onError) => {
+            if (!window.speechSynthesis) {
+                if (onError) onError();
+                return;
+            }
+            const langInfo = LANGUAGES[langCode] || LANGUAGES.en;
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = langInfo.speechLang || 'es-ES';
+            u.rate = rate || 0.75;
+
+            const applyVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+                if (voices && voices.length > 0) {
+                    let f = voices.find(v => v.lang.startsWith(langCode) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
+                    if (!f) f = voices.find(v => v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode));
+                    // If language is Basque (eu) and fallback is used, Spanish voice phonetics are infinitely better than English!
+                    if (!f && langCode === 'eu') {
+                        f = voices.find(v => v.lang.startsWith('es') && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('helena') || v.name.toLowerCase().includes('monica') || v.name.toLowerCase().includes('laura') || v.name.toLowerCase().includes('google español')));
+                        if (!f) f = voices.find(v => v.lang.startsWith('es'));
+                    }
+                    if (f) u.voice = f;
+                }
+
+                u.onstart = () => {
+                    if (onStart) onStart();
+                };
+                u.onend = () => {
+                    if (onEnd) onEnd();
+                };
+                u.onerror = (e) => {
+                    if (onError) onError(e);
+                };
+
+                window.speechSynthesis.speak(u);
+            };
+
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.onvoiceschanged = null;
+                    applyVoice();
+                };
+                setTimeout(applyVoice, 100);
+            } else {
+                applyVoice();
+            }
+        },
+
+        stop: () => {
+            if (ttsEngine.currentAudio) {
+                try {
+                    ttsEngine.currentAudio.pause();
+                    ttsEngine.currentAudio.currentTime = 0;
+                    ttsEngine.currentAudio.src = '';
+                } catch(e) {}
+                ttsEngine.currentAudio = null;
+            }
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
         }
     };
 
@@ -3359,68 +3476,46 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         speakText: (text, rateOverride) => {
             if (!text) return;
             game.stopMic();
-            window.speechSynthesis.cancel();
+            ttsEngine.stop();
             game.lastText = text;
-            const u = new SpeechSynthesisUtterance(text);
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
-            // Rate from slider or override
             const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.7);
-            u.rate = rateOverride !== undefined ? rateOverride : sliderRate;
-            u.lang = langInfo.speechLang;
+            const rate = rateOverride !== undefined ? rateOverride : sliderRate;
 
-            const applyVoiceAndSpeak = () => {
-                const voices = window.speechSynthesis.getVoices();
-                if (voices && voices.length > 0) {
-                    let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
-                    if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code) || v.lang.replace('_', '-').startsWith(langInfo.code));
-                    if (f) u.voice = f;
-                }
-
-                u.onstart = () => {
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
-                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
-                };
-
-                u.onend = () => {
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
-
-                    // Auto mic for game view
-                    if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
-                        setTimeout(() => {
-                            if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
-                                game.toggleMic(); scrollToMicArea('mic-btn');
-                            }
-                        }, 500);
-                    }
-                    // Auto mic for conversation
-                    if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                        setTimeout(() => {
-                            if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                                conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
-                            }
-                        }, 1000);
-                    }
-                };
-
-                u.onerror = (e) => {
-                    console.warn("Speech error:", e);
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                };
-
-                window.speechSynthesis.speak(u);
+            const onStart = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
+                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
             };
 
-            if (window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = () => {
-                    window.speechSynthesis.onvoiceschanged = null;
-                    applyVoiceAndSpeak();
-                };
-                setTimeout(applyVoiceAndSpeak, 100);
-            } else {
-                applyVoiceAndSpeak();
-            }
+            const onEnd = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
+
+                // Auto mic for game view
+                if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
+                            game.toggleMic(); scrollToMicArea('mic-btn');
+                        }
+                    }, 500);
+                }
+                // Auto mic for conversation
+                if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                            conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
+                        }
+                    }, 1000);
+                }
+            };
+
+            const onError = (e) => {
+                console.warn("Speech error:", e);
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+            };
+
+            ttsEngine.speak(text, langInfo.code, rate, onStart, onEnd, onError);
         },
 
         toggleMic: () => {
@@ -4251,7 +4346,7 @@ Return ONLY a valid JSON object:
             clearTimeout(translator.restartTimer);
             translator.stopRecognitionOnly();
             translator.isSpeaking = false;
-            window.speechSynthesis.cancel();
+            ttsEngine.stop();
         },
 
         handleSpokenInput: async (text, mode) => {
@@ -4308,52 +4403,48 @@ CRITICAL: Return ONLY a JSON object:
         speakForeign: (text, onEndCallback) => {
             translator.stopRecognitionOnly();
             translator.isSpeaking = true;
-            window.speechSynthesis.cancel();
+            ttsEngine.stop();
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = langInfo.speechLang;
-            u.rate = translator.speed || 0.85;
+            const rate = translator.speed || 0.85;
 
-            const voices = window.speechSynthesis.getVoices();
-            let voice = voices.find(v => v.lang === langInfo.speechLang || v.lang.startsWith(currentLang));
-            if (voice) u.voice = voice;
-
-            u.onend = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-            u.onerror = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-
-            window.speechSynthesis.speak(u);
+            ttsEngine.speak(
+                text,
+                langInfo.code,
+                rate,
+                null,
+                () => {
+                    translator.isSpeaking = false;
+                    if (onEndCallback) onEndCallback();
+                },
+                () => {
+                    translator.isSpeaking = false;
+                    if (onEndCallback) onEndCallback();
+                }
+            );
         },
 
         speakSpanish: (text, onEndCallback) => {
             translator.stopRecognitionOnly();
             translator.isSpeaking = true;
-            window.speechSynthesis.cancel();
+            ttsEngine.stop();
 
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'es-ES';
-            u.rate = translator.speed || 0.85;
+            const rate = translator.speed || 0.85;
 
-            const voices = window.speechSynthesis.getVoices();
-            let esVoice = voices.find(v => v.lang.startsWith('es'));
-            if (esVoice) u.voice = esVoice;
-
-            u.onend = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-            u.onerror = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-
-            window.speechSynthesis.speak(u);
+            ttsEngine.speak(
+                text,
+                'es',
+                rate,
+                null,
+                () => {
+                    translator.isSpeaking = false;
+                    if (onEndCallback) onEndCallback();
+                },
+                () => {
+                    translator.isSpeaking = false;
+                    if (onEndCallback) onEndCallback();
+                }
+            );
         }
     };
 
