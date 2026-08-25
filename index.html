@@ -63,9 +63,9 @@
             max-width: 700px;
             width: 100%;
             margin: 0 auto;
-            padding: 16px 14px 20px;
+            padding: 10px 14px 14px;
             text-align: center;
-            flex: 1 0 auto;
+            flex: 0 1 auto;
             box-sizing: border-box;
         }
 
@@ -287,66 +287,66 @@
     </div>
 
     <!-- ====== VIEW: DASHBOARD ====== -->
-    <div id="view-dashboard" class="container hidden" style="padding: 15px 16px 20px; max-width: 550px;">
+    <div id="view-dashboard" class="container hidden" style="padding: 6px 14px 6px; max-width: 550px;">
         <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin: 4px auto 14px; flex-wrap: nowrap; max-width: 100%;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 75px; height: 75px; min-width: 75px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 75px; height: 75px; min-width: 75px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
-            <button onclick="app.startDirectHandsFree()" class="tech" style="width: 75px; height: 75px; min-width: 75px; padding: 5px 3px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 16px; box-shadow: 0 0 18px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
-                <span style="font-size: 1.3rem; line-height: 1;">🎙️</span>
-                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.65rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 70px;">TRANSLATOR</span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px auto 8px; flex-wrap: nowrap; max-width: 100%;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 64px; height: 64px; min-width: 64px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 64px; height: 64px; min-width: 64px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
+            <button onclick="app.startDirectHandsFree()" class="tech" style="width: 64px; height: 64px; min-width: 64px; padding: 4px 2px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 14px; box-shadow: 0 0 16px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
+                <span style="font-size: 1.2rem; line-height: 1;">🎙️</span>
+                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.6rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 60px;">TRANSLATOR</span>
             </button>
         </div>
 
         <!-- LIST SELECTOR (CLEAN, HIGHLY LEGIBLE, SOLID DROPDOWN ARROW) -->
-        <div style="position: relative; margin-bottom: 12px;">
-            <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="width: 100%; background: #0a0a12; color: #FFFFFF; border: 1.5px solid var(--neon-cyan); padding: 12px 42px 12px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.95rem; font-weight: 700; border-radius: 8px; cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; box-shadow: var(--cyber-glow); outline: none; letter-spacing: 0.3px;">
+        <div style="position: relative; margin-bottom: 8px;">
+            <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="width: 100%; background: #0a0a12; color: #FFFFFF; border: 1.5px solid var(--neon-cyan); padding: 10px 38px 10px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.92rem; font-weight: 700; border-radius: 8px; cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; box-shadow: var(--cyber-glow); outline: none; letter-spacing: 0.3px;">
                 <option value="">Select a list...</option>
             </select>
-            <div style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--neon-cyan); font-size: 0.9rem; font-weight: 900; line-height: 1;">
+            <div style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--neon-cyan); font-size: 0.85rem; font-weight: 900; line-height: 1;">
                 ▼
             </div>
         </div>
 
         <!-- MAIN ACTION BUTTONS -->
-        <button onclick="session.start()" class="success" style="width: 100%; padding: 18px; font-size: 1.2rem; margin-bottom: 10px; font-weight: bold; letter-spacing: 2px;">🚀 <span id="lbl-start-btn">START</span></button>
-        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 15px; font-size: 1rem; margin-bottom: 14px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
+        <button onclick="session.start()" class="success" style="width: 100%; padding: 13px 16px; font-size: 1.12rem; margin-bottom: 7px; font-weight: bold; letter-spacing: 1.5px;">🚀 <span id="lbl-start-btn">START</span></button>
+        <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 11px 16px; font-size: 0.92rem; margin-bottom: 8px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
 
         <!-- SECONDARY / CONFIGURATION AREA -->
-        <div style="margin-top: 14px;">
+        <div style="margin-top: 6px;">
             <!-- COLLAPSIBLE ACADEMY LEVEL & VOICE SPEED & UTILITIES -->
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(0,243,255,0.12);">
-                <div onclick="app.toggleLevelPicker()" style="padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
-                    <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.88rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF; font-weight: 800;"></span></span>
-                    <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.85rem; font-weight: 900; transition: transform 0.3s;">▼</span>
+            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(0,243,255,0.12);">
+                <div onclick="app.toggleLevelPicker()" style="padding: 10px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
+                    <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.84rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF; font-weight: 800;"></span></span>
+                    <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.82rem; font-weight: 900; transition: transform 0.3s;">▼</span>
                 </div>
-                <div id="level-picker-body" class="hidden" style="padding: 16px; border-top: 1px solid rgba(0,243,255,0.25); background: rgba(0,0,0,0.65);">
-                    <div style="margin-bottom: 14px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label style="font-family: 'Orbitron'; font-size: 0.75rem; color: var(--neon-cyan);">🎓 CEFR LEVEL PROGRESS (50 PTS TO UNLOCK)</label>
+                <div id="level-picker-body" class="hidden" style="padding: 14px; border-top: 1px solid rgba(0,243,255,0.25); background: rgba(0,0,0,0.65);">
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-family: 'Orbitron'; font-size: 0.72rem; color: var(--neon-cyan);">🎓 CEFR LEVEL PROGRESS (50 PTS TO UNLOCK)</label>
                         </div>
                         <input type="range" id="academy-level-slider" min="0" max="4" value="0" style="width: 100%; cursor: pointer;" onchange="app.saveAcademyLevel(this.value)" oninput="app.updateAcademyLevelDisplay(this.value)">
-                        <div id="level-badges-container" style="display:flex; justify-content:space-between; gap: 6px; margin-top: 10px;"></div>
+                        <div id="level-badges-container" style="display:flex; justify-content:space-between; gap: 6px; margin-top: 8px;"></div>
                     </div>
 
                     <!-- SPEED SLIDER INSIDE LEVEL DROPDOWN -->
-                    <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 12px; margin-top: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label style="font-family: 'Orbitron'; font-size: 0.75rem; color: var(--neon-cyan);">🔊 VOICE SPEED</label>
-                            <span class="speed-value" id="speed-value-label" style="color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.85rem; font-weight: bold;">0.70x</span>
+                    <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 10px; margin-top: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-family: 'Orbitron'; font-size: 0.72rem; color: var(--neon-cyan);">🔊 VOICE SPEED</label>
+                            <span class="speed-value" id="speed-value-label" style="color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 0.8rem; font-weight: bold;">0.70x</span>
                         </div>
                         <input type="range" id="speech-speed-slider" min="0.3" max="1.2" step="0.05" value="0.7" style="width: 100%; cursor: pointer;" oninput="app.updateSpeedLabel(this.value)">
                     </div>
 
                     <!-- UTILITY ACTIONS (LEVEL TEST, BACKUP, CHANGE KEY) INSIDE LEVEL DROPDOWN -->
-                    <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 12px; margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="conversation.startLevelAssessment()" class="tech" style="width: auto; padding: 7px 14px; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--cyber-warn); color: var(--cyber-warn); background: rgba(255,184,0,0.08); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                    <div style="border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 10px; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <button onclick="conversation.startLevelAssessment()" class="tech" style="width: auto; padding: 6px 12px; font-size: 0.72rem; font-weight: bold; border: 1px solid var(--cyber-warn); color: var(--cyber-warn); background: rgba(255,184,0,0.08); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
                             <span id="lbl-test-btn">🎯 Prueba Nivel</span>
                         </button>
-                        <button onclick="app.openBackupModal()" class="tech" style="width: auto; padding: 7px 14px; font-size: 0.75rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.06); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                        <button onclick="app.openBackupModal()" class="tech" style="width: auto; padding: 6px 12px; font-size: 0.72rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.06); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
                             <span id="lbl-backup-btn">💾 Copia Seguridad</span>
                         </button>
-                        <button onclick="app.logout()" class="tech" style="width: auto; padding: 7px 14px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); color: #888; background: transparent; border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
+                        <button onclick="app.logout()" class="tech" style="width: auto; padding: 6px 12px; font-size: 0.72rem; border: 1px solid rgba(255,255,255,0.25); color: #888; background: transparent; border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
                             <span id="lbl-key-btn">🔑 Cambio Key</span>
                         </button>
                     </div>
@@ -771,20 +771,20 @@
     </div>
 
     <!-- ====== GLOBAL FOOTER ====== -->
-    <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 18px auto 0 auto; padding: 14px 12px 20px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.8rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
+    <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 8px auto 0 auto; padding: 8px 12px 14px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.78rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
         <!-- PWA INSTALL BUTTON -->
-        <div id="install-btn-container" style="margin-bottom: 12px;">
-            <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 18px; font-size: 0.8rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
+        <div id="install-btn-container" style="margin-bottom: 8px;">
+            <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 16px; font-size: 0.78rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
                 📲 Instalar Jetbulary
             </button>
         </div>
 
-        <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 8px;">
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
             <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
             <span style="color: #444;">|</span>
             <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
         </div>
-        <p style="color: #666; font-size: 0.72rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 5px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.2</span></p>
+        <p style="color: #666; font-size: 0.7rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 5px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.2</span></p>
     </footer>
 
 <script>
