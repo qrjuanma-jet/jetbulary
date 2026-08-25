@@ -241,9 +241,9 @@
     <!-- ====== VIEW: API KEY ====== -->
     <div id="view-apikey" class="container" style="max-width: 550px;">
         <!-- TOP HEADER: LOGO + TEACHER (NO TRANSLATOR UNTIL KEY IS ACTIVE) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 4px auto 14px;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 75px; height: 75px; min-width: 75px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-init" onclick="app.openTeacherModal()" style="width: 80px; height: 80px; margin: 0; cursor: pointer;" title="Tap to change teacher / language">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 4px auto 14px;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 85px; height: 85px; min-width: 85px; border-radius: 18px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-init" onclick="app.openTeacherModal()" style="width: 90px; height: 90px; margin: 0; cursor: pointer;" title="Tap to change teacher / language">
                 <img src="gif_en.gif" alt="English Teacher" class="avatar-img face-img" onerror="this.src='icon.png'">
             </div>
         </div>
@@ -289,12 +289,12 @@
     <!-- ====== VIEW: DASHBOARD ====== -->
     <div id="view-dashboard" class="container hidden" style="padding: 6px 14px 6px; max-width: 550px;">
         <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px auto 8px; flex-wrap: nowrap; max-width: 100%;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 64px; height: 64px; min-width: 64px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 64px; height: 64px; min-width: 64px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
-            <button onclick="app.startDirectHandsFree()" class="tech" style="width: 64px; height: 64px; min-width: 64px; padding: 4px 2px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 14px; box-shadow: 0 0 16px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
-                <span style="font-size: 1.2rem; line-height: 1;">🎙️</span>
-                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.6rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 60px;">TRANSLATOR</span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 4px auto 10px; flex-wrap: nowrap; max-width: 100%;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 82px; height: 82px; min-width: 82px; border-radius: 18px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 82px; height: 82px; min-width: 82px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
+            <button onclick="app.startDirectHandsFree()" class="tech" style="width: 82px; height: 82px; min-width: 82px; padding: 5px 3px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 18px; box-shadow: 0 0 18px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
+                <span style="font-size: 1.35rem; line-height: 1;">🎙️</span>
+                <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.65rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 75px;">TRANSLATOR</span>
             </button>
         </div>
 
@@ -356,11 +356,11 @@
     </div>
 
     <!-- ====== VIEW: GAME (VOCABULARY TRAINING) ====== -->
-    <div id="view-game" class="container hidden" onclick="game.onBackgroundClick(event)" style="position: relative; max-width: 550px; padding: 12px 14px 16px;">
+    <div id="view-game" class="container hidden" onclick="game.onBackgroundClick(event)" style="position: relative; max-width: 550px; padding: 10px 14px 16px;">
         <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 2px auto 8px;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 65px; height: 65px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-game" onclick="app.openTeacherModal()" style="width: 72px; height: 72px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin: 4px auto 10px;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 80px; height: 80px; min-width: 80px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-game" onclick="app.openTeacherModal()" style="width: 84px; height: 84px; min-width: 84px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
         </div>
 
         <!-- Session words overview (Cards with English, IPA, and Spanish) -->
@@ -403,11 +403,11 @@
     </div>
 
     <!-- ====== VIEW: CONVERSATION ====== -->
-    <div id="view-conversation" class="container hidden" onclick="conversation.onBackgroundClick(event)" style="position: relative; max-width: 550px; padding: 12px 14px 16px;">
+    <div id="view-conversation" class="container hidden" onclick="conversation.onBackgroundClick(event)" style="position: relative; max-width: 550px; padding: 10px 14px 16px;">
         <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 2px auto 8px;">
-            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 65px; height: 65px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
-            <div class="avatar-container" id="avatar-convo" onclick="app.openTeacherModal()" style="width: 72px; height: 72px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 18px; margin: 4px auto 10px;">
+            <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 80px; height: 80px; min-width: 80px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
+            <div class="avatar-container" id="avatar-convo" onclick="app.openTeacherModal()" style="width: 84px; height: 84px; min-width: 84px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
         </div>
 
         <span id="conversation-topic-title" class="hidden"></span>
@@ -433,8 +433,8 @@
         <!-- TOP HEADER: LOGO + TEACHER + BACK -->
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 55px; height: 55px; border-radius: 12px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
-                <div class="avatar-container" id="avatar-vocab" onclick="app.openTeacherModal()" style="width: 62px; height: 62px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+                <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 65px; height: 65px; min-width: 65px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
+                <div class="avatar-container" id="avatar-vocab" onclick="app.openTeacherModal()" style="width: 68px; height: 68px; min-width: 68px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
                 <h2 style="margin: 0; font-size: 1.15rem; color: var(--neon-cyan);">📚 Vocabulary</h2>
             </div>
             <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem;"><span class="lbl-back-btn">⬅ Back</span></button>
@@ -1587,6 +1587,42 @@
 
         speak: (text, langCode, rate = 0.8, onStart, onEnd, onError) => {
             ttsEngine.stop();
+            if (!text || !text.trim()) {
+                if (onEnd) onEnd();
+                return;
+            }
+
+            let hasEnded = false;
+            let watchdog = null;
+
+            const safeOnStart = () => {
+                if (onStart) onStart();
+            };
+
+            const safeOnEnd = () => {
+                if (hasEnded) return;
+                hasEnded = true;
+                if (watchdog) clearTimeout(watchdog);
+                if (onEnd) onEnd();
+            };
+
+            const safeOnError = (err) => {
+                if (hasEnded) return;
+                hasEnded = true;
+                if (watchdog) clearTimeout(watchdog);
+                if (onError) onError(err);
+                else safeOnEnd();
+            };
+
+            // Watchdog timer ensures the sequential loop NEVER gets stuck
+            const estimatedSec = Math.max(3, Math.min(8, Math.ceil(text.length / 5)));
+            watchdog = setTimeout(() => {
+                if (!hasEnded) {
+                    console.warn("TTS Watchdog fired for:", text);
+                    ttsEngine.stop();
+                    safeOnEnd();
+                }
+            }, estimatedSec * 1000);
 
             // For Basque (eu) or languages without a genuine native browser voice, use high-fidelity neural Google TTS
             if (langCode === 'eu' || !ttsEngine.hasNativeBrowserVoice(langCode)) {
@@ -1598,19 +1634,15 @@
                     audioEl.src = ttsUrl;
                     audioEl.playbackRate = Math.max(0.5, Math.min(1.5, rate || 0.8));
 
-                    audioEl.onplay = () => {
-                        if (onStart) onStart();
-                    };
-
+                    audioEl.onplay = () => safeOnStart();
                     audioEl.onended = () => {
                         ttsEngine.currentAudio = null;
-                        if (onEnd) onEnd();
+                        safeOnEnd();
                     };
-
                     audioEl.onerror = (err) => {
                         console.warn("Neural TTS audio failed, using fallback:", err);
                         ttsEngine.currentAudio = null;
-                        ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+                        ttsEngine.fallbackWebSpeech(text, langCode, rate, safeOnStart, safeOnEnd, safeOnError);
                     };
 
                     const playPromise = audioEl.play();
@@ -1618,7 +1650,7 @@
                         playPromise.catch(e => {
                             console.warn("Audio play blocked or network error:", e);
                             ttsEngine.currentAudio = null;
-                            ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+                            ttsEngine.fallbackWebSpeech(text, langCode, rate, safeOnStart, safeOnEnd, safeOnError);
                         });
                     }
                     return;
@@ -1627,13 +1659,16 @@
                 }
             }
 
-            ttsEngine.fallbackWebSpeech(text, langCode, rate, onStart, onEnd, onError);
+            ttsEngine.fallbackWebSpeech(text, langCode, rate, safeOnStart, safeOnEnd, safeOnError);
         },
 
         fallbackWebSpeech: (text, langCode, rate, onStart, onEnd, onError) => {
             if (!window.speechSynthesis) {
                 if (onError) onError();
                 return;
+            }
+            if (window.speechSynthesis.paused) {
+                try { window.speechSynthesis.resume(); } catch(e) {}
             }
             const langInfo = LANGUAGES[langCode] || LANGUAGES.en;
             const u = new SpeechSynthesisUtterance(text);
@@ -1645,7 +1680,6 @@
                 if (voices && voices.length > 0) {
                     let f = voices.find(v => v.lang.startsWith(langCode) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
                     if (!f) f = voices.find(v => v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode));
-                    // If language is Basque (eu) and fallback is used, Spanish voice phonetics are infinitely better than English!
                     if (!f && langCode === 'eu') {
                         f = voices.find(v => v.lang.startsWith('es') && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('helena') || v.name.toLowerCase().includes('monica') || v.name.toLowerCase().includes('laura') || v.name.toLowerCase().includes('google español')));
                         if (!f) f = voices.find(v => v.lang.startsWith('es'));
@@ -1653,17 +1687,15 @@
                     if (f) u.voice = f;
                 }
 
-                u.onstart = () => {
-                    if (onStart) onStart();
-                };
-                u.onend = () => {
-                    if (onEnd) onEnd();
-                };
-                u.onerror = (e) => {
-                    if (onError) onError(e);
-                };
+                u.onstart = () => { if (onStart) onStart(); };
+                u.onend = () => { if (onEnd) onEnd(); };
+                u.onerror = (e) => { if (onError) onError(e); };
 
-                window.speechSynthesis.speak(u);
+                try {
+                    window.speechSynthesis.speak(u);
+                } catch(e) {
+                    if (onError) onError(e);
+                }
             };
 
             if (window.speechSynthesis.getVoices().length === 0) {
@@ -1687,7 +1719,9 @@
                 ttsEngine.currentAudio = null;
             }
             if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
+                try {
+                    window.speechSynthesis.cancel();
+                } catch(e) {}
             }
         }
     };
@@ -1982,13 +2016,12 @@
                 const wId = game.data[game.index].id;
                 let prog = db.progress.find(p => p.word_id === wId);
                 if (!prog) { prog = { word_id: wId, attempts: 1, successes: 1 }; db.progress.push(prog); }
+                else { prog.attempts = (prog.attempts || 0) + 1; prog.successes = (prog.successes || 0) + 1; }
                 app.saveDB();
             }
 
             if (game.index + 1 < game.data.length) {
                 game.index++;
-                const nextCard = document.getElementById(`session-card-${game.index}`);
-                if (nextCard) nextCard.classList.add('active');
                 game.loadCard();
             } else {
                 session.markCurrentWordsAsLearned();
@@ -1996,6 +2029,17 @@
                 if (fb) {
                     fb.innerHTML = `🎉 <strong>¡4 palabras completadas!</strong> Pulsa <strong>LESSON</strong> para practicar el texto y ganar puntos.`;
                     fb.className = "feedback correct";
+                }
+                const promptEl = document.getElementById('prompt-pronounce');
+                if (promptEl) promptEl.innerText = '🚀 SESIÓN DE VOCABULARIO COMPLETADA';
+                document.getElementById('mic-btn')?.classList.add('hidden');
+                document.getElementById('fail-options')?.classList.add('hidden');
+                document.getElementById('ai-advice')?.classList.add('hidden');
+
+                // Animate LESSON button to guide user
+                const lessonBtn = document.querySelector('#view-game button[onclick*="startLesson"]');
+                if (lessonBtn) {
+                    lessonBtn.style.boxShadow = '0 0 20px rgba(0, 255, 149, 0.7)';
                 }
             }
         }
@@ -3634,21 +3678,40 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const item = game.data[game.index];
             game.currentRetries = 0;
 
+            // Highlight the active card in the session overview grid
+            document.querySelectorAll('.session-word-card').forEach((card, idx) => {
+                if (idx === game.index) {
+                    card.classList.add('active');
+                    card.classList.remove('done');
+                } else if (idx < game.index) {
+                    card.classList.add('done');
+                    card.classList.remove('active');
+                } else {
+                    card.classList.remove('active', 'done');
+                }
+            });
+
             const cleanWord = item.english.includes('(') ? item.english.split('(')[0].trim() : item.english;
             const displayEl = document.getElementById('word-display');
             if (displayEl) displayEl.innerHTML = `${cleanWord} <span style="color: var(--neon-pink); font-size: 0.6em;">(${item.spanish})</span>`;
             const ipaEl = document.getElementById('word-ipa');
             if (ipaEl) ipaEl.innerText = item.ipa || '';
 
-            document.getElementById('prompt-pronounce').innerText = 'PRACTICE: SAY THE WORD';
-            document.getElementById('feedback-msg').innerText = "";
-            document.getElementById('ai-advice').classList.add('hidden');
+            const promptEl = document.getElementById('prompt-pronounce');
+            if (promptEl) promptEl.innerText = '🔊 ESCUCHA A LA PROFESORA...';
+            const fbEl = document.getElementById('feedback-msg');
+            if (fbEl) { fbEl.innerText = ""; fbEl.className = "feedback"; }
+            document.getElementById('ai-advice')?.classList.add('hidden');
             document.getElementById('spoken-text').innerText = "...";
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('mic-btn').classList.remove('hidden');
-            document.getElementById('fail-options').classList.add('hidden');
+            document.getElementById('next-btn')?.classList.add('hidden');
+            document.getElementById('mic-btn')?.classList.remove('hidden');
+            document.getElementById('fail-options')?.classList.add('hidden');
 
-            setTimeout(() => game.speak(), 500);
+            setTimeout(() => {
+                if (!document.getElementById('view-game').classList.contains('hidden')) {
+                    game.speak();
+                }
+            }, 400);
         },
 
         speak: () => {
@@ -3694,27 +3757,38 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const onStart = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
+                const promptEl = document.getElementById('prompt-pronounce');
+                if (promptEl && !document.getElementById('view-game').classList.contains('hidden')) {
+                    promptEl.innerText = '🔊 ESCUCHA A LA PROFESORA...';
+                }
             };
 
             const onEnd = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
 
-                // Auto mic for game view
+                const promptEl = document.getElementById('prompt-pronounce');
+                if (promptEl && !document.getElementById('view-game').classList.contains('hidden')) {
+                    promptEl.innerText = '🎙️ TU TURNO: PRONUNCIA LA PALABRA';
+                }
+
+                // Auto mic for game view: automatic turn pass to student
                 if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
                     setTimeout(() => {
-                        if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
-                            game.toggleMic(); scrollToMicArea('mic-btn');
+                        if (!stt.isRecording && !document.getElementById('view-game').classList.contains('hidden')) {
+                            game.toggleMic();
+                            scrollToMicArea('mic-btn');
                         }
-                    }, 500);
+                    }, 400);
                 }
                 // Auto mic for conversation
                 if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
                     setTimeout(() => {
-                        if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                            conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
+                        if (!stt.isRecording && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                            conversation.toggleMic();
+                            scrollToMicArea('mic-btn-convo');
                         }
-                    }, 1000);
+                    }, 800);
                 }
             };
 
@@ -3728,7 +3802,6 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
         toggleMic: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            const micBtn = document.getElementById('mic-btn');
             if (stt.isRecording) {
                 stt.stop();
                 return;
@@ -3754,7 +3827,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         },
 
         check: (transcript) => {
-            document.getElementById('spoken-text').innerText = `You said: "${transcript}"`;
+            document.getElementById('spoken-text').innerText = `Has dicho: "${transcript}"`;
             let target = game.data[game.index].english.toLowerCase();
             if (target.includes('(')) target = target.split('(')[0].trim();
             let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
@@ -3788,30 +3861,9 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
             const fb = document.getElementById('feedback-msg');
             if (fb) {
-                fb.innerText = "⏸️ Pausado. Pulsa el micrófono o una palabra para reanudar.";
+                fb.innerText = "⏸️ Pausado. Pulsa el micrófono o una palabra para continuar.";
                 fb.className = "feedback";
             }
-        },
-
-        check: (transcript) => {
-            document.getElementById('spoken-text').innerText = `You said: "${transcript}"`;
-            let target = game.data[game.index].english.toLowerCase();
-            if (target.includes('(')) target = target.split('(')[0].trim();
-            let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
-            const correct = game.isCloseMatch(target, clean);
-            const wId = game.data[game.index].id;
-            let prog = db.progress.find(p => p.word_id === wId);
-            if (!prog) { prog = { word_id: wId, attempts: 0, successes: 0 }; db.progress.push(prog); }
-            prog.attempts++;
-            if (correct) prog.successes++;
-            app.saveDB();
-            game.stopMic();
-            if (correct) game.handleCorrect(); else game.handleIncorrect(target, clean);
-        },
-
-        stopMic: () => {
-            stt.stop();
-            game.stopTimer();
         },
 
         handleCorrect: () => {
@@ -3820,17 +3872,21 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             app.addLevelPoints(db.academy_level, pointsEarned);
 
             const fb = document.getElementById('feedback-msg');
-            fb.innerHTML = `Correct! 🎉 <span style="color:var(--cyber-ok); font-size:0.9rem;">(+${pointsEarned} pts)</span>`;
-            fb.className = "feedback correct";
+            if (fb) {
+                fb.innerHTML = `¡Correcto! 🎉 <span style="color:var(--cyber-ok); font-size:0.9rem;">(+${pointsEarned} pts)</span>`;
+                fb.className = "feedback correct";
+            }
             audio.success();
-            document.getElementById('mic-btn').classList.add('hidden');
-            document.getElementById('fail-options').classList.add('hidden');
-            document.getElementById('ai-advice').classList.add('hidden');
+            document.getElementById('mic-btn')?.classList.add('hidden');
+            document.getElementById('fail-options')?.classList.add('hidden');
+            document.getElementById('ai-advice')?.classList.add('hidden');
+            const promptEl = document.getElementById('prompt-pronounce');
+            if (promptEl) promptEl.innerText = '✓ ¡MUY BIEN!';
 
             if (game.isSessionMode) {
-                setTimeout(() => session.onWordComplete(), 1400);
+                setTimeout(() => session.onWordComplete(), 1100);
             } else {
-                setTimeout(game.next, 1400);
+                setTimeout(() => game.next(), 1100);
             }
         },
 
@@ -3840,39 +3896,47 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
             const fb = document.getElementById('feedback-msg');
             const failOptions = document.getElementById('fail-options');
+            const promptEl = document.getElementById('prompt-pronounce');
 
             if (game.currentRetries >= 3) {
                 // Penalización tras 3 fallos
                 app.addLevelPoints(db.academy_level, -1);
-                fb.innerHTML = `❌ 3 fallos. <span style="color:var(--cyber-danger); font-weight:bold;">(-1 pt penalización)</span>. Escucha atentamente:`;
-                fb.className = "feedback incorrect";
-                
+                if (fb) {
+                    fb.innerHTML = `❌ 3 fallos <span style="color:var(--cyber-danger); font-weight:bold;">(-1 pt)</span>. Escucha atentamente:`;
+                    fb.className = "feedback incorrect";
+                }
+                if (promptEl) promptEl.innerText = '👂 ESCUCHA LA PRONUNCIACIÓN CORRECTA';
+
                 // La profesora pronuncia muy lento para enseñar
-                setTimeout(() => game.speakWordSlow(), 500);
+                setTimeout(() => game.speakWordSlow(), 400);
 
                 if (failOptions) {
                     failOptions.innerHTML = `
-                        <button onclick="game.retryRecovery()" class="warning" style="width:100%; padding:14px; font-weight:bold;">🔄 Repetir (recuperar punto perdido)</button>
+                        <button onclick="game.retryRecovery()" class="warning" style="width:100%; padding:10px; font-weight:bold;">🔄 Repetir para recuperar punto</button>
                     `;
                     failOptions.classList.remove('hidden');
                 }
 
-                // Avance automático tras 5 segundos si el alumno decide no repetir
+                // Avance automático a la siguiente palabra tras 4.5 segundos
                 setTimeout(() => {
                     if (game.currentRetries >= 3 && !document.getElementById('view-game').classList.contains('hidden') && !stt.isRecording) {
                         game.next();
                     }
-                }, 5000);
+                }, 4500);
 
             } else {
                 // Fallo 1 o 2
-                fb.innerText = `Intento ${game.currentRetries}/3. Vuelve a intentarlo.`;
-                fb.className = "feedback incorrect";
+                if (fb) {
+                    fb.innerText = `Intento ${game.currentRetries}/3. Vuelve a intentarlo.`;
+                    fb.className = "feedback incorrect";
+                }
+                if (promptEl) promptEl.innerText = '🎙️ VUELVE A PRONUNCIAR';
+
                 if (failOptions) {
                     failOptions.innerHTML = `
-                        <button onclick="game.retry()" class="warning">🔄 Try Again</button>
-                        <button onclick="game.speakWordSlow()" class="secondary">🐢 Slow Voice</button>
-                        <button onclick="game.next()" class="secondary">⏭️ Skip</button>
+                        <button onclick="game.retry()" class="warning" style="padding: 8px 12px; font-size: 0.8rem;">🔄 Reintentar</button>
+                        <button onclick="game.speakWordSlow()" class="secondary" style="padding: 8px 12px; font-size: 0.8rem;">🐢 Lento</button>
+                        <button onclick="game.next()" class="secondary" style="padding: 8px 12px; font-size: 0.8rem;">⏭️ Saltar</button>
                     `;
                     failOptions.classList.remove('hidden');
                 }
@@ -3880,10 +3944,10 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 if (game.currentRetries === 1 && clean.length > 0) game.getSpecificAdvice(target, clean);
                 if (game.autoMic) {
                     setTimeout(() => {
-                        if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden') && game.currentRetries < 3) {
+                        if (!stt.isRecording && !document.getElementById('view-game').classList.contains('hidden') && game.currentRetries < 3) {
                             game.retry();
                         }
-                    }, 3000);
+                    }, 2200);
                 }
             }
         },
@@ -3899,14 +3963,18 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         getSpecificAdvice: async (targetWord, spokenWord) => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const container = document.getElementById('ai-advice');
-            container.innerHTML = "🤔 Analyzing your pronunciation..."; container.classList.remove('hidden');
+            if (!container) return;
+            container.innerHTML = "🤔 Analizando pronunciación...";
+            container.classList.remove('hidden');
             const prompt = `I'm a ${langInfo.aiPromptLang} student. I tried to say "${targetWord}" in ${langInfo.name} but I said "${spokenWord}". Give me a very brief, practical tip (1-2 sentences) to correct my pronunciation. Be direct and friendly. Answer in ${langInfo.name}.`;
             await app.callAI_Text(prompt, null, (text) => { container.innerHTML = `<strong>💡 Tip:</strong> ${text}`; });
         },
 
         retry: () => {
-            document.getElementById('fail-options').classList.add('hidden');
-            document.getElementById('feedback-msg').innerText = "";
+            const failOpt = document.getElementById('fail-options');
+            if (failOpt) failOpt.classList.add('hidden');
+            const fb = document.getElementById('feedback-msg');
+            if (fb) fb.innerText = "";
             game.toggleMic();
         },
 
@@ -3918,6 +3986,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         startTimer: () => {
             const bar = document.getElementById('timer-bar');
             const container = document.getElementById('timer-container');
+            if (!container || !bar) return;
             container.classList.remove('hidden'); bar.style.width = '0%';
             let startTime = Date.now(); const duration = 6000;
             if (game.timerInterval) clearInterval(game.timerInterval);
@@ -3927,13 +3996,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 if (pct >= 100) game.stopMic();
             }, 50);
         },
-        stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); },
-        onBackgroundClick: (e) => {
-            if (e && e.target && (e.target.closest('button') || e.target.closest('.avatar-container') || e.target.closest('input') || e.target.closest('select') || e.target.closest('#modal-teacher-select') || e.target.closest('#modal-share') || e.target.closest('#modal-backup-manager') || e.target.closest('#modal-apikey-info') || e.target.closest('.session-word-card') || e.target.closest('.vocab-item'))) {
-                return;
-            }
-            app.goBack();
-        }
+        stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); }
     };
 
     // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
