@@ -313,7 +313,7 @@
         <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.05rem; margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 VOCABULARY</button>
 
         <!-- SECONDARY / CONFIGURATION AREA (DISPLACED DOWN FROM MAIN ACTIONS) -->
-        <div style="margin-top: 55px; padding-top: 25px; border-top: 1px dashed rgba(0,243,255,0.2);">
+        <div style="margin-top: 110px; padding-top: 35px; border-top: 1px dashed rgba(0,243,255,0.2);">
             <!-- COLLAPSIBLE ACADEMY LEVEL & VOICE SPEED -->
             <!-- LEVEL ACCORDION CARD -->
             <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); margin-bottom: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(0,243,255,0.12);">
@@ -513,11 +513,13 @@
             </div>
             <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
         </div>
-        <div class="hud-card">
-            <p style="color:#AAA;">Tu clave de API (Groq API Key) se utiliza exclusivamente para conectar de forma directa con el motor de inferencia de Groq y no se almacena en ningún servidor externo.</p>
-            <p style="color:#AAA; margin-top:10px;">No recopilamos ni compartimos datos personales. Todo el progreso se guarda localmente en tu navegador mediante localStorage.</p>
-            <p style="color:#AAA; margin-top:10px;">Esta aplicación utiliza Google AdSense para la optimización de publicidad. Google puede utilizar cookies para anuncios personalizados.</p>
-            <p style="color:#AAA; margin-top:10px;">Contacto: <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a></p>
+        <div class="hud-card" style="font-size: 0.88rem; line-height: 1.6; color: #BBB;">
+            <p style="margin-bottom: 10px;">🔒 <strong>Privacidad Total:</strong> No recopilamos datos personales ni audios. Todo tu progreso se almacena localmente en tu propio dispositivo.</p>
+            <p style="margin-bottom: 10px;">🔑 <strong>API Key:</strong> Tu clave conecta directamente tu navegador con el motor de IA de forma cifrada sin intermediarios.</p>
+            <p style="margin-bottom: 10px;">🍪 <strong>Cookies:</strong> Empleamos almacenamiento local técnico para mantener tus preferencias y progreso.</p>
+            <p style="margin-top: 14px; border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 10px; color: #FFF;">
+                ✉️ Contacto: <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan); font-weight: bold;">info@jetbulary.com</a>
+            </p>
         </div>
     </div>
 
@@ -531,10 +533,12 @@
             </div>
             <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
         </div>
-        <div class="hud-card">
-            <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
-            <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
-            <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a>.</p>
+        <div class="hud-card" style="font-size: 0.88rem; line-height: 1.6; color: #BBB;">
+            <p style="margin-bottom: 10px;">🎓 <strong>Uso Educativo:</strong> Jetbulary es una aplicación gratuita orientada al aprendizaje interactivo de vocabulario y pronunciación.</p>
+            <p style="margin-bottom: 10px;">⚡ <strong>Responsabilidad:</strong> El servicio se proporciona para uso personal responsable bajo la infraestructura de Groq.</p>
+            <p style="margin-top: 14px; border-top: 1px dashed rgba(0,243,255,0.25); padding-top: 10px; color: #FFF;">
+                ✉️ Contacto: <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan); font-weight: bold;">info@jetbulary.com</a>
+            </p>
         </div>
     </div>
 
@@ -604,6 +608,36 @@
                         <div style="font-size: 0.78rem; color: var(--neon-cyan);">Учитель русского языка</div>
                     </div>
                     <span class="lang-check" id="check-ru" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- BASQUE (AMAIA) -->
+                <div class="teacher-select-card" data-lang="eu" id="lang-card-eu" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_eu.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🟩 Amaia (Euskara)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Euskara Irakaslea</div>
+                    </div>
+                    <span class="lang-check" id="check-eu" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- CATALAN (MONTSERRAT) -->
+                <div class="teacher-select-card" data-lang="ca" id="lang-card-ca" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_ca.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🟨 Montserrat (Català)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professora de Català</div>
+                    </div>
+                    <span class="lang-check" id="check-ca" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- GALICIAN (UXÍA) -->
+                <div class="teacher-select-card" data-lang="gl" id="lang-card-gl" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s; user-select: none;">
+                    <img src="gif_gl.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; pointer-events: none;">
+                    <div style="text-align: left; flex: 1; pointer-events: none;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🟦 Uxía (Galego)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Profesora de Galego</div>
+                    </div>
+                    <span class="lang-check" id="check-gl" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
                 </div>
             </div>
         </div>
@@ -677,47 +711,18 @@
         </div>
     </div>
 
-    <!-- ====== MODAL: BACKUP & RESTORE MANAGER ====== -->
-    <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
-        <div class="hud-card" style="max-width: 520px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
-            <button onclick="app.closeBackupModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
-            
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <span style="font-size: 1.8rem;">💾</span>
-                <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0;">PROTECCIÓN DE PROGRESO Y COPIAS</h3>
-            </div>
-
-            <p style="color: #CCC; font-size: 0.86rem; line-height: 1.5; margin-bottom: 16px;">
-                Tu progreso se guarda automáticamente con <strong style="color:var(--cyber-ok);">doble capa persistente (IndexedDB + Almacenamiento Protegido)</strong> para resistir el borrado de caché o historial. Además, puedes descargar tu copia de seguridad manual en cualquier momento.
-            </p>
-
-            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px;">
-                <!-- AUTO-PROTECCIÓN INFO -->
-                <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 12px 14px;">
-                    <div style="color: var(--cyber-ok); font-weight: bold; font-size: 0.88rem; margin-bottom: 4px;">🛡️ Protección Automática Activa</div>
-                    <div style="color: #AAA; font-size: 0.8rem; line-height: 1.4;">
-                        Cada palabra, punto y nivel se guarda instantáneamente en una base de datos interna permanente para que nunca pierdas tu avance si se limpia la caché.
-                    </div>
-                </div>
-
-                <!-- DESCARGAR COPIA -->
-                <button onclick="app.exportBackup()" class="secondary" style="width: 100%; padding: 14px; font-size: 0.9rem; font-weight: bold; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span>📥 Descargar Copia de Seguridad (.json)</span>
+    <!-- ====== MODAL: BACKUP & RESTORE (CLEAN: GUARDAR / LEER ONLY) ====== -->
+    <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;" onclick="app.closeBackupModal()">
+        <div class="hud-card" style="max-width: 320px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 26px 20px; border-radius: 12px;" onclick="event.stopPropagation()">
+            <input type="file" id="backup-file-input" accept=".json" style="display: none;" onchange="app.importBackupFile(this.files[0])">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <button onclick="app.exportBackup()" class="success" style="width: 100%; padding: 18px; font-size: 1.15rem; font-weight: bold; letter-spacing: 1px; box-shadow: var(--cyber-glow);">
+                    💾 Guardar
                 </button>
-
-                <!-- RESTAURAR COPIA -->
-                <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 14px;">
-                    <div style="font-size: 0.85rem; color: #FFF; font-weight: bold; margin-bottom: 8px;">📂 Restaurar Copia en otro móvil o navegador:</div>
-                    <input type="file" id="backup-file-input" accept=".json" style="display: none;" onchange="app.importBackupFile(this.files[0])">
-                    <button onclick="document.getElementById('backup-file-input').click()" class="warning" style="width: 100%; padding: 12px; font-size: 0.85rem; font-weight: bold;">
-                        📤 Seleccionar archivo de copia (.json)
-                    </button>
-                </div>
+                <button onclick="document.getElementById('backup-file-input').click()" class="secondary" style="width: 100%; padding: 18px; font-size: 1.15rem; font-weight: bold; border-color: var(--neon-cyan); color: var(--neon-cyan); letter-spacing: 1px;">
+                    📂 Leer
+                </button>
             </div>
-
-            <button onclick="app.closeBackupModal()" class="success" style="width: 100%; padding: 12px; font-weight: bold; font-size: 0.9rem;">
-                ✓ CERRAR
-            </button>
         </div>
     </div>
 
@@ -781,8 +786,6 @@
             <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
             <span style="color: #444;">|</span>
             <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
-            <span style="color: #444;">|</span>
-            <a href="mailto:info@jetbulary.com" style="color: var(--neon-cyan); text-decoration: none;">info@jetbulary.com</a>
         </div>
         <p style="color: #666; font-size: 0.75rem; letter-spacing: 0.5px;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 6px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.2</span></p>
     </footer>
@@ -976,6 +979,48 @@
             teacherTitle: 'Учитель русского языка',
             aiPromptLang: 'Russian (Русский)',
             translatorBtnLabel: 'ПЕРЕВОДЧИЦА'
+        },
+        eu: {
+            code: 'eu',
+            name: 'Euskara',
+            teacherName: 'Amaia',
+            flag: 'flag_eu.jpg',
+            face: 'face_eu.jpg',
+            gif: 'gif_eu.gif',
+            speechLang: 'eu-ES',
+            femaleVoices: ['female', 'woman', 'amaia', 'miren', 'ane', 'euskara', 'basque'],
+            youglishLang: 'basque',
+            teacherTitle: 'Euskara Irakaslea',
+            aiPromptLang: 'Basque (Euskara)',
+            translatorBtnLabel: 'ITZULTZAILEA'
+        },
+        ca: {
+            code: 'ca',
+            name: 'Català',
+            teacherName: 'Montserrat',
+            flag: 'flag_ca.jpg',
+            face: 'face_ca.jpg',
+            gif: 'gif_ca.gif',
+            speechLang: 'ca-ES',
+            femaleVoices: ['female', 'woman', 'montserrat', 'laia', 'nuria', 'català', 'catalan'],
+            youglishLang: 'catalan',
+            teacherTitle: 'Professora de Català',
+            aiPromptLang: 'Catalan (Català)',
+            translatorBtnLabel: 'TRADUCTORA'
+        },
+        gl: {
+            code: 'gl',
+            name: 'Galego',
+            teacherName: 'Uxía',
+            flag: 'flag_gl.jpg',
+            face: 'face_gl.jpg',
+            gif: 'gif_gl.gif',
+            speechLang: 'gl-ES',
+            femaleVoices: ['female', 'woman', 'uxia', 'sabela', 'carmen', 'galego', 'galician'],
+            youglishLang: 'galician',
+            teacherTitle: 'Profesora de Galego',
+            aiPromptLang: 'Galician (Galego)',
+            translatorBtnLabel: 'TRADUTORA'
         }
     };
 
@@ -1248,6 +1293,114 @@
                 { english: "поэтому", spanish: "por lo tanto", ipa: "/pɐˈɛtəmʊ/", sentence_en: "Поэтому мы не можем это купить.", sentence_es: "Por lo tanto, no podemos comprarlo." },
                 { english: "хотя", spanish: "aunque", ipa: "/xɐˈtʲa/", sentence_en: "Хотя шел дождь, они вышли.", sentence_es: "Aunque llovía, salieron." },
                 { english: "кроме того", spanish: "además", ipa: "/ˈkromʲɪ təˈvo/", sentence_en: "Кроме того, нам нужно экономить.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        eu: [
+            // Level 0: A0 (Starter)
+            { name: "OINARRIZKO AGURRAK (A0)", level: 0, words: [
+                { english: "kaixo", spanish: "hola", ipa: "/kaiʃo/", sentence_en: "Kaixo, nola zaude?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "mesedez", spanish: "por favor", ipa: "/mesedes̻/", sentence_en: "Kafe bat, mesedez.", sentence_es: "Un café, por favor." },
+                { english: "eskerrik asko", spanish: "muchas gracias", ipa: "/es̻kerik as̻ko/", sentence_en: "Eskerrik asko zure laguntzagatik.", sentence_es: "Muchas gracias por tu ayuda." },
+                { english: "agur", spanish: "adiós", ipa: "/aɡur/", sentence_en: "Agur eta egun ona izan!", sentence_es: "¡Adiós y que tengas un buen día!" }
+            ]},
+            { name: "ZENBAKIAK ETA OBJEKTUAK (A0)", level: 0, words: [
+                { english: "bat", spanish: "uno", ipa: "/bat/", sentence_en: "Tren txartel bat daukat.", sentence_es: "Tengo un billete de tren." },
+                { english: "ura", spanish: "agua", ipa: "/uɾa/", sentence_en: "Ur baso bat nahi nuke.", sentence_es: "Quisiera un vaso de agua." },
+                { english: "etxea", spanish: "casa", ipa: "/etʃea/", sentence_en: "Hau nire etxe berria da.", sentence_es: "Esta es mi nueva casa." },
+                { english: "liburua", spanish: "libro", ipa: "/liβuɾua/", sentence_en: "Liburua mahaiaren gainean dago.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "EGUNEROKO BIZITZA ETA ADITZAK (A1-A2)", level: 1, words: [
+                { english: "bizi izan", spanish: "vivir / residir", ipa: "/bis̻i is̻an/", sentence_en: "Donostian bizi naiz.", sentence_es: "Vivo en San Sebastián." },
+                { english: "lan egin", spanish: "trabajar", ipa: "/lan eɡin/", sentence_en: "Bulego batean egiten du lan.", sentence_es: "Él trabaja en una oficina." },
+                { english: "jan", spanish: "comer", ipa: "/jan/", sentence_en: "Elkarrekin bazkaltzen dugu.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "edan", spanish: "beber", ipa: "/edan/", sentence_en: "Te beroa edaten du.", sentence_es: "Ella bebe té caliente." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "ADITZ BEREZIAK ETA DENBORAK (B1)", level: 2, words: [
+                { english: "joan", spanish: "ir", ipa: "/joan/", sentence_en: "Denbora banu, gimnasiora joango nintzateke.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "hartu", spanish: "tomar / coger", ipa: "/haɾtu/", sentence_en: "Hiru aldiz egin du azterketa.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "hitz egin", spanish: "hablar", ipa: "/hitʃ eɡin/", sentence_en: "Atzo berarekin hitz egin nuen.", sentence_es: "Hablé con él ayer." },
+                { english: "idatzi", spanish: "escribir", ipa: "/idats̻i/", sentence_en: "Liburu bat idazten badu, arrakasta izango du.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "LOTURA-HITZAK ETA ADIERAZPENAK (B2)", level: 3, words: [
+                { english: "hala ere", spanish: "sin embargo", ipa: "/hala eɾe/", sentence_en: "Hala ere, joatea erabaki zuen.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "beraz", spanish: "por lo tanto", ipa: "/beɾas̻/", sentence_en: "Beraz, ezin dugu erosi.", sentence_es: "Por lo tanto, no podemos comprarlo." },
+                { english: "nahiz eta", spanish: "aunque", ipa: "/nahiʃ eta/", sentence_en: "Nahiz eta euria ari zuen, atera ziren.", sentence_es: "Aunque llovía, salieron." },
+                { english: "gainera", spanish: "además", ipa: "/ɡaineɾa/", sentence_en: "Gainera, aurreztu egin behar dugu.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        ca: [
+            // Level 0: A0 (Starter)
+            { name: "SALUTACIONS BÀSIQUES (A0)", level: 0, words: [
+                { english: "hola", spanish: "hola", ipa: "/ˈɔ.lə/", sentence_en: "Hola, com estàs?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "si us plau", spanish: "por favor", ipa: "/siwsˈplaw/", sentence_en: "Un cafè, si us plau.", sentence_es: "Un café, por favor." },
+                { english: "gràcies", spanish: "gracias", ipa: "/ˈɡɾa.si.əs/", sentence_en: "Moltes gràcies per tot.", sentence_es: "Muchas gracias por todo." },
+                { english: "adéu", spanish: "adiós", ipa: "/əˈðew/", sentence_en: "Adéu i que tinguis un bon dia!", sentence_es: "¡Adiós y que tengas un buen día!" }
+            ]},
+            { name: "NOMBRES I OBJECTES (A0)", level: 0, words: [
+                { english: "un", spanish: "uno", ipa: "/un/", sentence_en: "Tinc un bitllet de tren.", sentence_es: "Tengo un billete de tren." },
+                { english: "aigua", spanish: "agua", ipa: "/ˈaj.ɣwə/", sentence_en: "Voldria un got d'aigua.", sentence_es: "Quisiera un vaso de agua." },
+                { english: "casa", spanish: "casa", ipa: "/ˈka.zə/", sentence_en: "Aquesta és la meva nova casa.", sentence_es: "Esta es mi nueva casa." },
+                { english: "llibre", spanish: "libro", ipa: "/ˈʎi.βɾə/", sentence_en: "El llibre és sobre la taula.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "VIDA QUOTIDIANA I VERBS (A1-A2)", level: 1, words: [
+                { english: "viure", spanish: "vivir / residir", ipa: "/ˈviw.ɾə/", sentence_en: "Visc a Barcelona.", sentence_es: "Vivo en Barcelona." },
+                { english: "treballar", spanish: "trabajar", ipa: "/tɾə.βəˈʎa/", sentence_en: "Ell treballa en una oficina.", sentence_es: "Él trabaja en una oficina." },
+                { english: "menjar", spanish: "comer", ipa: "/mənˈʒa/", sentence_en: "Mengem plegats al migdia.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "beure", spanish: "beber", ipa: "/ˈbɛw.ɾə/", sentence_en: "Ella beu te calent.", sentence_es: "Ella bebe té caliente." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "VERBS IRREGULARS I TEMPS (B1)", level: 2, words: [
+                { english: "anar (anat)", spanish: "ir", ipa: "/əˈna/", sentence_en: "Si tingués temps, aniria al gimnàs.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "prendre (pres)", spanish: "tomar / coger", ipa: "/ˈpɾɛn.dɾə/", sentence_en: "Ha fet l'examen tres vegades.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "parlar (parlat)", spanish: "hablar", ipa: "/pəɾˈla/", sentence_en: "Vaig parlar amb ell ahir.", sentence_es: "Hablé con él ayer." },
+                { english: "escriure (escrit)", spanish: "escribir", ipa: "/əsˈkɾiw.ɾə/", sentence_en: "Si escriu un llibre, tindrà èxit.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "CONNECTORS LÒGICS I IDIOMES (B2)", level: 3, words: [
+                { english: "no obstant això", spanish: "sin embargo", ipa: "/nuwpsˈtan əˈʃɔ/", sentence_en: "No obstant això, va decidir anar-hi.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "per tant", spanish: "por lo tanto", ipa: "/pəɾ ˈtan/", sentence_en: "Per tant, no ho podem comprar.", sentence_es: "Por lo tanto, no podemos comprarlo." },
+                { english: "tot i que", spanish: "aunque", ipa: "/tɔt i kə/", sentence_en: "Tot i que plovia, van sortir.", sentence_es: "Aunque llovía, salieron." },
+                { english: "a més", spanish: "además", ipa: "/ə ˈmes/", sentence_en: "A més a més, hem d'estalviar.", sentence_es: "Además, debemos ahorrar." }
+            ]}
+        ],
+        gl: [
+            // Level 0: A0 (Starter)
+            { name: "SAÚDOS BÁSICOS (A0)", level: 0, words: [
+                { english: "ola", spanish: "hola", ipa: "/ˈɔ.la/", sentence_en: "Ola, como estás?", sentence_es: "Hola, ¿cómo estás?" },
+                { english: "por favor", spanish: "por favor", ipa: "/poɾ faˈβoɾ/", sentence_en: "Un café, por favor.", sentence_es: "Un café, por favor." },
+                { english: "grazas", spanish: "gracias", ipa: "/ˈɡɾa.θas/", sentence_en: "Moitas grazas por todo.", sentence_es: "Muchas gracias por todo." },
+                { english: "deica logo", spanish: "hasta luego / adiós", ipa: "/ˈdej.ka ˈlo.ɣo/", sentence_en: "Deica logo e que teñas un bo día!", sentence_es: "¡Hasta luego y que tengas un buen día!" }
+            ]},
+            { name: "NÚMEROS E OBXECTOS (A0)", level: 0, words: [
+                { english: "un", spanish: "uno", ipa: "/uŋ/", sentence_en: "Teño un billete de tren.", sentence_es: "Tengo un billete de tren." },
+                { english: "auga", spanish: "agua", ipa: "/ˈaw.ɣa/", sentence_en: "Querdría un vaso de auga.", sentence_es: "Quisiera un vaso de agua." },
+                { english: "casa", spanish: "casa", ipa: "/ˈka.sa/", sentence_en: "Esta é a miña nova casa.", sentence_es: "Esta es mi nueva casa." },
+                { english: "libro", spanish: "libro", ipa: "/ˈli.βɾo/", sentence_en: "O libro está enriba da mesa.", sentence_es: "El libro está sobre la mesa." }
+            ]},
+            // Level 1: A1-A2 (Básico)
+            { name: "VIDA COTIÁ E VERBOS (A1-A2)", level: 1, words: [
+                { english: "vivir", spanish: "vivir / residir", ipa: "/biˈβiɾ/", sentence_en: "Vivo en Santiago.", sentence_es: "Vivo en Santiago." },
+                { english: "traballar", spanish: "trabajar", ipa: "/tɾa.βaˈʎaɾ/", sentence_en: "El traballa nunha oficina.", sentence_es: "Él trabaja en una oficina." },
+                { english: "comer", spanish: "comer", ipa: "/koˈmeɾ/", sentence_en: "Comemos xuntos ao mediodía.", sentence_es: "Comemos juntos al mediodía." },
+                { english: "beber", spanish: "beber", ipa: "/beˈβeɾ/", sentence_en: "Ela bebe té quente.", sentence_es: "Ella bebe té caliente." }
+            ]},
+            // Level 2: B1 (Intermedio)
+            { name: "VERBOS IRREGULARES E TEMPOS (B1)", level: 2, words: [
+                { english: "ir (fun / ido)", spanish: "ir", ipa: "/iɾ/", sentence_en: "Se tivera tempo, iría ao ximnasio.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
+                { english: "tomar (tomado)", spanish: "tomar / coger", ipa: "/toˈmaɾ/", sentence_en: "Ela fixo o exame tres veces.", sentence_es: "Ella ha hecho el examen tres veces." },
+                { english: "falar (falado)", spanish: "hablar", ipa: "/faˈlaɾ/", sentence_en: "Falei con el onte.", sentence_es: "Hablé con él ayer." },
+                { english: "escribir (escrito)", spanish: "escribir", ipa: "/es.kɾiˈβiɾ/", sentence_en: "Se escribe un libro, terá éxito.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+            ]},
+            // Level 3: B2 (Avanzado)
+            { name: "CONECTORES LÓXICOS E IDIOMAS (B2)", level: 3, words: [
+                { english: "porén", spanish: "sin embargo", ipa: "/poˈɾɛŋ/", sentence_en: "Porén, ela decidiu ir.", sentence_es: "Sin embargo, ella decidió ir." },
+                { english: "polo tanto", spanish: "por lo tanto", ipa: "/ˈpo.lo ˈtan.to/", sentence_en: "Polo tanto, non o podemos mercar.", sentence_es: "Por lo tanto, no podemos comprarlo." },
+                { english: "aínda que", spanish: "aunque", ipa: "/aˈiŋ.da ke/", sentence_en: "Aínda que chovía, saíron.", sentence_es: "Aunque llovía, salieron." },
+                { english: "ademais", spanish: "además", ipa: "/a.deˈmajs/", sentence_en: "Ademais, cómpre aforrar.", sentence_es: "Además, debemos ahorrar." }
             ]}
         ]
     };
@@ -1650,18 +1803,37 @@
             localStorage.setItem('jetbulary_current_lang', langCode);
             app.closeTeacherModal();
 
-            // Refresh UI, Avatars and Translator Buttons
+            // Refresh UI, Avatars, Buttons and Translator
             game.updateAvatar();
             app.updateHeaderTranslatorBtn();
-            if (typeof translator !== 'undefined' && translator.init) translator.init();
+            app.updateLessonButtonsVisibility();
             
-            // Auto select next pending topic in this language
-            app.autoSelectNextPendingTopic();
+            // Update CEFR Levels & Points for the new language
+            app.autoSelectNextPendingTopic(currentLang);
+            const userLvl = app.getLangLevel(currentLang);
+            app.updateAcademyLevelDisplay(userLvl, currentLang);
             app.renderDashboardLists();
-            if (!document.getElementById('view-vocab').classList.contains('hidden')) {
+            
+            // Refresh Active Screen
+            const isGameActive = !document.getElementById('view-game').classList.contains('hidden');
+            const isConvoActive = !document.getElementById('view-conversation').classList.contains('hidden');
+            const isVocabActive = !document.getElementById('view-vocab').classList.contains('hidden');
+            const isTranslatorActive = !document.getElementById('view-translator').classList.contains('hidden');
+
+            if (isGameActive) {
+                session.start();
+            } else if (isConvoActive) {
+                if (session.currentWords && session.currentWords.length > 0) {
+                    conversation.start(session.currentWords, "Lesson Practice");
+                } else {
+                    session.start();
+                }
+            } else if (isVocabActive) {
                 vocab.activeTopicId = 'all';
                 vocab.selectedIds.clear();
                 vocab.render();
+            } else if (isTranslatorActive) {
+                if (typeof translator !== 'undefined' && translator.init) translator.init();
             }
         },
 
@@ -1693,31 +1865,62 @@
             return topicsInLang[0];
         },
 
-        autoSelectNextPendingTopic: () => {
-            const pendingTopic = app.getNextPendingTopic(currentLang);
+        autoSelectNextPendingTopic: (lang = currentLang) => {
+            const pendingTopic = app.getNextPendingTopic(lang);
             if (pendingTopic) {
                 session.selectList(pendingTopic.id);
                 const tLevel = pendingTopic.level !== undefined ? pendingTopic.level : 0;
-                if (app.isLevelUnlocked(tLevel) && (db.academy_level || 0) < tLevel) {
+                const userLvl = app.getLangLevel(lang);
+                if (app.isLevelUnlocked(tLevel, lang) && userLvl < tLevel) {
+                    if (!db.lang_academy_levels) db.lang_academy_levels = {};
+                    db.lang_academy_levels[lang] = tLevel;
                     db.academy_level = tLevel;
                     app.saveDB();
-                    app.updateAcademyLevelDisplay(tLevel);
+                    app.updateAcademyLevelDisplay(tLevel, lang);
                 }
+            } else {
+                const firstTopic = db.topics.find(t => (t.lang || 'en') === lang);
+                if (firstTopic) session.selectList(firstTopic.id);
             }
         },
 
         getLevelLabels: () => ['A0 (Starter)', 'A1-A2 (Basic)', 'B1 (Intermediate)', 'B2 (Advanced)', 'C1+ (Native/Pro)'],
 
-        isLevelUnlocked: (levelNum) => {
+        // ====== INDEPENDENT LEVEL & POINTS PER LANGUAGE ======
+        getLangPoints: (lang = currentLang) => {
+            if (!db.lang_level_points) db.lang_level_points = {};
+            if (!db.lang_level_points[lang]) {
+                if (lang === 'en' && db.level_points) {
+                    db.lang_level_points['en'] = { ...db.level_points };
+                } else {
+                    db.lang_level_points[lang] = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+                }
+            }
+            return db.lang_level_points[lang];
+        },
+
+        getLangLevel: (lang = currentLang) => {
+            if (!db.lang_academy_levels) db.lang_academy_levels = {};
+            if (db.lang_academy_levels[lang] === undefined) {
+                if (lang === 'en' && db.academy_level !== undefined) {
+                    db.lang_academy_levels['en'] = db.academy_level;
+                } else {
+                    db.lang_academy_levels[lang] = 0;
+                }
+            }
+            return db.lang_academy_levels[lang] || 0;
+        },
+
+        isLevelUnlocked: (levelNum, lang = currentLang) => {
             const targetLevel = parseInt(levelNum);
             if (targetLevel === 0) return true;
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+            const pointsObj = app.getLangPoints(lang);
             
             for (let l = 0; l < targetLevel; l++) {
-                const points = db.level_points[l] || 0;
+                const points = pointsObj[l] || 0;
                 if (points < 50) return false;
 
-                const topicsOfLevel = db.topics.filter(t => (t.lang || 'en') === currentLang && (t.level !== undefined ? t.level : 0) === l);
+                const topicsOfLevel = db.topics.filter(t => (t.lang || 'en') === lang && (t.level !== undefined ? t.level : 0) === l);
                 if (topicsOfLevel.length > 0) {
                     const allCompleted = topicsOfLevel.every(t => {
                         const wordsInTopic = db.words.filter(w => w.topic_id === t.id);
@@ -1733,52 +1936,60 @@
             return true;
         },
 
-        addLevelPoints: (levelNum, delta) => {
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
-            const lvl = parseInt(levelNum !== undefined ? levelNum : (db.academy_level || 0));
-            const currentPts = db.level_points[lvl] || 0;
-            db.level_points[lvl] = Math.max(0, currentPts + delta);
+        addLevelPoints: (levelNum, delta, lang = currentLang) => {
+            const pointsObj = app.getLangPoints(lang);
+            const lvl = parseInt(levelNum !== undefined ? levelNum : app.getLangLevel(lang));
+            const currentPts = pointsObj[lvl] || 0;
+            pointsObj[lvl] = Math.max(0, currentPts + delta);
             app.saveDB();
-            app.renderLevelBadges();
+            app.renderLevelBadges(lang);
             app.renderDashboardLists();
         },
 
-        saveAcademyLevel: (val) => {
+        saveAcademyLevel: (val, lang = currentLang) => {
             const targetLvl = parseInt(val);
-            if (!app.isLevelUnlocked(targetLvl)) {
-                alert(`🔒 Nivel bloqueado. Para desbloquear este nivel debes conseguir 50 puntos y completar todas las listas del nivel anterior.`);
+            if (!app.isLevelUnlocked(targetLvl, lang)) {
+                alert(`🔒 Nivel bloqueado en este idioma. Para desbloquearlo debes conseguir 50 puntos y completar todas las listas del nivel anterior.`);
+                const currentLvl = app.getLangLevel(lang);
                 const slider = document.getElementById('academy-level-slider');
-                if (slider) slider.value = db.academy_level || 0;
-                app.updateAcademyLevelDisplay(db.academy_level || 0);
+                if (slider) slider.value = currentLvl;
+                app.updateAcademyLevelDisplay(currentLvl, lang);
                 return;
             }
+            if (!db.lang_academy_levels) db.lang_academy_levels = {};
+            db.lang_academy_levels[lang] = targetLvl;
             db.academy_level = targetLvl;
             app.saveDB();
-            app.updateAcademyLevelDisplay(targetLvl);
+            app.updateAcademyLevelDisplay(targetLvl, lang);
             app.renderDashboardLists();
             app.updateLessonButtonsVisibility();
         },
 
-        updateAcademyLevelDisplay: (val) => {
+        updateAcademyLevelDisplay: (val, lang = currentLang) => {
             const display = document.getElementById('academy-level-display');
+            const targetLvl = parseInt(val !== undefined ? val : app.getLangLevel(lang));
+            const slider = document.getElementById('academy-level-slider');
+            if (slider) slider.value = targetLvl;
             if (display) {
                 const labels = app.getLevelLabels();
-                const pts = (db.level_points && db.level_points[parseInt(val)]) || 0;
-                display.innerHTML = `<span style="color:var(--neon-cyan);">${labels[parseInt(val)] || labels[0]}</span> <span style="font-size:0.8rem; color:#AAA; margin-left:6px;">(${pts}/50 pts)</span>`;
+                const pointsObj = app.getLangPoints(lang);
+                const pts = pointsObj[targetLvl] || 0;
+                display.innerHTML = `<span style="color:var(--neon-cyan);">${labels[targetLvl] || labels[0]}</span> <span style="font-size:0.8rem; color:#AAA; margin-left:6px;">(${pts}/50 pts)</span>`;
             }
-            app.renderLevelBadges();
+            app.renderLevelBadges(lang);
             app.updateLessonButtonsVisibility();
         },
 
-        renderLevelBadges: () => {
+        renderLevelBadges: (lang = currentLang) => {
             const container = document.getElementById('level-badges-container');
             if (!container) return;
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+            const pointsObj = app.getLangPoints(lang);
+            const currentLvl = app.getLangLevel(lang);
             const labels = ['A0', 'A1-A2', 'B1', 'B2', 'C1+'];
             container.innerHTML = labels.map((lbl, idx) => {
-                const unlocked = app.isLevelUnlocked(idx);
-                const pts = db.level_points[idx] || 0;
-                const isCurrent = (db.academy_level || 0) === idx;
+                const unlocked = app.isLevelUnlocked(idx, lang);
+                const pts = pointsObj[idx] || 0;
+                const isCurrent = currentLvl === idx;
                 const border = isCurrent ? 'var(--neon-cyan)' : unlocked ? 'rgba(0,255,149,0.4)' : 'rgba(255,255,255,0.1)';
                 const bg = isCurrent ? 'rgba(0,243,255,0.15)' : unlocked ? 'rgba(0,255,149,0.06)' : 'rgba(0,0,0,0.4)';
                 return `
@@ -1790,10 +2001,18 @@
             }).join('');
         },
 
+        updateHeaderTranslatorBtn: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const label = langInfo.translatorBtnLabel || 'TRANSLATOR';
+            document.querySelectorAll('.lbl-translator-btn').forEach(el => {
+                el.innerText = label;
+            });
+        },
+
         updateLessonButtonsVisibility: () => {
             const freeConvoBtn = document.getElementById('btn-free-conversation');
             if (freeConvoBtn) {
-                const lvl = db.academy_level || 0;
+                const lvl = app.getLangLevel();
                 if (lvl >= 3) freeConvoBtn.classList.remove('hidden');
                 else freeConvoBtn.classList.add('hidden');
             }
@@ -1804,6 +2023,9 @@
                 else if (currentLang === 'pt') lessonLbl.innerText = 'LIÇÃO';
                 else if (currentLang === 'it') lessonLbl.innerText = 'LEZIONE';
                 else if (currentLang === 'ru') lessonLbl.innerText = 'УРОК';
+                else if (currentLang === 'eu') lessonLbl.innerText = 'IKASGAIA';
+                else if (currentLang === 'ca') lessonLbl.innerText = 'LLIÇÓ';
+                else if (currentLang === 'gl') lessonLbl.innerText = 'LECCIÓN';
                 else lessonLbl.innerText = 'LESSON';
             }
         },
@@ -1818,12 +2040,12 @@
 
         ensureDefaultTopics: () => {
             let modified = false;
-            ['en', 'de', 'fr', 'pt', 'it', 'ru'].forEach(langKey => {
+            ['en', 'de', 'fr', 'pt', 'it', 'ru', 'eu', 'ca', 'gl'].forEach(langKey => {
                 const list = defaultTopicsByLang[langKey] || [];
                 list.forEach((def, defIdx) => {
                     let topic = db.topics.find(t => t.name.toUpperCase() === def.name.toUpperCase() && (t.lang || 'en') === langKey);
                     if (!topic) {
-                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : langKey === 'fr' ? 2000 : langKey === 'pt' ? 2500 : langKey === 'it' ? 3000 : 4000;
+                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : langKey === 'fr' ? 2000 : langKey === 'pt' ? 2500 : langKey === 'it' ? 3000 : langKey === 'ru' ? 4000 : langKey === 'eu' ? 5000 : langKey === 'ca' ? 6000 : 7000;
                         topic = { id: 999000 + offset + defIdx, name: def.name, lang: langKey, level: def.level !== undefined ? def.level : 0 };
                         db.topics.push(topic);
                         modified = true;
@@ -1919,21 +2141,37 @@
             if (qrBox) qrBox.classList.toggle('hidden');
         },
         setupLogos: () => {
-            document.querySelectorAll('img[src="icon.png"]').forEach(img => {
+            document.querySelectorAll('img[src="icon.png"], .jet-logo').forEach(img => {
                 img.style.cursor = 'pointer';
                 img.title = '1 toque: Inicio | Mantener pulsado: Compartir';
                 
                 let pressTimer = null;
                 let isLongPress = false;
+                let startX = 0, startY = 0;
 
-                const startPress = () => {
+                const startPress = (e) => {
                     isLongPress = false;
+                    if (e && e.touches && e.touches[0]) {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                    }
                     if (pressTimer) clearTimeout(pressTimer);
                     pressTimer = setTimeout(() => {
                         isLongPress = true;
-                        if (navigator.vibrate) navigator.vibrate(50);
+                        if (navigator.vibrate) try { navigator.vibrate(50); } catch(err) {}
                         app.openShareModal();
-                    }, 550);
+                    }, 500);
+                };
+
+                const movePress = (e) => {
+                    if (pressTimer && e && e.touches && e.touches[0]) {
+                        const dx = Math.abs(e.touches[0].clientX - startX);
+                        const dy = Math.abs(e.touches[0].clientY - startY);
+                        if (dx > 12 || dy > 12) {
+                            clearTimeout(pressTimer);
+                            pressTimer = null;
+                        }
+                    }
                 };
 
                 const cancelPress = () => {
@@ -1943,27 +2181,112 @@
                     }
                 };
 
+                img.ontouchstart = startPress;
+                img.ontouchmove = movePress;
+                img.ontouchend = (e) => {
+                    cancelPress();
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                };
+                img.ontouchcancel = cancelPress;
+
+                img.onmousedown = startPress;
+                img.onmouseup = cancelPress;
+                img.onmouseleave = cancelPress;
+
                 img.onclick = (e) => {
                     if (isLongPress) {
                         isLongPress = false;
                         e.preventDefault();
                         e.stopPropagation();
-                        return;
+                        return false;
                     }
                     app.showDashboard();
                 };
 
                 img.oncontextmenu = (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     app.openShareModal();
+                    return false;
+                };
+            });
+        },
+
+        setupTeacherAvatars: () => {
+            document.querySelectorAll('.avatar-container').forEach(avatar => {
+                avatar.style.cursor = 'pointer';
+                avatar.title = '1 toque: Elegir profesora | Mantener pulsado: Vídeo de bienvenida';
+
+                let pressTimer = null;
+                let isLongPress = false;
+                let startX = 0, startY = 0;
+
+                const startPress = (e) => {
+                    isLongPress = false;
+                    if (e && e.touches && e.touches[0]) {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                    }
+                    if (pressTimer) clearTimeout(pressTimer);
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        if (navigator.vibrate) try { navigator.vibrate(60); } catch(err) {}
+                        app.playTeacherVideo(currentLang);
+                    }, 450);
                 };
 
-                img.addEventListener('touchstart', startPress, { passive: true });
-                img.addEventListener('touchend', cancelPress, { passive: true });
-                img.addEventListener('touchcancel', cancelPress, { passive: true });
-                img.addEventListener('mousedown', startPress);
-                img.addEventListener('mouseup', cancelPress);
-                img.addEventListener('mouseleave', cancelPress);
+                const movePress = (e) => {
+                    if (pressTimer && e && e.touches && e.touches[0]) {
+                        const dx = Math.abs(e.touches[0].clientX - startX);
+                        const dy = Math.abs(e.touches[0].clientY - startY);
+                        if (dx > 12 || dy > 12) {
+                            clearTimeout(pressTimer);
+                            pressTimer = null;
+                        }
+                    }
+                };
+
+                const cancelPress = () => {
+                    if (pressTimer) {
+                        clearTimeout(pressTimer);
+                        pressTimer = null;
+                    }
+                };
+
+                avatar.ontouchstart = startPress;
+                avatar.ontouchmove = movePress;
+                avatar.ontouchend = (e) => {
+                    cancelPress();
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                };
+                avatar.ontouchcancel = cancelPress;
+
+                avatar.onmousedown = startPress;
+                avatar.onmouseup = cancelPress;
+                avatar.onmouseleave = cancelPress;
+
+                avatar.onclick = (e) => {
+                    if (isLongPress) {
+                        isLongPress = false;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    app.openTeacherModal();
+                };
+
+                avatar.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    app.playTeacherVideo(currentLang);
+                    return false;
+                };
             });
         },
 
@@ -1974,15 +2297,31 @@
 
                 let pressTimer = null;
                 let isLongPress = false;
+                let startX = 0, startY = 0;
 
-                const startPress = () => {
+                const startPress = (e) => {
                     isLongPress = false;
+                    if (e && e.touches && e.touches[0]) {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                    }
                     if (pressTimer) clearTimeout(pressTimer);
                     pressTimer = setTimeout(() => {
                         isLongPress = true;
-                        if (navigator.vibrate) try { navigator.vibrate(50); } catch(err) {}
+                        if (navigator.vibrate) try { navigator.vibrate(60); } catch(err) {}
                         app.playTeacherVideo(lang);
-                    }, 500);
+                    }, 450);
+                };
+
+                const movePress = (e) => {
+                    if (pressTimer && e && e.touches && e.touches[0]) {
+                        const dx = Math.abs(e.touches[0].clientX - startX);
+                        const dy = Math.abs(e.touches[0].clientY - startY);
+                        if (dx > 12 || dy > 12) {
+                            clearTimeout(pressTimer);
+                            pressTimer = null;
+                        }
+                    }
                 };
 
                 const cancelPress = () => {
@@ -1992,32 +2331,42 @@
                     }
                 };
 
+                card.ontouchstart = startPress;
+                card.ontouchmove = movePress;
+                card.ontouchend = (e) => {
+                    cancelPress();
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                };
+                card.ontouchcancel = cancelPress;
+
+                card.onmousedown = startPress;
+                card.onmouseup = cancelPress;
+                card.onmouseleave = cancelPress;
+
                 card.onclick = (e) => {
                     if (isLongPress) {
                         isLongPress = false;
                         e.preventDefault();
                         e.stopPropagation();
-                        return;
+                        return false;
                     }
+                    // Pulsación corta: seleccionar idioma
                     app.setLanguage(lang);
                 };
 
                 card.oncontextmenu = (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     app.playTeacherVideo(lang);
+                    return false;
                 };
-
-                card.addEventListener('touchstart', startPress, { passive: true });
-                card.addEventListener('touchend', cancelPress, { passive: true });
-                card.addEventListener('touchcancel', cancelPress, { passive: true });
-                card.addEventListener('mousedown', startPress);
-                card.addEventListener('mouseup', cancelPress);
-                card.addEventListener('mouseleave', cancelPress);
             });
         },
 
         playTeacherVideo: (lang) => {
-            app.setLanguage(lang);
             const modal = document.getElementById('modal-teacher-video');
             const video = document.getElementById('teacher-fullscreen-video');
             if (!modal || !video) return;
@@ -2056,8 +2405,14 @@
             if (!db.topics) db.topics = [];
             if (!db.words) db.words = [];
             if (!db.progress) db.progress = [];
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
-            if (db.academy_level === undefined) db.academy_level = 0;
+            if (!db.lang_level_points) db.lang_level_points = {};
+            if (!db.lang_academy_levels) db.lang_academy_levels = {};
+            if (db.level_points && !db.lang_level_points['en']) {
+                db.lang_level_points['en'] = { ...db.level_points };
+            }
+            if (db.academy_level !== undefined && db.lang_academy_levels['en'] === undefined) {
+                db.lang_academy_levels['en'] = db.academy_level;
+            }
 
             if (typeof idbBackup !== 'undefined' && idbBackup.restoreIfMissing) {
                 await idbBackup.restoreIfMissing();
@@ -2078,9 +2433,10 @@
             }
 
             setTimeout(() => {
+                const userLvl = app.getLangLevel();
                 const slider = document.getElementById('academy-level-slider');
-                if (slider) slider.value = db.academy_level;
-                app.updateAcademyLevelDisplay(db.academy_level);
+                if (slider) slider.value = userLvl;
+                app.updateAcademyLevelDisplay(userLvl);
             }, 200);
 
             if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
@@ -2100,6 +2456,7 @@
             app.updateHeaderTranslatorBtn();
             app.updateLessonButtonsVisibility();
             app.setupLogos();
+            app.setupTeacherAvatars();
             app.setupTeacherCards();
             app.updateInstallButtonVisibility();
 
@@ -2404,27 +2761,62 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             a.click(); URL.revokeObjectURL(url);
         },
 
-        updateInstallButtonVisibility: () => {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || localStorage.getItem('jetbulary_is_installed') === 'true';
+        updateInstallButtonVisibility: async () => {
+            let isInstalled = false;
+            if (window.matchMedia('(display-mode: standalone)').matches ||
+                window.matchMedia('(display-mode: fullscreen)').matches ||
+                window.matchMedia('(display-mode: minimal-ui)').matches ||
+                window.navigator.standalone === true ||
+                (document.referrer && document.referrer.startsWith('android-app://')) ||
+                localStorage.getItem('jetbulary_is_installed') === 'true') {
+                isInstalled = true;
+            }
+
+            if (!isInstalled && navigator.getInstalledRelatedApps) {
+                try {
+                    const relatedApps = await navigator.getInstalledRelatedApps();
+                    if (relatedApps && relatedApps.length > 0) {
+                        isInstalled = true;
+                        localStorage.setItem('jetbulary_is_installed', 'true');
+                    }
+                } catch(e) {}
+            }
+
             const btn = document.getElementById('install-btn');
             const container = document.getElementById('install-btn-container');
-            if (isStandalone) {
-                if (btn) btn.classList.add('hidden');
-                if (container) container.classList.add('hidden');
+            if (isInstalled) {
+                if (btn) {
+                    btn.classList.add('hidden');
+                    btn.style.display = 'none';
+                }
+                if (container) {
+                    container.classList.add('hidden');
+                    container.style.display = 'none';
+                }
             } else {
-                if (btn) btn.classList.remove('hidden');
-                if (container) container.classList.remove('hidden');
+                if (btn) {
+                    btn.classList.remove('hidden');
+                    btn.style.display = 'inline-flex';
+                }
+                if (container) {
+                    container.classList.remove('hidden');
+                    container.style.display = 'block';
+                }
             }
         },
 
         installApp: () => {
             const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                                 window.matchMedia('(display-mode: fullscreen)').matches ||
+                                 window.matchMedia('(display-mode: minimal-ui)').matches ||
+                                 window.navigator.standalone ||
+                                 localStorage.getItem('jetbulary_is_installed') === 'true';
             
             if (isStandalone) {
                 localStorage.setItem('jetbulary_is_installed', 'true');
                 app.updateInstallButtonVisibility();
-                alert("✅ Jetbulary ya está instalada y ejecutándose como aplicación en tu dispositivo.");
+                alert("✅ Jetbulary ya está instalada en tu dispositivo.");
                 return;
             }
 
@@ -2438,8 +2830,12 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                     window.deferredPrompt = null;
                 });
             } else if (isIOS) {
-                alert("📲 Para instalar Jetbulary en tu iPhone / iPad (iOS):\n\n1. Abre esta página en Safari.\n2. Pulsa en el botón 'Compartir' (icono de un cuadrado con flecha hacia arriba ⎋ abajo en la barra).\n3. Desliza hacia abajo y pulsa en 'Añadir a la pantalla de inicio' ➕.\n4. Pulsa 'Añadir' en la esquina superior derecha.\n\n¡Listo! Aparecerá el icono de Jetbulary en tu pantalla de inicio.");
+                localStorage.setItem('jetbulary_is_installed', 'true');
+                app.updateInstallButtonVisibility();
+                alert("📲 Para instalar Jetbulary en tu iPhone / iPad (iOS):\n\n1. Abre esta página en Safari.\n2. Pulsa en el botón 'Compartir' (icono ⎋ abajo en la barra).\n3. Desliza y pulsa 'Añadir a la pantalla de inicio' ➕.\n4. Pulsa 'Añadir'.\n\n¡Listo! Aparecerá el icono en tu pantalla de inicio.");
             } else {
+                localStorage.setItem('jetbulary_is_installed', 'true');
+                app.updateInstallButtonVisibility();
                 alert("📲 Para instalar Jetbulary en tu móvil Android:\n\n1. Pulsa en los 3 puntos (⋮) arriba a la derecha en Chrome.\n2. Selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.\n3. Confirma la instalación.");
             }
         },
@@ -2819,7 +3215,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             // Level 2 (B1): 0.40 threshold
             // Level 3 (B2): 0.55 threshold
             // Level 4 (C1+): 0.70 threshold (strict for advanced)
-            const levelNum = db.academy_level || 0;
+            const levelNum = app.getLangLevel();
             const thresholds = [0.20, 0.30, 0.40, 0.55, 0.70];
             const requiredThreshold = thresholds[levelNum] !== undefined ? thresholds[levelNum] : 0.25;
 
@@ -2853,8 +3249,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             document.querySelectorAll('.avatar-container').forEach(c => {
                 c.innerHTML = '';
                 c.style.cursor = 'pointer';
-                c.title = `Teacher: ${langInfo.teacherName} (${langInfo.name}) - Click to change`;
-                c.onclick = () => app.openTeacherModal();
+                c.title = `Teacher: ${langInfo.teacherName} (${langInfo.name}) - 1 toque: Cambiar | Mantener pulsado: Vídeo`;
                 const img = document.createElement('img');
                 img.className = 'avatar-img face-img';
                 img.alt = langInfo.teacherTitle || 'Teacher';
@@ -2895,6 +3290,9 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
                 c.appendChild(img);
             });
+            if (typeof app !== 'undefined' && app.setupTeacherAvatars) {
+                app.setupTeacherAvatars();
+            }
         },
 
         loadCard: () => {
@@ -3280,7 +3678,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             conversation.setAutoMic(true);
 
             const levelMap = ["Beginner (A0)", "Elementary (A1-A2)", "Intermediate (B1)", "Advanced (B2)", "Native (C1+)"];
-            const currentLevelNum = db.academy_level || 0;
+            const currentLevelNum = app.getLangLevel();
             const level = levelMap[currentLevelNum];
             const isAdvanced = currentLevelNum >= 3;
 
@@ -3555,15 +3953,17 @@ CRITICAL: Return ONLY a valid JSON object:
                 const levelLabels = app.getLevelLabels();
                 const levelTitle = levelLabels[assignedLevel] || "A1-A2 (Basic)";
 
-                // Unlock all levels up to assignedLevel
-                if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+                // Unlock all levels up to assignedLevel for CURRENT LANGUAGE
+                const pointsObj = app.getLangPoints(currentLang);
                 for (let l = 0; l <= assignedLevel; l++) {
-                    db.level_points[l] = Math.max(db.level_points[l] || 0, 50);
+                    pointsObj[l] = Math.max(pointsObj[l] || 0, 50);
                 }
+                if (!db.lang_academy_levels) db.lang_academy_levels = {};
+                db.lang_academy_levels[currentLang] = assignedLevel;
                 db.academy_level = assignedLevel;
                 app.saveDB();
-                app.renderLevelBadges();
-                app.updateAcademyLevelDisplay(assignedLevel);
+                app.renderLevelBadges(currentLang);
+                app.updateAcademyLevelDisplay(assignedLevel, currentLang);
                 app.renderDashboardLists();
                 app.updateLessonButtonsVisibility();
 
@@ -3693,7 +4093,7 @@ Return ONLY a valid JSON object:
                 }
 
                 if (earnedPts > 0) {
-                    app.addLevelPoints(db.academy_level, earnedPts);
+                    app.addLevelPoints(app.getLangLevel(), earnedPts);
                 }
 
                 const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--neon-cyan)';
