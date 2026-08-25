@@ -29,14 +29,18 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            min-height: 100%;
+            height: 100%;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--cyber-bg);
             color: var(--cyber-text);
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100dvh;
+            max-height: 100dvh;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
@@ -63,7 +67,7 @@
             max-width: 700px;
             width: 100%;
             margin: 0 auto;
-            padding: 8px 14px 12px;
+            padding: 4px 12px 6px;
             text-align: center;
             flex: 1 1 auto;
             display: flex;
@@ -285,26 +289,23 @@
                     ❓
                 </button>
             </div>
-        </div>
-    </div>
-
     <!-- ====== VIEW: DASHBOARD ====== -->
-    <div id="view-dashboard" class="container hidden" style="padding: 4px 14px 4px; max-width: 550px; justify-content: space-between;">
-        <!-- DASHBOARD TOP AREA: LOGO + TEACHER + TRANSLATOR + LISTS + ACTION BUTTONS -->
+    <div id="view-dashboard" class="container hidden" style="padding: 10px 14px 6px; max-width: 550px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto;">
+        <!-- TOP SECTION: LOGO + TEACHER + TRANSLATOR + LISTS + ACTION BUTTONS -->
         <div style="width: 100%;">
             <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-            <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 2px auto 8px; flex-wrap: nowrap; max-width: 100%;">
-                <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 78px; height: 78px; min-width: 78px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
-                <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 78px; height: 78px; min-width: 78px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
-                <button onclick="app.startDirectHandsFree()" class="tech" style="width: 78px; height: 78px; min-width: 78px; padding: 4px 2px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 16px; box-shadow: 0 0 16px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
-                    <span style="font-size: 1.3rem; line-height: 1;">🎙️</span>
-                    <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 72px;">TRANSLATOR</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 2px auto 10px; flex-wrap: nowrap; max-width: 100%;">
+                <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 80px; height: 80px; min-width: 80px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
+                <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 82px; height: 82px; min-width: 82px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
+                <button onclick="app.startDirectHandsFree()" class="tech" style="width: 80px; height: 80px; min-width: 80px; padding: 6px 4px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 16px; box-shadow: 0 0 16px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
+                    <span style="font-size: 1.35rem; line-height: 1;">🎙️</span>
+                    <span class="lbl-translator-btn" style="color: var(--neon-pink); font-size: 0.64rem; font-weight: 900; letter-spacing: 0.2px; text-align: center; line-height: 1.1; word-break: break-word; max-width: 72px;">TRANSLATOR</span>
                 </button>
             </div>
 
             <!-- LIST SELECTOR (CLEAN, HIGHLY LEGIBLE, SOLID DROPDOWN ARROW) -->
             <div style="position: relative; margin-bottom: 8px;">
-                <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="width: 100%; background: #0a0a12; color: #FFFFFF; border: 1.5px solid var(--neon-cyan); padding: 9px 38px 9px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.92rem; font-weight: 700; border-radius: 8px; cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; box-shadow: var(--cyber-glow); outline: none; letter-spacing: 0.3px;">
+                <select id="dashboard-list-selector" onchange="session.selectList(this.value)" style="width: 100%; background: #0a0a12; color: #FFFFFF; border: 1.5px solid var(--neon-cyan); padding: 10px 38px 10px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.95rem; font-weight: 700; border-radius: 8px; cursor: pointer; appearance: none; -webkit-appearance: none; -moz-appearance: none; box-shadow: var(--cyber-glow); outline: none; letter-spacing: 0.3px;">
                     <option value="">Select a list...</option>
                 </select>
                 <div style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--neon-cyan); font-size: 0.85rem; font-weight: 900; line-height: 1;">
@@ -313,16 +314,16 @@
             </div>
 
             <!-- MAIN ACTION BUTTONS -->
-            <button onclick="session.start()" class="success" style="width: 100%; padding: 12px 16px; font-size: 1.1rem; margin-bottom: 6px; font-weight: bold; letter-spacing: 1.5px;">🚀 <span id="lbl-start-btn">START</span></button>
-            <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 10px 16px; font-size: 0.9rem; margin-bottom: 4px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
+            <button onclick="session.start()" class="success" style="width: 100%; padding: 13px 20px; font-size: 1.15rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1.5px;">🚀 <span id="lbl-start-btn">START</span></button>
+            <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 11px 20px; font-size: 0.95rem; margin-bottom: 4px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
         </div>
 
-        <!-- DASHBOARD BOTTOM AREA (PUSHED TO THE VERY BOTTOM): LEVEL ACCORDION -->
+        <!-- BOTTOM SECTION (PROMINENT SEPARATION GAP, PINNED TO BOTTOM) -->
         <div style="width: 100%; margin-top: auto; padding-top: 8px;">
             <!-- COLLAPSIBLE ACADEMY LEVEL & VOICE SPEED & UTILITIES -->
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(0,243,255,0.12);">
-                <div onclick="app.toggleLevelPicker()" style="padding: 9px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
-                    <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.84rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF; font-weight: 800;"></span></span>
+            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(0,243,255,0.12); margin-bottom: 8px;">
+                <div onclick="app.toggleLevelPicker()" style="padding: 10px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
+                    <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.86rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF; font-weight: 800;"></span></span>
                     <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.82rem; font-weight: 900; transition: transform 0.3s;">▼</span>
                 </div>
                 <div id="level-picker-body" class="hidden" style="padding: 12px 14px; border-top: 1px solid rgba(0,243,255,0.25); background: rgba(0,0,0,0.65);">
@@ -357,6 +358,21 @@
                     </div>
                 </div>
             </div>
+
+            <!-- EMBEDDED DASHBOARD FOOTER (PINNED TO BASE) -->
+            <footer style="width: 100%; padding: 4px 0 2px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.72rem; color: #888; box-sizing: border-box;">
+                <div id="install-btn-container" style="margin-bottom: 3px;">
+                    <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 3px 14px; font-size: 0.72rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
+                        📲 Instalar Jetbulary
+                    </button>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 2px;">
+                    <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
+                    <span style="color: #444;">|</span>
+                    <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
+                </div>
+                <p style="color: #666; font-size: 0.66rem; letter-spacing: 0.5px; margin: 0;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 1px 4px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.2</span></p>
+            </footer>
         </div>
     </div>
 
@@ -774,23 +790,6 @@
             </button>
         </div>
     </div>
-
-    <!-- ====== GLOBAL FOOTER ====== -->
-    <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 0 auto; padding: 6px 12px 8px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.74rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box; flex-shrink: 0;">
-        <!-- PWA INSTALL BUTTON -->
-        <div id="install-btn-container" style="margin-bottom: 4px;">
-            <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 14px; font-size: 0.74rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
-                📲 Instalar Jetbulary
-            </button>
-        </div>
-
-        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 3px;">
-            <a href="#" onclick="app.showPrivacy(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Política de privacidad</a>
-            <span style="color: #444;">|</span>
-            <a href="#" onclick="app.showTerms(); return false;" style="color: var(--neon-cyan); text-decoration: none;">Términos de uso</a>
-        </div>
-        <p style="color: #666; font-size: 0.68rem; letter-spacing: 0.5px; margin: 0;">&copy; 2026 Todos los derechos reservados JETBULARY.COM <span style="color: var(--neon-cyan); font-weight: bold; margin-left: 6px; padding: 2px 5px; border: 1px solid rgba(0,243,255,0.4); border-radius: 4px; background: rgba(0,243,255,0.06);">V3.2</span></p>
-    </footer>
 
 <script>
     // ====== SCROLL TO MIC ======
