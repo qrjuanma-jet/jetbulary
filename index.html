@@ -344,13 +344,13 @@
             <!-- BOTTOM UTILITY BAR -->
             <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <button onclick="conversation.startLevelAssessment()" class="tech" style="width: auto; padding: 7px 16px; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--cyber-warn); color: var(--cyber-warn); background: rgba(255,184,0,0.08); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
-                    🎯 Prueba Nivel
+                    <span id="lbl-test-btn">🎯 Prueba Nivel</span>
                 </button>
                 <button onclick="app.openBackupModal()" class="tech" style="width: auto; padding: 7px 16px; font-size: 0.75rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.06); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
-                    💾 Copia Seguridad
+                    <span id="lbl-backup-btn">💾 Copia Seguridad</span>
                 </button>
                 <button onclick="app.logout()" class="tech" style="width: auto; padding: 7px 16px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); color: #888; background: transparent; border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
-                    🔑 Cambio Key
+                    <span id="lbl-key-btn">🔑 Cambio Key</span>
                 </button>
             </div>
         </div>
@@ -374,7 +374,7 @@
             </button>
 
             <button id="btn-free-conversation" onclick="conversation.startFreeConversation()" class="tech hidden" style="width: 100%; padding: 13px 18px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: var(--neon-pink); border-radius: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.25); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 900; letter-spacing: 1px;">
-                <span>FREE CONVERSATION</span>
+                <span id="lbl-freeconvo-btn">FREE CONVERSATION</span>
             </button>
         </div>
 
@@ -395,12 +395,12 @@
         <div id="feedback-msg" class="feedback"></div>
 
         <div id="fail-options" class="hidden" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
-            <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;">🔄 Retry</button>
-            <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;">➡️ Skip</button>
+            <button onclick="game.retry()" class="warning" style="width: auto; flex: 1;"><span id="lbl-retry-btn">🔄 Retry</span></button>
+            <button onclick="game.next()" class="secondary" style="width: auto; flex: 1;"><span id="lbl-skip-btn">➡️ Skip</span></button>
         </div>
 
         <div id="ai-advice" class="hidden" style="margin-top: 15px; font-weight: 500; color: #AAA; font-size: 17px;"></div>
-        <button id="next-btn" class="success hidden" onclick="game.next()">Next ➡</button>
+        <button id="next-btn" class="success hidden" onclick="game.next()"><span id="lbl-next-btn">Next ➡</span></button>
     </div>
 
     <!-- ====== VIEW: CONVERSATION ====== -->
@@ -438,7 +438,7 @@
                 <div class="avatar-container" id="avatar-vocab" onclick="app.openTeacherModal()" style="width: 80px; height: 80px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
                 <h2 style="margin: 0; font-size: 1.25rem; color: var(--neon-cyan);">📚 Vocabulary</h2>
             </div>
-            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 10px 18px; font-size: 0.85rem;">⬅ Back</button>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 10px 18px; font-size: 0.85rem;"><span class="lbl-back-btn">⬅ Back</span></button>
         </div>
 
         <p style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Select words to practice in conversation, or use the audio buttons to hear pronunciations.</p>
@@ -455,15 +455,15 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.8rem;">
             <span id="vocab-selection-count" class="tech" style="color: var(--neon-cyan);">0 words selected</span>
             <div style="display: flex; gap: 8px;">
-                <button onclick="vocab.selectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;">Select All</button>
-                <button onclick="vocab.deselectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;">Clear</button>
+                <button onclick="vocab.selectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;"><span id="lbl-selectall-btn">Select All</span></button>
+                <button onclick="vocab.deselectAll()" class="secondary" style="width: auto; padding: 6px 12px; font-size: 0.75rem;"><span id="lbl-deselectall-btn">Clear</span></button>
             </div>
         </div>
 
         <!-- STICKY ACTION BUTTON TO START CONVERSATION -->
         <div style="position: sticky; top: 10px; z-index: 100; margin-bottom: 15px;">
             <button id="btn-convo-selected" onclick="vocab.startSelectedConversation()" class="success" style="width: 100%; padding: 14px; font-size: 0.95rem; font-weight: bold; box-shadow: var(--cyber-glow); opacity: 0.5; pointer-events: none;">
-                💬 CONVERSATION WITH SELECTED WORDS
+                <span id="lbl-startconvo-btn">💬 CONVERSATION WITH SELECTED WORDS</span>
             </button>
         </div>
 
@@ -875,13 +875,6 @@
                         console.log("Restoring progress automatically from Persistent IndexedDB Backup...");
                         db = backup.db;
                         localStorage.setItem(DB_KEY, JSON.stringify(db));
-                        if (backup.apiKey && !localStorage.getItem(API_KEY_STORAGE)) {
-                            localStorage.setItem(API_KEY_STORAGE, backup.apiKey);
-                        }
-                        if (backup.currentLang) {
-                            currentLang = backup.currentLang;
-                            localStorage.setItem('jetbulary_current_lang', currentLang);
-                        }
                         if (backup.speechSpeed) {
                             localStorage.setItem('jetbulary_speech_speed', backup.speechSpeed);
                         }
@@ -908,7 +901,21 @@
             aiPromptLang: 'English',
             translatorBtnLabel: 'TRANSLATOR',
             startBtnLabel: 'START',
-            vocabBtnLabel: 'VOCABULARY'
+            vocabBtnLabel: 'VOCABULARY',
+            lessonBtnLabel: 'LESSON',
+            freeConvoBtnLabel: 'FREE CONVERSATION',
+            retryBtnLabel: '🔄 Retry',
+            skipBtnLabel: '➡️ Skip',
+            nextBtnLabel: 'Next ➡',
+            testBtnLabel: '🎯 Level Test',
+            backupBtnLabel: '💾 Backup',
+            keyBtnLabel: '🔑 Change Key',
+            backBtnLabel: '⬅ Back',
+            allWordsBtnLabel: 'ALL WORDS',
+            selectAllBtnLabel: 'Select All',
+            deselectAllBtnLabel: 'Clear',
+            startConvoBtnLabel: '💬 START CONVERSATION',
+            wordsSelectedLabel: 'words selected'
         },
         de: {
             code: 'de',
@@ -924,7 +931,21 @@
             aiPromptLang: 'German (Deutsch)',
             translatorBtnLabel: 'ÜBERSETZERIN',
             startBtnLabel: 'STARTEN',
-            vocabBtnLabel: 'WORTSCHATZ'
+            vocabBtnLabel: 'WORTSCHATZ',
+            lessonBtnLabel: 'LEKTION',
+            freeConvoBtnLabel: 'FREIE KONVERSATION',
+            retryBtnLabel: '🔄 Wiederholen',
+            skipBtnLabel: '➡️ Überspringen',
+            nextBtnLabel: 'Weiter ➡',
+            testBtnLabel: '🎯 Einstufungstest',
+            backupBtnLabel: '💾 Sicherung',
+            keyBtnLabel: '🔑 Schlüssel ändern',
+            backBtnLabel: '⬅ Zurück',
+            allWordsBtnLabel: 'ALLE WÖRTER',
+            selectAllBtnLabel: 'Alle auswählen',
+            deselectAllBtnLabel: 'Löschen',
+            startConvoBtnLabel: '💬 GESPRÄCH STARTEN',
+            wordsSelectedLabel: 'Wörter ausgewählt'
         },
         fr: {
             code: 'fr',
@@ -940,7 +961,21 @@
             aiPromptLang: 'French (Français)',
             translatorBtnLabel: 'TRADUCTRICE',
             startBtnLabel: 'DÉMARRER',
-            vocabBtnLabel: 'VOCABULAIRE'
+            vocabBtnLabel: 'VOCABULAIRE',
+            lessonBtnLabel: 'LEÇON',
+            freeConvoBtnLabel: 'CONVERSATION LIBRE',
+            retryBtnLabel: '🔄 Réessayer',
+            skipBtnLabel: '➡️ Passer',
+            nextBtnLabel: 'Suivant ➡',
+            testBtnLabel: '🎯 Test de Niveau',
+            backupBtnLabel: '💾 Sauvegarde',
+            keyBtnLabel: '🔑 Changer Clé',
+            backBtnLabel: '⬅ Retour',
+            allWordsBtnLabel: 'TOUS LES MOTS',
+            selectAllBtnLabel: 'Tout sélectionner',
+            deselectAllBtnLabel: 'Effacer',
+            startConvoBtnLabel: '💬 LANCER LA CONVERSATION',
+            wordsSelectedLabel: 'mots sélectionnés'
         },
         pt: {
             code: 'pt',
@@ -956,7 +991,21 @@
             aiPromptLang: 'Portuguese (Português)',
             translatorBtnLabel: 'TRADUTORA',
             startBtnLabel: 'INICIAR',
-            vocabBtnLabel: 'VOCABULÁRIO'
+            vocabBtnLabel: 'VOCABULÁRIO',
+            lessonBtnLabel: 'LIÇÃO',
+            freeConvoBtnLabel: 'CONVERSAÇÃO LIVRE',
+            retryBtnLabel: '🔄 Repetir',
+            skipBtnLabel: '➡️ Pular',
+            nextBtnLabel: 'Seguinte ➡',
+            testBtnLabel: '🎯 Teste de Nível',
+            backupBtnLabel: '💾 Cópia de Segurança',
+            keyBtnLabel: '🔑 Alterar Chave',
+            backBtnLabel: '⬅ Voltar',
+            allWordsBtnLabel: 'TODAS AS PALAVRAS',
+            selectAllBtnLabel: 'Selecionar tudo',
+            deselectAllBtnLabel: 'Limpar',
+            startConvoBtnLabel: '💬 INICIAR CONVERSA',
+            wordsSelectedLabel: 'palavras selecionadas'
         },
         it: {
             code: 'it',
@@ -972,7 +1021,21 @@
             aiPromptLang: 'Italian (Italiano)',
             translatorBtnLabel: 'TRADUTTRICE',
             startBtnLabel: 'INIZIA',
-            vocabBtnLabel: 'VOCABOLARIO'
+            vocabBtnLabel: 'VOCABOLARIO',
+            lessonBtnLabel: 'LEZIONE',
+            freeConvoBtnLabel: 'CONVERSAZIONE LIBERA',
+            retryBtnLabel: '🔄 Riprova',
+            skipBtnLabel: '➡️ Salta',
+            nextBtnLabel: 'Avanti ➡',
+            testBtnLabel: '🎯 Test di Livello',
+            backupBtnLabel: '💾 Backup',
+            keyBtnLabel: '🔑 Cambia Chiave',
+            backBtnLabel: '⬅ Indietro',
+            allWordsBtnLabel: 'TUTTE LE PAROLE',
+            selectAllBtnLabel: 'Seleziona tutto',
+            deselectAllBtnLabel: 'Cancella',
+            startConvoBtnLabel: '💬 INIZIA CONVERSAZIONE',
+            wordsSelectedLabel: 'parole selezionate'
         },
         ru: {
             code: 'ru',
@@ -988,7 +1051,21 @@
             aiPromptLang: 'Russian (Русский)',
             translatorBtnLabel: 'ПЕРЕВОДЧИЦА',
             startBtnLabel: 'НАЧАТЬ',
-            vocabBtnLabel: 'СЛОВАРЬ'
+            vocabBtnLabel: 'СЛОВАРЬ',
+            lessonBtnLabel: 'УРОК',
+            freeConvoBtnLabel: 'СВОБОДНЫЙ ДИАЛОГ',
+            retryBtnLabel: '🔄 Повторить',
+            skipBtnLabel: '➡️ Пропустить',
+            nextBtnLabel: 'Далее ➡',
+            testBtnLabel: '🎯 Тест уровня',
+            backupBtnLabel: '💾 Резервная копия',
+            keyBtnLabel: '🔑 Сменить ключ',
+            backBtnLabel: '⬅ Назад',
+            allWordsBtnLabel: 'ВСЕ СЛОВА',
+            selectAllBtnLabel: 'Выбрать все',
+            deselectAllBtnLabel: 'Очистить',
+            startConvoBtnLabel: '💬 НАЧАТЬ РАЗГОВОР',
+            wordsSelectedLabel: 'слов выбрано'
         },
         eu: {
             code: 'eu',
@@ -1004,7 +1081,21 @@
             aiPromptLang: 'Basque (Euskara)',
             translatorBtnLabel: 'ITZULTZAILEA',
             startBtnLabel: 'HASI',
-            vocabBtnLabel: 'HIZTEGIA'
+            vocabBtnLabel: 'HIZTEGIA',
+            lessonBtnLabel: 'IKASGAIA',
+            freeConvoBtnLabel: 'ELKARRIZKETA ASKEA',
+            retryBtnLabel: '🔄 Berriz',
+            skipBtnLabel: '➡️ Saltatu',
+            nextBtnLabel: 'Hurrengoa ➡',
+            testBtnLabel: '🎯 Maila Proba',
+            backupBtnLabel: '💾 Segurtasun Kopia',
+            keyBtnLabel: '🔑 Giltza Aldatu',
+            backBtnLabel: '⬅ Atzera',
+            allWordsBtnLabel: 'HITZ GUZTIAK',
+            selectAllBtnLabel: 'Hautatu guztiak',
+            deselectAllBtnLabel: 'Garbitu',
+            startConvoBtnLabel: '💬 HASI ELKARRIZKETA',
+            wordsSelectedLabel: 'hitz hautatuta'
         },
         ca: {
             code: 'ca',
@@ -1020,7 +1111,21 @@
             aiPromptLang: 'Catalan (Català)',
             translatorBtnLabel: 'TRADUCTORA',
             startBtnLabel: 'COMENÇAR',
-            vocabBtnLabel: 'VOCABULARI'
+            vocabBtnLabel: 'VOCABULARI',
+            lessonBtnLabel: 'LLIÇÓ',
+            freeConvoBtnLabel: 'CONVERSA LLIURE',
+            retryBtnLabel: '🔄 Reintentar',
+            skipBtnLabel: '➡️ Saltar',
+            nextBtnLabel: 'Següent ➡',
+            testBtnLabel: '🎯 Prova de Nivell',
+            backupBtnLabel: '💾 Còpia de Seguretat',
+            keyBtnLabel: '🔑 Canviar Clau',
+            backBtnLabel: '⬅ Tornar',
+            allWordsBtnLabel: 'TOTES LES PARAULES',
+            selectAllBtnLabel: 'Seleccionar tot',
+            deselectAllBtnLabel: 'Netejar',
+            startConvoBtnLabel: '💬 INICIAR CONVERSA',
+            wordsSelectedLabel: 'paraules seleccionades'
         },
         gl: {
             code: 'gl',
@@ -1036,7 +1141,21 @@
             aiPromptLang: 'Galician (Galego)',
             translatorBtnLabel: 'TRADUTORA',
             startBtnLabel: 'COMEZAR',
-            vocabBtnLabel: 'VOCABULARIO'
+            vocabBtnLabel: 'VOCABULARIO',
+            lessonBtnLabel: 'LECCIÓN',
+            freeConvoBtnLabel: 'CONVERSA LIBRE',
+            retryBtnLabel: '🔄 Repetir',
+            skipBtnLabel: '➡️ Saltar',
+            nextBtnLabel: 'Seguinte ➡',
+            testBtnLabel: '🎯 Proba de Nivel',
+            backupBtnLabel: '💾 Copia de Seguridade',
+            keyBtnLabel: '🔑 Cambiar Chave',
+            backBtnLabel: '⬅ Volver',
+            allWordsBtnLabel: 'TODAS AS PALABRAS',
+            selectAllBtnLabel: 'Seleccionar todo',
+            deselectAllBtnLabel: 'Limpar',
+            startConvoBtnLabel: '💬 INICIAR CONVERSA',
+            wordsSelectedLabel: 'palabras seleccionadas'
         }
     };
 
@@ -2145,13 +2264,54 @@
 
         updateActionButtons: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+
+            // Dashboard Main Action Buttons
             const startLbl = document.getElementById('lbl-start-btn');
             if (startLbl) startLbl.innerText = langInfo.startBtnLabel || 'START';
 
             const vocabLbl = document.getElementById('lbl-vocab-btn');
             if (vocabLbl) vocabLbl.innerText = langInfo.vocabBtnLabel || 'VOCABULARY';
 
+            // Dashboard Translator Header Button
             app.updateHeaderTranslatorBtn();
+
+            // Dashboard Bottom Utilities
+            const testBtn = document.getElementById('lbl-test-btn');
+            if (testBtn) testBtn.innerText = langInfo.testBtnLabel || '🎯 Level Test';
+            const backupBtn = document.getElementById('lbl-backup-btn');
+            if (backupBtn) backupBtn.innerText = langInfo.backupBtnLabel || '💾 Backup';
+            const keyBtn = document.getElementById('lbl-key-btn');
+            if (keyBtn) keyBtn.innerText = langInfo.keyBtnLabel || '🔑 Change Key';
+
+            // Game Action Buttons
+            const lessonLbl = document.getElementById('lbl-lesson-btn');
+            if (lessonLbl) lessonLbl.innerText = langInfo.lessonBtnLabel || 'LESSON';
+
+            const freeConvoLbl = document.getElementById('lbl-freeconvo-btn');
+            if (freeConvoLbl) freeConvoLbl.innerText = langInfo.freeConvoBtnLabel || 'FREE CONVERSATION';
+
+            const retryLbl = document.getElementById('lbl-retry-btn');
+            if (retryLbl) retryLbl.innerText = langInfo.retryBtnLabel || '🔄 Retry';
+
+            const skipLbl = document.getElementById('lbl-skip-btn');
+            if (skipLbl) skipLbl.innerText = langInfo.skipBtnLabel || '➡️ Skip';
+
+            const nextLbl = document.getElementById('lbl-next-btn');
+            if (nextLbl) nextLbl.innerText = langInfo.nextBtnLabel || 'Next ➡';
+
+            // Vocab View Buttons
+            const backBtns = document.querySelectorAll('.lbl-back-btn');
+            backBtns.forEach(btn => btn.innerText = langInfo.backBtnLabel || '⬅ Back');
+
+            const selectAllBtn = document.getElementById('lbl-selectall-btn');
+            if (selectAllBtn) selectAllBtn.innerText = langInfo.selectAllBtnLabel || 'Select All';
+
+            const deselectAllBtn = document.getElementById('lbl-deselectall-btn');
+            if (deselectAllBtn) deselectAllBtn.innerText = langInfo.deselectAllBtnLabel || 'Clear';
+
+            const startConvoBtn = document.getElementById('lbl-startconvo-btn');
+            if (startConvoBtn) startConvoBtn.innerText = langInfo.startConvoBtnLabel || '💬 START CONVERSATION';
+
             app.updateLessonButtonsVisibility();
         },
 
@@ -2161,18 +2321,6 @@
                 const lvl = app.getLangLevel();
                 if (lvl >= 3) freeConvoBtn.classList.remove('hidden');
                 else freeConvoBtn.classList.add('hidden');
-            }
-            const lessonLbl = document.getElementById('lbl-lesson-btn');
-            if (lessonLbl) {
-                if (currentLang === 'de') lessonLbl.innerText = 'LEKTION';
-                else if (currentLang === 'fr') lessonLbl.innerText = 'LEÇON';
-                else if (currentLang === 'pt') lessonLbl.innerText = 'LIÇÃO';
-                else if (currentLang === 'it') lessonLbl.innerText = 'LEZIONE';
-                else if (currentLang === 'ru') lessonLbl.innerText = 'УРОК';
-                else if (currentLang === 'eu') lessonLbl.innerText = 'IKASGAIA';
-                else if (currentLang === 'ca') lessonLbl.innerText = 'LLIÇÓ';
-                else if (currentLang === 'gl') lessonLbl.innerText = 'LECCIÓN';
-                else lessonLbl.innerText = 'LESSON';
             }
         },
 
@@ -2702,7 +2850,7 @@
             app.autoSelectNextPendingTopic();
             app.renderDashboardLists();
             app.renderLevelBadges();
-            app.updateLessonButtonsVisibility();
+            app.updateActionButtons();
         },
 
         renderDashboardLists: () => {
@@ -3198,11 +3346,12 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const count = vocab.selectedIds.size;
             const countEl = document.getElementById('vocab-selection-count');
             const btn = document.getElementById('btn-convo-selected');
-            if (countEl) countEl.innerText = `${count} word${count === 1 ? '' : 's'} selected`;
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            if (countEl) countEl.innerText = `${count} ${langInfo.wordsSelectedLabel || 'words selected'}`;
             if (btn) {
                 btn.style.opacity = count > 0 ? '1' : '0.5';
                 btn.style.pointerEvents = count > 0 ? 'auto' : 'none';
-                btn.innerHTML = `💬 START CONVERSATION WITH (${count}) SELECTED WORDS`;
+                btn.innerHTML = `<span id="lbl-startconvo-btn">${langInfo.startConvoBtnLabel || '💬 START CONVERSATION'} (${count})</span>`;
             }
         },
 
@@ -3227,7 +3376,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
-            selector.innerHTML = '<option value="all">ALL WORDS</option>' +
+            selector.innerHTML = `<option value="all">${langInfo.allWordsBtnLabel || 'ALL WORDS'}</option>` +
                 topics.map(t => `<option value="${t.id}" ${t.id == vocab.activeTopicId ? 'selected' : ''}>${t.name.toUpperCase()}</option>`).join('');
 
             let words = vocab.getFilteredWords().map(w => {
