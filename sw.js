@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jetbulary-cache-v23';
+const CACHE_NAME = 'jetbulary-cache-v27';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
