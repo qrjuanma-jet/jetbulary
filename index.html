@@ -29,18 +29,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            min-height: 100%;
             height: 100%;
+            height: 100dvh;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--cyber-bg);
             color: var(--cyber-text);
-            min-height: 100vh;
-            min-height: 100dvh;
-            overflow-x: hidden;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
@@ -63,15 +64,19 @@
         p { color: #AAA; line-height: 1.6; }
 
         .container {
-            max-width: 700px;
+            max-width: 550px;
             width: 100%;
+            height: 100%;
+            height: 100dvh;
             margin: 0 auto;
-            padding: 4px 12px 6px;
+            padding: 8px 14px calc(env(safe-area-inset-bottom, 0px) + 6px);
             text-align: center;
-            flex: 1 1 auto;
+            flex: 1 1 100%;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* --- BUTTONS --- */
@@ -292,7 +297,7 @@
     </div>
 
     <!-- ====== VIEW: DASHBOARD ====== -->
-    <div id="view-dashboard" class="container hidden" style="padding: 10px 14px 6px; max-width: 550px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto;">
+    <div id="view-dashboard" class="container hidden" style="justify-content: space-between;">
         <!-- TOP SECTION: LOGO + TEACHER + TRANSLATOR + LISTS + ACTION BUTTONS -->
         <div style="width: 100%;">
             <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
@@ -2826,7 +2831,12 @@
             app.setupLogos();
             app.setupTeacherAvatars();
             app.setupTeacherCards();
+            app.setupInstallPrompt();
             app.updateInstallButtonVisibility();
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration error:', err));
+            }
 
             window.onpopstate = (event) => {
                 const videoModal = document.getElementById('modal-teacher-video');
@@ -2898,6 +2908,44 @@
             localStorage.setItem('jetbulary_speech_speed', val);
             const slider = document.getElementById('speech-speed-slider');
             if (slider) slider.value = val;
+        },
+
+        deferredInstallPrompt: null,
+
+        setupInstallPrompt: () => {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                app.deferredInstallPrompt = e;
+                app.updateInstallButtonVisibility();
+            });
+            window.addEventListener('appinstalled', () => {
+                app.deferredInstallPrompt = null;
+                app.updateInstallButtonVisibility();
+            });
+        },
+
+        updateInstallButtonVisibility: () => {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const container = document.getElementById('install-btn-container');
+            if (!container) return;
+            if (isStandalone) {
+                container.classList.add('hidden');
+            } else {
+                container.classList.remove('hidden');
+            }
+        },
+
+        installApp: async () => {
+            if (app.deferredInstallPrompt) {
+                app.deferredInstallPrompt.prompt();
+                const { outcome } = await app.deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    app.deferredInstallPrompt = null;
+                    app.updateInstallButtonVisibility();
+                }
+            } else {
+                alert("Para instalar Jetbulary en tu dispositivo:\n\n1. En Chrome: Pulsa el menú de 3 puntos (⋮) arriba a la derecha y selecciona 'Instalar aplicación' o 'Añadir a pantalla de inicio'.\n\n2. En Safari (iPhone): Pulsa el botón Compartir y elige 'Añadir a pantalla de inicio'.");
+            }
         },
 
         showDashboard: (h) => {
