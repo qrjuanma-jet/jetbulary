@@ -1799,8 +1799,9 @@
         }
     };
 
-    // ====== REWRITTEN AUDIO & STT ENGINE (MEDIARECORDER + GROQ WHISPER + AUTO-VAD) ======
+    // ====== ULTRA-LOW LATENCY HYBRID SPEECH RECOGNITION (WEB SPEECH API + GROQ WHISPER FALLBACK) ======
     const stt = {
+        recognition: null,
         mediaRecorder: null,
         audioStream: null,
         audioChunks: [],
@@ -1809,12 +1810,127 @@
         audioContext: null,
         analyser: null,
         activeTarget: null,
+        hasHandledResult: false,
+
+        getSpeechLang: (langCode) => {
+            if (langCode === 'es') return 'es-ES';
+            const langInfo = LANGUAGES[langCode] || LANGUAGES.en;
+            return langInfo.speechLang || 'en-US';
+        },
 
         startRecording: async (target, langCode, onTranscriptCallback, onErrorCallback) => {
             stt.stop();
             window.speechSynthesis.cancel();
             stt.activeTarget = target;
+            stt.hasHandledResult = false;
 
+            const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
+            const btn = btnId ? document.getElementById(btnId) : null;
+            if (btn) btn.classList.add('listening');
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            // Prioritize native Web Speech API (Chrome, Edge, Safari iOS/macOS, Android) for instant zero-latency processing
+            if (SR) {
+                try {
+                    const rec = new SR();
+                    stt.recognition = rec;
+                    rec.lang = stt.getSpeechLang(langCode);
+                    rec.continuous = false;
+                    rec.interimResults = (target === 'game'); // Instant real-time interim recognition for game
+                    rec.maxAlternatives = 3;
+
+                    rec.onresult = (e) => {
+                        if (stt.hasHandledResult) return;
+
+                        if (target === 'game') {
+                            // Check target word for instant match
+                            let targetWord = (game.data && game.data[game.index]) ? game.data[game.index].english : '';
+                            if (targetWord.includes('(')) targetWord = targetWord.split('(')[0].trim();
+
+                            // Evaluate all alternatives across results for instant match
+                            for (let i = e.resultIndex; i < e.results.length; i++) {
+                                const res = e.results[i];
+                                for (let j = 0; j < res.length; j++) {
+                                    const transcript = res[j].transcript ? res[j].transcript.trim() : '';
+                                    if (transcript && game.isCloseMatch(targetWord, transcript)) {
+                                        stt.hasHandledResult = true;
+                                        stt.stop();
+                                        onTranscriptCallback(transcript);
+                                        return;
+                                    }
+                                }
+                            }
+
+                            // If this is the final speech result from recognition and not matched yet:
+                            const lastResult = e.results[e.results.length - 1];
+                            if (lastResult && lastResult.isFinal) {
+                                const finalTranscript = (lastResult[0] && lastResult[0].transcript) ? lastResult[0].transcript.trim() : '';
+                                if (finalTranscript) {
+                                    stt.hasHandledResult = true;
+                                    stt.stop();
+                                    onTranscriptCallback(finalTranscript);
+                                    return;
+                                }
+                            }
+                        } else {
+                            // For conversation or translator
+                            for (let i = 0; i < e.results.length; i++) {
+                                const res = e.results[i];
+                                if (res.isFinal && res[0] && res[0].transcript) {
+                                    const transcript = res[0].transcript.trim();
+                                    if (transcript) {
+                                        stt.hasHandledResult = true;
+                                        stt.stop();
+                                        onTranscriptCallback(transcript);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    rec.onerror = (e) => {
+                        console.warn("Native SpeechRecognition error:", e.error);
+                        if (e.error === 'no-speech') {
+                            if (btn) btn.classList.remove('listening');
+                            if (!stt.hasHandledResult && onErrorCallback) onErrorCallback("No se detectó voz");
+                        } else if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+                            if (btn) btn.classList.remove('listening');
+                            alert("⚠️ Por favor concede permiso de micrófono a Jetbulary.");
+                        } else {
+                            // Fallback to Groq Whisper if native speech recognizer encounters network or service issues
+                            if (!stt.hasHandledResult) {
+                                stt.startGroqRecording(target, langCode, onTranscriptCallback, onErrorCallback);
+                            }
+                        }
+                    };
+
+                    rec.onend = () => {
+                        if (btn) btn.classList.remove('listening');
+                        stt.isRecording = false;
+                        stt.recognition = null;
+                    };
+
+                    rec.start();
+                    stt.isRecording = true;
+
+                    // Fallback timeout in case speech engine hangs
+                    stt.maxTimer = setTimeout(() => {
+                        if (stt.isRecording) stt.stop();
+                    }, target === 'game' ? 8000 : 30000);
+
+                    return;
+                } catch(srErr) {
+                    console.warn("SpeechRecognition start failed, switching to Groq fallback:", srErr);
+                }
+            }
+
+            // Fallback to MediaRecorder + Groq Whisper
+            stt.startGroqRecording(target, langCode, onTranscriptCallback, onErrorCallback);
+        },
+
+        startGroqRecording: async (target, langCode, onTranscriptCallback, onErrorCallback) => {
             const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
             const btn = btnId ? document.getElementById(btnId) : null;
             if (btn) btn.classList.add('listening');
@@ -1870,7 +1986,7 @@
                             if (onErrorCallback) onErrorCallback("No se detectó voz");
                         }
                     } catch(err) {
-                        console.error("Whisper error:", err);
+                        console.error("Whisper fallback error:", err);
                         if (onErrorCallback) onErrorCallback(err.message);
                     }
                 };
@@ -1878,7 +1994,7 @@
                 recorder.start(100);
                 stt.isRecording = true;
 
-                // Voice Activity Detection (Auto stop when silence is detected)
+                // Voice Activity Detection with ultra-fast responsiveness
                 try {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
                     if (AudioCtx) {
@@ -1893,6 +2009,7 @@
                         let speechStarted = false;
                         let silenceStart = null;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
+                        const silenceThresholdMs = target === 'game' ? 400 : 900; // Ultra-fast 400ms cutoff for single vocabulary words
 
                         const checkAudioLevel = () => {
                             if (!stt.isRecording || !stt.mediaRecorder) return;
@@ -1906,7 +2023,7 @@
                                 silenceStart = null;
                             } else if (speechStarted) {
                                 if (!silenceStart) silenceStart = Date.now();
-                                else if (Date.now() - silenceStart > 1800) {
+                                else if (Date.now() - silenceStart > silenceThresholdMs) {
                                     stt.stop();
                                     return;
                                 }
@@ -1917,56 +2034,47 @@
                     }
                 } catch(e) { console.log("VAD error:", e); }
 
-                // Safe fallback timeout (60s - student speaks without artificial rush)
                 stt.maxTimer = setTimeout(() => {
                     if (stt.isRecording) stt.stop();
-                }, 60000);
+                }, target === 'game' ? 6000 : 30000);
 
             } catch(err) {
                 console.error("Audio recording error:", err);
                 if (btn) btn.classList.remove('listening');
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     alert("⚠️ Por favor concede permiso de micrófono a Jetbulary para hablar.");
-                } else {
-                    stt.fallbackWebSpeech(target, langCode, onTranscriptCallback, onErrorCallback);
+                } else if (onErrorCallback) {
+                    onErrorCallback(err.message);
                 }
             }
         },
 
         stop: () => {
-            if (stt.maxTimer) clearTimeout(stt.maxTimer);
+            if (stt.maxTimer) {
+                clearTimeout(stt.maxTimer);
+                stt.maxTimer = null;
+            }
+            if (stt.recognition) {
+                try {
+                    stt.recognition.abort();
+                } catch(e){}
+                stt.recognition = null;
+            }
             if (stt.mediaRecorder && stt.mediaRecorder.state !== 'inactive') {
                 try { stt.mediaRecorder.stop(); } catch(e){}
             }
             stt.isRecording = false;
+            if (stt.audioStream) {
+                try {
+                    stt.audioStream.getTracks().forEach(t => t.stop());
+                } catch(e){}
+                stt.audioStream = null;
+            }
             if (stt.audioContext) {
                 try { stt.audioContext.close(); } catch(e){}
                 stt.audioContext = null;
             }
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
-        },
-
-        fallbackWebSpeech: (target, langCode, onTranscriptCallback, onErrorCallback) => {
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SR) return;
-            const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
-            const btn = btnId ? document.getElementById(btnId) : null;
-            if (btn) btn.classList.add('listening');
-
-            const rec = new SR();
-            const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
-            rec.lang = langMap[langCode] || 'en-US';
-            rec.continuous = false;
-            rec.interimResults = false;
-            rec.onresult = (e) => {
-                if (e.results && e.results[0] && e.results[0][0]) {
-                    const text = e.results[0][0].transcript;
-                    if (text) onTranscriptCallback(text.trim());
-                }
-            };
-            rec.onerror = (e) => { if (btn) btn.classList.remove('listening'); if (onErrorCallback) onErrorCallback(e.error); };
-            rec.onend = () => { if (btn) btn.classList.remove('listening'); };
-            try { rec.start(); } catch(e) { if (btn) btn.classList.remove('listening'); }
         }
     };
 
