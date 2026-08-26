@@ -297,11 +297,11 @@
     </div>
 
     <!-- ====== VIEW: DASHBOARD ====== -->
-    <div id="view-dashboard" class="container hidden" style="justify-content: space-between;">
+    <div id="view-dashboard" class="container hidden" style="justify-content: space-between; overflow: hidden;">
         <!-- TOP SECTION: LOGO + TEACHER + TRANSLATOR + LISTS + ACTION BUTTONS -->
-        <div style="width: 100%;">
+        <div style="width: 100%; flex-shrink: 0;">
             <!-- TOP HEADER: LOGO + TEACHER + TRANSLATOR BUTTON -->
-            <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 2px auto 10px; flex-wrap: nowrap; max-width: 100%;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto 8px; flex-wrap: nowrap; max-width: 100%;">
                 <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: 80px; height: 80px; min-width: 80px; border-radius: 16px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); cursor: pointer; flex-shrink: 0; object-fit: cover;" title="Jetbulary">
                 <div class="avatar-container" id="avatar-dash" onclick="app.openTeacherModal()" style="width: 82px; height: 82px; min-width: 82px; margin: 0; cursor: pointer; flex-shrink: 0;" title="Tap to change teacher / language"></div>
                 <button onclick="app.startDirectHandsFree()" class="tech" style="width: 80px; height: 80px; min-width: 80px; padding: 6px 4px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.1)); color: #FFF; border-radius: 16px; box-shadow: 0 0 16px rgba(255,0,85,0.45); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; font-weight: bold; transition: all 0.2s; flex-shrink: 0; box-sizing: border-box;" title="Iniciar traductora en tiempo real">
@@ -322,13 +322,13 @@
 
             <!-- MAIN ACTION BUTTONS -->
             <button onclick="session.start()" class="success" style="width: 100%; padding: 13px 20px; font-size: 1.15rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1.5px;">🚀 <span id="lbl-start-btn">START</span></button>
-            <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 11px 20px; font-size: 0.95rem; margin-bottom: 4px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
+            <button onclick="app.showVocab()" class="secondary" style="width: 100%; padding: 11px 20px; font-size: 0.95rem; margin-bottom: 2px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">📚 <span id="lbl-vocab-btn">VOCABULARY</span></button>
         </div>
 
         <!-- BOTTOM SECTION (PROMINENT SEPARATION GAP, PINNED TO BOTTOM) -->
-        <div style="width: 100%; margin-top: auto; padding-top: 8px;">
+        <div style="width: 100%; flex-shrink: 0;">
             <!-- COLLAPSIBLE ACADEMY LEVEL & VOICE SPEED & UTILITIES -->
-            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(0,243,255,0.12); margin-bottom: 8px;">
+            <div style="background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); border-radius: 8px; overflow: hidden; box-shadow: 0 0 12px rgba(0,243,255,0.12); margin-bottom: 6px;">
                 <div onclick="app.toggleLevelPicker()" style="padding: 10px 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(0,243,255,0.06); user-select: none;">
                     <span class="tech" style="color: var(--neon-cyan); font-weight: bold; font-size: 0.86rem;">🎓 LEVEL: <span id="academy-level-display" style="color: #FFF; font-weight: 800;"></span></span>
                     <span id="level-chevron" style="color: var(--neon-cyan); font-size: 0.82rem; font-weight: 900; transition: transform 0.3s;">▼</span>
@@ -1584,11 +1584,12 @@
         }
     };
 
-    // ====== HIGH-FIDELITY SPEECH SYNTHESIS ENGINE (CLEAN SINGLE-CALL ARCHITECTURE) ======
+    // ====== HIGH-FIDELITY SPEECH SYNTHESIS ENGINE (SENTENCE-CHUNKED WITH HEARTBEAT) ======
     const ttsEngine = {
         activeUtterance: null,
         speechInterval: null,
         watchdog: null,
+        isSpeaking: false,
 
         hasNativeBrowserVoice: (langCode) => {
             if (langCode === 'eu') {
@@ -1596,6 +1597,18 @@
                 return voices.some(v => (v.lang.startsWith('eu') || v.lang.replace('_', '-').startsWith('eu')) && !v.name.toLowerCase().includes('english') && !v.name.toLowerCase().includes('david') && !v.name.toLowerCase().includes('zira') && !v.name.toLowerCase().includes('microsoft'));
             }
             return true;
+        },
+
+        splitIntoSentences: (text) => {
+            if (!text) return [];
+            // Split by sentence terminators (. ! ? ; \n), keeping natural punctuation
+            const rawParts = text.match(/[^.!?;\n]+[.!?;\n]*/g) || [text];
+            const cleaned = [];
+            for (let part of rawParts) {
+                const trimmed = part.trim();
+                if (trimmed.length > 0) cleaned.push(trimmed);
+            }
+            return cleaned.length > 0 ? cleaned : [text.trim()];
         },
 
         speak: (text, langCode, rate = 0.8, onStart, onEnd, onError) => {
@@ -1611,53 +1624,72 @@
                 return;
             }
 
+            const sentences = ttsEngine.splitIntoSentences(text);
+            if (sentences.length === 0) {
+                if (onEnd) onEnd();
+                return;
+            }
+
+            ttsEngine.isSpeaking = true;
+            let currentSentenceIndex = 0;
+            let hasStarted = false;
             let hasEnded = false;
 
             const safeOnStart = () => {
-                if (onStart) onStart();
+                if (!hasStarted) {
+                    hasStarted = true;
+                    if (onStart) onStart();
+                }
             };
 
             const safeOnEnd = () => {
                 if (hasEnded) return;
                 hasEnded = true;
-                if (ttsEngine.watchdog) { clearTimeout(ttsEngine.watchdog); ttsEngine.watchdog = null; }
-                if (ttsEngine.speechInterval) { clearInterval(ttsEngine.speechInterval); ttsEngine.speechInterval = null; }
-                ttsEngine.activeUtterance = null;
+                ttsEngine.stop();
                 if (onEnd) onEnd();
             };
 
             const safeOnError = (err) => {
                 if (hasEnded) return;
                 hasEnded = true;
-                if (ttsEngine.watchdog) { clearTimeout(ttsEngine.watchdog); ttsEngine.watchdog = null; }
-                if (ttsEngine.speechInterval) { clearInterval(ttsEngine.speechInterval); ttsEngine.speechInterval = null; }
-                ttsEngine.activeUtterance = null;
+                ttsEngine.stop();
                 if (onError) onError(err);
-                else safeOnEnd();
+                else if (onEnd) onEnd();
             };
 
-            // Generous watchdog timeout to ensure the UI state never deadlocks
-            const wordCount = text.trim().split(/\s+/).length;
-            const estimatedSec = Math.max(8, Math.ceil((wordCount * 1.6) / Math.max(0.3, rate || 0.7)) + 10);
+            // Dynamic global watchdog: words * 3s + 20s safety buffer
+            const totalWords = text.trim().split(/\s+/).length;
+            const maxAllowedSec = Math.max(15, Math.ceil((totalWords * 3.0) / Math.max(0.3, rate || 0.7)) + 20);
             ttsEngine.watchdog = setTimeout(() => {
-                if (!hasEnded) {
-                    console.warn("TTS Watchdog fallback triggered for text:", text);
-                    ttsEngine.stop();
+                if (!hasEnded && ttsEngine.isSpeaking) {
+                    console.warn("TTS Global Watchdog safety timeout for text:", text);
                     safeOnEnd();
                 }
-            }, estimatedSec * 1000);
-
-            if (window.speechSynthesis.paused) {
-                try { window.speechSynthesis.resume(); } catch(e) {}
-            }
+            }, maxAllowedSec * 1000);
 
             const langInfo = LANGUAGES[langCode] || LANGUAGES.en;
-            const u = new SpeechSynthesisUtterance(text);
-            ttsEngine.activeUtterance = u; // Keep global reference so browser garbage collector never deletes it mid-speech!
-            u.lang = langInfo.speechLang || 'es-ES';
-            u.rate = Math.max(0.4, Math.min(1.5, rate || 0.75));
+            const effectiveRate = Math.max(0.35, Math.min(1.4, rate || 0.75));
 
-            const applyVoiceAndSpeak = () => {
+            const speakNextChunk = () => {
+                if (!ttsEngine.isSpeaking || hasEnded) return;
+
+                if (currentSentenceIndex >= sentences.length) {
+                    safeOnEnd();
+                    return;
+                }
+
+                const chunkText = sentences[currentSentenceIndex];
+                currentSentenceIndex++;
+
+                if (window.speechSynthesis.paused) {
+                    try { window.speechSynthesis.resume(); } catch(e) {}
+                }
+
+                const u = new SpeechSynthesisUtterance(chunkText);
+                ttsEngine.activeUtterance = u;
+                u.lang = langInfo.speechLang || 'es-ES';
+                u.rate = effectiveRate;
+
                 const voices = window.speechSynthesis.getVoices();
                 if (voices && voices.length > 0) {
                     let f = voices.find(v => v.lang.startsWith(langCode) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
@@ -1671,7 +1703,6 @@
 
                 u.onstart = () => {
                     safeOnStart();
-                    // Chromium keep-alive heartbeat interval for long utterances
                     if (ttsEngine.speechInterval) clearInterval(ttsEngine.speechInterval);
                     ttsEngine.speechInterval = setInterval(() => {
                         if (window.speechSynthesis && window.speechSynthesis.speaking) {
@@ -1681,18 +1712,40 @@
                             clearInterval(ttsEngine.speechInterval);
                             ttsEngine.speechInterval = null;
                         }
-                    }, 8000);
+                    }, 6000);
                 };
 
                 u.onend = () => {
-                    safeOnEnd();
+                    ttsEngine.activeUtterance = null;
+                    if (ttsEngine.speechInterval) {
+                        clearInterval(ttsEngine.speechInterval);
+                        ttsEngine.speechInterval = null;
+                    }
+                    if (currentSentenceIndex < sentences.length) {
+                        setTimeout(() => {
+                            if (ttsEngine.isSpeaking && !hasEnded) {
+                                speakNextChunk();
+                            }
+                        }, 220);
+                    } else {
+                        safeOnEnd();
+                    }
                 };
 
                 u.onerror = (e) => {
-                    if (e && (e.error === 'interrupted' || e.error === 'canceled')) {
-                        return; // Normal cancellation, ignore error
+                    ttsEngine.activeUtterance = null;
+                    if (ttsEngine.speechInterval) {
+                        clearInterval(ttsEngine.speechInterval);
+                        ttsEngine.speechInterval = null;
                     }
-                    safeOnError(e);
+                    if (e && (e.error === 'interrupted' || e.error === 'canceled')) {
+                        return;
+                    }
+                    if (currentSentenceIndex < sentences.length) {
+                        speakNextChunk();
+                    } else {
+                        safeOnError(e);
+                    }
                 };
 
                 try {
@@ -1705,15 +1758,16 @@
             if (window.speechSynthesis.getVoices().length === 0) {
                 window.speechSynthesis.onvoiceschanged = () => {
                     window.speechSynthesis.onvoiceschanged = null;
-                    applyVoiceAndSpeak();
+                    speakNextChunk();
                 };
-                setTimeout(applyVoiceAndSpeak, 50);
+                setTimeout(speakNextChunk, 50);
             } else {
-                applyVoiceAndSpeak();
+                speakNextChunk();
             }
         },
 
         stop: () => {
+            ttsEngine.isSpeaking = false;
             if (ttsEngine.watchdog) {
                 clearTimeout(ttsEngine.watchdog);
                 ttsEngine.watchdog = null;

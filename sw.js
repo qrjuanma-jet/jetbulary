@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jetbulary-cache-v63';
+const CACHE_NAME = 'jetbulary-cache-v64';
 const PRECACHE_URLS = [
     './',
     'index.html',
@@ -10,7 +10,7 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(PRECACHE_URLS).catch((err) => console.log('Precache error:', err));
+            return cache.addAll(PRECACHE_URLS).catch((err) => console.log('Precache warning:', err));
         })
     );
 });
@@ -28,15 +28,21 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
 
-    // For navigation (HTML page load), try network first, then fall back to cache
+    // Do NOT intercept external API calls (Groq, Google Translate, Ads, etc.)
+    const requestUrl = new URL(event.request.url);
+    if (requestUrl.origin !== self.location.origin) {
+        return;
+    }
+
+    // For HTML navigation requests (app startup / reload)
     if (event.request.mode === 'navigate') {
         event.respondWith(
             fetch(event.request)
                 .then((networkResponse) => {
-                    const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
+                    if (networkResponse && networkResponse.status === 200) {
+                        const clone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                    }
                     return networkResponse;
                 })
                 .catch(() => caches.match(event.request).then(cached => cached || caches.match('index.html') || caches.match('./')))
@@ -44,15 +50,13 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // For other assets, network first with cache fallback and background cache update
+    // For same-origin static assets
     event.respondWith(
         fetch(event.request)
             .then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                    const responseClone = networkResponse.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseClone);
-                    });
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
                 }
                 return networkResponse;
             })
