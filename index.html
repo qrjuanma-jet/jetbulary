@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Jetbulary">
+    <meta name="theme-color" content="#050505">
     <title>Jetbulary — Learn Languages with AI</title>
     <meta name="description" content="Aprende vocabulario inmersivo en inglés y otros idiomas con IA en tiempo real. Práctica de pronunciación y traducción directa.">
     <meta name="keywords" content="Jetbulary, learn English, learn German, learn French, AI language learning, real time translation">
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -3068,14 +3071,23 @@
 
         installApp: async () => {
             if (app.deferredInstallPrompt) {
-                app.deferredInstallPrompt.prompt();
-                const { outcome } = await app.deferredInstallPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    app.deferredInstallPrompt = null;
-                    app.updateInstallButtonVisibility();
+                try {
+                    app.deferredInstallPrompt.prompt();
+                    const choiceResult = await app.deferredInstallPrompt.userChoice;
+                    if (choiceResult && choiceResult.outcome === 'accepted') {
+                        app.deferredInstallPrompt = null;
+                        app.updateInstallButtonVisibility();
+                    }
+                } catch(e) {
+                    console.log("Install prompt error:", e);
                 }
             } else {
-                alert("Para instalar Jetbulary en tu dispositivo:\n\n1. En Chrome: Pulsa el menú de 3 puntos (⋮) arriba a la derecha y selecciona 'Instalar aplicación' o 'Añadir a pantalla de inicio'.\n\n2. En Safari (iPhone): Pulsa el botón Compartir y elige 'Añadir a pantalla de inicio'.");
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                if (isStandalone) {
+                    alert("Jetbulary ya se está ejecutando como aplicación instalada.");
+                } else {
+                    alert("Para instalar Jetbulary en tu dispositivo:\n\n1. En Chrome: Pulsa el menú de 3 puntos (⋮) arriba a la derecha y pulsa 'Instalar aplicación' o 'Añadir a pantalla de inicio'.\n\n2. En Safari (iPhone): Pulsa 'Compartir' y selecciona 'Añadir a pantalla de inicio'.\n\n💡 Si la acabas de desinstalar hace un momento, cierra la pestaña de Chrome y vuelve a abrir jetbulary.com para que Chrome detecte que ya no está instalada.");
+                }
             }
         },
 
@@ -3538,8 +3550,12 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const key = localStorage.getItem(API_KEY_STORAGE);
             if (!key) throw new Error("Missing API Key");
 
+            const mime = (audioBlob && audioBlob.type) ? audioBlob.type : 'audio/webm';
+            const ext = (mime.includes('mp4') || mime.includes('aac') || mime.includes('m4a')) ? 'm4a' : mime.includes('ogg') ? 'ogg' : mime.includes('wav') ? 'wav' : 'webm';
+            const filename = `audio.${ext}`;
+
             const formData = new FormData();
-            formData.append("file", audioBlob, "audio.webm");
+            formData.append("file", audioBlob, filename);
             formData.append("model", "whisper-large-v3-turbo");
             if (langCode) formData.append("language", langCode);
             formData.append("response_format", "json");
