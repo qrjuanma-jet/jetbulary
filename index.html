@@ -34,6 +34,8 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            overscroll-behavior: none;
+            overscroll-behavior-y: none;
         }
         body {
             font-family: 'Outfit', sans-serif;
@@ -42,6 +44,8 @@
             height: 100%;
             height: 100dvh;
             overflow: hidden;
+            overscroll-behavior: none;
+            overscroll-behavior-y: none;
             display: flex;
             flex-direction: column;
         }
@@ -76,6 +80,8 @@
             flex-direction: column;
             box-sizing: border-box;
             overflow-y: auto;
+            overscroll-behavior: none;
+            overscroll-behavior-y: none;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -796,6 +802,11 @@
                 Cerrar
             </button>
         </div>
+    </div>
+
+    <!-- ====== TOAST: DOUBLE BACK TO EXIT ====== -->
+    <div id="toast-exit-prompt" class="hidden" style="position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: rgba(10, 10, 15, 0.95); color: #FFF; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); padding: 9px 20px; border-radius: 20px; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; font-weight: 700; z-index: 999999; pointer-events: none; letter-spacing: 0.5px; transition: opacity 0.3s ease; opacity: 0; white-space: nowrap;">
+        📲 Pulsa otra vez para salir
     </div>
 
 <script>
@@ -2870,10 +2881,17 @@
             if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
 
             const savedKey = localStorage.getItem(API_KEY_STORAGE);
+            const initialViewId = savedKey ? 'view-dashboard' : 'view-apikey';
+            const initialHash = savedKey ? '#dashboard' : '#apikey';
+
+            // Push base state so back button from main page can be trapped
+            history.replaceState({ view: initialViewId, isRoot: true }, null, initialHash);
+            history.pushState({ view: initialViewId, isRoot: true }, null, initialHash);
+
             if (savedKey) {
-                app.showDashboard('replace');
+                app.showDashboard('none');
             } else {
-                app.switchView('view-apikey', 'replace');
+                app.switchView('view-apikey', 'none');
             }
 
             // Auto select the list that the user needs to complete (or next pending)
@@ -2892,20 +2910,45 @@
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration error:', err));
             }
 
+            // Prevent unwanted pull-to-refresh (F5) reload when dragging down
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches && e.touches.length === 1) {
+                    touchStartY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches.length === 1) {
+                    const touchY = e.touches[0].clientY;
+                    const diffY = touchY - touchStartY;
+                    if (diffY > 0 && (window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0) <= 0) {
+                        const scrollable = e.target.closest('.vocab-grid, #conversation-history, #level-picker-body');
+                        if (!scrollable || scrollable.scrollTop <= 0) {
+                            if (e.cancelable) e.preventDefault();
+                        }
+                    }
+                }
+            }, { passive: false });
+
             window.onpopstate = (event) => {
+                // 1. Check open modals: Close modal and stay on current page
                 const videoModal = document.getElementById('modal-teacher-video');
                 if (videoModal && !videoModal.classList.contains('hidden')) {
                     app.closeTeacherVideoAndGoHome();
+                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
                     app.closeShareModal(true);
+                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const backupModal = document.getElementById('modal-backup-manager');
                 if (backupModal && !backupModal.classList.contains('hidden')) {
                     backupModal.classList.add('hidden');
+                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const infoModal = document.getElementById('modal-apikey-info');
@@ -2916,6 +2959,7 @@
                 const teacherModal = document.getElementById('modal-teacher-select');
                 if (teacherModal && !teacherModal.classList.contains('hidden')) {
                     teacherModal.classList.add('hidden');
+                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const transView = document.getElementById('view-translator');
@@ -2923,29 +2967,62 @@
                     translator.exitToDashboard();
                     return;
                 }
-                if (event.state && event.state.view) {
-                    if (event.state.view === 'view-dashboard') app.showDashboard('none');
-                    else if (event.state.view === 'view-apikey') app.switchView('view-apikey', 'none');
-                    else app.switchView(event.state.view, 'none');
-                } else {
-                    const isInitial = !document.getElementById('view-dashboard').classList.contains('hidden') || !document.getElementById('view-apikey').classList.contains('hidden');
-                    if (!isInitial) {
-                        const savedKey = localStorage.getItem(API_KEY_STORAGE);
-                        if (savedKey) app.showDashboard('none');
-                        else app.switchView('view-apikey', 'none');
+
+                // 2. Check if currently at the root main view (Dashboard or ApiKey)
+                const isDashboard = !document.getElementById('view-dashboard').classList.contains('hidden');
+                const isApiKey = !document.getElementById('view-apikey').classList.contains('hidden');
+
+                if (isDashboard || isApiKey) {
+                    const now = Date.now();
+                    if (app.lastBackPressTime && (now - app.lastBackPressTime < 2200)) {
+                        // User pressed back a second time within 2.2s: allow normal exit
+                        window.history.back();
+                    } else {
+                        // First back press on root: prevent exit and show toast
+                        app.lastBackPressTime = now;
+                        const rootHash = isDashboard ? '#dashboard' : '#apikey';
+                        history.pushState({ view: isDashboard ? 'view-dashboard' : 'view-apikey', isRoot: true }, null, rootHash);
+                        app.showExitToast();
                     }
+                    return;
                 }
+
+                // 3. In any other sub-view (Game, Vocab, Stats, Privacy, Terms): return to dashboard!
+                app.showDashboard('none');
             };
         },
 
+        lastBackPressTime: 0,
+        exitToastTimer: null,
+
+        showExitToast: () => {
+            const toast = document.getElementById('toast-exit-prompt');
+            if (!toast) return;
+            toast.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+            });
+            if (app.exitToastTimer) clearTimeout(app.exitToastTimer);
+            app.exitToastTimer = setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.classList.add('hidden'), 300);
+                app.exitToastTimer = null;
+            }, 2000);
+        },
+
         goBack: () => {
-            const isInitial = !document.getElementById('view-dashboard').classList.contains('hidden') || !document.getElementById('view-apikey').classList.contains('hidden');
-            if (!isInitial) {
-                if (window.history.length > 1 && window.history.state && window.history.state.view) {
+            const isDashboard = !document.getElementById('view-dashboard').classList.contains('hidden');
+            const isApiKey = !document.getElementById('view-apikey').classList.contains('hidden');
+            if (isDashboard || isApiKey) {
+                const now = Date.now();
+                if (app.lastBackPressTime && (now - app.lastBackPressTime < 2200)) {
                     window.history.back();
                 } else {
-                    app.showDashboard();
+                    app.lastBackPressTime = now;
+                    app.showExitToast();
                 }
+            } else {
+                app.showDashboard();
             }
         },
 
