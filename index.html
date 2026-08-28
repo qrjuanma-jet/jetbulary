@@ -745,10 +745,19 @@
             <div style="font-family: 'Orbitron'; font-size: 0.92rem; font-weight: 900; color: #FFF; display: flex; align-items: center; gap: 6px;">
                 <span>🎙️ TRADUCTOR INSTANTÁNEO</span>
             </div>
-            <div id="trans-header-teacher" onclick="app.openTeacherModal()" style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: rgba(0,243,255,0.08); border: 1px solid rgba(0,243,255,0.3);" title="Cambiar idioma">
-                <img id="trans-header-flag" src="flag_en.jpg" style="width: 26px; height: 18px; border-radius: 3px; object-fit: cover;">
-                <span id="trans-header-lang-name" style="color: var(--neon-cyan); font-size: 0.82rem; font-weight: bold;">EN</span>
-                <span style="color: var(--neon-cyan); font-size: 0.7rem;">▼</span>
+            <div style="display: flex; align-items: center; gap: 6px; background: rgba(0,243,255,0.08); border: 1.5px solid rgba(0,243,255,0.35); border-radius: 8px; padding: 2px 6px;">
+                <img id="trans-header-flag" src="flag_en.jpg" style="width: 24px; height: 16px; border-radius: 3px; object-fit: cover;">
+                <select id="trans-lang-select" onchange="translator.changeLanguage(this.value)" style="background: transparent; color: var(--neon-cyan); border: none; font-size: 0.88rem; font-weight: 800; font-family: 'Orbitron', sans-serif; cursor: pointer; outline: none; padding: 3px 0;">
+                    <option value="en" style="background: #111; color: #FFF;">English 🇬🇧</option>
+                    <option value="de" style="background: #111; color: #FFF;">Deutsch 🇩🇪</option>
+                    <option value="fr" style="background: #111; color: #FFF;">Français 🇫🇷</option>
+                    <option value="pt" style="background: #111; color: #FFF;">Português 🇵🇹</option>
+                    <option value="it" style="background: #111; color: #FFF;">Italiano 🇮🇹</option>
+                    <option value="ru" style="background: #111; color: #FFF;">Русский 🇷🇺</option>
+                    <option value="eu" style="background: #111; color: #FFF;">Euskara 🟢</option>
+                    <option value="ca" style="background: #111; color: #FFF;">Català 🟡</option>
+                    <option value="gl" style="background: #111; color: #FFF;">Galego 🔵</option>
+                </select>
             </div>
         </div>
 
@@ -768,11 +777,9 @@
                     </button>
                 </div>
 
-                <!-- CENTER TEXT IN GIANT LETTERS -->
+                <!-- CENTER TEXT IN GIANT LETTERS (CLEAN, NO STATIC INSTRUCTIONS) -->
                 <div class="trans-text-display-area">
-                    <div id="trans-text-es" class="trans-giant-text" style="color: #FFFFFF;">
-                        "Mantén pulsado el micrófono abajo para hablar en Español..."
-                    </div>
+                    <div id="trans-text-es" class="trans-giant-text" style="color: #FFFFFF;"></div>
                 </div>
 
                 <!-- BOTTOM CONTROLS: PUSH-TO-TALK MIC BUTTON -->
@@ -799,11 +806,9 @@
                     </button>
                 </div>
 
-                <!-- CENTER TEXT IN GIANT LETTERS -->
+                <!-- CENTER TEXT IN GIANT LETTERS (CLEAN, NO STATIC INSTRUCTIONS) -->
                 <div class="trans-text-display-area">
-                    <div id="trans-text-foreign" class="trans-giant-text" style="color: var(--neon-cyan);">
-                        "Hold the microphone to speak..."
-                    </div>
+                    <div id="trans-text-foreign" class="trans-giant-text" style="color: var(--neon-cyan);"></div>
                 </div>
 
                 <!-- BOTTOM CONTROLS: PUSH-TO-TALK MIC BUTTON -->
@@ -812,7 +817,7 @@
                         🎙️
                     </button>
                     <div id="hint-ptt-foreign" class="trans-ptt-hint" style="color: var(--neon-cyan);">
-                        Mantén pulsado para hablar
+                        Hold to speak
                     </div>
                 </div>
             </div>
@@ -1316,7 +1321,10 @@
             youglishLang: 'spanish',
             teacherTitle: 'Tutor de Español',
             aiPromptLang: 'Spanish',
-            translatorBtnLabel: 'TRADUCTOR'
+            translatorBtnLabel: 'TRADUCTOR',
+            transHold: 'Mantén pulsado para hablar',
+            transRec: '🔴 Grabando... Suelta para traducir',
+            transListen: 'Escuchando tu voz...'
         },
         en: {
             code: 'en',
@@ -1346,7 +1354,10 @@
             selectAllBtnLabel: 'Select All',
             deselectAllBtnLabel: 'Clear',
             startConvoBtnLabel: '💬 START CONVERSATION',
-            wordsSelectedLabel: 'words selected'
+            wordsSelectedLabel: 'words selected',
+            transHold: 'Hold to speak',
+            transRec: '🔴 Recording... Release to translate',
+            transListen: 'Listening...'
         },
         de: {
             code: 'de',
@@ -1376,7 +1387,10 @@
             selectAllBtnLabel: 'Alle auswählen',
             deselectAllBtnLabel: 'Löschen',
             startConvoBtnLabel: '💬 GESPRÄCH STARTEN',
-            wordsSelectedLabel: 'Wörter ausgewählt'
+            wordsSelectedLabel: 'Wörter ausgewählt',
+            transHold: 'Gedrückt halten zum Sprechen',
+            transRec: '🔴 Aufnahme... Loslassen zum Übersetzen',
+            transListen: 'Höre zu...'
         },
         fr: {
             code: 'fr',
@@ -1406,7 +1420,10 @@
             selectAllBtnLabel: 'Tout sélectionner',
             deselectAllBtnLabel: 'Effacer',
             startConvoBtnLabel: '💬 LANCER LA CONVERSATION',
-            wordsSelectedLabel: 'mots sélectionnés'
+            wordsSelectedLabel: 'mots sélectionnés',
+            transHold: 'Maintenir pour parler',
+            transRec: '🔴 Enregistrement... Relâcher pour traduire',
+            transListen: 'Écoute en cours...'
         },
         pt: {
             code: 'pt',
@@ -1436,7 +1453,10 @@
             selectAllBtnLabel: 'Selecionar tudo',
             deselectAllBtnLabel: 'Limpar',
             startConvoBtnLabel: '💬 INICIAR CONVERSA',
-            wordsSelectedLabel: 'palavras selecionadas'
+            wordsSelectedLabel: 'palavras selecionadas',
+            transHold: 'Mantenha pressionado para falar',
+            transRec: '🔴 Gravando... Solte para traduzir',
+            transListen: 'Ouvindo...'
         },
         it: {
             code: 'it',
@@ -1466,7 +1486,10 @@
             selectAllBtnLabel: 'Seleziona tutto',
             deselectAllBtnLabel: 'Cancella',
             startConvoBtnLabel: '💬 INIZIA CONVERSAZIONE',
-            wordsSelectedLabel: 'parole selezionate'
+            wordsSelectedLabel: 'parole selezionate',
+            transHold: 'Tieni premuto per parlare',
+            transRec: '🔴 Registrazione... Rilascia per tradurre',
+            transListen: 'In ascolto...'
         },
         ru: {
             code: 'ru',
@@ -1496,7 +1519,10 @@
             selectAllBtnLabel: 'Выбрать все',
             deselectAllBtnLabel: 'Очистить',
             startConvoBtnLabel: '💬 НАЧАТЬ РАЗГОВОР',
-            wordsSelectedLabel: 'слов выбрано'
+            wordsSelectedLabel: 'слов выбрано',
+            transHold: 'Удерживайте для записи',
+            transRec: '🔴 Запись... Отпустите для перевода',
+            transListen: 'Слушаю...'
         },
         eu: {
             code: 'eu',
@@ -1526,7 +1552,10 @@
             selectAllBtnLabel: 'Hautatu guztiak',
             deselectAllBtnLabel: 'Garbitu',
             startConvoBtnLabel: '💬 HASI ELKARRIZKETA',
-            wordsSelectedLabel: 'hitz hautatuta'
+            wordsSelectedLabel: 'hitz hautatuta',
+            transHold: 'Mantendu sakatuta hitz egiteko',
+            transRec: '🔴 Grabatzen... Askatu itzultzeko',
+            transListen: 'Entzuten...'
         },
         ca: {
             code: 'ca',
@@ -1556,7 +1585,10 @@
             selectAllBtnLabel: 'Seleccionar tot',
             deselectAllBtnLabel: 'Netejar',
             startConvoBtnLabel: '💬 INICIAR CONVERSA',
-            wordsSelectedLabel: 'paraules seleccionades'
+            wordsSelectedLabel: 'paraules seleccionades',
+            transHold: 'Mantingueu premut per parlar',
+            transRec: '🔴 Gravant... Deixeu anar per traduir',
+            transListen: 'Escoltant...'
         },
         gl: {
             code: 'gl',
@@ -1582,11 +1614,14 @@
             backupBtnLabel: '💾 Copia de Seguridade',
             keyBtnLabel: '🔑 Cambiar Chave',
             backBtnLabel: '⬅ Volver',
-            allWordsBtnLabel: 'TODAS AS PALABRAS',
+            allWordsBtnLabel: 'TODAS AS PALAVRAS',
             selectAllBtnLabel: 'Seleccionar todo',
             deselectAllBtnLabel: 'Limpar',
             startConvoBtnLabel: '💬 INICIAR CONVERSA',
-            wordsSelectedLabel: 'palabras seleccionadas'
+            wordsSelectedLabel: 'palabras seleccionadas',
+            transHold: 'Mantén premido para falar',
+            transRec: '🔴 Gravando... Solta para traducir',
+            transListen: 'Escoitando...'
         }
     };
 
@@ -5642,11 +5677,11 @@ Return ONLY a valid JSON object:
         init: () => {
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             
-            // Set header info
+            // Set header dropdown and flag
             const headerFlag = document.getElementById('trans-header-flag');
-            const headerName = document.getElementById('trans-header-lang-name');
+            const selectEl = document.getElementById('trans-lang-select');
             if (headerFlag) headerFlag.src = langInfo.flag || 'flag_en.jpg';
-            if (headerName) headerName.innerText = (langInfo.code || 'en').toUpperCase();
+            if (selectEl) selectEl.value = currentLang !== 'es' ? currentLang : 'en';
 
             // Set foreign panel info
             const foreignFlagImg = document.getElementById('trans-foreign-flag-img');
@@ -5654,22 +5689,37 @@ Return ONLY a valid JSON object:
             if (foreignFlagImg) foreignFlagImg.src = langInfo.flag || 'flag_en.jpg';
             if (foreignTitle) foreignTitle.innerText = langInfo.name.toUpperCase();
 
-            // Set default prompts in giant letters if not set
+            // Set localized hints below mic buttons
+            const hintEs = document.getElementById('hint-ptt-es');
+            const hintForeign = document.getElementById('hint-ptt-foreign');
+            if (hintEs) hintEs.innerText = LANGUAGES.es.transHold || 'Mantén pulsado para hablar';
+            if (hintForeign) hintForeign.innerText = langInfo.transHold || 'Hold to speak';
+
+            // Clean text display if empty or show last translation
             const textEs = document.getElementById('trans-text-es');
             const textForeign = document.getElementById('trans-text-foreign');
-            if (textEs && !translator.lastSpanishText) {
-                textEs.innerText = '"Mantén pulsado el micrófono para hablar en Español..."';
-            } else if (textEs && translator.lastSpanishText) {
-                textEs.innerText = `"${translator.lastSpanishText}"`;
-            }
-
-            if (textForeign && !translator.lastForeignText) {
-                textForeign.innerText = `"Hold the microphone to speak in ${langInfo.name}..."`;
-            } else if (textForeign && translator.lastForeignText) {
-                textForeign.innerText = `"${translator.lastForeignText}"`;
-            }
+            if (textEs) textEs.innerText = translator.lastSpanishText ? `"${translator.lastSpanishText}"` : '';
+            if (textForeign) textForeign.innerText = translator.lastForeignText ? `"${translator.lastForeignText}"` : '';
 
             translator.bindPushToTalkEvents();
+        },
+
+        changeLanguage: (newLang) => {
+            if (!newLang || !LANGUAGES[newLang]) return;
+            ttsEngine.stop();
+            currentLang = newLang;
+            localStorage.setItem('jetbulary_current_lang', currentLang);
+            if (typeof idbBackup !== 'undefined' && idbBackup.syncAll) idbBackup.syncAll();
+            
+            translator.lastForeignText = '';
+            translator.init();
+            
+            // Keep app teacher avatars and dashboard in sync
+            if (typeof app !== 'undefined') {
+                if (app.setupTeacherAvatars) app.setupTeacherAvatars();
+                if (app.renderDashboardLists) app.renderDashboardLists();
+                if (app.updateActionButtons) app.updateActionButtons();
+            }
         },
 
         exitToDashboard: () => {
@@ -5753,8 +5803,17 @@ Return ONLY a valid JSON object:
 
             if (panel) panel.classList.add(isEs ? 'recording-active-es' : 'recording-active-foreign');
             if (btn) btn.classList.add('is-holding');
-            if (hint) hint.innerText = isEs ? "🔴 Grabando... Suelta para traducir" : `🔴 Recording... Release to translate`;
-            if (textEl) textEl.innerText = isEs ? "Escuchando tu voz..." : `Listening in ${langInfo.name}...`;
+            
+            if (hint) {
+                hint.innerText = isEs 
+                    ? (LANGUAGES.es.transRec || "🔴 Grabando... Suelta para traducir")
+                    : (langInfo.transRec || "🔴 Recording... Release to translate");
+            }
+            if (textEl) {
+                textEl.innerText = isEs 
+                    ? (LANGUAGES.es.transListen || "Escuchando tu voz...")
+                    : (langInfo.transListen || "Listening...");
+            }
 
             // Start audio recording with MediaRecorder
             try {
@@ -5786,7 +5845,7 @@ Return ONLY a valid JSON object:
 
                     const audioBlob = new Blob(translator.audioChunks, { type: mimeType || 'audio/webm' });
                     if (audioBlob.size < 300) {
-                        if (hint) hint.innerText = "Mantén pulsado para hablar";
+                        translator.cleanupHoldUI();
                         return;
                     }
 
@@ -5816,14 +5875,15 @@ Return ONLY a valid JSON object:
         },
 
         cleanupHoldUI: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             document.getElementById('panel-trans-es')?.classList.remove('recording-active-es');
             document.getElementById('panel-trans-foreign')?.classList.remove('recording-active-foreign');
             document.getElementById('btn-ptt-es')?.classList.remove('is-holding');
             document.getElementById('btn-ptt-foreign')?.classList.remove('is-holding');
             const hintEs = document.getElementById('hint-ptt-es');
             const hintForeign = document.getElementById('hint-ptt-foreign');
-            if (hintEs) hintEs.innerText = "Mantén pulsado para hablar";
-            if (hintForeign) hintForeign.innerText = "Mantén pulsado para hablar";
+            if (hintEs) hintEs.innerText = LANGUAGES.es.transHold || "Mantén pulsado para hablar";
+            if (hintForeign) hintForeign.innerText = langInfo.transHold || "Hold to speak";
         },
 
         processAudioTranslation: async (audioBlob, mode, langCode) => {
@@ -5834,15 +5894,15 @@ Return ONLY a valid JSON object:
             const textSourceEl = document.getElementById(isFromSpanish ? 'trans-text-es' : 'trans-text-foreign');
             const textTargetEl = document.getElementById(isFromSpanish ? 'trans-text-foreign' : 'trans-text-es');
 
-            if (textSourceEl) textSourceEl.innerText = "⏳ Procesando voz...";
-            if (textTargetEl) textTargetEl.innerText = "⚡ Traduciendo...";
+            if (textSourceEl) textSourceEl.innerText = "⏳ ...";
+            if (textTargetEl) textTargetEl.innerText = "⚡ ...";
 
             try {
                 // 1. Transcribe audio with Groq Whisper (< 200ms)
                 const transcript = await app.transcribeAudioWithGroq(audioBlob, langCode);
                 if (!transcript || !transcript.trim()) {
-                    if (textSourceEl) textSourceEl.innerText = isFromSpanish ? "(No se detectó voz clara)" : "(No clear speech detected)";
-                    if (textTargetEl) textTargetEl.innerText = "...";
+                    if (textSourceEl) textSourceEl.innerText = "";
+                    if (textTargetEl) textTargetEl.innerText = "";
                     return;
                 }
 
