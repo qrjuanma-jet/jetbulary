@@ -241,6 +241,26 @@
         /* --- AUTO MIC BUTTON --- */
         .auto-mic-on { border-color: var(--cyber-ok) !important; color: var(--cyber-ok) !important; background: rgba(0,255,149,0.1) !important; }
 
+        /* --- LESSON BLINKING PULSE ANIMATION --- */
+        @keyframes lessonPulseBlink {
+            0%, 100% {
+                box-shadow: 0 0 14px rgba(0, 255, 149, 0.4), inset 0 0 10px rgba(0, 255, 149, 0.15);
+                border-color: var(--cyber-ok);
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                box-shadow: 0 0 38px rgba(0, 255, 149, 0.95), 0 0 18px #FFFFFF, inset 0 0 20px rgba(0, 255, 149, 0.5);
+                border-color: #FFFFFF;
+                transform: scale(1.03);
+                filter: brightness(1.3);
+            }
+        }
+        .pulse-lesson {
+            animation: lessonPulseBlink 0.9s infinite ease-in-out !important;
+            cursor: pointer !important;
+        }
+
         /* Animations */
         @keyframes pulse-cyber { 0% { opacity: 0.5; } 100% { opacity: 1; } }
         .flicker { animation: pulse-cyber 2s infinite alternate; }
@@ -394,8 +414,11 @@
 
     <!-- ====== VIEW: GAME (VOCABULARY TRAINING) ====== -->
     <div id="view-game" class="container hidden" onclick="game.onBackgroundClick(event)" style="position: relative; max-width: 680px; padding: 10px 14px 16px;">
-        <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 4px auto 12px;">
+        <!-- TOP HEADER: BACK + LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 4px auto 12px; position: relative;">
+            <button onclick="app.showDashboard()" class="secondary" title="Volver al inicio" style="position: absolute; left: 0; width: auto; padding: 10px 16px; font-size: 1.15rem; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: #FFF; font-weight: bold; background: rgba(0,243,255,0.08); z-index: 10; cursor: pointer;">
+                ⬅
+            </button>
             <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: clamp(100px, 30vw, 150px); height: clamp(100px, 30vw, 150px); min-width: clamp(100px, 30vw, 150px); border-radius: 24px; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
             <div class="avatar-container" id="avatar-game" onclick="app.openTeacherModal()" style="width: clamp(104px, 31vw, 158px); height: clamp(104px, 31vw, 158px); min-width: clamp(104px, 31vw, 158px); margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
         </div>
@@ -405,7 +428,7 @@
 
         <!-- LESSON & FREE CONVERSATION ACTION BUTTONS -->
         <div style="margin: 8px 0 8px; display: flex; flex-direction: column; gap: 8px;">
-            <button onclick="session.startLesson()" class="tech" style="width: 100%; padding: 16px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: var(--cyber-ok); border-radius: 10px; box-shadow: 0 0 14px rgba(0,255,149,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; letter-spacing: 1.5px;">
+            <button id="btn-lesson" onclick="session.startLesson()" class="tech" style="width: 100%; padding: 16px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: var(--cyber-ok); border-radius: 10px; box-shadow: 0 0 14px rgba(0,255,149,0.3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 900; letter-spacing: 1.5px; transition: all 0.2s;">
                 <span id="lbl-lesson-btn">LESSON</span>
             </button>
 
@@ -441,8 +464,11 @@
 
     <!-- ====== VIEW: CONVERSATION ====== -->
     <div id="view-conversation" class="container hidden" onclick="conversation.onBackgroundClick(event)" style="position: relative; max-width: 680px; padding: 10px 14px 16px;">
-        <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 4px auto 12px;">
+        <!-- TOP HEADER: BACK + LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin: 4px auto 12px; position: relative;">
+            <button onclick="app.showDashboard()" class="secondary" title="Volver al inicio" style="position: absolute; left: 0; width: auto; padding: 10px 16px; font-size: 1.15rem; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: #FFF; font-weight: bold; background: rgba(0,243,255,0.08); z-index: 10; cursor: pointer;">
+                ⬅
+            </button>
             <img src="icon.png" alt="Jetbulary Logo" class="jet-logo" onclick="app.handleLogoClick(event)" style="width: clamp(100px, 30vw, 150px); height: clamp(100px, 30vw, 150px); min-width: clamp(100px, 30vw, 150px); border-radius: 24px; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Jetbulary">
             <div class="avatar-container" id="avatar-convo" onclick="app.openTeacherModal()" style="width: clamp(104px, 31vw, 158px); height: clamp(104px, 31vw, 158px); min-width: clamp(104px, 31vw, 158px); margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
         </div>
@@ -823,11 +849,38 @@
         });
     }
 
-    // ====== DATABASE & PERSISTENT STORAGE (INDEXEDDB + LOCALSTORAGE) ======
+    // ====== DATABASE & MULTI-TIER PERSISTENT STORAGE (CACHE API + INDEXEDDB + LOCALSTORAGE) ======
     const DB_KEY = 'jetbulary_db';
     const API_KEY_STORAGE = 'jetbulary_apikey';
     let db = { topics: [], words: [], progress: [], grammar_courses: {}, academy_tips: [], academy_level: 0, reported_errors: [] };
     let currentLang = localStorage.getItem('jetbulary_current_lang') || 'en';
+
+    // Automatic Cache Storage API persistent backup layer (survives private mode / standard storage wipes)
+    const cacheBackup = {
+        cacheName: 'jetbulary-user-backup-v1',
+        url: 'https://jetbulary.local/user_data_backup.json',
+        save: async (data) => {
+            try {
+                if (!window.caches) return;
+                const cache = await caches.open(cacheBackup.cacheName);
+                const response = new Response(JSON.stringify(data), {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                await cache.put(cacheBackup.url, response);
+            } catch(e) {}
+        },
+        get: async () => {
+            try {
+                if (!window.caches) return null;
+                const cache = await caches.open(cacheBackup.cacheName);
+                const response = await cache.match(cacheBackup.url);
+                if (response) {
+                    return await response.json();
+                }
+            } catch(e) {}
+            return null;
+        }
+    };
 
     // Automatic IndexedDB persistent storage backup layer
     const idbBackup = {
@@ -873,16 +926,21 @@
                 apiKey: localStorage.getItem(API_KEY_STORAGE),
                 currentLang: currentLang,
                 speechSpeed: localStorage.getItem('jetbulary_speech_speed'),
+                selectedList: typeof session !== 'undefined' ? session.selectedListId : null,
                 updatedAt: Date.now()
             };
             await idbBackup.save('jetbulary_full_backup', fullBackup);
+            await cacheBackup.save(fullBackup);
             if (navigator.storage && navigator.storage.persist) {
                 try { navigator.storage.persist(); } catch(e) {}
             }
         },
         restoreIfMissing: async () => {
             try {
-                const backup = await idbBackup.get('jetbulary_full_backup');
+                let backup = await idbBackup.get('jetbulary_full_backup');
+                if (!backup || !backup.db) {
+                    backup = await cacheBackup.get();
+                }
                 if (backup && backup.db) {
                     let localEmpty = false;
                     const localData = localStorage.getItem(DB_KEY);
@@ -896,11 +954,21 @@
                     }
 
                     if (localEmpty) {
-                        console.log("Restoring progress automatically from Persistent IndexedDB Backup...");
+                        console.log("Restoring progress automatically from Persistent Multi-tier Backup...");
                         db = backup.db;
                         localStorage.setItem(DB_KEY, JSON.stringify(db));
                         if (backup.speechSpeed) {
                             localStorage.setItem('jetbulary_speech_speed', backup.speechSpeed);
+                        }
+                        if (backup.apiKey && !localStorage.getItem(API_KEY_STORAGE)) {
+                            localStorage.setItem(API_KEY_STORAGE, backup.apiKey);
+                        }
+                        if (backup.currentLang) {
+                            currentLang = backup.currentLang;
+                            localStorage.setItem('jetbulary_current_lang', currentLang);
+                        }
+                        if (backup.selectedList && typeof session !== 'undefined') {
+                            session.selectedListId = backup.selectedList;
                         }
                         return true;
                     }
@@ -911,6 +979,20 @@
     };
 
     const LANGUAGES = {
+        es: {
+            code: 'es',
+            name: 'Español',
+            teacherName: 'Jetbulary',
+            flag: 'icon.png',
+            face: 'icon.png',
+            gif: 'icon.png',
+            speechLang: 'es-ES',
+            femaleVoices: ['female', 'woman', 'helena', 'monica', 'laura', 'google español', 'español', 'spanish'],
+            youglishLang: 'spanish',
+            teacherTitle: 'Tutor de Español',
+            aiPromptLang: 'Spanish',
+            translatorBtnLabel: 'TRADUCTOR'
+        },
         en: {
             code: 'en',
             name: 'English',
@@ -1681,7 +1763,7 @@
                 }
             }, maxAllowedSec * 1000);
 
-            const langInfo = LANGUAGES[langCode] || LANGUAGES.en;
+            const langInfo = LANGUAGES[langCode] || (langCode === 'es' ? LANGUAGES.es : LANGUAGES.en);
             const effectiveRate = Math.max(0.35, Math.min(1.4, rate || 0.75));
 
             const speakNextChunk = () => {
@@ -1701,14 +1783,14 @@
 
                 const u = new SpeechSynthesisUtterance(chunkText);
                 ttsEngine.activeUtterance = u;
-                u.lang = langInfo.speechLang || 'es-ES';
+                u.lang = langInfo.speechLang || 'en-US';
                 u.rate = effectiveRate;
 
                 const voices = window.speechSynthesis.getVoices();
                 if (voices && voices.length > 0) {
-                    let f = voices.find(v => v.lang.startsWith(langCode) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
+                    let f = voices.find(v => (v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode)) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
                     if (!f) f = voices.find(v => v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode));
-                    if (!f && langCode === 'eu') {
+                    if (!f && (langCode === 'eu' || langCode === 'ca' || langCode === 'gl')) {
                         f = voices.find(v => v.lang.startsWith('es') && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('helena') || v.name.toLowerCase().includes('monica') || v.name.toLowerCase().includes('laura') || v.name.toLowerCase().includes('google español')));
                         if (!f) f = voices.find(v => v.lang.startsWith('es'));
                     }
@@ -2089,23 +2171,55 @@
 
         selectList: (id) => {
             session.selectedListId = id === '' ? null : id;
-            localStorage.setItem('jetbulary_selected_list', id);
+            try { localStorage.setItem('jetbulary_selected_list', id || ''); } catch(e) {}
+            if (typeof idbBackup !== 'undefined' && idbBackup.syncAll) {
+                idbBackup.syncAll();
+            }
         },
 
         getNextSessionWords: () => {
+            if (!session.selectedListId) {
+                app.autoSelectNextPendingTopic();
+            }
             const listId = session.selectedListId;
             if (!listId) return [];
-            const words = db.words.filter(w => w.topic_id == listId);
-            if (words.length === 0) return [];
+            const allWords = db.words.filter(w => w.topic_id == listId);
+            if (allWords.length === 0) return [];
 
+            // 1. Buscar las siguientes 4 palabras no completadas de la lista actual en orden estricto
+            const pendingWords = allWords.filter(w => {
+                const prog = db.progress.find(p => p.word_id === w.id);
+                return !prog || prog.successes < 1;
+            });
+
+            if (pendingWords.length > 0) {
+                return pendingWords.slice(0, session.wordsPerSession);
+            }
+
+            // 2. Si la lista actual ya está 100% completada, avanzar a la siguiente lista pendiente
+            const nextTopic = app.getNextPendingTopic(currentLang);
+            if (nextTopic && nextTopic.id != listId) {
+                session.selectList(nextTopic.id);
+                const nextWords = db.words.filter(w => w.topic_id == nextTopic.id);
+                const nextPending = nextWords.filter(w => {
+                    const prog = db.progress.find(p => p.word_id === w.id);
+                    return !prog || prog.successes < 1;
+                });
+                return nextPending.length > 0 ? nextPending.slice(0, session.wordsPerSession) : nextWords.slice(0, session.wordsPerSession);
+            }
+
+            // 3. Si todas las listas del nivel están completadas, practicar cíclicamente
             const progressKey = `jetbulary_session_${listId}`;
-            const saved = JSON.parse(localStorage.getItem(progressKey) || '{"lastIndex":0}');
-            let startIdx = saved.lastIndex || 0;
-            if (startIdx >= words.length) startIdx = 0; // Loop back
-
-            const sessionWords = words.slice(startIdx, startIdx + session.wordsPerSession);
-            const nextIdx = startIdx + sessionWords.length;
-            localStorage.setItem(progressKey, JSON.stringify({ lastIndex: nextIdx, completedAt: new Date().toISOString() }));
+            let startIdx = 0;
+            try {
+                const saved = JSON.parse(localStorage.getItem(progressKey) || '{"lastIndex":0}');
+                startIdx = saved.lastIndex || 0;
+            } catch(e) {}
+            if (startIdx >= allWords.length) startIdx = 0;
+            const sessionWords = allWords.slice(startIdx, startIdx + session.wordsPerSession);
+            try {
+                localStorage.setItem(progressKey, JSON.stringify({ lastIndex: (startIdx + sessionWords.length) % allWords.length }));
+            } catch(e) {}
             return sessionWords;
         },
 
@@ -2125,6 +2239,10 @@
             session.currentWordIndex = 0;
             session.phase = 'vocab';
 
+            // Quitar animación de pulsación si estaba activa
+            const lessonBtn = document.getElementById('btn-lesson') || document.querySelector('#view-game button[onclick*="startLesson"]');
+            if (lessonBtn) lessonBtn.classList.remove('pulse-lesson');
+
             game.data = words;
             game.index = 0;
             game.isSessionMode = true;
@@ -2138,6 +2256,10 @@
         },
 
         startLesson: () => {
+            // Quitar animación parpadeante al pulsar
+            const lessonBtn = document.getElementById('btn-lesson') || document.querySelector('#view-game button[onclick*="startLesson"]');
+            if (lessonBtn) lessonBtn.classList.remove('pulse-lesson');
+
             if (!session.currentWords || session.currentWords.length === 0) {
                 session.start();
                 return;
@@ -2206,21 +2328,38 @@
                 game.loadCard();
             } else {
                 session.markCurrentWordsAsLearned();
+                const pts = game.lastPointsEarned || 2;
                 const fb = document.getElementById('feedback-msg');
                 if (fb) {
-                    fb.innerHTML = `🎉 <strong>¡4 palabras completadas!</strong> Pulsa <strong>LESSON</strong> para practicar el texto y ganar puntos.`;
+                    fb.innerHTML = `+${pts} pts!`;
                     fb.className = "feedback correct";
+                    fb.style.fontSize = "1.5rem";
+                    fb.style.fontWeight = "900";
+                    fb.style.letterSpacing = "1px";
                 }
                 const promptEl = document.getElementById('prompt-pronounce');
-                if (promptEl) promptEl.innerText = '🚀 SESIÓN DE VOCABULARIO COMPLETADA';
+                if (promptEl) promptEl.innerText = '';
                 document.getElementById('mic-btn')?.classList.add('hidden');
                 document.getElementById('fail-options')?.classList.add('hidden');
                 document.getElementById('ai-advice')?.classList.add('hidden');
 
-                // Animate LESSON button to guide user
-                const lessonBtn = document.querySelector('#view-game button[onclick*="startLesson"]');
+                // Animar el botón LESSON para que parpadee esperando el clic del usuario
+                const lessonBtn = document.getElementById('btn-lesson') || document.querySelector('#view-game button[onclick*="startLesson"]');
                 if (lessonBtn) {
-                    lessonBtn.style.boxShadow = '0 0 20px rgba(0, 255, 149, 0.7)';
+                    lessonBtn.classList.add('pulse-lesson');
+                }
+
+                // Verificar si se completó toda la lista para seleccionar la siguiente lista pendiente
+                const listId = session.selectedListId;
+                if (listId) {
+                    const allWords = db.words.filter(w => w.topic_id == listId);
+                    const remaining = allWords.filter(w => {
+                        const prog = db.progress.find(p => p.word_id === w.id);
+                        return !prog || prog.successes < 1;
+                    });
+                    if (remaining.length === 0) {
+                        app.autoSelectNextPendingTopic();
+                    }
                 }
             }
         }
@@ -3043,23 +3182,20 @@
             }, { passive: false });
 
             window.onpopstate = (event) => {
-                // 1. Check open modals: Close modal and stay on current page
+                // 1. Check open modals: Close modal first and stay on current view
                 const videoModal = document.getElementById('modal-teacher-video');
                 if (videoModal && !videoModal.classList.contains('hidden')) {
                     app.closeTeacherVideoAndGoHome();
-                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
                     app.closeShareModal(true);
-                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const backupModal = document.getElementById('modal-backup-manager');
                 if (backupModal && !backupModal.classList.contains('hidden')) {
                     backupModal.classList.add('hidden');
-                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const infoModal = document.getElementById('modal-apikey-info');
@@ -3070,7 +3206,6 @@
                 const teacherModal = document.getElementById('modal-teacher-select');
                 if (teacherModal && !teacherModal.classList.contains('hidden')) {
                     teacherModal.classList.add('hidden');
-                    history.pushState({ view: 'view-dashboard' }, null, '#dashboard');
                     return;
                 }
                 const transView = document.getElementById('view-translator');
@@ -3098,7 +3233,7 @@
                     return;
                 }
 
-                // 3. In any other sub-view (Game, Vocab, Stats, Privacy, Terms): return to dashboard!
+                // 3. In any other sub-view (Game, Conversation, Vocab, Stats, Privacy, Terms): return to dashboard!
                 app.showDashboard('none');
             };
         },
@@ -3665,14 +3800,30 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const formData = new FormData();
             formData.append("file", audioBlob, filename);
             formData.append("model", "whisper-large-v3-turbo");
-            if (langCode) formData.append("language", langCode);
+            if (langCode && langCode !== 'auto') {
+                const isoLang = langCode.substring(0, 2).toLowerCase();
+                formData.append("language", isoLang);
+            }
             formData.append("response_format", "json");
 
-            const res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+            let res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${key}` },
                 body: formData
             });
+
+            // Si falla por restricción de dialecto regional, reintentar con whisper-large-v3 con auto-detección
+            if (!res.ok) {
+                const formData2 = new FormData();
+                formData2.append("file", audioBlob, filename);
+                formData2.append("model", "whisper-large-v3");
+                formData2.append("response_format", "json");
+                res = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${key}` },
+                    body: formData2
+                });
+            }
 
             if (!res.ok) {
                 const errText = await res.text();
@@ -4173,6 +4324,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         handleCorrect: () => {
             const isRecovery = game.currentRetries >= 3;
             const pointsEarned = isRecovery ? 1 : 2;
+            game.lastPointsEarned = pointsEarned;
             app.addLevelPoints(db.academy_level, pointsEarned);
 
             const fb = document.getElementById('feedback-msg');
@@ -4966,6 +5118,7 @@ Return ONLY a valid JSON object:
             if (!text || text.trim().length === 0) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const isFromSpanish = mode === 'es';
+            const targetLangName = langInfo.aiPromptLang || langInfo.name;
 
             const textEl = document.getElementById('trans-translated-text');
             if (textEl) {
@@ -4973,33 +5126,35 @@ Return ONLY a valid JSON object:
                 textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
             }
 
-            const prompt = `You are an instant simultaneous interpreter.
-Source text: "${text}"
-${isFromSpanish ? `Translate from Spanish directly into ${langInfo.name}.` : `Translate from ${langInfo.name} directly into Spanish.`}
+            const prompt = `You are an expert real-time simultaneous interpreter between Spanish and ${targetLangName}.
+${isFromSpanish 
+    ? `Task: Translate the given Spanish text directly into natural, accurate ${targetLangName}.` 
+    : `Task: Translate the given ${targetLangName} text directly into natural, accurate Spanish.`}
 
-CRITICAL: Return ONLY a JSON object:
+CRITICAL: Return ONLY a valid JSON object with key "translation":
 {
   "translation": "translated text here"
 }`;
 
-            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate: "${text}"`}], null, (data) => {
-                const transResult = (data.translation || '').trim();
+            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate text: "${text}"`}], null, (data) => {
+                const transResult = (data && data.translation ? data.translation : '').trim();
                 
                 if (textEl) {
-                    textEl.innerText = `"${transResult}"`;
+                    textEl.innerText = transResult ? `"${transResult}"` : `"${text}"`;
                     textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
                 }
 
-                translator.currentTranslation = transResult;
+                translator.currentTranslation = transResult || text;
                 translator.currentTranslationLang = isFromSpanish ? currentLang : 'es';
 
-                // Next turn: switch to the other speaker after 1.2s
+                // Next turn: switch to the other speaker after 1.4s
                 if (translator.autoLoopActive) {
-                    setTimeout(() => {
+                    clearTimeout(translator.restartTimer);
+                    translator.restartTimer = setTimeout(() => {
                         if (translator.autoLoopActive && !translator.isSpeaking) {
                             translator.startListening(isFromSpanish ? 'target' : 'es');
                         }
-                    }, 1200);
+                    }, 1400);
                 }
             });
         },
