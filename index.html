@@ -4452,8 +4452,9 @@ CRITICAL: Return ONLY a valid JSON object:
         },
 
         transcribeAudioWithGroq: async (audioBlob, langCode) => {
-            const key = localStorage.getItem(API_KEY_STORAGE);
-            if (!key) throw new Error("Missing API Key");
+            const rawKey = localStorage.getItem(API_KEY_STORAGE);
+            const key = rawKey ? rawKey.trim().replace(/^['"`\s]+|['"`\s]+$/g, '') : '';
+            if (!key) throw new Error("MISSING_KEY");
 
             const mime = (audioBlob && audioBlob.type) ? audioBlob.type : 'audio/webm';
             const ext = (mime.includes('mp4') || mime.includes('aac') || mime.includes('m4a')) ? 'm4a' : mime.includes('ogg') ? 'ogg' : mime.includes('wav') ? 'wav' : 'webm';
@@ -4474,7 +4475,7 @@ CRITICAL: Return ONLY a valid JSON object:
                 body: formData
             });
 
-            // Si falla por restricción de dialecto regional, reintentar con whisper-large-v3 con auto-detección
+            // Si falla por dialecto regional o formato, reintentar con whisper-large-v3 con auto-detección
             if (!res.ok) {
                 const formData2 = new FormData();
                 formData2.append("file", audioBlob, filename);
@@ -5931,21 +5932,27 @@ Return ONLY a valid JSON object:
             const key = rawKey ? rawKey.trim().replace(/^['"`\s]+|['"`\s]+$/g, '') : '';
             if (!key) throw new Error("MISSING_KEY");
 
-            const systemPrompt = `You are an expert real-time simultaneous translator. Translate from ${fromLangName} into natural ${toLangName}. Return ONLY the direct translation. Do not add quotes, notes or explanations.`;
+            const promptInstructions = `Translate the following text directly from ${fromLangName} into natural, accurate ${toLangName}. Output ONLY the direct translated text. Do not provide any explanation, phonetic transcript, or notes.`;
 
-            const candidates = [
+            const userModels = await app.getAvailableGroqModels(key);
+            const defaultCandidates = [
                 'llama-3.3-70b-versatile',
                 'llama-3.1-8b-instant',
                 'llama3-70b-8192',
                 'llama3-8b-8192',
                 'mixtral-8x7b-32768',
-                'gemma2-9b-it'
+                'gemma2-9b-it',
+                'openai/gpt-oss-20b'
             ];
+            const candidates = userModels.length > 0
+                ? defaultCandidates.filter(m => userModels.includes(m)).concat(userModels.filter(m => !m.includes('whisper') && !m.includes('guard') && !m.includes('tts') && !m.includes('vision')))
+                : defaultCandidates;
 
             let lastErr = null;
             for (const modelName of candidates) {
                 try {
-                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    // Intento 1: con system prompt
+                    let res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -5954,13 +5961,32 @@ Return ONLY a valid JSON object:
                         body: JSON.stringify({
                             model: modelName,
                             messages: [
-                                { role: "system", content: systemPrompt },
+                                { role: "system", content: promptInstructions },
                                 { role: "user", content: spokenText }
                             ],
                             temperature: 0.1,
                             max_tokens: 300
                         })
                     });
+
+                    // Intento 2: si el modelo no soporta role system (como gemma2)
+                    if (!res.ok) {
+                        res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${key}`
+                            },
+                            body: JSON.stringify({
+                                model: modelName,
+                                messages: [
+                                    { role: "user", content: `${promptInstructions}\n\n"${spokenText}"` }
+                                ],
+                                temperature: 0.1,
+                                max_tokens: 300
+                            })
+                        });
+                    }
 
                     if (res.ok) {
                         const data = await res.json();
@@ -5970,6 +5996,7 @@ Return ONLY a valid JSON object:
                     }
                     const errData = await res.json().catch(() => ({}));
                     lastErr = errData?.error?.message || `HTTP ${res.status}`;
+                    console.warn(`Translation model ${modelName} failed (${lastErr}), trying next candidate...`);
                 } catch(e) {
                     lastErr = e.message;
                 }
