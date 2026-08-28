@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jetbulary-cache-v74';
+const CACHE_NAME = 'jetbulary-cache-v75';
 const PRECACHE_URLS = [
     './',
     'index.html',

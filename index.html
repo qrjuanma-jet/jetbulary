@@ -137,24 +137,218 @@
             letter-spacing: 0.5px;
             padding: 8px 0;
         }
-        .giant-translation-text {
-            font-size: clamp(1.3rem, 3vw, 2.2rem) !important;
-            font-weight: 700 !important;
-            line-height: 1.3 !important;
-            padding: 6px 0;
+        /* --- DUAL PANEL TRANSLATOR (SPLIT SCREEN: ESPAÑOL / IDIOMA SELECCIONADO) --- */
+        #view-translator {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100dvh !important;
+            background: #030308 !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
-        /* --- MODO APAISADO FORZADO (ROTACIÓN 90° EN VERTICAL) --- */
-        #view-translator.apaisado-forced {
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            width: 100dvh !important;
-            height: 100dvw !important;
-            transform: translate(-50%, -50%) rotate(90deg) !important;
-            transform-origin: center center !important;
-            z-index: 99999 !important;
-            box-sizing: border-box !important;
+        .trans-header-bar {
+            height: 54px;
+            min-height: 54px;
+            background: rgba(10, 10, 18, 0.98);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+
+        .trans-container-halves {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: calc(100dvh - 54px);
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) and (orientation: landscape) {
+            .trans-container-halves {
+                flex-direction: row;
+            }
+        }
+
+        .trans-half-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .trans-half-es {
+            background: radial-gradient(circle at top left, rgba(255, 0, 85, 0.08), rgba(10, 10, 20, 0.96));
+            border-bottom: 2px solid rgba(255, 0, 85, 0.4);
+        }
+
+        @media (min-width: 768px) and (orientation: landscape) {
+            .trans-half-es {
+                border-bottom: none;
+                border-right: 2px solid rgba(255, 0, 85, 0.4);
+            }
+        }
+
+        .trans-half-foreign {
+            background: radial-gradient(circle at bottom right, rgba(0, 243, 255, 0.08), rgba(10, 10, 20, 0.96));
+        }
+
+        .trans-half-panel.recording-active-es {
+            background: radial-gradient(circle at center, rgba(255, 0, 85, 0.25), rgba(12, 10, 22, 0.98)) !important;
+            box-shadow: inset 0 0 35px rgba(255, 0, 85, 0.5) !important;
+        }
+
+        .trans-half-panel.recording-active-foreign {
+            background: radial-gradient(circle at center, rgba(0, 243, 255, 0.25), rgba(10, 15, 25, 0.98)) !important;
+            box-shadow: inset 0 0 35px rgba(0, 243, 255, 0.5) !important;
+        }
+
+        .trans-panel-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+
+        .trans-lang-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trans-flag-img {
+            width: 44px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        }
+
+        .trans-lang-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .trans-speaker-btn {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            color: #FFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 0 12px rgba(0,0,0,0.4);
+        }
+        .trans-speaker-btn:active {
+            transform: scale(0.90);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .trans-text-display-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6px 10px;
+            overflow-y: auto;
+            min-height: 60px;
+        }
+
+        .trans-giant-text {
+            font-size: clamp(1.5rem, 4vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.25;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        .trans-bottom-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding-top: 4px;
+        }
+
+        .trans-ptt-btn {
+            width: clamp(74px, 15vw, 90px);
+            height: clamp(74px, 15vw, 90px);
+            border-radius: 50%;
+            font-size: clamp(2rem, 5vw, 2.6rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: all 0.15s ease-out;
+        }
+
+        .trans-ptt-btn-es {
+            border: 2.5px solid var(--neon-pink);
+            background: linear-gradient(135deg, rgba(255,0,85,0.25), rgba(255,0,85,0.08));
+            box-shadow: 0 0 20px rgba(255,0,85,0.4);
+            color: #FFF;
+        }
+
+        .trans-ptt-btn-es.is-holding {
+            transform: scale(1.14);
+            background: rgba(255,0,85,0.9);
+            box-shadow: 0 0 35px rgba(255,0,85,0.95);
+            animation: pulse-mic 0.7s infinite alternate;
+        }
+
+        .trans-ptt-btn-foreign {
+            border: 2.5px solid var(--neon-cyan);
+            background: linear-gradient(135deg, rgba(0,243,255,0.25), rgba(0,243,255,0.08));
+            box-shadow: 0 0 20px rgba(0,243,255,0.4);
+            color: #FFF;
+        }
+
+        .trans-ptt-btn-foreign.is-holding {
+            transform: scale(1.14);
+            background: rgba(0,243,255,0.9);
+            box-shadow: 0 0 35px rgba(0,243,255,0.95);
+            animation: pulse-mic 0.7s infinite alternate;
+        }
+
+        .trans-ptt-hint {
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            text-transform: uppercase;
         }
 
         /* --- MIC BUTTON --- */
@@ -533,34 +727,89 @@
         <div id="vocab-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 
-    <!-- ====== VIEW: TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION IN GIANT LETTERS + SPEAKER BUTTON) ====== -->
-    <div id="view-translator" class="hidden" style="position: fixed; inset: 0; width: 100vw; height: 100dvh; background: #05050a; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 25px 35px; box-sizing: border-box;">
-        
-        <!-- TOP MINIMAL BAR: EXIT ONLY & SUBTLE STATUS -->
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <button onclick="translator.exitToDashboard()" style="background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.35); color: #EEE; border-radius: 12px; padding: 14px 28px; font-size: 1.4rem; font-weight: bold; cursor: pointer; width: auto;" title="Volver al menú principal">
+    <!-- ====== VIEW: DUAL TRANSLATOR (SPLIT SCREEN: ESPAÑOL / FOREIGN LANGUAGE) ====== -->
+    <div id="view-translator" class="hidden">
+        <!-- TOP MINIMAL BAR: EXIT + TITLE + TEACHER LANGUAGE SELECTOR -->
+        <div class="trans-header-bar">
+            <button onclick="translator.exitToDashboard()" class="secondary" style="width: auto; padding: 6px 14px; font-size: 1rem; border-radius: 8px; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: bold; display: flex; align-items: center; gap: 6px;">
                 ⬅ Salir
             </button>
-            <div id="trans-indicator-badge" style="font-size: 1.4rem; font-weight: 800; color: var(--neon-cyan); display: flex; align-items: center; gap: 10px;">
-                <span id="trans-indicator-dot" style="width: 16px; height: 16px; border-radius: 50%; background: var(--neon-pink); display: inline-block; animation: pulse-mic 1s infinite alternate;"></span>
-                <span id="trans-indicator-text">Escuchando en Español...</span>
+            <div style="font-family: 'Orbitron'; font-size: 0.92rem; font-weight: 900; color: #FFF; display: flex; align-items: center; gap: 6px;">
+                <span>🎙️ TRADUCTOR INSTANTÁNEO</span>
+            </div>
+            <div id="trans-header-teacher" onclick="app.openTeacherModal()" style="display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 8px; border-radius: 8px; background: rgba(0,243,255,0.08); border: 1px solid rgba(0,243,255,0.3);" title="Cambiar idioma">
+                <img id="trans-header-flag" src="flag_en.jpg" style="width: 26px; height: 18px; border-radius: 3px; object-fit: cover;">
+                <span id="trans-header-lang-name" style="color: var(--neon-cyan); font-size: 0.82rem; font-weight: bold;">EN</span>
+                <span style="color: var(--neon-cyan); font-size: 0.7rem;">▼</span>
             </div>
         </div>
 
-        <!-- CENTER STAGE: TEXTO EN EL OTRO IDIOMA EN LETRAS GIGANTES -->
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; overflow-y: auto;">
-            <div id="trans-translated-text" style="font-size: clamp(2.8rem, 6.8vw, 5.2rem); font-weight: 900; color: var(--neon-cyan); line-height: 1.25; text-shadow: 0 0 35px rgba(0,243,255,0.6); word-break: break-word; max-width: 1200px; margin: auto;">
-                "Habla ahora..."
+        <!-- DUAL HALVES CONTAINER -->
+        <div class="trans-container-halves">
+            
+            <!-- ====== TOP HALF: CASTELLANO (ESPAÑOL 🇪🇸) ====== -->
+            <div id="panel-trans-es" class="trans-half-panel trans-half-es">
+                <!-- TOP ROW: FLAG + TITLE + SPEAKER -->
+                <div class="trans-panel-top-row">
+                    <div class="trans-lang-badge">
+                        <span style="font-size: 2.2rem; line-height: 1;" title="España">🇪🇸</span>
+                        <div class="trans-lang-title" style="color: var(--neon-pink);">ESPAÑOL</div>
+                    </div>
+                    <button id="btn-trans-speak-es" onclick="translator.speakSpanish(null)" class="trans-speaker-btn" title="Escuchar en Español">
+                        🔊
+                    </button>
+                </div>
+
+                <!-- CENTER TEXT IN GIANT LETTERS -->
+                <div class="trans-text-display-area">
+                    <div id="trans-text-es" class="trans-giant-text" style="color: #FFFFFF;">
+                        "Mantén pulsado el micrófono abajo para hablar en Español..."
+                    </div>
+                </div>
+
+                <!-- BOTTOM CONTROLS: PUSH-TO-TALK MIC BUTTON -->
+                <div class="trans-bottom-controls">
+                    <button id="btn-ptt-es" class="trans-ptt-btn trans-ptt-btn-es" title="Mantén pulsado para hablar en Español">
+                        🎙️
+                    </button>
+                    <div id="hint-ptt-es" class="trans-ptt-hint" style="color: var(--neon-pink);">
+                        Mantén pulsado para hablar
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- BOTTOM ACTION: ÚNICAMENTE EL BOTÓN DE ALTAVOZ PARA LEER EN ALTO -->
-        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding-bottom: 15px;">
-            <button onclick="translator.speakCurrentTranslation()" style="width: 140px; height: 140px; border-radius: 50%; font-size: 4.2rem; background: rgba(0,243,255,0.15); border: 3px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 35px rgba(0,243,255,0.6); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;" title="Leer en voz alta">
-                🔊
-            </button>
-        </div>
+            <!-- ====== BOTTOM HALF: FOREIGN LANGUAGE ====== -->
+            <div id="panel-trans-foreign" class="trans-half-panel trans-half-foreign">
+                <!-- TOP ROW: FLAG + TITLE + SPEAKER -->
+                <div class="trans-panel-top-row">
+                    <div class="trans-lang-badge">
+                        <img id="trans-foreign-flag-img" src="flag_en.jpg" class="trans-flag-img" alt="Bandera">
+                        <div id="trans-foreign-lang-title" class="trans-lang-title" style="color: var(--neon-cyan);">ENGLISH</div>
+                    </div>
+                    <button id="btn-trans-speak-foreign" onclick="translator.speakForeign(null)" class="trans-speaker-btn" title="Escuchar en el idioma seleccionado">
+                        🔊
+                    </button>
+                </div>
 
+                <!-- CENTER TEXT IN GIANT LETTERS -->
+                <div class="trans-text-display-area">
+                    <div id="trans-text-foreign" class="trans-giant-text" style="color: var(--neon-cyan);">
+                        "Hold the microphone to speak..."
+                    </div>
+                </div>
+
+                <!-- BOTTOM CONTROLS: PUSH-TO-TALK MIC BUTTON -->
+                <div class="trans-bottom-controls">
+                    <button id="btn-ptt-foreign" class="trans-ptt-btn trans-ptt-btn-foreign" title="Mantén pulsado para hablar en el idioma seleccionado">
+                        🎙️
+                    </button>
+                    <div id="hint-ptt-foreign" class="trans-ptt-hint" style="color: var(--neon-cyan);">
+                        Mantén pulsado para hablar
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <!-- ====== VIEW: PRIVACY ====== -->
@@ -5361,233 +5610,296 @@ Return ONLY a valid JSON object:
         }
     };
 
-    // ====== TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION + SPEAKER) ======
+    // ====== DUAL TRANSLATOR (SPLIT SCREEN: ESPAÑOL / FOREIGN LANGUAGE + PUSH-TO-TALK) ======
     const translator = {
-        recognition: null,
-        activeMic: null,
-        autoLoopActive: false,
-        isSpeaking: false,
-        restartTimer: null,
+        activeMode: null,
+        isRecording: false,
+        mediaRecorder: null,
+        audioChunks: [],
+        audioStream: null,
         speed: 0.85,
-        wakeLock: null,
-        currentTranslation: '',
-        currentTranslationLang: 'target',
+        lastSpanishText: '',
+        lastForeignText: '',
 
         init: () => {
-            const textEl = document.getElementById('trans-translated-text');
-            if (textEl) {
-                textEl.innerText = '"Habla ahora..."';
-                textEl.style.color = '#FFFFFF';
-            }
-            translator.currentTranslation = '';
-            translator.currentTranslationLang = 'target';
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            
+            // Set header info
+            const headerFlag = document.getElementById('trans-header-flag');
+            const headerName = document.getElementById('trans-header-lang-name');
+            if (headerFlag) headerFlag.src = langInfo.flag || 'flag_en.jpg';
+            if (headerName) headerName.innerText = (langInfo.code || 'en').toUpperCase();
 
-            // Auto apaisado on portrait
-            if (screen.orientation && screen.orientation.lock) {
-                try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
-            } else if (window.innerHeight > window.innerWidth) {
-                const transView = document.getElementById('view-translator');
-                if (transView) transView.classList.add('apaisado-forced');
+            // Set foreign panel info
+            const foreignFlagImg = document.getElementById('trans-foreign-flag-img');
+            const foreignTitle = document.getElementById('trans-foreign-lang-title');
+            if (foreignFlagImg) foreignFlagImg.src = langInfo.flag || 'flag_en.jpg';
+            if (foreignTitle) foreignTitle.innerText = langInfo.name.toUpperCase();
+
+            // Set default prompts in giant letters if not set
+            const textEs = document.getElementById('trans-text-es');
+            const textForeign = document.getElementById('trans-text-foreign');
+            if (textEs && !translator.lastSpanishText) {
+                textEs.innerText = '"Mantén pulsado el micrófono para hablar en Español..."';
+            } else if (textEs && translator.lastSpanishText) {
+                textEs.innerText = `"${translator.lastSpanishText}"`;
             }
 
-            translator.startAutoLoop();
+            if (textForeign && !translator.lastForeignText) {
+                textForeign.innerText = `"Hold the microphone to speak in ${langInfo.name}..."`;
+            } else if (textForeign && translator.lastForeignText) {
+                textForeign.innerText = `"${translator.lastForeignText}"`;
+            }
+
+            translator.bindPushToTalkEvents();
         },
 
         exitToDashboard: () => {
-            translator.autoLoopActive = false;
             translator.stop();
-            clearTimeout(translator.restartTimer);
-            const transView = document.getElementById('view-translator');
-            if (transView) transView.classList.remove('apaisado-forced');
-            if (screen.orientation && screen.orientation.unlock) {
-                try { screen.orientation.unlock(); } catch(e){}
-            }
-            if (translator.wakeLock) {
-                try { translator.wakeLock.release(); } catch(e){}
-                translator.wakeLock = null;
-            }
             app.showDashboard();
         },
 
-        requestWakeLock: async () => {
-            if ('wakeLock' in navigator) {
-                try { translator.wakeLock = await navigator.wakeLock.request('screen'); }
-                catch(e) { console.log("WakeLock error:", e); }
-            }
-        },
-
-        startAutoLoop: () => {
-            translator.autoLoopActive = true;
-            translator.requestWakeLock();
-            translator.startListening('es');
-        },
-
-        stopAutoLoop: () => {
-            translator.autoLoopActive = false;
-            clearTimeout(translator.restartTimer);
-            translator.stop();
-        },
-
-        startListening: async (mode) => {
-            translator.stopRecognitionOnly();
-            clearTimeout(translator.restartTimer);
-
-            if (!translator.autoLoopActive || translator.isSpeaking) return;
-
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            translator.activeMic = mode;
-            translator.requestWakeLock();
-
-            const dot = document.getElementById('trans-indicator-dot');
-            const label = document.getElementById('trans-indicator-text');
-            if (dot && label) {
-                if (mode === 'es') {
-                    dot.style.background = 'var(--neon-pink)';
-                    label.innerText = 'Escuchando en Español... (Habla tú)';
-                    label.style.color = 'var(--neon-pink)';
-                } else {
-                    dot.style.background = 'var(--neon-cyan)';
-                    label.innerText = `Escuchando en ${langInfo.name}... (Habla tu interlocutor)`;
-                    label.style.color = 'var(--neon-cyan)';
-                }
-            }
-
-            const targetLang = mode === 'es' ? 'es' : langInfo.code;
-            stt.startRecording(
-                'trans',
-                targetLang,
-                (transcript) => {
-                    translator.activeMic = null;
-                    if (transcript && transcript.trim()) {
-                        translator.handleSpokenInput(transcript.trim(), mode);
-                    }
-                },
-                (err) => {
-                    console.log("Trans error:", err);
-                    translator.activeMic = null;
-                    if (translator.autoLoopActive && !translator.isSpeaking) {
-                        clearTimeout(translator.restartTimer);
-                        translator.restartTimer = setTimeout(() => {
-                            if (translator.autoLoopActive && !translator.isSpeaking && !translator.activeMic) {
-                                translator.startListening(mode);
-                            }
-                        }, 600);
-                    }
-                }
-            );
-        },
-
-        stopRecognitionOnly: () => {
-            stt.stop();
-            translator.activeMic = null;
-        },
-
         stop: () => {
-            clearTimeout(translator.restartTimer);
-            translator.stopRecognitionOnly();
-            translator.isSpeaking = false;
+            translator.isRecording = false;
+            translator.activeMode = null;
+            translator.cleanupHoldUI();
+            if (translator.mediaRecorder && translator.mediaRecorder.state !== 'inactive') {
+                try { translator.mediaRecorder.stop(); } catch(e){}
+            }
+            if (translator.audioStream) {
+                try { translator.audioStream.getTracks().forEach(t => t.stop()); } catch(e){}
+                translator.audioStream = null;
+            }
             ttsEngine.stop();
         },
 
-        handleSpokenInput: async (text, mode) => {
-            if (!text || text.trim().length === 0) return;
+        bindPushToTalkEvents: () => {
+            const bindBtn = (btnId, mode) => {
+                const btn = document.getElementById(btnId);
+                if (!btn || btn.dataset.pttBound) return;
+                btn.dataset.pttBound = 'true';
+
+                let isDown = false;
+
+                const startHold = (e) => {
+                    e.preventDefault();
+                    if (isDown) return;
+                    isDown = true;
+                    translator.startPushToTalk(mode);
+                };
+
+                const endHold = (e) => {
+                    e.preventDefault();
+                    if (!isDown) return;
+                    isDown = false;
+                    translator.stopPushToTalk(mode);
+                };
+
+                btn.addEventListener('pointerdown', startHold);
+                btn.addEventListener('pointerup', endHold);
+                btn.addEventListener('pointercancel', endHold);
+                btn.addEventListener('pointerleave', endHold);
+
+                // Touch & Mouse fallbacks
+                btn.addEventListener('touchstart', startHold, { passive: false });
+                btn.addEventListener('touchend', endHold, { passive: false });
+                btn.addEventListener('touchcancel', endHold, { passive: false });
+                btn.addEventListener('mousedown', startHold);
+                btn.addEventListener('mouseup', endHold);
+                btn.addEventListener('mouseleave', endHold);
+                btn.addEventListener('contextmenu', (e) => e.preventDefault());
+            };
+
+            bindBtn('btn-ptt-es', 'es');
+            bindBtn('btn-ptt-foreign', 'foreign');
+        },
+
+        startPushToTalk: async (mode) => {
+            ttsEngine.stop();
+            window.speechSynthesis.cancel();
+            translator.activeMode = mode; // 'es' or 'foreign'
+            translator.isRecording = true;
+
+            const isEs = mode === 'es';
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const langCode = isEs ? 'es' : (langInfo.code || 'en');
+
+            // Haptic vibration feedback
+            if (navigator.vibrate) try { navigator.vibrate(35); } catch(e){}
+
+            // Visual feedback
+            const panel = document.getElementById(isEs ? 'panel-trans-es' : 'panel-trans-foreign');
+            const btn = document.getElementById(isEs ? 'btn-ptt-es' : 'btn-ptt-foreign');
+            const hint = document.getElementById(isEs ? 'hint-ptt-es' : 'hint-ptt-foreign');
+            const textEl = document.getElementById(isEs ? 'trans-text-es' : 'trans-text-foreign');
+
+            if (panel) panel.classList.add(isEs ? 'recording-active-es' : 'recording-active-foreign');
+            if (btn) btn.classList.add('is-holding');
+            if (hint) hint.innerText = isEs ? "🔴 Grabando... Suelta para traducir" : `🔴 Recording... Release to translate`;
+            if (textEl) textEl.innerText = isEs ? "Escuchando tu voz..." : `Listening in ${langInfo.name}...`;
+
+            // Start audio recording with MediaRecorder
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+                translator.audioStream = stream;
+                translator.audioChunks = [];
+
+                let mimeType = 'audio/webm';
+                if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                    if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+                    else if (MediaRecorder.isTypeSupported('audio/aac')) mimeType = 'audio/aac';
+                    else mimeType = '';
+                }
+
+                const options = mimeType ? { mimeType } : {};
+                const recorder = new MediaRecorder(stream, options);
+                translator.mediaRecorder = recorder;
+
+                recorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) translator.audioChunks.push(e.data);
+                };
+
+                recorder.onstop = async () => {
+                    if (translator.audioStream) {
+                        translator.audioStream.getTracks().forEach(t => t.stop());
+                        translator.audioStream = null;
+                    }
+                    if (translator.audioChunks.length === 0) return;
+
+                    const audioBlob = new Blob(translator.audioChunks, { type: mimeType || 'audio/webm' });
+                    if (audioBlob.size < 300) {
+                        if (hint) hint.innerText = "Mantén pulsado para hablar";
+                        return;
+                    }
+
+                    translator.processAudioTranslation(audioBlob, mode, langCode);
+                };
+
+                recorder.start(100);
+            } catch(err) {
+                console.error("Mic error in translator:", err);
+                translator.cleanupHoldUI();
+                alert("⚠️ Por favor concede permiso de micrófono a Jetbulary para usar el traductor.");
+            }
+        },
+
+        stopPushToTalk: (mode) => {
+            if (!translator.isRecording || translator.activeMode !== mode) return;
+            translator.isRecording = false;
+
+            // Release vibration feedback
+            if (navigator.vibrate) try { navigator.vibrate(20); } catch(e){}
+
+            translator.cleanupHoldUI();
+
+            if (translator.mediaRecorder && translator.mediaRecorder.state !== 'inactive') {
+                try { translator.mediaRecorder.stop(); } catch(e){}
+            }
+        },
+
+        cleanupHoldUI: () => {
+            document.getElementById('panel-trans-es')?.classList.remove('recording-active-es');
+            document.getElementById('panel-trans-foreign')?.classList.remove('recording-active-foreign');
+            document.getElementById('btn-ptt-es')?.classList.remove('is-holding');
+            document.getElementById('btn-ptt-foreign')?.classList.remove('is-holding');
+            const hintEs = document.getElementById('hint-ptt-es');
+            const hintForeign = document.getElementById('hint-ptt-foreign');
+            if (hintEs) hintEs.innerText = "Mantén pulsado para hablar";
+            if (hintForeign) hintForeign.innerText = "Mantén pulsado para hablar";
+        },
+
+        processAudioTranslation: async (audioBlob, mode, langCode) => {
             const isFromSpanish = mode === 'es';
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const targetLangName = langInfo.aiPromptLang || langInfo.name;
 
-            const textEl = document.getElementById('trans-translated-text');
-            if (textEl) {
-                textEl.innerText = "Traduciendo...";
-                textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
-            }
+            const textSourceEl = document.getElementById(isFromSpanish ? 'trans-text-es' : 'trans-text-foreign');
+            const textTargetEl = document.getElementById(isFromSpanish ? 'trans-text-foreign' : 'trans-text-es');
 
-            const prompt = `You are an expert real-time simultaneous interpreter between Spanish and ${targetLangName}.
-${isFromSpanish 
-    ? `Task: Translate the given Spanish text directly into natural, accurate ${targetLangName}.` 
-    : `Task: Translate the given ${targetLangName} text directly into natural, accurate Spanish.`}
+            if (textSourceEl) textSourceEl.innerText = "⏳ Procesando voz...";
+            if (textTargetEl) textTargetEl.innerText = "⚡ Traduciendo...";
 
-CRITICAL: Return ONLY a valid JSON object with key "translation":
-{
-  "translation": "translated text here"
-}`;
-
-            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate text: "${text}"`}], null, (data) => {
-                const transResult = (data && data.translation ? data.translation : '').trim();
-                
-                if (textEl) {
-                    textEl.innerText = transResult ? `"${transResult}"` : `"${text}"`;
-                    textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
+            try {
+                // 1. Transcribe audio with Groq Whisper (< 200ms)
+                const transcript = await app.transcribeAudioWithGroq(audioBlob, langCode);
+                if (!transcript || !transcript.trim()) {
+                    if (textSourceEl) textSourceEl.innerText = isFromSpanish ? "(No se detectó voz clara)" : "(No clear speech detected)";
+                    if (textTargetEl) textTargetEl.innerText = "...";
+                    return;
                 }
 
-                translator.currentTranslation = transResult || text;
-                translator.currentTranslationLang = isFromSpanish ? currentLang : 'es';
+                const spokenText = transcript.trim();
+                if (textSourceEl) textSourceEl.innerText = `"${spokenText}"`;
+                if (isFromSpanish) translator.lastSpanishText = spokenText;
+                else translator.lastForeignText = spokenText;
 
-                // Next turn: switch to the other speaker after 1.4s
-                if (translator.autoLoopActive) {
-                    clearTimeout(translator.restartTimer);
-                    translator.restartTimer = setTimeout(() => {
-                        if (translator.autoLoopActive && !translator.isSpeaking) {
-                            translator.startListening(isFromSpanish ? 'target' : 'es');
-                        }
-                    }, 1400);
+                // 2. Direct Ultra-fast Text Translation with Groq LLaMA
+                const rawKey = localStorage.getItem(API_KEY_STORAGE);
+                const key = rawKey ? rawKey.trim().replace(/^['"`\s]+|['"`\s]+$/g, '') : '';
+                if (!key) {
+                    if (textTargetEl) textTargetEl.innerText = "Falta API Key de Groq";
+                    return;
                 }
-            });
-        },
 
-        speakCurrentTranslation: () => {
-            if (!translator.currentTranslation) return;
-            if (translator.currentTranslationLang === 'es') {
-                translator.speakSpanish(translator.currentTranslation);
-            } else {
-                translator.speakForeign(translator.currentTranslation);
+                const systemPrompt = isFromSpanish
+                    ? `You are an ultra-fast translator. Translate this Spanish text into natural ${targetLangName}. Return ONLY the direct translated text, without quotes or explanations.`
+                    : `You are an ultra-fast translator. Translate this ${targetLangName} text into natural Spanish. Return ONLY the direct translated text, without quotes or explanations.`;
+
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+                    body: JSON.stringify({
+                        model: "llama-3.1-8b-instant",
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: spokenText }
+                        ],
+                        temperature: 0.1,
+                        max_tokens: 300
+                    })
+                });
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+                let translatedText = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content.trim() : '';
+                translatedText = translatedText.replace(/^["']|["']$/g, '').trim();
+
+                if (textTargetEl) {
+                    textTargetEl.innerText = `"${translatedText}"`;
+                }
+
+                if (isFromSpanish) translator.lastForeignText = translatedText;
+                else translator.lastSpanishText = translatedText;
+
+                // 3. Auto-play translation TTS through corresponding speaker
+                if (isFromSpanish) {
+                    translator.speakForeign(translatedText);
+                } else {
+                    translator.speakSpanish(translatedText);
+                }
+
+            } catch(err) {
+                console.error("Translation processing error:", err);
+                if (textTargetEl) textTargetEl.innerText = "Error al traducir. Inténtalo de nuevo.";
             }
         },
 
-        speakForeign: (text, onEndCallback) => {
-            translator.stopRecognitionOnly();
-            translator.isSpeaking = true;
+        speakSpanish: (customText) => {
+            const textToSpeak = (customText || translator.lastSpanishText || '').replace(/^["']|["']$/g, '').trim();
+            if (!textToSpeak) return;
             ttsEngine.stop();
+            ttsEngine.speak(textToSpeak, 'es-ES', translator.speed || 0.85);
+        },
 
+        speakForeign: (customText) => {
+            const textToSpeak = (customText || translator.lastForeignText || '').replace(/^["']|["']$/g, '').trim();
+            if (!textToSpeak) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            const rate = translator.speed || 0.85;
-
-            ttsEngine.speak(
-                text,
-                langInfo.code,
-                rate,
-                null,
-                () => {
-                    translator.isSpeaking = false;
-                    if (onEndCallback) onEndCallback();
-                },
-                () => {
-                    translator.isSpeaking = false;
-                    if (onEndCallback) onEndCallback();
-                }
-            );
-        },
-
-        speakSpanish: (text, onEndCallback) => {
-            translator.stopRecognitionOnly();
-            translator.isSpeaking = true;
             ttsEngine.stop();
-
-            const rate = translator.speed || 0.85;
-
-            ttsEngine.speak(
-                text,
-                'es',
-                rate,
-                null,
-                () => {
-                    translator.isSpeaking = false;
-                    if (onEndCallback) onEndCallback();
-                },
-                () => {
-                    translator.isSpeaking = false;
-                    if (onEndCallback) onEndCallback();
-                }
-            );
+            ttsEngine.speak(textToSpeak, langInfo.code, translator.speed || 0.85);
         }
     };
 
