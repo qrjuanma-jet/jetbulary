@@ -2107,6 +2107,83 @@
             return cleaned.length > 0 ? cleaned : [text.trim()];
         },
 
+        findBestVoice: (langCode) => {
+            if (!window.speechSynthesis) return null;
+            const voices = window.speechSynthesis.getVoices() || [];
+            if (voices.length === 0) return null;
+
+            const rawCode = (langCode || 'en').toLowerCase().replace('_', '-');
+            const cleanCode = rawCode.split('-')[0];
+            const langInfo = LANGUAGES[cleanCode] || LANGUAGES[rawCode] || (cleanCode === 'es' ? LANGUAGES.es : LANGUAGES.en);
+
+            if (cleanCode === 'es') {
+                // 1. Prioridad Máxima: Voz de España femenina (es-ES / Spain / España / Castellano / Helena / Laura / Monica / etc.)
+                let v = voices.find(vox => {
+                    const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                    const n = (vox.name || '').toLowerCase();
+                    const isEs = l.startsWith('es') || l.startsWith('spa') || n.includes('spanish') || n.includes('español');
+                    const isSpain = l.includes('es-es') || l.includes('es_es') || n.includes('spain') || n.includes('españa') || n.includes('castellano');
+                    const isFemale = (langInfo.femaleVoices || []).some(fn => n.includes(fn)) || n.includes('female');
+                    return isEs && isSpain && isFemale;
+                });
+                if (v) return v;
+
+                // 2. Cualquier voz de España (es-ES, Spain, España, Castellano)
+                v = voices.find(vox => {
+                    const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                    const n = (vox.name || '').toLowerCase();
+                    const isEs = l.startsWith('es') || l.startsWith('spa') || n.includes('spanish') || n.includes('español');
+                    const isSpain = l.includes('es-es') || l.includes('es_es') || n.includes('spain') || n.includes('españa') || n.includes('castellano');
+                    return isEs && isSpain;
+                });
+                if (v) return v;
+
+                // 3. Cualquier voz en español femenina (es-MX, es-US, es-419, Paulina, Google español, etc.)
+                v = voices.find(vox => {
+                    const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                    const n = (vox.name || '').toLowerCase();
+                    const isEs = l.startsWith('es') || l.startsWith('spa') || n.includes('spanish') || n.includes('español');
+                    const isFemale = (langInfo.femaleVoices || []).some(fn => n.includes(fn)) || n.includes('female');
+                    return isEs && isFemale;
+                });
+                if (v) return v;
+
+                // 4. Cualquier voz en español del dispositivo
+                v = voices.find(vox => {
+                    const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                    const n = (vox.name || '').toLowerCase();
+                    return l.startsWith('es') || l.startsWith('spa') || n.includes('spanish') || n.includes('español');
+                });
+                if (v) return v;
+            }
+
+            // Para los demás idiomas extranjeros (en, de, fr, pt, it, ru, eu, ca, gl)
+            // 1. Coincidencia exacta de idioma + preferencia femenina
+            let v = voices.find(vox => {
+                const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                const n = (vox.name || '').toLowerCase();
+                const matchesLang = l.startsWith(cleanCode) || l.startsWith(rawCode) || n.includes(cleanCode);
+                const matchesFemale = (langInfo.femaleVoices || []).some(fn => n.includes(fn)) || n.includes('female');
+                return matchesLang && matchesFemale;
+            });
+            if (v) return v;
+
+            // 2. Cualquier voz de ese idioma
+            v = voices.find(vox => {
+                const l = (vox.lang || '').toLowerCase().replace('_', '-');
+                const n = (vox.name || '').toLowerCase();
+                return l.startsWith(cleanCode) || l.startsWith(rawCode);
+            });
+            if (v) return v;
+
+            // 3. Fallback para lenguas cooficiales de España (eu, ca, gl) a voz en español
+            if (cleanCode === 'eu' || cleanCode === 'ca' || cleanCode === 'gl') {
+                return ttsEngine.findBestVoice('es');
+            }
+
+            return null;
+        },
+
         speak: (text, langCode, rate = 0.8, onStart, onEnd, onError) => {
             ttsEngine.stop();
             if (!text || !text.trim()) {
@@ -2189,40 +2266,10 @@
                 ttsEngine.activeUtterance = u;
                 u.rate = effectiveRate;
 
-                const voices = window.speechSynthesis.getVoices();
-                if (voices && voices.length > 0) {
-                    // 1. Try finding a native voice matching cleanCode ('es', 'en', 'de', etc.) with female preference
-                    let f = voices.find(v => {
-                        const vl = v.lang.toLowerCase().replace('_', '-');
-                        return (vl.startsWith(cleanCode) || vl.startsWith(rawCode) || vl.includes(cleanCode)) &&
-                               (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name));
-                    });
-
-                    // 2. Try any voice matching the language code
-                    if (!f) {
-                        f = voices.find(v => {
-                            const vl = v.lang.toLowerCase().replace('_', '-');
-                            return vl.startsWith(cleanCode) || vl.startsWith(rawCode) || vl.includes(cleanCode);
-                        });
-                    }
-
-                    // 3. Fallback for Spanish co-official languages (eu, ca, gl) if regional voice not present
-                    if (!f && (cleanCode === 'eu' || cleanCode === 'ca' || cleanCode === 'gl')) {
-                        f = voices.find(v => {
-                            const vl = v.lang.toLowerCase().replace('_', '-');
-                            return vl.startsWith('es') && (LANGUAGES.es.femaleVoices || []).some(name => v.name.toLowerCase().includes(name));
-                        });
-                        if (!f) {
-                            f = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith('es'));
-                        }
-                    }
-
-                    if (f) {
-                        u.voice = f;
-                        u.lang = f.lang;
-                    } else {
-                        u.lang = targetSpeechLang;
-                    }
+                const bestVoice = ttsEngine.findBestVoice(cleanCode);
+                if (bestVoice) {
+                    u.voice = bestVoice;
+                    u.lang = bestVoice.lang || targetSpeechLang;
                 } else {
                     u.lang = targetSpeechLang;
                 }
