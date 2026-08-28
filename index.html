@@ -1665,6 +1665,15 @@
         }
     };
 
+    // ====== CEFR / MCER POINTS THRESHOLD CONFIGURATION ======
+    const CEFR_POINTS_REQUIRED = {
+        0: 150,  // Nivel 0: A0 (Starter / Supervivencia) -> 150 pts para desbloquear A1-A2
+        1: 300,  // Nivel 1: A1-A2 (Básico / Plataforma) -> 300 pts para desbloquear B1
+        2: 500,  // Nivel 2: B1 (Intermedio / Umbral) -> 500 pts para desbloquear B2
+        3: 750,  // Nivel 3: B2 (Avanzado / Ventaja - First Certificate) -> 750 pts para desbloquear C1+
+        4: 1000  // Nivel 4: C1+ (Dominio Operativo Eficaz / Maestría - CAE/CPE/Nativo) -> 1000+ pts
+    };
+
     // ====== DEFAULT TOPICS BY LANGUAGE (CEFR / MCER ALIGNED) ======
     const defaultTopicsByLang = {
         en: [
@@ -1672,20 +1681,42 @@
             { name: "SURVIVAL & BASIC GREETINGS (A0)", level: 0, words: [
                 { english: "hello", spanish: "hola", ipa: "/həˈloʊ/", sentence_en: "Hello, nice to meet you.", sentence_es: "Hola, encantado de conocerte." },
                 { english: "please", spanish: "por favor", ipa: "/pliːz/", sentence_en: "A coffee, please.", sentence_es: "Un café, por favor." },
-                { english: "thank you", spanish: "gracias", ipa: "/ˈθæŋk juː/", sentence_en: "Thank you very much.", sentence_es: "Muchas gracias." },
-                { english: "goodbye", spanish: "adiós", ipa: "/ɡʊdˈbaɪ/", sentence_en: "Goodbye, see you tomorrow!", sentence_es: "¡Adiós, nos vemos mañana!" }
+                { english: "thank you", spanish: "gracias", ipa: "/ˈθæŋk juː/", sentence_en: "Thank you very much for your help.", sentence_es: "Muchas gracias por tu ayuda." },
+                { english: "goodbye", spanish: "adiós", ipa: "/ɡʊdˈbaɪ/", sentence_en: "Goodbye, see you tomorrow!", sentence_es: "¡Adiós, nos vemos mañana!" },
+                { english: "yes", spanish: "sí", ipa: "/jes/", sentence_en: "Yes, I understand.", sentence_es: "Sí, lo entiendo." },
+                { english: "no", spanish: "no", ipa: "/noʊ/", sentence_en: "No, thank you.", sentence_es: "No, gracias." },
+                { english: "excuse me", spanish: "disculpe / perdón", ipa: "/ɪkˈskjuːz miː/", sentence_en: "Excuse me, where is the station?", sentence_es: "Disculpe, ¿dónde está la estación?" },
+                { english: "sorry", spanish: "lo siento", ipa: "/ˈsɑːri/", sentence_en: "I am sorry for the delay.", sentence_es: "Siento el retraso." }
             ]},
-            { name: "NUMBERS & BASIC OBJECTS (A0)", level: 0, words: [
+            { name: "NUMBERS & TIME (A0)", level: 0, words: [
                 { english: "one", spanish: "uno", ipa: "/wʌn/", sentence_en: "I have one ticket.", sentence_es: "Tengo un billete." },
-                { english: "water", spanish: "agua", ipa: "/ˈwɔːtər/", sentence_en: "I need some water.", sentence_es: "Necesito un poco de agua." },
-                { english: "house", spanish: "casa", ipa: "/haʊs/", sentence_en: "This is my house.", sentence_es: "Esta es mi casa." },
-                { english: "phone", spanish: "teléfono", ipa: "/foʊn/", sentence_en: "Where is my phone?", sentence_es: "¿Dónde está mi teléfono?" }
+                { english: "two", spanish: "dos", ipa: "/tuː/", sentence_en: "Two coffees, please.", sentence_es: "Dos cafés, por favor." },
+                { english: "three", spanish: "tres", ipa: "/θriː/", sentence_en: "We need three chairs.", sentence_es: "Necesitamos tres sillas." },
+                { english: "four", spanish: "cuatro", ipa: "/fɔːr/", sentence_en: "It is four o'clock.", sentence_es: "Son las cuatro en punto." },
+                { english: "five", spanish: "cinco", ipa: "/faɪv/", sentence_en: "Give me five minutes.", sentence_es: "Dame cinco minutos." },
+                { english: "today", spanish: "hoy", ipa: "/təˈdeɪ/", sentence_en: "Today is a beautiful day.", sentence_es: "Hoy es un día hermoso." },
+                { english: "tomorrow", spanish: "mañana", ipa: "/təˈmɔːroʊ/", sentence_en: "See you tomorrow morning.", sentence_es: "Nos vemos mañana por la mañana." },
+                { english: "now", spanish: "ahora", ipa: "/naʊ/", sentence_en: "We must go now.", sentence_es: "Debemos irnos ahora." }
             ]},
-            { name: "BASIC PREPOSITIONS & PRONOUNS (A0)", level: 0, words: [
+            { name: "BASIC OBJECTS & SURROUNDINGS (A0)", level: 0, words: [
+                { english: "water", spanish: "agua", ipa: "/ˈwɔːtər/", sentence_en: "I need some fresh water.", sentence_es: "Necesito un poco de agua fresca." },
+                { english: "house", spanish: "casa", ipa: "/haʊs/", sentence_en: "This is my new house.", sentence_es: "Esta es mi nueva casa." },
+                { english: "phone", spanish: "teléfono", ipa: "/foʊn/", sentence_en: "Where is my mobile phone?", sentence_es: "¿Dónde está mi teléfono móvil?" },
+                { english: "book", spanish: "libro", ipa: "/bʊk/", sentence_en: "The book is on the table.", sentence_es: "El libro está sobre la mesa." },
+                { english: "door", spanish: "puerta", ipa: "/dɔːr/", sentence_en: "Please close the front door.", sentence_es: "Por favor, cierra la puerta principal." },
+                { english: "window", spanish: "ventana", ipa: "/ˈwɪndoʊ/", sentence_en: "Open the window for fresh air.", sentence_es: "Abre la ventana para ventilar." },
+                { english: "car", spanish: "coche", ipa: "/kɑːr/", sentence_en: "He drives a blue car.", sentence_es: "Él conduce un coche azul." },
+                { english: "street", spanish: "calle", ipa: "/striːt/", sentence_en: "Walk down this street.", sentence_es: "Camina por esta calle." }
+            ]},
+            { name: "PRONOUNS & ESSENTIAL PREPOSITIONS (A0)", level: 0, words: [
+                { english: "I", spanish: "yo", ipa: "/aɪ/", sentence_en: "I am learning English.", sentence_es: "Yo estoy aprendiendo inglés." },
+                { english: "you", spanish: "tú / usted", ipa: "/juː/", sentence_en: "You are very kind.", sentence_es: "Tú eres muy amable." },
+                { english: "he", spanish: "él", ipa: "/hiː/", sentence_en: "He is my brother.", sentence_es: "Él es mi hermano." },
+                { english: "she", spanish: "ella", ipa: "/ʃiː/", sentence_en: "She is a good doctor.", sentence_es: "Ella es una buena doctora." },
+                { english: "we", spanish: "nosotros", ipa: "/wiː/", sentence_en: "We live in Madrid.", sentence_es: "Nosotros vivimos en Madrid." },
                 { english: "in", spanish: "en (dentro)", ipa: "/ɪn/", sentence_en: "She is in the room.", sentence_es: "Ella está en la habitación." },
                 { english: "on", spanish: "en (sobre)", ipa: "/ɒn/", sentence_en: "The keys are on the table.", sentence_es: "Las llaves están sobre la mesa." },
-                { english: "under", spanish: "debajo de", ipa: "/ˈʌndər/", sentence_en: "The cat is under the chair.", sentence_es: "El gato está debajo de la silla." },
-                { english: "you", spanish: "tú / usted", ipa: "/juː/", sentence_en: "You are my friend.", sentence_es: "Tú eres mi amigo." }
+                { english: "with", spanish: "con", ipa: "/wɪð/", sentence_en: "Come with me, please.", sentence_es: "Ven conmigo, por favor." }
             ]},
 
             // Level 1: A1-A2 (Básico / Plataforma)
@@ -1693,67 +1724,187 @@
                 { english: "wake up", spanish: "despertarse", ipa: "/weɪk ʌp/", sentence_en: "I wake up at seven every day.", sentence_es: "Me despierto a las siete todos los días." },
                 { english: "have breakfast", spanish: "desayunar", ipa: "/hæv ˈbrekfəst/", sentence_en: "We have breakfast together.", sentence_es: "Desayunamos juntos." },
                 { english: "work", spanish: "trabajar", ipa: "/wɜːrk/", sentence_en: "He works in a modern office.", sentence_es: "Él trabaja en una oficina moderna." },
-                { english: "sleep", spanish: "dormir", ipa: "/sliːp/", sentence_en: "I want to sleep eight hours.", sentence_es: "Quiero dormir ocho horas." }
+                { english: "study", spanish: "estudiar", ipa: "/ˈstʌdi/", sentence_en: "They study every evening.", sentence_es: "Ellos estudian cada tarde." },
+                { english: "eat", spanish: "comer", ipa: "/iːt/", sentence_en: "Let us eat some lunch.", sentence_es: "Vamos a almorzar." },
+                { english: "drink", spanish: "beber", ipa: "/drɪŋk/", sentence_en: "Drink plenty of water.", sentence_es: "Bebe abundante agua." },
+                { english: "sleep", spanish: "dormir", ipa: "/sliːp/", sentence_en: "I want to sleep eight hours.", sentence_es: "Quiero dormir ocho horas." },
+                { english: "buy (bought)", spanish: "comprar", ipa: "/baɪ/", sentence_en: "I want to buy a new jacket.", sentence_es: "Quiero comprar una chaqueta nueva." }
             ]},
-            { name: "FOOD, DRINK & SHOPPING (A1-A2)", level: 1, words: [
+            { name: "FOOD, DRINK & RESTAURANT (A1-A2)", level: 1, words: [
                 { english: "bread", spanish: "pan", ipa: "/bred/", sentence_en: "I buy fresh bread every morning.", sentence_es: "Compro pan fresco cada mañana." },
                 { english: "coffee", spanish: "café", ipa: "/ˈkɔːfi/", sentence_en: "She drinks black coffee.", sentence_es: "Ella bebe café solo." },
-                { english: "buy (bought)", spanish: "comprar", ipa: "/baɪ/", sentence_en: "I want to buy a new jacket.", sentence_es: "Quiero comprar una chaqueta nueva." },
-                { english: "cost", spanish: "costar", ipa: "/kɔːst/", sentence_en: "How much does it cost?", sentence_es: "¿Cuánto cuesta?" }
+                { english: "tea", spanish: "té", ipa: "/tiː/", sentence_en: "Would you like a cup of tea?", sentence_es: "¿Te gustaría una taza de té?" },
+                { english: "meat", spanish: "carne", ipa: "/miːt/", sentence_en: "We cooked roast meat for dinner.", sentence_es: "Cocinamos carne asada para cenar." },
+                { english: "fruit", spanish: "fruta", ipa: "/fruːt/", sentence_en: "Fresh fruit is very healthy.", sentence_es: "La fruta fresca es muy saludable." },
+                { english: "bill", spanish: "cuenta (restaurante)", ipa: "/bɪl/", sentence_en: "Could we have the bill, please?", sentence_es: "¿Nos trae la cuenta, por favor?" },
+                { english: "menu", spanish: "menú / carta", ipa: "/ˈmenjuː/", sentence_en: "Let me check the dessert menu.", sentence_es: "Déjame ver la carta de postres." },
+                { english: "delicious", spanish: "delicioso", ipa: "/dɪˈlɪʃəs/", sentence_en: "This pasta is delicious.", sentence_es: "Esta pasta está deliciosa." }
             ]},
             { name: "TRAVEL & DIRECTIONS (A1-A2)", level: 1, words: [
                 { english: "airport", spanish: "aeropuerto", ipa: "/ˈerpɔːrt/", sentence_en: "Take me to the airport, please.", sentence_es: "Lléveme al aeropuerto, por favor." },
                 { english: "train station", spanish: "estación de tren", ipa: "/treɪn ˈsteɪʃn/", sentence_en: "The train station is near here.", sentence_es: "La estación de tren está cerca de aquí." },
+                { english: "bus stop", spanish: "parada de autobús", ipa: "/bʌs stɑːp/", sentence_en: "Wait for me at the bus stop.", sentence_es: "Espérame en la parada de autobús." },
+                { english: "ticket", spanish: "billete / entrada", ipa: "/ˈtɪkɪt/", sentence_en: "I booked a round-trip ticket.", sentence_es: "Reservé un billete de ida y vuelta." },
                 { english: "turn left", spanish: "girar a la izquierda", ipa: "/tɜːrn left/", sentence_en: "Turn left at the traffic light.", sentence_es: "Gira a la izquierda en el semáforo." },
-                { english: "straight ahead", spanish: "todo recto", ipa: "/streɪt əˈhed/", sentence_en: "Go straight ahead for two blocks.", sentence_es: "Sigue todo recto durante dos manzanas." }
+                { english: "turn right", spanish: "girar a la derecha", ipa: "/tɜːrn raɪt/", sentence_en: "Turn right at the corner.", sentence_es: "Gira a la derecha en la esquina." },
+                { english: "straight ahead", spanish: "todo recto", ipa: "/streɪt əˈhed/", sentence_en: "Go straight ahead for two blocks.", sentence_es: "Sigue todo recto durante dos manzanas." },
+                { english: "map", spanish: "mapa", ipa: "/mæp/", sentence_en: "Look at the city map.", sentence_es: "Mira el mapa de la ciudad." }
             ]},
-            { name: "BASIC CONNECTORS (A1-A2)", level: 1, words: [
+            { name: "FAMILY & DESCRIBING PEOPLE (A1-A2)", level: 1, words: [
+                { english: "father", spanish: "padre", ipa: "/ˈfɑːðər/", sentence_en: "My father is an engineer.", sentence_es: "Mi padre es ingeniero." },
+                { english: "mother", spanish: "madre", ipa: "/ˈmʌðər/", sentence_en: "Her mother is a teacher.", sentence_es: "Su madre es profesora." },
+                { english: "brother", spanish: "hermano", ipa: "/ˈbrʌðər/", sentence_en: "I have an older brother.", sentence_es: "Tengo un hermano mayor." },
+                { english: "sister", spanish: "hermana", ipa: "/ˈsɪstər/", sentence_en: "My sister lives in London.", sentence_es: "Mi hermana vive en Londres." },
+                { english: "friend", spanish: "amigo", ipa: "/frend/", sentence_en: "He is my best friend.", sentence_es: "Él es mi mejor amigo." },
+                { english: "happy", spanish: "feliz", ipa: "/ˈhæpi/", sentence_en: "We are very happy today.", sentence_es: "Estamos muy felices hoy." },
+                { english: "tired", spanish: "cansado", ipa: "/ˈtaɪərd/", sentence_en: "I feel tired after work.", sentence_es: "Me siento cansado después del trabajo." },
+                { english: "young", spanish: "joven", ipa: "/jʌŋ/", sentence_en: "They are energetic and young.", sentence_es: "Son enérgicos y jóvenes." }
+            ]},
+            { name: "BASIC CONNECTORS & TIME (A1-A2)", level: 1, words: [
                 { english: "because", spanish: "porque", ipa: "/bɪˈkəz/", sentence_en: "I stayed home because it was cold.", sentence_es: "Me quedé en casa porque hacía frío." },
                 { english: "although", spanish: "aunque", ipa: "/ɔːlˈðoʊ/", sentence_en: "Although it rained, we enjoyed it.", sentence_es: "Aunque llovió, lo disfrutamos." },
                 { english: "between", spanish: "entre", ipa: "/bɪˈtwiːn/", sentence_en: "Sit between John and Mary.", sentence_es: "Siéntate entre John y Mary." },
-                { english: "meanwhile", spanish: "mientras tanto", ipa: "/ˈmiːnwaɪl/", sentence_en: "Meanwhile, dinner is getting ready.", sentence_es: "Mientras tanto, la cena se está preparando." }
+                { english: "meanwhile", spanish: "mientras tanto", ipa: "/ˈmiːnwaɪl/", sentence_en: "Meanwhile, dinner is getting ready.", sentence_es: "Mientras tanto, la cena se está preparando." },
+                { english: "always", spanish: "siempre", ipa: "/ˈɔːlweɪz/", sentence_en: "I always arrive on time.", sentence_es: "Siempre llego a tiempo." },
+                { english: "never", spanish: "nunca", ipa: "/ˈnevər/", sentence_en: "She never gives up.", sentence_es: "Ella nunca se rinde." },
+                { english: "sometimes", spanish: "a veces", ipa: "/ˈsʌmtaɪmz/", sentence_en: "Sometimes we walk to school.", sentence_es: "A veces caminamos al colegio." },
+                { english: "suddenly", spanish: "de repente", ipa: "/ˈsʌdənli/", sentence_en: "Suddenly the light turned on.", sentence_es: "De repente la luz se encendió." }
             ]},
 
             // Level 2: B1 (Intermedio / Umbral)
-            { name: "VERB TENSES & CONDITIONALS (B1)", level: 2, words: [
+            { name: "IRREGULAR VERBS & TENSES (B1)", level: 2, words: [
                 { english: "go (went / gone)", spanish: "ir", ipa: "/ɡoʊ/", sentence_en: "If I had time, I would go to the gym.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
                 { english: "take (took / taken)", spanish: "tomar / llevar", ipa: "/teɪk/", sentence_en: "She has taken the test three times.", sentence_es: "Ella ha tomado el examen tres veces." },
                 { english: "speak (spoke / spoken)", spanish: "hablar", ipa: "/spiːk/", sentence_en: "I spoke to him yesterday.", sentence_es: "Hablé con él ayer." },
-                { english: "write (wrote / written)", spanish: "escribir", ipa: "/raɪt/", sentence_en: "If she writes a book, she will succeed.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+                { english: "write (wrote / written)", spanish: "escribir", ipa: "/raɪt/", sentence_en: "If she writes a book, she will succeed.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
+                { english: "see (saw / seen)", spanish: "ver", ipa: "/siː/", sentence_en: "Have you seen that movie before?", sentence_es: "¿Has visto esa película antes?" },
+                { english: "give (gave / given)", spanish: "dar", ipa: "/ɡɪv/", sentence_en: "He gave me useful advice.", sentence_es: "Él me dio un consejo útil." },
+                { english: "know (knew / known)", spanish: "saber / conocer", ipa: "/noʊ/", sentence_en: "I have known her for years.", sentence_es: "La conozco desde hace años." },
+                { english: "think (thought / thought)", spanish: "pensar", ipa: "/θɪŋk/", sentence_en: "I thought about your proposal.", sentence_es: "Pensé en tu propuesta." }
             ]},
-            { name: "PHRASAL VERBS & OPINIONS (B1)", level: 2, words: [
+            { name: "ESSENTIAL PHRASAL VERBS (B1)", level: 2, words: [
                 { english: "look for", spanish: "buscar", ipa: "/lʊk fɔːr/", sentence_en: "I am looking for my passport.", sentence_es: "Estoy buscando mi pasaporte." },
                 { english: "give up", spanish: "rendirse", ipa: "/ɡɪv ʌp/", sentence_en: "Never give up on your dreams.", sentence_es: "Nunca te rindas en tus sueños." },
                 { english: "find out", spanish: "enterarse / averiguar", ipa: "/faɪnd aʊt/", sentence_en: "Let's find out what happened.", sentence_es: "Averigüemos qué pasó." },
-                { english: "in my opinion", spanish: "en mi opinión", ipa: "/ɪn maɪ əˈpɪnjən/", sentence_en: "In my opinion, this plan is great.", sentence_es: "En mi opinión, este plan es genial." }
+                { english: "turn on", spanish: "encender", ipa: "/tɜːrn ɑːn/", sentence_en: "Please turn on the heating.", sentence_es: "Por favor, enciende la calefacción." },
+                { english: "turn off", spanish: "apagar", ipa: "/tɜːrn ɔːf/", sentence_en: "Remember to turn off the lights.", sentence_es: "Recuerda apagar las luces." },
+                { english: "carry on", spanish: "continuar", ipa: "/ˈkæri ɑːn/", sentence_en: "Carry on with your good work.", sentence_es: "Continúa con tu buen trabajo." },
+                { english: "set up", spanish: "establecer / configurar", ipa: "/set ʌp/", sentence_en: "They set up a new business.", sentence_es: "Ellos montaron un nuevo negocio." },
+                { english: "figure out", spanish: "resolver / entender", ipa: "/ˈfɪɡjər aʊt/", sentence_en: "We need to figure out the solution.", sentence_es: "Tenemos que descifrar la solución." }
             ]},
-            { name: "DISCOURSE CONNECTORS (B1)", level: 2, words: [
+            { name: "DISCOURSE CONNECTORS & OPINIONS (B1)", level: 2, words: [
                 { english: "however", spanish: "sin embargo", ipa: "/haʊˈevər/", sentence_en: "However, she decided to go anyway.", sentence_es: "Sin embargo, ella decidió ir de todos modos." },
                 { english: "therefore", spanish: "por lo tanto", ipa: "/ˈðerfɔːr/", sentence_en: "We worked hard; therefore, we won.", sentence_es: "Trabajamos duro; por lo tanto, ganamos." },
                 { english: "furthermore", spanish: "además", ipa: "/ˌfɜːrðərˈmɔːr/", sentence_en: "Furthermore, it saves money.", sentence_es: "Además, ahorra dinero." },
-                { english: "in addition", spanish: "adicionalmente", ipa: "/ɪn əˈdɪʃn/", sentence_en: "In addition, we offer free support.", sentence_es: "Adicionalmente, ofrecemos soporte gratis." }
+                { english: "in addition", spanish: "adicionalmente", ipa: "/ɪn əˈdɪʃn/", sentence_en: "In addition, we offer free support.", sentence_es: "Adicionalmente, ofrecemos soporte gratis." },
+                { english: "in my opinion", spanish: "en mi opinión", ipa: "/ɪn maɪ əˈpɪnjən/", sentence_en: "In my opinion, this plan is great.", sentence_es: "En mi opinión, este plan es genial." },
+                { english: "on the other hand", spanish: "por otra parte", ipa: "/ɑːn ði ˈʌðər hænd/", sentence_en: "On the other hand, it is expensive.", sentence_es: "Por otra parte, es caro." },
+                { english: "actually", spanish: "en realidad", ipa: "/ˈæktʃuəli/", sentence_en: "Actually, I have never been there.", sentence_es: "En realidad, nunca he estado allí." },
+                { english: "eventually", spanish: "con el tiempo / finalmente", ipa: "/ɪˈventʃuəli/", sentence_en: "Eventually, they reached an agreement.", sentence_es: "Con el tiempo llegaron a un acuerdo." }
+            ]},
+            { name: "WORK, EDUCATION & TECH (B1)", level: 2, words: [
+                { english: "interview", spanish: "entrevista", ipa: "/ˈɪntərvjuː/", sentence_en: "I have a job interview tomorrow.", sentence_es: "Tengo una entrevista de trabajo mañana." },
+                { english: "career", spanish: "carrera profesional", ipa: "/kəˈrɪr/", sentence_en: "She built a successful career.", sentence_es: "Ella construyó una carrera exitosa." },
+                { english: "degree", spanish: "título universitario", ipa: "/dɪˈɡriː/", sentence_en: "He completed his master's degree.", sentence_es: "Él completó su título de máster." },
+                { english: "skills", spanish: "habilidades", ipa: "/skɪlz/", sentence_en: "Communication skills are essential.", sentence_es: "Las habilidades de comunicación son esenciales." },
+                { english: "download", spanish: "descargar", ipa: "/ˌdaʊnˈloʊd/", sentence_en: "Download the updated application.", sentence_es: "Descarga la aplicación actualizada." },
+                { english: "software", spanish: "software / programa", ipa: "/ˈsɔːftwer/", sentence_en: "This software is easy to use.", sentence_es: "Este software es fácil de usar." },
+                { english: "appointment", spanish: "cita previa", ipa: "/əˈpɔɪntmənt/", sentence_en: "I booked an appointment with the doctor.", sentence_es: "Reservé una cita con el médico." },
+                { english: "deadline", spanish: "fecha límite", ipa: "/ˈdedlaɪn/", sentence_en: "The project deadline is Friday.", sentence_es: "La fecha límite del proyecto es el viernes." }
+            ]},
+            { name: "HEALTH & ENVIRONMENT (B1)", level: 2, words: [
+                { english: "symptoms", spanish: "síntomas", ipa: "/ˈsɪmptəmz/", sentence_en: "What are your main symptoms?", sentence_es: "¿Cuáles son tus síntomas principales?" },
+                { english: "headache", spanish: "dolor de cabeza", ipa: "/ˈhedeɪk/", sentence_en: "I have a severe headache.", sentence_es: "Tengo un fuerte dolor de cabeza." },
+                { english: "medicine", spanish: "medicamento", ipa: "/ˈmedɪsn/", sentence_en: "Take this medicine twice a day.", sentence_es: "Toma este medicamento dos veces al día." },
+                { english: "doctor", spanish: "médico", ipa: "/ˈdɑːktər/", sentence_en: "The doctor explained the treatment.", sentence_es: "El médico explicó el tratamiento." },
+                { english: "nervous", spanish: "nervioso", ipa: "/ˈnɜːrvəs/", sentence_en: "Do not be nervous about the test.", sentence_es: "No estés nervioso por el examen." },
+                { english: "pollution", spanish: "contaminación", ipa: "/pəˈluːʃn/", sentence_en: "Air pollution is a major problem.", sentence_es: "La contaminación del aire es un gran problema." },
+                { english: "recycle", spanish: "reciclar", ipa: "/ˌriːˈsaɪkl/", sentence_en: "We should recycle plastic bottles.", sentence_es: "Deberíamos reciclar las botellas de plástico." },
+                { english: "sustainable", spanish: "sostenible", ipa: "/səˈsteɪnəbl/", sentence_en: "Solar energy is sustainable.", sentence_es: "La energía solar es sostenible." }
             ]},
 
-            // Level 3: B2 (Avanzado / Ventaja)
+            // Level 3: B2 (Avanzado / Ventaja - First Certificate)
             { name: "ADVANCED COLLOCATIONS (B2)", level: 3, words: [
                 { english: "make a mistake", spanish: "cometer un error", ipa: "/meɪk ə mɪsˈteɪk/", sentence_en: "Everyone makes a mistake sometimes.", sentence_es: "Todos cometen un error a veces." },
                 { english: "give a presentation", spanish: "hacer una presentación", ipa: "/ɡɪv ə ˌpreznˈteɪʃn/", sentence_en: "He gave a brilliant presentation.", sentence_es: "Él hizo una presentación brillante." },
                 { english: "keep a secret", spanish: "guardar un secreto", ipa: "/kiːp ə ˈsiːkrət/", sentence_en: "Can you keep a secret?", sentence_es: "¿Puedes guardar un secreto?" },
-                { english: "take advantage of", spanish: "aprovechar", ipa: "/teɪk ədˈvæntɪdʒ ʌv/", sentence_en: "Take advantage of this opportunity.", sentence_es: "Aprovecha esta oportunidad." }
+                { english: "take advantage of", spanish: "aprovechar", ipa: "/teɪk ədˈvæntɪdʒ ʌv/", sentence_en: "Take advantage of this opportunity.", sentence_es: "Aprovecha esta oportunidad." },
+                { english: "pay attention to", spanish: "prestar atención a", ipa: "/peɪ əˈtenʃn tuː/", sentence_en: "Pay close attention to details.", sentence_es: "Presta mucha atención a los detalles." },
+                { english: "reach a compromise", spanish: "llegar a un acuerdo", ipa: "/riːtʃ ə ˈkɑːmprəmaɪz/", sentence_en: "Both sides reached a compromise.", sentence_es: "Ambas partes llegaron a un acuerdo." },
+                { english: "take into account", spanish: "tener en cuenta", ipa: "/teɪk ˈɪntə əˈkaʊnt/", sentence_en: "We must take into account all risks.", sentence_es: "Debemos tener en cuenta todos los riesgos." },
+                { english: "draw a conclusion", spanish: "sacar una conclusión", ipa: "/drɔː ə kənˈkluːʒn/", sentence_en: "Do not draw a conclusion too early.", sentence_es: "No saques conclusiones antes de tiempo." }
             ]},
-            { name: "SLANG & IDIOMS (B2)", level: 3, words: [
+            { name: "POPULAR IDIOMS & EXPRESSIONS (B2)", level: 3, words: [
                 { english: "bite the bullet", spanish: "hacer de tripas corazón", ipa: "/baɪt ðə ˈbʊlɪt/", sentence_en: "I have to bite the bullet and go.", sentence_es: "Tengo que hacer de tripas corazón e ir." },
                 { english: "break a leg", spanish: "buena suerte", ipa: "/breɪk ə leɡ/", sentence_en: "Break a leg tonight on stage!", sentence_es: "¡Buena suerte esta noche en el escenario!" },
-                { english: "under the weather", spanish: "enfermo / indispuesto", ipa: "/ˈʌndər ðə ˈweðər/", sentence_en: "I am feeling under the weather today.", sentence_es: "Hoy me siento algo indispuesto." },
-                { english: "piece of cake", spanish: "pan comido", ipa: "/piːs ʌv keɪk/", sentence_en: "The exam was a piece of cake.", sentence_es: "El examen fue pan comido." }
+                { english: "under the weather", spanish: "indispuesto / pachucho", ipa: "/ˈʌndər ðə ˈweðər/", sentence_en: "I am feeling under the weather today.", sentence_es: "Hoy me siento algo indispuesto." },
+                { english: "piece of cake", spanish: "pan comido", ipa: "/piːs ʌv keɪk/", sentence_en: "The exam was a piece of cake.", sentence_es: "El examen fue pan comido." },
+                { english: "cost an arm and a leg", spanish: "costar un ojo de la cara", ipa: "/kɔːst ən ɑːrm ænd ə leɡ/", sentence_en: "That luxury car costs an arm and a leg.", sentence_es: "Ese coche de lujo cuesta un ojo de la cara." },
+                { english: "see eye to eye", spanish: "estar de acuerdo", ipa: "/siː aɪ tuː aɪ/", sentence_en: "We don't always see eye to eye.", sentence_es: "No siempre estamos totalmente de acuerdo." },
+                { english: "hit the nail on the head", spanish: "dar en el clavo", ipa: "/hɪt ðə neɪl ɑːn ðə hed/", sentence_en: "Your analysis hit the nail on the head.", sentence_es: "Tu análisis dio en el clavo." },
+                { english: "let the cat out of the bag", spanish: "irse de la lengua", ipa: "/let ðə kæt aʊt ʌv ðə bæɡ/", sentence_en: "Don't let the cat out of the bag before the party.", sentence_es: "No te vayas de la lengua antes de la fiesta." }
+            ]},
+            { name: "BUSINESS, LAW & SOCIETY (B2)", level: 3, words: [
+                { english: "negotiation", spanish: "negociación", ipa: "/nɪˌɡoʊʃiˈeɪʃn/", sentence_en: "The contract negotiation went smoothly.", sentence_es: "La negociación del contrato fue sobre ruedas." },
+                { english: "contract", spanish: "contrato", ipa: "/ˈkɑːntrækt/", sentence_en: "Both parties signed the contract.", sentence_es: "Ambas partes firmaron el contrato." },
+                { english: "agreement", spanish: "acuerdo", ipa: "/əˈɡriːmənt/", sentence_en: "They reached a bilateral agreement.", sentence_es: "Llegaron a un acuerdo bilateral." },
+                { english: "compliance", spanish: "cumplimiento normativo", ipa: "/kəmˈplaɪəns/", sentence_en: "Strict compliance with the law is required.", sentence_es: "Se requiere estricto cumplimiento de la ley." },
+                { english: "revenue", spanish: "ingresos / facturación", ipa: "/ˈrevənuː/", sentence_en: "Annual revenue increased by fifteen percent.", sentence_es: "La facturación anual aumentó un quince por ciento." },
+                { english: "investment", spanish: "inversión", ipa: "/ɪnˈvestmənt/", sentence_en: "Education is a long-term investment.", sentence_es: "La educación es una inversión a largo plazo." },
+                { english: "democracy", spanish: "democracia", ipa: "/dɪˈmɑːkrəsi/", sentence_en: "Citizen participation is vital in democracy.", sentence_es: "La participación ciudadana es vital en democracia." },
+                { english: "justice", spanish: "justicia", ipa: "/ˈdʒʌstɪs/", sentence_en: "Everyone deserves equal justice.", sentence_es: "Todos merecen la misma justicia." }
+            ]},
+            { name: "ACADEMIC & FORMAL CONNECTORS (B2)", level: 3, words: [
+                { english: "nonetheless", spanish: "no obstante", ipa: "/ˌnʌnðəˈles/", sentence_en: "The challenge was huge; nonetheless, they persevered.", sentence_es: "El reto era enorme; no obstante, perseveraron." },
+                { english: "nevertheless", spanish: "sin embargo", ipa: "/ˌnevərðəˈles/", sentence_en: "It was late; nevertheless, he kept reading.", sentence_es: "Era tarde; sin embargo, siguió leyendo." },
+                { english: "albeit", spanish: "si bien / aunque", ipa: "/ˌɔːlˈbiːɪt/", sentence_en: "He made progress, albeit slowly.", sentence_es: "Progresó, si bien despacio." },
+                { english: "notwithstanding", spanish: "a pesar de", ipa: "/ˌnɑːtwɪθˈstændɪŋ/", sentence_en: "Notwithstanding the weather, we travelled.", sentence_es: "A pesar del mal tiempo, viajamos." },
+                { english: "in light of", spanish: "a la luz de", ipa: "/ɪn laɪt ʌv/", sentence_en: "In light of recent evidence, we adapted.", sentence_es: "A la luz de las pruebas recientes, nos adaptamos." },
+                { english: "with regard to", spanish: "con respecto a", ipa: "/wɪð rɪˈɡɑːrd tuː/", sentence_en: "With regard to your question, here is the answer.", sentence_es: "Con respecto a tu pregunta, aquí tienes la respuesta." },
+                { english: "provided that", spanish: "siempre y cuando", ipa: "/prəˈvaɪdɪd ðæt/", sentence_en: "You can come provided that you finish early.", sentence_es: "Puedes venir siempre y cuando termines temprano." },
+                { english: "in contrast to", spanish: "en contraste con", ipa: "/ɪn ˈkɑːntræst tuː/", sentence_en: "In contrast to last year, profits grew.", sentence_es: "En contraste con el año pasado, los beneficios crecieron." }
             ]},
 
             // Level 4: C1+ (Dominio Operativo Eficaz / Nativo)
             { name: "NATIVE IDIOMS & PROVERBS (C1+)", level: 4, words: [
-                { english: "beat around the bush", spanish: "irse por las ramas", ipa: "/biːt əˈraʊnd ðə bʊʃ/", sentence_en: "Stop beating around the bush and tell me.", sentence_es: "Deja de irte por las ramas y dímelo." },
+                { english: "beat around the bush", spanish: "irse por las ramas", ipa: "/biːt əˈraʊnd ðə bʊʃ/", sentence_en: "Stop beating around the bush and tell me the truth.", sentence_es: "Deja de irte por las ramas y dime la verdad." },
                 { english: "burn the midnight oil", spanish: "quemarse las pestañas", ipa: "/bɜːrn ðə ˈmɪdnaɪt ɔɪl/", sentence_en: "She burned the midnight oil for the finals.", sentence_es: "Se quemó las pestañas para los exámenes finales." },
                 { english: "through thick and thin", spanish: "en las buenas y en las malas", ipa: "/θruː θɪk ænd θɪn/", sentence_en: "They supported each other through thick and thin.", sentence_es: "Se apoyaron en las buenas y en las malas." },
-                { english: "once in a blue moon", spanish: "de Pascuas a Ramos / rara vez", ipa: "/wʌns ɪn ə bluː muːn/", sentence_en: "He visits us once in a blue moon.", sentence_es: "Nos visita de Pascuas a Ramos." }
+                { english: "once in a blue moon", spanish: "de Pascuas a Ramos", ipa: "/wʌns ɪn ə bluː muːn/", sentence_en: "He visits us once in a blue moon.", sentence_es: "Nos visita de Pascuas a Ramos." },
+                { english: "blessing in disguise", spanish: "no hay mal que por bien no venga", ipa: "/ˈblesɪŋ ɪn dɪsˈɡaɪz/", sentence_en: "Losing that flight was a blessing in disguise.", sentence_es: "Perder aquel vuelo fue algo que vino para bien." },
+                { english: "bark up the wrong tree", spanish: "ir por mal camino", ipa: "/bɑːrk ʌp ðə rɔːŋ triː/", sentence_en: "If you blame him, you are barking up the wrong tree.", sentence_es: "Si le culpas a él, vas por muy mal camino." },
+                { english: "devil's advocate", spanish: "abogado del diablo", ipa: "/ˈdevlz ˈædvəkət/", sentence_en: "Let me play devil's advocate for a moment.", sentence_es: "Permíteme hacer de abogado del diablo un momento." },
+                { english: "read between the lines", spanish: "leer entre líneas", ipa: "/riːd bɪˈtwiːn ðə laɪnz/", sentence_en: "You have to read between the lines to grasp the meaning.", sentence_es: "Tienes que leer entre líneas para captar el sentido." }
+            ]},
+            { name: "SOPHISTICATED VOCABULARY (C1+)", level: 4, words: [
+                { english: "ephemeral", spanish: "efímero", ipa: "/ɪˈfemərəl/", sentence_en: "Fame can be remarkably ephemeral.", sentence_es: "La fama puede ser sorprendentemente efímera." },
+                { english: "quintessential", spanish: "por antonomasia / quintaesencia", ipa: "/ˌkwɪntɪˈsenʃl/", sentence_en: "She is the quintessential team leader.", sentence_es: "Ella es la líder de equipo por antonomasia." },
+                { english: "ubiquitous", spanish: "omnipresente", ipa: "/juːˈbɪkwɪtəs/", sentence_en: "Smartphones have become ubiquitous.", sentence_es: "Los teléfonos inteligentes se han vuelto omnipresentes." },
+                { english: "serendipity", spanish: "serendipia / hallazgo afortunado", ipa: "/ˌserənˈdɪpəti/", sentence_en: "Finding this book was pure serendipity.", sentence_es: "Encontrar este libro fue pura serendipia." },
+                { english: "meticulous", spanish: "meticuloso", ipa: "/məˈtɪkjələs/", sentence_en: "Her research was thorough and meticulous.", sentence_es: "Su investigación fue rigurosa y meticulosa." },
+                { english: "eloquent", spanish: "elocuente", ipa: "/ˈeləkwənt/", sentence_en: "He delivered an eloquent and persuasive speech.", sentence_es: "Pronunció un discurso elocuente y persuasivo." },
+                { english: "unprecedented", spanish: "sin precedentes", ipa: "/ʌnˈpresɪdentɪd/", sentence_en: "The event drew an unprecedented crowd.", sentence_es: "El evento congregó a una multitud sin precedentes." },
+                { english: "detrimental", spanish: "perjudicial", ipa: "/ˌdetrɪˈmentl/", sentence_en: "Lack of sleep is detrimental to performance.", sentence_es: "La falta de sueño es perjudicial para el rendimiento." }
+            ]},
+            { name: "ADVANCED DISCOURSE & RHETORIC (C1+)", level: 4, words: [
+                { english: "by and large", spanish: "en términos generales", ipa: "/baɪ ænd lɑːrdʒ/", sentence_en: "By and large, the strategy proved fruitful.", sentence_es: "En términos generales, la estrategia dio frutos." },
+                { english: "paradoxically", spanish: "paradójicamente", ipa: "/ˌpærəˈdɑːksɪkli/", sentence_en: "Paradoxically, more choices led to indecision.", sentence_es: "Paradójicamente, más opciones llevaron a la indecisión." },
+                { english: "suffice it to say", spanish: "baste decir", ipa: "/səˈfaɪs ɪt tuː seɪ/", sentence_en: "Suffice it to say that we exceeded our targets.", sentence_es: "Baste decir que superamos nuestros objetivos." },
+                { english: "in the final analysis", spanish: "en última instancia", ipa: "/ɪn ðə ˈfaɪnl əˈnæləsɪs/", sentence_en: "In the final analysis, quality matters most.", sentence_es: "En última instancia, la calidad es lo que más importa." },
+                { english: "to put it mildly", spanish: "por decirlo suavemente", ipa: "/tuː pʊt ɪt ˈmaɪldli/", sentence_en: "It was chaotic, to put it mildly.", sentence_es: "Fue caótico, por decirlo suavemente." },
+                { english: "as it were", spanish: "por así decirlo", ipa: "/æz ɪt wɜːr/", sentence_en: "He is the heart of the team, as it were.", sentence_es: "Él es el corazón del equipo, por así decirlo." },
+                { english: "needless to say", spanish: "huelga decir", ipa: "/ˈniːdləs tuː seɪ/", sentence_en: "Needless to say, everyone was thrilled.", sentence_es: "Huelga decir que todos quedaron encantados." },
+                { english: "for all intents and purposes", spanish: "a todos los efectos prácticos", ipa: "/fɔːr ɔːl ɪnˈtents ænd ˈpɜːrpəsɪz/", sentence_en: "For all intents and purposes, the project is done.", sentence_es: "A todos los efectos prácticos, el proyecto está terminado." }
+            ]},
+            { name: "EXECUTIVE LEADERSHIP & STRATEGY (C1+)", level: 4, words: [
+                { english: "paradigm shift", spanish: "cambio de paradigma", ipa: "/ˈpærədaɪm ʃɪft/", sentence_en: "Artificial intelligence represents a paradigm shift.", sentence_es: "La inteligencia artificial representa un cambio de paradigma." },
+                { english: "leverage", spanish: "apalancar / aprovechar al máximo", ipa: "/ˈlevərɪdʒ/", sentence_en: "We must leverage our competitive advantages.", sentence_es: "Debemos aprovechar al máximo nuestras ventajas competitivas." },
+                { english: "streamline", spanish: "optimizar / simplificar", ipa: "/ˈstriːmlaɪn/", sentence_en: "New automation will streamline the workflow.", sentence_es: "La nueva automatización optimizará el flujo de trabajo." },
+                { english: "benchmark", spanish: "punto de referencia", ipa: "/ˈbentʃmɑːrk/", sentence_en: "This standard is a benchmark for quality.", sentence_es: "Esta norma es un punto de referencia de calidad." },
+                { english: "accountability", spanish: "rendición de cuentas / responsabilidad", ipa: "/əˌkaʊntəˈbɪləti/", sentence_en: "Leadership demands transparency and accountability.", sentence_es: "El liderazgo exige transparencia y rendición de cuentas." },
+                { english: "synergy", spanish: "sinergia", ipa: "/ˈsɪnərdʒi/", sentence_en: "The merger created remarkable operational synergy.", sentence_es: "La fusión generó una notable sinergia operativa." },
+                { english: "viability", spanish: "viabilidad", ipa: "/ˌvaɪəˈbɪləti/", sentence_en: "We verified the commercial viability of the plan.", sentence_es: "Verificamos la viabilidad comercial del plan." },
+                { english: "milestone", spanish: "hito / logro clave", ipa: "/ˈmaɪlstoʊn/", sentence_en: "Reaching ten thousand users was a milestone.", sentence_es: "Alcanzar diez mil usuarios fue un gran hito." }
             ]}
         ],
         de: [
@@ -1762,10 +1913,13 @@
                 { english: "hallo", spanish: "hola", ipa: "/ˈhaloː/", sentence_en: "Hallo, wie geht es dir?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "bitte", spanish: "por favor", ipa: "/ˈbɪtə/", sentence_en: "Einen Kaffee, bitte.", sentence_es: "Un café, por favor." },
                 { english: "danke", spanish: "gracias", ipa: "/ˈdaŋkə/", sentence_en: "Danke schön für die Hilfe.", sentence_es: "Muchas gracias por la ayuda." },
-                { english: "tschüss", spanish: "adiós", ipa: "/tʃʏs/", sentence_en: "Tschüss, bis morgen!", sentence_es: "¡Adiós, hasta mañana!" }
+                { english: "tschüss", spanish: "adiós", ipa: "/tʃʏs/", sentence_en: "Tschüss, bis morgen!", sentence_es: "¡Adiós, hasta mañana!" },
+                { english: "ja", spanish: "sí", ipa: "/jaː/", sentence_en: "Ja, genau so ist es.", sentence_es: "Sí, exactamente así es." },
+                { english: "nein", spanish: "no", ipa: "/naɪ̯n/", sentence_en: "Nein, vielen Dank.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "ZAHLEN & OBJEKTE (A0)", level: 0, words: [
                 { english: "eins", spanish: "uno", ipa: "/aɪ̯ns/", sentence_en: "Ich habe ein Ticket.", sentence_es: "Tengo un billete." },
+                { english: "zwei", spanish: "dos", ipa: "/tsvaɪ̯/", sentence_en: "Zwei Brötchen, bitte.", sentence_es: "Dos panecillos, por favor." },
                 { english: "wasser", spanish: "agua", ipa: "/ˈvasɐ/", sentence_en: "Ich möchte ein Glas Wasser.", sentence_es: "Quiero un vaso de agua." },
                 { english: "haus", spanish: "casa", ipa: "/haʊ̯s/", sentence_en: "Das ist mein Haus.", sentence_es: "Esta es mi casa." },
                 { english: "buch", spanish: "libro", ipa: "/buːx/", sentence_en: "Das Buch liegt auf dem Tisch.", sentence_es: "El libro está sobre la mesa." }
@@ -1775,21 +1929,31 @@
                 { english: "wohnen", spanish: "vivir / residir", ipa: "/ˈvoːnən/", sentence_en: "Ich wohne in Berlin.", sentence_es: "Vivo en Berlín." },
                 { english: "arbeiten", spanish: "trabajar", ipa: "/ˈaʁbaɪ̯tn̩/", sentence_en: "Er arbeitet bei einer Firma.", sentence_es: "Él trabaja en una empresa." },
                 { english: "essen (aß / gegessen)", spanish: "comer", ipa: "/ˈɛsn̩/", sentence_en: "Wir essen zusammen zu Mittag.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "trinken (trank / getrunken)", spanish: "beber", ipa: "/ˈtʁɪŋkn̩/", sentence_en: "Sie trinkt gerne Tee.", sentence_es: "A ella le gusta beber té." }
+                { english: "trinken (trank / getrunken)", spanish: "beber", ipa: "/ˈtʁɪŋkn̩/", sentence_en: "Sie trinkt gerne Tee.", sentence_es: "A ella le gusta beber té." },
+                { english: "kaufen", spanish: "comprar", ipa: "/ˈkaʊ̯fn̩/", sentence_en: "Ich kaufe frisches Obst.", sentence_es: "Compro fruta fresca." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "UNREGELMÄßIGE VERBEN & ZEITEN (B1)", level: 2, words: [
                 { english: "gehen (ging / gegangen)", spanish: "ir", ipa: "/ˈɡeːən/", sentence_en: "Wenn ich Zeit hätte, würde ich gehen.", sentence_es: "Si tuviera tiempo, iría." },
-                { english: "nehmen (nahm / genommen)", spanish: "tomar / llevar", ipa: "/ˈneːmən/", sentence_en: "Sie hat die Prüfung genommen.", sentence_es: "Ella ha hecho el examen." },
+                { english: "nehmen (nahm / genommen)", spanish: "tomar / llevar", ipa: "/ˈneːmən/", sentence_en: "Sie hat die Prüfung bestanden.", sentence_es: "Ella ha aprobado el examen." },
                 { english: "sprechen (sprach / gesprochen)", spanish: "hablar", ipa: "/ˈʃprɛçn̩/", sentence_en: "Ich habe gestern mit ihm gesprochen.", sentence_es: "Ayer hablé con él." },
-                { english: "schreiben (schrieb / geschrieben)", spanish: "escribir", ipa: "/ˈʃraɪ̯bn̩/", sentence_en: "Er hat einen Brief geschrieben.", sentence_es: "Él ha escrito una carta." }
+                { english: "schreiben (schrieb / geschrieben)", spanish: "escribir", ipa: "/ˈʃraɪ̯bn̩/", sentence_en: "Er hat einen Brief geschrieben.", sentence_es: "Él ha escrito una carta." },
+                { english: "verstehen (verstand / verstanden)", spanish: "entender / comprender", ipa: "/fɛɐ̯ˈʃteːən/", sentence_en: "Ich habe alles gut verstanden.", sentence_es: "He entendido todo bien." }
             ]},
             // Level 3: B2 (Avanzado)
             { name: "KONNEKTOREN & PRÄPOSITIONEN (B2)", level: 3, words: [
                 { english: "jedoch", spanish: "sin embargo", ipa: "/jeˈdɔx/", sentence_en: "Jedoch entschied sie sich zu gehen.", sentence_es: "Sin embargo, ella decidió ir." },
                 { english: "deshalb", spanish: "por lo tanto", ipa: "/ˈdɛsˌhalp/", sentence_en: "Deshalb können wir es nicht kaufen.", sentence_es: "Por lo tanto, no podemos comprarlo." },
                 { english: "obwohl", spanish: "aunque", ipa: "/ɔpˈvoːl/", sentence_en: "Obwohl es regnete, gingen sie raus.", sentence_es: "Aunque llovía, salieron." },
-                { english: "außerdem", spanish: "además", ipa: "/ˈaʊ̯sɐˌdeːm/", sentence_en: "Außerdem müssen wir sparen.", sentence_es: "Además, debemos ahorrar." }
+                { english: "außerdem", spanish: "además", ipa: "/ˈaʊ̯sɐˌdeːm/", sentence_en: "Außerdem müssen wir sparen.", sentence_es: "Además, debemos ahorrar." },
+                { english: "infolgedessen", spanish: "en consecuencia", ipa: "/ɪnˈfɔlɡədɛsn̩/", sentence_en: "Infolgedessen stiegen die Gewinne.", sentence_es: "En consecuencia subieron los beneficios." }
+            ]},
+            // Level 4: C1+ (Nativo)
+            { name: "REDEWENDUNGEN & HOCHSPRACHE (C1+)", level: 4, words: [
+                { english: "um den heißen Brei herumreden", spanish: "irse por las ramas", ipa: "/ʊm deːn ˈhaɪ̯sn̩ braɪ̯/", sentence_en: "Rede nicht um den heißen Brei herum.", sentence_es: "No te vayas por las ramas." },
+                { english: "ins Schwarze treffen", spanish: "dar en el clavo", ipa: "/ɪns ˈʃvaʁtsə ˈtʁɛfn̩/", sentence_en: "Seine Analyse traf voll ins Schwarze.", sentence_es: "Su análisis dio totalmente en el clavo." },
+                { english: "ausgezeichnet", spanish: "excelente / sobresaliente", ipa: "/ˈaʊ̯sɡəˌtsaɪ̯çnət/", sentence_en: "Sie erbrachten eine ausgezeichnete Leistung.", sentence_es: "Ofrecieron un rendimiento sobresaliente." },
+                { english: "unumgänglich", spanish: "imprescindible / ineludible", ipa: "/ˈʊnʔʊmˌɡɛŋlɪç/", sentence_en: "Diese Reform ist unumgänglich.", sentence_es: "Esta reforma es ineludible." }
             ]}
         ],
         fr: [
@@ -1798,10 +1962,13 @@
                 { english: "bonjour", spanish: "hola / buenos días", ipa: "/bɔ̃.ʒuʁ/", sentence_en: "Bonjour, comment allez-vous?", sentence_es: "Hola, ¿cómo está usted?" },
                 { english: "s'il vous plaît", spanish: "por favor", ipa: "/s‿il vu plɛ/", sentence_en: "Un café, s'il vous plaît.", sentence_es: "Un café, por favor." },
                 { english: "merci", spanish: "gracias", ipa: "/mɛʁ.si/", sentence_en: "Merci beaucoup pour tout.", sentence_es: "Muchas gracias por todo." },
-                { english: "au revoir", spanish: "adiós", ipa: "/o ʁə.vwaʁ/", sentence_en: "Au revoir et bonne journée!", sentence_es: "¡Adiós y que tenga un buen día!" }
+                { english: "au revoir", spanish: "adiós", ipa: "/o ʁə.vwaʁ/", sentence_en: "Au revoir et bonne journée!", sentence_es: "¡Adiós y que tenga un buen día!" },
+                { english: "oui", spanish: "sí", ipa: "/wi/", sentence_en: "Oui, c'est parfait.", sentence_es: "Sí, es perfecto." },
+                { english: "non", spanish: "no", ipa: "/nɔ̃/", sentence_en: "Non, merci bien.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "CHIFFRES & OBJETS (A0)", level: 0, words: [
                 { english: "un", spanish: "uno", ipa: "/œ̃/", sentence_en: "J'ai un billet de train.", sentence_es: "Tengo un billete de tren." },
+                { english: "deux", spanish: "dos", ipa: "/dø/", sentence_en: "Deux cafés, s'il vous plaît.", sentence_es: "Dos cafés, por favor." },
                 { english: "eau", spanish: "agua", ipa: "/o/", sentence_en: "Je voudrais un verre d'eau.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "maison", spanish: "casa", ipa: "/mɛ.zɔ̃/", sentence_en: "C'est ma nouvelle maison.", sentence_es: "Esta es mi nueva casa." },
                 { english: "livre", spanish: "libro", ipa: "/livʁ/", sentence_en: "Le livre est sur la table.", sentence_es: "El libro está sobre la mesa." }
@@ -1809,23 +1976,33 @@
             // Level 1: A1-A2 (Básico)
             { name: "VIE QUOTIDIENNE & VERBES (A1-A2)", level: 1, words: [
                 { english: "habiter", spanish: "vivir / residir", ipa: "/a.bi.te/", sentence_en: "J'habite à Paris.", sentence_es: "Vivo en París." },
-                { english: "travailler", spanish: "trabajar", ipa: "/tʁa.va.je/", sentence_en: "Il travaille dans un bureau.", sentence_es: "Él trabaja en una oficina." },
+                { english: "travailler", spanish: "trabajar", ipa: "/tʁa.va.je/", sentence_en: "Il travaille dans un bureau moderne.", sentence_es: "Él trabaja en una oficina moderna." },
                 { english: "manger", spanish: "comer", ipa: "/mɑ̃.ʒe/", sentence_en: "Nous mangeons ensemble à midi.", sentence_es: "Comemos juntos a mediodía." },
-                { english: "boire", spanish: "beber", ipa: "/bwaʁ/", sentence_en: "Elle boit du thé vert.", sentence_es: "Ella bebe té verde." }
+                { english: "boire", spanish: "beber", ipa: "/bwaʁ/", sentence_en: "Elle boit du thé vert.", sentence_es: "Ella bebe té verde." },
+                { english: "acheter", spanish: "comprar", ipa: "/aʃ.te/", sentence_en: "J'achète du pain frais.", sentence_es: "Compro pan fresco." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "VERBES IRRÉGULIERS & TEMPS (B1)", level: 2, words: [
                 { english: "aller (allé)", spanish: "ir", ipa: "/a.le/", sentence_en: "Si j'avais le temps, j'irais au gym.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
                 { english: "prendre (pris)", spanish: "tomar / coger", ipa: "/pʁɑ̃dʁ/", sentence_en: "Elle a passé l'examen trois fois.", sentence_es: "Ella ha hecho el examen tres veces." },
-                { english: "parler (parlé)", spanish: "hablar", ipa: "/paʁ.le/", sentence_en: "Je lui ai parlé hier.", sentence_es: "Hablé con él ayer." },
-                { english: "écrire (écrit)", spanish: "escribir", ipa: "/e.kʁiʁ/", sentence_en: "Si elle écrit un livre, elle réussira.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+                { english: "parler (parlé)", spanish: "hablar", ipa: "/paʁ.le/", sentence_en: "Je lui ai parlé hier soir.", sentence_es: "Hablé con él anoche." },
+                { english: "écrire (écrit)", spanish: "escribir", ipa: "/e.kʁiʁ/", sentence_en: "Si elle écrit un livre, elle réussira.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
+                { english: "comprendre (compris)", spanish: "comprender", ipa: "/kɔ̃.pʁɑ̃dʁ/", sentence_en: "J'ai bien compris la leçon.", sentence_es: "He comprendido bien la lección." }
             ]},
             // Level 3: B2 (Avanzado)
             { name: "CONNECTEURS LOGIQUES & IDIOMES (B2)", level: 3, words: [
                 { english: "cependant", spanish: "sin embargo", ipa: "/sə.pɑ̃.dɑ̃/", sentence_en: "Cependant, elle a décidé d'y aller.", sentence_es: "Sin embargo, ella decidió ir." },
                 { english: "donc", spanish: "por lo tanto", ipa: "/dɔ̃k/", sentence_en: "Donc nous ne pouvons pas l'acheter.", sentence_es: "Por lo tanto, no podemos comprarlo." },
                 { english: "bien que", spanish: "aunque", ipa: "/bjɛ̃ kə/", sentence_en: "Bien qu'il pleuvait, ils sont sortis.", sentence_es: "Aunque llovía, salieron." },
-                { english: "en outre", spanish: "además", ipa: "/ɑ̃.n‿utʁ/", sentence_en: "En outre, nous devons économiser.", sentence_es: "Además, debemos ahorrar." }
+                { english: "en outre", spanish: "además", ipa: "/ɑ̃.n‿utʁ/", sentence_en: "En outre, nous devons économiser.", sentence_es: "Además, debemos ahorrar." },
+                { english: "néanmoins", spanish: "no obstante", ipa: "/ne.ɑ̃.mwɛ̃/", sentence_en: "Néanmoins, les résultats sont positifs.", sentence_es: "No obstante, los resultados son positivos." }
+            ]},
+            // Level 4: C1+ (Nativo)
+            { name: "EXPRESSIONS IDIOMATIQUES & RHÉTORIQUE (C1+)", level: 4, words: [
+                { english: "tourner autour du pot", spanish: "irse por las ramas", ipa: "/tuʁ.ne o.tuʁ dy po/", sentence_en: "Arrête de tourner autour du pot.", sentence_es: "Deja de irte por las ramas." },
+                { english: "mettre les points sur les i", spanish: "poner los puntos sobre las íes", ipa: "/mɛtʁ le pwɛ̃ syʁ le.z‿i/", sentence_en: "Il a mis les points sur les i.", sentence_es: "Él puso los puntos sobre las íes." },
+                { english: "incontournable", spanish: "imprescindible", ipa: "/ɛ̃.kɔ̃.tuʁ.nabl/", sentence_en: "C'est un ouvrage incontournable.", sentence_es: "Es una obra imprescindible." },
+                { english: "quintessence", spanish: "quintaesencia", ipa: "/kɥɛ̃.tɛ.sɑ̃s/", sentence_en: "La quintessence de l'art classique.", sentence_es: "La quintaesencia del arte clásico." }
             ]}
         ],
         pt: [
@@ -1834,10 +2011,13 @@
                 { english: "olá", spanish: "hola", ipa: "/oˈla/", sentence_en: "Olá, como você está?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "por favor", spanish: "por favor", ipa: "/poɾ fɐˈvoɾ/", sentence_en: "Um café, por favor.", sentence_es: "Un café, por favor." },
                 { english: "obrigado", spanish: "gracias", ipa: "/oβɾiˈɣaðu/", sentence_en: "Muito obrigado por tudo.", sentence_es: "Muchas gracias por todo." },
-                { english: "adeus", spanish: "adiós", ipa: "/ɐˈðewʃ/", sentence_en: "Adeus e tenha um bom dia!", sentence_es: "¡Adiós y que tenga un buen día!" }
+                { english: "adeus", spanish: "adiós", ipa: "/ɐˈðewʃ/", sentence_en: "Adeus e tenha um bom dia!", sentence_es: "¡Adiós y que tenga un buen día!" },
+                { english: "sim", spanish: "sí", ipa: "/sĩ/", sentence_en: "Sim, com certeza.", sentence_es: "Sí, con certeza." },
+                { english: "não", spanish: "no", ipa: "/nɐ̃w̃/", sentence_en: "Não, muito obrigado.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "NÚMEROS & OBJETOS (A0)", level: 0, words: [
                 { english: "um", spanish: "uno", ipa: "/ũ/", sentence_en: "Eu tenho um bilhete de trem.", sentence_es: "Tengo un billete de tren." },
+                { english: "dois", spanish: "dos", ipa: "/dojʃ/", sentence_en: "Dois cafés, por favor.", sentence_es: "Dos cafés, por favor." },
                 { english: "água", spanish: "agua", ipa: "/ˈaɡwɐ/", sentence_en: "Eu gostaria de um copo de água.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "casa", spanish: "casa", ipa: "/ˈkazɐ/", sentence_en: "Esta é a minha nova casa.", sentence_es: "Esta es mi nueva casa." },
                 { english: "livro", spanish: "libro", ipa: "/ˈlivɾu/", sentence_en: "O livro está em cima da mesa.", sentence_es: "El libro está sobre la mesa." }
@@ -1847,19 +2027,21 @@
                 { english: "morar", spanish: "vivir / residir", ipa: "/muˈɾaɾ/", sentence_en: "Eu moro em Lisboa.", sentence_es: "Vivo en Lisboa." },
                 { english: "trabalhar", spanish: "trabajar", ipa: "/tɾɐbɐˈʎaɾ/", sentence_en: "Ele trabalha em um escritório.", sentence_es: "Él trabaja en una oficina." },
                 { english: "comer", spanish: "comer", ipa: "/kuˈmeɾ/", sentence_en: "Nós comemos juntos ao meio-dia.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "beber", spanish: "beber", ipa: "/bɨˈbeɾ/", sentence_en: "Ela bebe chá verde.", sentence_es: "Ella bebe té verde." }
+                { english: "beber", spanish: "beber", ipa: "/bɨˈbeɾ/", sentence_en: "Ela bebe chá verde.", sentence_es: "Ella bebe té verde." },
+                { english: "comprar", spanish: "comprar", ipa: "/kõˈpɾaɾ/", sentence_en: "Vou comprar pão fresco.", sentence_es: "Voy a comprar pan fresco." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "VERBOS IRREGULARES & TEMPOS (B1)", level: 2, words: [
                 { english: "ir (foi / ido)", spanish: "ir", ipa: "/iɾ/", sentence_en: "Se eu tivesse tempo, iria à academia.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
                 { english: "tomar (tomado)", spanish: "tomar / coger", ipa: "/tuˈmaɾ/", sentence_en: "Ela fez o exame três vezes.", sentence_es: "Ella ha hecho el examen tres veces." },
                 { english: "falar (falado)", spanish: "hablar", ipa: "/fɐˈlaɾ/", sentence_en: "Eu falei com ele ontem.", sentence_es: "Hablé con él ayer." },
-                { english: "escrever (escrito)", spanish: "escribir", ipa: "/ɨʃkɾɨˈveɾ/", sentence_en: "Se ela escrever um livro, terá sucesso.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+                { english: "escrever (escrito)", spanish: "escribir", ipa: "/ɨʃkɾɨˈveɾ/", sentence_en: "Se ela escrever um livro, terá sucesso.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
+                { english: "entender (entendido)", spanish: "entender", ipa: "/ẽ.tẽˈdeɾ/", sentence_en: "Entendi perfeitamente a explicação.", sentence_es: "Entendí perfectamente la explicación." }
             ]},
             // Level 3: B2 (Avanzado)
             { name: "CONECTORES LÓGICOS & IDIOMAS (B2)", level: 3, words: [
                 { english: "no entanto", spanish: "sin embargo", ipa: "/nu ẽˈtɐ̃tu/", sentence_en: "No entanto, ela decidiu ir.", sentence_es: "Sin embargo, ella decidió ir." },
-                { english: "portanto", spanish: "por lo tanto", ipa: "/puɾˈtɐ̃tu/", sentence_en: "Portanto, não podemos comprar.", sentence_es: "Por lo tanto, não podemos comprarlo." },
+                { english: "portanto", spanish: "por lo tanto", ipa: "/puɾˈtɐ̃tu/", sentence_en: "Portanto, não podemos comprar.", sentence_es: "Por lo tanto, no podemos comprarlo." },
                 { english: "embora", spanish: "aunque", ipa: "/ẽˈbɔɾɐ/", sentence_en: "Embora chovesse, eles saíram.", sentence_es: "Aunque llovía, salieron." },
                 { english: "além disso", spanish: "además", ipa: "/ɐˈlɐ̃j ˈdisu/", sentence_en: "Além disso, precisamos economizar.", sentence_es: "Además, debemos ahorrar." }
             ]}
@@ -1870,10 +2052,13 @@
                 { english: "ciao", spanish: "hola / adiós", ipa: "/ˈtʃa.o/", sentence_en: "Ciao, come stai?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "per favore", spanish: "por favor", ipa: "/per faˈvo.re/", sentence_en: "Un caffè, per favore.", sentence_es: "Un café, por favor." },
                 { english: "grazie", spanish: "gracias", ipa: "/ˈɡrat.tsje/", sentence_en: "Grazie mille per tutto.", sentence_es: "Muchas gracias por todo." },
-                { english: "arrivederci", spanish: "hasta la vista", ipa: "/ar.ri.veˈder.tʃi/", sentence_en: "Arrivederci e buona giornata!", sentence_es: "¡Adiós y que tengas un buen día!" }
+                { english: "arrivederci", spanish: "hasta la vista", ipa: "/ar.ri.veˈder.tʃi/", sentence_en: "Arrivederci e buona giornata!", sentence_es: "¡Adiós y que tengas un buen día!" },
+                { english: "sì", spanish: "sí", ipa: "/si/", sentence_en: "Sì, certamente.", sentence_es: "Sí, ciertamente." },
+                { english: "no", spanish: "no", ipa: "/nɔ/", sentence_en: "No, grazie mille.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "NUMERI & OGGETTI (A0)", level: 0, words: [
                 { english: "uno", spanish: "uno", ipa: "/ˈu.no/", sentence_en: "Ho un biglietto per il treno.", sentence_es: "Tengo un billete de tren." },
+                { english: "due", spanish: "dos", ipa: "/ˈdu.e/", sentence_en: "Due caffè, per favore.", sentence_es: "Dos cafés, por favor." },
                 { english: "acqua", spanish: "agua", ipa: "/ˈak.kwa/", sentence_en: "Vorrei un bicchiere d'acqua.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "casa", spanish: "casa", ipa: "/ˈka.sa/", sentence_en: "Questa è la mia nuova casa.", sentence_es: "Esta es mi nueva casa." },
                 { english: "libro", spanish: "libro", ipa: "/ˈli.bro/", sentence_en: "Il libro è sul tavolo.", sentence_es: "El libro está sobre la mesa." }
@@ -1883,14 +2068,16 @@
                 { english: "abitare", spanish: "vivir / residir", ipa: "/a.biˈta.re/", sentence_en: "Abito a Roma.", sentence_es: "Vivo en Roma." },
                 { english: "lavorare", spanish: "trabajar", ipa: "/la.voˈra.re/", sentence_en: "Lui lavora in un ufficio.", sentence_es: "Él trabaja en una oficina." },
                 { english: "mangiare", spanish: "comer", ipa: "/manˈdʒa.re/", sentence_en: "Mangiamo insieme a pranzo.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "bere", spanish: "beber", ipa: "/ˈbe.re/", sentence_en: "Lei beve tè caldo.", sentence_es: "Ella bebe té caliente." }
+                { english: "bere", spanish: "beber", ipa: "/ˈbe.re/", sentence_en: "Lei beve tè caldo.", sentence_es: "Ella bebe té caliente." },
+                { english: "comprare", spanish: "comprar", ipa: "/komˈpra.re/", sentence_en: "Compro pane fresco ogni mattina.", sentence_es: "Compro pan fresco cada mañana." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "VERBI IRREGOLARI & TEMPI (B1)", level: 2, words: [
                 { english: "andare (andato)", spanish: "ir", ipa: "/anˈda.re/", sentence_en: "Se avessi tempo, andrei in palestra.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
                 { english: "prendere (preso)", spanish: "tomar / coger", ipa: "/ˈprɛn.de.re/", sentence_en: "Ha sostenuto l'esame tre volte.", sentence_es: "Ella ha hecho el examen tres veces." },
                 { english: "parlare (parlato)", spanish: "hablar", ipa: "/parˈla.re/", sentence_en: "Ho parlato con lui ieri.", sentence_es: "Hablé con él ayer." },
-                { english: "scrivere (scritto)", spanish: "escribir", ipa: "/ˈskri.ve.re/", sentence_en: "Se scriverà un libro, avrà successo.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
+                { english: "scrivere (scritto)", spanish: "escribir", ipa: "/ˈskri.ve.re/", sentence_en: "Se scriverà un libro, avrà successo.", sentence_es: "Si ella escribe un libro, tendrá éxito." },
+                { english: "capire (capito)", spanish: "entender", ipa: "/kaˈpi.re/", sentence_en: "Ho capito tutto perfettamente.", sentence_es: "He entendido todo perfectamente." }
             ]},
             // Level 3: B2 (Avanzado)
             { name: "CONNETTORI LOGICI & IDIOMI (B2)", level: 3, words: [
@@ -1906,10 +2093,13 @@
                 { english: "привет", spanish: "hola", ipa: "/prʲɪˈvʲet/", sentence_en: "Привет, как дела?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "пожалуйста", spanish: "por favor", ipa: "/pɐˈʐalʊjstə/", sentence_en: "Один кофе, пожалуйста.", sentence_es: "Un café, por favor." },
                 { english: "спасибо", spanish: "gracias", ipa: "/spɐˈsʲibə/", sentence_en: "Большое спасибо за помощь.", sentence_es: "Muchas gracias por la ayuda." },
-                { english: "до свидания", spanish: "adiós", ipa: "/də svʲɪˈdanʲɪjə/", sentence_en: "До свидания, до завтра!", sentence_es: "¡Adiós, hasta mañana!" }
+                { english: "до свидания", spanish: "adiós", ipa: "/də svʲɪˈdanʲɪjə/", sentence_en: "До свидания, до завтра!", sentence_es: "¡Adiós, hasta mañana!" },
+                { english: "да", spanish: "sí", ipa: "/da/", sentence_en: "Да, конечно.", sentence_es: "Sí, por supuesto." },
+                { english: "нет", spanish: "no", ipa: "/nʲet/", sentence_en: "Нет, спасибо.", sentence_es: "No, gracias." }
             ]},
             { name: "ЧИСЛА & ПРЕДМЕТЫ (A0)", level: 0, words: [
                 { english: "один", spanish: "uno", ipa: "/ɐˈdʲin/", sentence_en: "У меня один билет на поезд.", sentence_es: "Tengo un billete de tren." },
+                { english: "два", spanish: "dos", ipa: "/dva/", sentence_en: "Два кофе, пожалуйста.", sentence_es: "Dos cafés, por favor." },
                 { english: "вода", spanish: "agua", ipa: "/vɐˈda/", sentence_en: "Я хочу стакан воды.", sentence_es: "Quiero un vaso de agua." },
                 { english: "дом", spanish: "casa", ipa: "/dom/", sentence_en: "Это мой новый дом.", sentence_es: "Esta es mi nueva casa." },
                 { english: "книга", spanish: "libro", ipa: "/ˈknʲiɡə/", sentence_en: "Книга лежит на столе.", sentence_es: "El libro está sobre la mesa." }
@@ -1919,12 +2109,13 @@
                 { english: "жить", spanish: "vivir / residir", ipa: "/ʐɨtʲ/", sentence_en: "Я живу в Москве.", sentence_es: "Vivo en Moscú." },
                 { english: "работать", spanish: "trabajar", ipa: "/rɐˈbotətʲ/", sentence_en: "Он работает в офисе.", sentence_es: "Él trabaja en una oficina." },
                 { english: "есть", spanish: "comer", ipa: "/jesʲtʲ/", sentence_en: "Мы едим вместе в обед.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "пить", spanish: "beber", ipa: "/pʲitʲ/", sentence_en: "Она пьет горячий чай.", sentence_es: "Ella bebe té caliente." }
+                { english: "пить", spanish: "beber", ipa: "/pʲitʲ/", sentence_en: "Она пьет горячий чай.", sentence_es: "Ella bebe té caliente." },
+                { english: "покупать", spanish: "comprar", ipa: "/pəkʊˈpatʲ/", sentence_en: "Я покупаю свежий хлеб.", sentence_es: "Compro pan fresco." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "ГЛАГОЛЫ ДВИЖЕНИЯ & ВРЕМЕНА (B1)", level: 2, words: [
                 { english: "идти (пошел)", spanish: "ir", ipa: "/ɪtʲˈtʲi/", sentence_en: "Если бы у меня было время, я бы пошел в спортзал.", sentence_es: "Si tuviera tiempo, iría al gimnasio." },
-                { english: "брать (взял)", spanish: "tomar / coger", ipa: "/bratʲ/", sentence_en: "Она сдавала экзамен три раза.", sentence_es: "Ella ha hecho el examen три veces." },
+                { english: "брать (взял)", spanish: "tomar / coger", ipa: "/bratʲ/", sentence_en: "Она сдавала экзамен три раза.", sentence_es: "Ella ha hecho el examen tres veces." },
                 { english: "говорить (сказал)", spanish: "hablar", ipa: "/ɡəvɐˈrʲitʲ/", sentence_en: "Я говорил с ним вчера.", sentence_es: "Hablé con él ayer." },
                 { english: "писать (написал)", spanish: "escribir", ipa: "/pʲɪˈsatʲ/", sentence_en: "Если она напишет книгу, она добьется успеха.", sentence_es: "Si ella escribe un libro, tendrá éxito." }
             ]},
@@ -1942,10 +2133,13 @@
                 { english: "kaixo", spanish: "hola", ipa: "/kaiʃo/", sentence_en: "Kaixo, nola zaude?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "mesedez", spanish: "por favor", ipa: "/mesedes̻/", sentence_en: "Kafe bat, mesedez.", sentence_es: "Un café, por favor." },
                 { english: "eskerrik asko", spanish: "muchas gracias", ipa: "/es̻kerik as̻ko/", sentence_en: "Eskerrik asko zure laguntzagatik.", sentence_es: "Muchas gracias por tu ayuda." },
-                { english: "agur", spanish: "adiós", ipa: "/aɡur/", sentence_en: "Agur eta egun ona izan!", sentence_es: "¡Adiós y que tengas un buen día!" }
+                { english: "agur", spanish: "adiós", ipa: "/aɡur/", sentence_en: "Agur eta egun ona izan!", sentence_es: "¡Adiós y que tengas un buen día!" },
+                { english: "bai", spanish: "sí", ipa: "/bai/", sentence_en: "Bai, noski.", sentence_es: "Sí, por supuesto." },
+                { english: "ez", spanish: "no", ipa: "/es̻/", sentence_en: "Ez, eskerrik asko.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "ZENBAKIAK ETA OBJEKTUAK (A0)", level: 0, words: [
                 { english: "bat", spanish: "uno", ipa: "/bat/", sentence_en: "Tren txartel bat daukat.", sentence_es: "Tengo un billete de tren." },
+                { english: "bi", spanish: "dos", ipa: "/bi/", sentence_en: "Bi kafe, mesedez.", sentence_es: "Dos cafés, por favor." },
                 { english: "ura", spanish: "agua", ipa: "/uɾa/", sentence_en: "Ur baso bat nahi nuke.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "etxea", spanish: "casa", ipa: "/etʃea/", sentence_en: "Hau nire etxe berria da.", sentence_es: "Esta es mi nueva casa." },
                 { english: "liburua", spanish: "libro", ipa: "/liβuɾua/", sentence_en: "Liburua mahaiaren gainean dago.", sentence_es: "El libro está sobre la mesa." }
@@ -1955,7 +2149,8 @@
                 { english: "bizi izan", spanish: "vivir / residir", ipa: "/bis̻i is̻an/", sentence_en: "Donostian bizi naiz.", sentence_es: "Vivo en San Sebastián." },
                 { english: "lan egin", spanish: "trabajar", ipa: "/lan eɡin/", sentence_en: "Bulego batean egiten du lan.", sentence_es: "Él trabaja en una oficina." },
                 { english: "jan", spanish: "comer", ipa: "/jan/", sentence_en: "Elkarrekin bazkaltzen dugu.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "edan", spanish: "beber", ipa: "/edan/", sentence_en: "Te beroa edaten du.", sentence_es: "Ella bebe té caliente." }
+                { english: "edan", spanish: "beber", ipa: "/edan/", sentence_en: "Te beroa edaten du.", sentence_es: "Ella bebe té caliente." },
+                { english: "erosi", spanish: "comprar", ipa: "/eɾos̻i/", sentence_en: "Ogi freskoa erosten dut goizero.", sentence_es: "Compro pan fresco cada mañana." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "ADITZ BEREZIAK ETA DENBORAK (B1)", level: 2, words: [
@@ -1978,10 +2173,13 @@
                 { english: "hola", spanish: "hola", ipa: "/ˈɔ.lə/", sentence_en: "Hola, com estàs?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "si us plau", spanish: "por favor", ipa: "/siwsˈplaw/", sentence_en: "Un cafè, si us plau.", sentence_es: "Un café, por favor." },
                 { english: "gràcies", spanish: "gracias", ipa: "/ˈɡɾa.si.əs/", sentence_en: "Moltes gràcies per tot.", sentence_es: "Muchas gracias por todo." },
-                { english: "adéu", spanish: "adiós", ipa: "/əˈðew/", sentence_en: "Adéu i que tinguis un bon dia!", sentence_es: "¡Adiós y que tengas un buen día!" }
+                { english: "adéu", spanish: "adiós", ipa: "/əˈðew/", sentence_en: "Adéu i que tinguis un bon dia!", sentence_es: "¡Adiós y que tengas un buen día!" },
+                { english: "sí", spanish: "sí", ipa: "/si/", sentence_en: "Sí, i tant.", sentence_es: "Sí, desde luego." },
+                { english: "no", spanish: "no", ipa: "/no/", sentence_en: "No, moltes gràcies.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "NOMBRES I OBJECTES (A0)", level: 0, words: [
                 { english: "un", spanish: "uno", ipa: "/un/", sentence_en: "Tinc un bitllet de tren.", sentence_es: "Tengo un billete de tren." },
+                { english: "dos", spanish: "dos", ipa: "/dos/", sentence_en: "Dos cafès, si us plau.", sentence_es: "Dos cafés, por favor." },
                 { english: "aigua", spanish: "agua", ipa: "/ˈaj.ɣwə/", sentence_en: "Voldria un got d'aigua.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "casa", spanish: "casa", ipa: "/ˈka.zə/", sentence_en: "Aquesta és la meva nova casa.", sentence_es: "Esta es mi nueva casa." },
                 { english: "llibre", spanish: "libro", ipa: "/ˈʎi.βɾə/", sentence_en: "El llibre és sobre la taula.", sentence_es: "El libro está sobre la mesa." }
@@ -1991,7 +2189,8 @@
                 { english: "viure", spanish: "vivir / residir", ipa: "/ˈviw.ɾə/", sentence_en: "Visc a Barcelona.", sentence_es: "Vivo en Barcelona." },
                 { english: "treballar", spanish: "trabajar", ipa: "/tɾə.βəˈʎa/", sentence_en: "Ell treballa en una oficina.", sentence_es: "Él trabaja en una oficina." },
                 { english: "menjar", spanish: "comer", ipa: "/mənˈʒa/", sentence_en: "Mengem plegats al migdia.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "beure", spanish: "beber", ipa: "/ˈbɛw.ɾə/", sentence_en: "Ella beu te calent.", sentence_es: "Ella bebe té caliente." }
+                { english: "beure", spanish: "beber", ipa: "/ˈbɛw.ɾə/", sentence_en: "Ella beu te calent.", sentence_es: "Ella bebe té caliente." },
+                { english: "comprar", spanish: "comprar", ipa: "/kumˈpɾa/", sentence_en: "Compro pa fresc cada matí.", sentence_es: "Compro pan fresco cada mañana." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "VERBS IRREGULARS I TEMPS (B1)", level: 2, words: [
@@ -2014,10 +2213,13 @@
                 { english: "ola", spanish: "hola", ipa: "/ˈɔ.la/", sentence_en: "Ola, como estás?", sentence_es: "Hola, ¿cómo estás?" },
                 { english: "por favor", spanish: "por favor", ipa: "/poɾ faˈβoɾ/", sentence_en: "Un café, por favor.", sentence_es: "Un café, por favor." },
                 { english: "grazas", spanish: "gracias", ipa: "/ˈɡɾa.θas/", sentence_en: "Moitas grazas por todo.", sentence_es: "Muchas gracias por todo." },
-                { english: "deica logo", spanish: "hasta luego / adiós", ipa: "/ˈdej.ka ˈlo.ɣo/", sentence_en: "Deica logo e que teñas un bo día!", sentence_es: "¡Hasta luego y que tengas un buen día!" }
+                { english: "deica logo", spanish: "hasta luego / adiós", ipa: "/ˈdej.ka ˈlo.ɣo/", sentence_en: "Deica logo e que teñas un bo día!", sentence_es: "¡Hasta luego y que tengas un buen día!" },
+                { english: "si", spanish: "sí", ipa: "/si/", sentence_en: "Si, por suposto.", sentence_es: "Sí, por supuesto." },
+                { english: "non", spanish: "no", ipa: "/noŋ/", sentence_en: "Non, moitas grazas.", sentence_es: "No, muchas gracias." }
             ]},
             { name: "NÚMEROS E OBXECTOS (A0)", level: 0, words: [
                 { english: "un", spanish: "uno", ipa: "/uŋ/", sentence_en: "Teño un billete de tren.", sentence_es: "Tengo un billete de tren." },
+                { english: "dous", spanish: "dos", ipa: "/dowʃ/", sentence_en: "Dous cafés, por favor.", sentence_es: "Dos cafés, por favor." },
                 { english: "auga", spanish: "agua", ipa: "/ˈaw.ɣa/", sentence_en: "Querdría un vaso de auga.", sentence_es: "Quisiera un vaso de agua." },
                 { english: "casa", spanish: "casa", ipa: "/ˈka.sa/", sentence_en: "Esta é a miña nova casa.", sentence_es: "Esta es mi nueva casa." },
                 { english: "libro", spanish: "libro", ipa: "/ˈli.βɾo/", sentence_en: "O libro está enriba da mesa.", sentence_es: "El libro está sobre la mesa." }
@@ -2027,7 +2229,8 @@
                 { english: "vivir", spanish: "vivir / residir", ipa: "/biˈβiɾ/", sentence_en: "Vivo en Santiago.", sentence_es: "Vivo en Santiago." },
                 { english: "traballar", spanish: "trabajar", ipa: "/tɾa.βaˈʎaɾ/", sentence_en: "El traballa nunha oficina.", sentence_es: "Él trabaja en una oficina." },
                 { english: "comer", spanish: "comer", ipa: "/koˈmeɾ/", sentence_en: "Comemos xuntos ao mediodía.", sentence_es: "Comemos juntos al mediodía." },
-                { english: "beber", spanish: "beber", ipa: "/beˈβeɾ/", sentence_en: "Ela bebe té quente.", sentence_es: "Ella bebe té caliente." }
+                { english: "beber", spanish: "beber", ipa: "/beˈβeɾ/", sentence_en: "Ela bebe té quente.", sentence_es: "Ella bebe té caliente." },
+                { english: "mercar", spanish: "comprar", ipa: "/meɾˈkaɾ/", sentence_en: "Vou mercar pan fresco.", sentence_es: "Voy a comprar pan fresco." }
             ]},
             // Level 2: B1 (Intermedio)
             { name: "VERBOS IRREGULARES E TEMPOS (B1)", level: 2, words: [
@@ -3018,6 +3221,11 @@
             return db.lang_academy_levels[lang] || 0;
         },
 
+        getPointsRequiredForLevel: (levelNum) => {
+            const lvl = parseInt(levelNum);
+            return CEFR_POINTS_REQUIRED[lvl] !== undefined ? CEFR_POINTS_REQUIRED[lvl] : 150;
+        },
+
         isLevelUnlocked: (levelNum, lang = currentLang) => {
             const targetLevel = parseInt(levelNum);
             if (targetLevel === 0) return true;
@@ -3025,7 +3233,8 @@
             
             for (let l = 0; l < targetLevel; l++) {
                 const points = pointsObj[l] || 0;
-                if (points < 50) return false;
+                const reqPts = app.getPointsRequiredForLevel(l);
+                if (points < reqPts) return false;
 
                 const topicsOfLevel = db.topics.filter(t => (t.lang || 'en') === lang && (t.level !== undefined ? t.level : 0) === l);
                 if (topicsOfLevel.length > 0) {
@@ -3057,7 +3266,9 @@
         saveAcademyLevel: (val, lang = currentLang) => {
             const targetLvl = parseInt(val);
             if (!app.isLevelUnlocked(targetLvl, lang)) {
-                alert(`🔒 Nivel bloqueado en este idioma. Para desbloquearlo debes conseguir 50 puntos y completar todas las listas del nivel anterior.`);
+                const prevLvl = Math.max(0, targetLvl - 1);
+                const reqPts = app.getPointsRequiredForLevel(prevLvl);
+                alert(`🔒 Nivel bloqueado en este idioma.\nPara desbloquear este nivel del Marco Común Europeo (CEFR) debes conseguir ${reqPts} puntos y completar todas las listas del nivel anterior.`);
                 const currentLvl = app.getLangLevel(lang);
                 const slider = document.getElementById('academy-level-slider');
                 if (slider) slider.value = currentLvl;
@@ -3082,7 +3293,8 @@
                 const labels = app.getLevelLabels();
                 const pointsObj = app.getLangPoints(lang);
                 const pts = pointsObj[targetLvl] || 0;
-                display.innerHTML = `<span style="color:var(--neon-cyan);">${labels[targetLvl] || labels[0]}</span> <span style="font-size:0.8rem; color:#AAA; margin-left:6px;">(${pts}/50 pts)</span>`;
+                const reqPts = app.getPointsRequiredForLevel(targetLvl);
+                display.innerHTML = `<span style="color:var(--neon-cyan);">${labels[targetLvl] || labels[0]}</span> <span style="font-size:0.8rem; color:#AAA; margin-left:6px;">(${pts}/${reqPts} pts)</span>`;
             }
             app.renderLevelBadges(lang);
             app.updateLessonButtonsVisibility();
@@ -3097,13 +3309,14 @@
             container.innerHTML = labels.map((lbl, idx) => {
                 const unlocked = app.isLevelUnlocked(idx, lang);
                 const pts = pointsObj[idx] || 0;
+                const reqPts = app.getPointsRequiredForLevel(idx);
                 const isCurrent = currentLvl === idx;
                 const border = isCurrent ? 'var(--neon-cyan)' : unlocked ? 'rgba(0,255,149,0.4)' : 'rgba(255,255,255,0.1)';
                 const bg = isCurrent ? 'rgba(0,243,255,0.15)' : unlocked ? 'rgba(0,255,149,0.06)' : 'rgba(0,0,0,0.4)';
                 return `
                     <div style="flex: 1; min-width: 54px; padding: 6px 3px; text-align: center; border: 1px solid ${border}; background: ${bg}; border-radius: 4px; font-size: 0.72rem;">
                         <div style="font-weight: bold; color: ${unlocked ? '#FFF' : '#666'};">${unlocked ? lbl : '🔒 ' + lbl}</div>
-                        <div style="color: ${pts >= 50 ? 'var(--cyber-ok)' : 'var(--neon-pink)'}; font-size: 0.68rem; margin-top: 2px;">${pts}/50p</div>
+                        <div style="color: ${pts >= reqPts ? 'var(--cyber-ok)' : 'var(--neon-pink)'}; font-size: 0.68rem; margin-top: 2px;">${pts}/${reqPts}p</div>
                     </div>
                 `;
             }).join('');
@@ -3189,24 +3402,28 @@
 
         ensureDefaultTopics: () => {
             let modified = false;
+            let maxWordId = (db.words || []).reduce((max, w) => Math.max(max, w.id || 0), 100000);
+            let maxTopicId = (db.topics || []).reduce((max, t) => Math.max(max, t.id || 0), 1000);
+
             ['en', 'de', 'fr', 'pt', 'it', 'ru', 'eu', 'ca', 'gl'].forEach(langKey => {
                 const list = defaultTopicsByLang[langKey] || [];
-                list.forEach((def, defIdx) => {
+                list.forEach((def) => {
                     let topic = db.topics.find(t => t.name.toUpperCase() === def.name.toUpperCase() && (t.lang || 'en') === langKey);
                     if (!topic) {
-                        const offset = langKey === 'en' ? 0 : langKey === 'de' ? 1000 : langKey === 'fr' ? 2000 : langKey === 'pt' ? 2500 : langKey === 'it' ? 3000 : langKey === 'ru' ? 4000 : langKey === 'eu' ? 5000 : langKey === 'ca' ? 6000 : 7000;
-                        topic = { id: 999000 + offset + defIdx, name: def.name, lang: langKey, level: def.level !== undefined ? def.level : 0 };
+                        maxTopicId++;
+                        topic = { id: maxTopicId, name: def.name, lang: langKey, level: def.level !== undefined ? def.level : 0 };
                         db.topics.push(topic);
                         modified = true;
                     } else if (topic.level === undefined && def.level !== undefined) {
                         topic.level = def.level;
                         modified = true;
                     }
-                    def.words.forEach((w, wIdx) => {
-                        const targetWord = (w.english || '').toLowerCase();
-                        const exists = db.words.some(word => word.topic_id === topic.id && (word.english || '').toLowerCase() === targetWord);
+                    def.words.forEach((w) => {
+                        const targetWord = (w.english || '').toLowerCase().trim();
+                        const exists = db.words.some(word => word.topic_id === topic.id && (word.english || '').toLowerCase().trim() === targetWord);
                         if (!exists) {
-                            db.words.push({ ...w, id: 9990000 + (topic.id * 10) + wIdx, topic_id: topic.id });
+                            maxWordId++;
+                            db.words.push({ ...w, id: maxWordId, topic_id: topic.id });
                             modified = true;
                         }
                     });
@@ -5092,9 +5309,10 @@ CRITICAL: Return ONLY a valid JSON object:
         },
 
         handleCorrect: () => {
-            const pointsEarned = 2;
+            const currentLvl = app.getLangLevel();
+            const pointsEarned = currentLvl >= 3 ? 5 : currentLvl >= 1 ? 3 : 2;
             game.lastPointsEarned = pointsEarned;
-            app.addLevelPoints(db.academy_level, pointsEarned);
+            app.addLevelPoints(currentLvl, pointsEarned);
 
             const wId = game.data && game.data[game.index] ? game.data[game.index].id : null;
             if (wId) {
@@ -5737,7 +5955,9 @@ Return ONLY a valid JSON object:
                 if (analyzingEl) analyzingEl.remove();
 
                 const score = data.accuracy || 85;
-                const totalPtsForScore = score >= 80 ? 5 : (score >= 50 ? 3 : 2);
+                const currentLvl = app.getLangLevel();
+                const baseMultiplier = currentLvl >= 3 ? 3 : currentLvl >= 1 ? 2 : 1;
+                const totalPtsForScore = score >= 85 ? (10 * baseMultiplier) : (score >= 70 ? (6 * baseMultiplier) : (3 * baseMultiplier));
 
                 // Solo se consiguen puntos adicionales al repetir si se supera la puntuacion anterior
                 let earnedPts = 0;
@@ -5748,7 +5968,7 @@ Return ONLY a valid JSON object:
                 }
 
                 if (earnedPts > 0) {
-                    app.addLevelPoints(app.getLangLevel(), earnedPts);
+                    app.addLevelPoints(currentLvl, earnedPts);
                 }
 
                 const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--neon-cyan)';
