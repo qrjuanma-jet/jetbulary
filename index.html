@@ -771,6 +771,74 @@
         </div>
     </div>
 
+    <!-- ====== MODAL: CUSTOM TOPIC GENERATOR (PEDIR TEMA DIFERENTE A LA PROFESORA) ====== -->
+    <div id="modal-custom-topic" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;" onclick="app.closeCustomTopicModal()">
+        <div class="hud-card" style="max-width: 480px; width: 100%; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 20px 18px; border-radius: 12px;" onclick="event.stopPropagation()">
+            <button onclick="app.closeCustomTopicModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 4px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                <div class="avatar-container" id="avatar-custom-topic" style="width: 64px; height: 64px; min-width: 64px; margin: 0; border-radius: 50%; pointer-events: none;"></div>
+                <div>
+                    <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0 0 2px 0; letter-spacing: 0.5px;">✨ PEDIR TEMA A LA PROFESORA</h3>
+                    <div id="custom-topic-teacher-subtitle" style="font-size: 0.82rem; color: #AAA;">Crea vocabulario exclusivo para cualquier tema</div>
+                </div>
+            </div>
+
+            <p style="color: #DDD; font-size: 0.9rem; line-height: 1.4; margin-bottom: 12px;">
+                Escribe el tema que deseas aprender (ej: <em>Entrevistas de trabajo, Medicina, Viajes en tren, Informática, Cocina...</em>):
+            </p>
+
+            <div style="margin-bottom: 14px;">
+                <input type="text" id="input-custom-topic" placeholder="Ej: Viajes y hoteles, Inteligencia Artificial, Marketing..." style="width: 100%; padding: 14px 16px; font-size: 1.1rem; background: #0c0c14; border: 2px solid var(--neon-cyan); border-radius: 8px; color: #FFF; outline: none; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(0,243,255,0.1);" onkeydown="if(event.key==='Enter') app.generateCustomTopicFromModal()">
+            </div>
+
+            <div id="custom-topic-status" class="hidden" style="color: var(--cyber-warn); font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; text-align: center;">
+                ⏳ Generando vocabulario con IA...
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-generate-custom-topic" onclick="app.generateCustomTopicFromModal()" class="success" style="width: 100%; padding: 14px; font-size: 1.1rem; font-weight: 900; letter-spacing: 1px; box-shadow: var(--cyber-glow);">
+                    🪄 CREAR Y GENERAR VOCABULARIO
+                </button>
+                <button onclick="app.closeCustomTopicModal()" class="secondary" style="width: 100%; padding: 10px; font-size: 0.9rem; border: none; color: #777;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: EXPAND TOPIC (AMPLIAR VOCABULARIO DE ESTE TEMA) ====== -->
+    <div id="modal-expand-topic" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;" onclick="app.closeExpandTopicModal()">
+        <div class="hud-card" style="max-width: 480px; width: 100%; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 20px 18px; border-radius: 12px;" onclick="event.stopPropagation()">
+            <button onclick="app.closeExpandTopicModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 4px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                <div class="avatar-container" id="avatar-expand-topic" style="width: 64px; height: 64px; min-width: 64px; margin: 0; border-radius: 50%; pointer-events: none;"></div>
+                <div>
+                    <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0 0 2px 0; letter-spacing: 0.5px;">➕ AMPLIAR VOCABULARIO</h3>
+                    <div id="expand-topic-name-subtitle" style="font-size: 0.88rem; color: var(--cyber-ok); font-weight: bold;"></div>
+                </div>
+            </div>
+
+            <p style="color: #DDD; font-size: 0.9rem; line-height: 1.4; margin-bottom: 12px;">
+                La profesora buscará nuevas palabras útiles que aún no están en esta lista para seguir ampliando tu vocabulario.
+            </p>
+
+            <div id="expand-topic-status" class="hidden" style="color: var(--cyber-warn); font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; text-align: center;">
+                ⏳ Generando nuevas palabras con IA...
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-expand-topic-action" onclick="app.expandCurrentTopicFromModal()" class="success" style="width: 100%; padding: 14px; font-size: 1.1rem; font-weight: 900; letter-spacing: 1px; box-shadow: var(--cyber-glow);">
+                    ➕ PEDIR MÁS PALABRAS DE ESTE TEMA
+                </button>
+                <button onclick="app.closeExpandTopicModal()" class="secondary" style="width: 100%; padding: 10px; font-size: 0.9rem; border: none; color: #777;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ====== MODAL: BACKUP & RESTORE (CLEAN: GUARDAR / LEER ONLY) ====== -->
     <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px;" onclick="app.closeBackupModal()">
         <div class="hud-card" style="max-width: 300px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 20px 16px; border-radius: 10px;" onclick="event.stopPropagation()">
@@ -2170,11 +2238,22 @@
         selectedListId: null,
 
         selectList: (id) => {
+            if (id === '__NEW_TOPIC__') {
+                app.openCustomTopicModal();
+                app.renderDashboardLists();
+                return;
+            }
+            if (id === '__EXPAND_TOPIC__') {
+                app.openExpandTopicModal();
+                app.renderDashboardLists();
+                return;
+            }
             session.selectedListId = id === '' ? null : id;
             try { localStorage.setItem('jetbulary_selected_list', id || ''); } catch(e) {}
             if (typeof idbBackup !== 'undefined' && idbBackup.syncAll) {
                 idbBackup.syncAll();
             }
+            app.renderDashboardLists();
         },
 
         getNextSessionWords: () => {
@@ -2274,9 +2353,12 @@
             if (!container || !session.currentWords) return;
             container.innerHTML = session.currentWords.map((w, i) => {
                 const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
+                const p = db.progress.find(pr => pr.word_id === w.id);
+                const hasAsterisk = p && (p.needs_review || (p.attempts > 0 && p.successes === 0));
                 return `
-                <div class="session-word-card ${i === game.index ? 'active' : ''}" id="session-card-${i}" onclick="session.selectWordCard(${i})" style="cursor: pointer;">
-                    <div class="word-en">${cleanWord}</div>
+                <div class="session-word-card ${i === game.index ? 'active' : ''}" id="session-card-${i}" onclick="session.selectWordCard(${i})" style="cursor: pointer; position: relative;">
+                    ${hasAsterisk ? `<span style="position: absolute; top: 4px; right: 8px; color: var(--cyber-warn); font-weight: 900; font-size: 1.2rem;" title="Palabra para repasar">*</span>` : ''}
+                    <div class="word-en">${cleanWord} ${hasAsterisk ? '<span style="color:var(--cyber-warn); font-weight:bold;">*</span>' : ''}</div>
                     ${w.ipa ? `<div class="tech word-ipa">/${w.ipa.replace(/\//g, '')}/</div>` : ''}
                     <div class="word-es">${w.spanish}</div>
                 </div>
@@ -2553,10 +2635,11 @@
         },
 
         addLevelPoints: (levelNum, delta, lang = currentLang) => {
+            if (delta <= 0) return; // NUNCA puntuación negativa
             const pointsObj = app.getLangPoints(lang);
             const lvl = parseInt(levelNum !== undefined ? levelNum : app.getLangLevel(lang));
             const currentPts = pointsObj[lvl] || 0;
-            pointsObj[lvl] = Math.max(0, currentPts + delta);
+            pointsObj[lvl] = currentPts + delta;
             app.saveDB();
             app.renderLevelBadges(lang);
             app.renderDashboardLists();
@@ -3193,6 +3276,16 @@
                     app.closeShareModal(true);
                     return;
                 }
+                const customTopicModal = document.getElementById('modal-custom-topic');
+                if (customTopicModal && !customTopicModal.classList.contains('hidden')) {
+                    app.closeCustomTopicModal();
+                    return;
+                }
+                const expandTopicModal = document.getElementById('modal-expand-topic');
+                if (expandTopicModal && !expandTopicModal.classList.contains('hidden')) {
+                    app.closeExpandTopicModal();
+                    return;
+                }
                 const backupModal = document.getElementById('modal-backup-manager');
                 if (backupModal && !backupModal.classList.contains('hidden')) {
                     backupModal.classList.add('hidden');
@@ -3373,17 +3466,27 @@
                 return a.id - b.id;
             });
 
-            selector.innerHTML = '<option value="">Select a list...</option>' +
-                topics.map(t => {
-                    const wordCount = db.words.filter(w => w.topic_id === t.id).length;
-                    const wordsInTopic = db.words.filter(w => w.topic_id === t.id);
-                    const isCompleted = wordsInTopic.length > 0 && wordsInTopic.every(w => {
-                        const p = db.progress.find(pr => pr.word_id === w.id);
-                        return p && p.successes >= 1;
-                    });
-                    const statusIcon = isCompleted ? '✅ ' : '';
-                    return `<option value="${t.id}" ${t.id == session.selectedListId ? 'selected' : ''}>${statusIcon}${t.name} (${wordCount})</option>`;
-                }).join('');
+            const selectedId = session.selectedListId;
+            const currentTopic = topics.find(t => t.id == selectedId);
+
+            let optionsHtml = '<option value="">Selecciona una lista...</option>';
+            optionsHtml += '<option value="__NEW_TOPIC__" style="color: var(--neon-pink); font-weight: 900; background: #1a0815;">✨ + Pedir tema diferente a la profesora...</option>';
+            if (currentTopic) {
+                optionsHtml += `<option value="__EXPAND_TOPIC__" style="color: var(--cyber-ok); font-weight: 900; background: #061a10;">➕ + Ampliar palabras de "${currentTopic.name}"...</option>`;
+            }
+
+            optionsHtml += topics.map(t => {
+                const wordsInTopic = db.words.filter(w => w.topic_id === t.id);
+                const wordCount = wordsInTopic.length;
+                const isCompleted = wordCount > 0 && wordsInTopic.every(w => {
+                    const p = db.progress.find(pr => pr.word_id === w.id);
+                    return p && p.successes >= 1;
+                });
+                const statusIcon = isCompleted ? '✅ ' : '';
+                return `<option value="${t.id}" ${t.id == selectedId ? 'selected' : ''}>${statusIcon}${t.name} (${wordCount} palabras)</option>`;
+            }).join('');
+
+            selector.innerHTML = optionsHtml;
         },
 
         showVocab: () => { app.switchView('view-vocab'); vocab.render(); },
@@ -3553,6 +3656,223 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                     }
                 } catch (e) { console.error("Error:", e); alert("AI could not generate the list. Try again."); }
             });
+        },
+
+        setupModalTeacherAvatar: (containerId) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const imgSource = langInfo.gif || langInfo.face || 'icon.png';
+            container.innerHTML = `
+                <img src="${imgSource}" alt="${langInfo.teacherName}" style="width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover; box-shadow: var(--cyber-glow);">
+            `;
+        },
+
+        openCustomTopicModal: () => {
+            const modal = document.getElementById('modal-custom-topic');
+            const input = document.getElementById('input-custom-topic');
+            const status = document.getElementById('custom-topic-status');
+            const btn = document.getElementById('btn-generate-custom-topic');
+            const sub = document.getElementById('custom-topic-teacher-subtitle');
+            if (status) status.classList.add('hidden');
+            if (btn) { btn.disabled = false; btn.innerText = "🪄 CREAR Y GENERAR VOCABULARIO"; }
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            if (sub) sub.innerText = `${langInfo.teacherName} (${langInfo.name}) te creará vocabulario exclusivo`;
+            app.setupModalTeacherAvatar('avatar-custom-topic');
+            if (modal) modal.classList.remove('hidden');
+            if (input) {
+                input.value = '';
+                setTimeout(() => input.focus(), 200);
+            }
+        },
+
+        closeCustomTopicModal: () => {
+            const modal = document.getElementById('modal-custom-topic');
+            if (modal) modal.classList.add('hidden');
+            app.renderDashboardLists();
+        },
+
+        generateCustomTopicFromModal: async () => {
+            const input = document.getElementById('input-custom-topic');
+            const topicName = (input?.value || '').trim();
+            if (!topicName) {
+                alert("Por favor escribe el tema que deseas.");
+                if (input) input.focus();
+                return;
+            }
+
+            const status = document.getElementById('custom-topic-status');
+            const btn = document.getElementById('btn-generate-custom-topic');
+            if (status) status.classList.remove('hidden');
+            if (btn) { btn.disabled = true; btn.innerText = "⏳ Generando vocabulario con IA..."; }
+
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const levelNum = app.getLangLevel();
+            const levels = ["Principiante A0/A1", "Elemental A2", "Intermedio B1", "Avanzado B2", "Dominio C1+"];
+            const currentLevelLabel = levels[levelNum] || "Intermedio";
+
+            const prompt = `Act as an expert language teacher in ${langInfo.name}.
+A student at level "${currentLevelLabel}" wants to learn vocabulary for the topic: "${topicName}".
+Generate 12 to 16 useful, modern, and essential ${langInfo.name} words related specifically to "${topicName}".
+
+CRITICAL: Return ONLY a valid JSON object:
+{
+  "topic": "${topicName.toUpperCase()}",
+  "words": [
+    {
+      "english": "word in ${langInfo.name}",
+      "spanish": "traducción clara al español",
+      "ipa": "/fonética/",
+      "sentence_en": "frase corta de ejemplo en ${langInfo.name}",
+      "sentence_es": "traducción de la frase al español"
+    }
+  ]
+}`;
+
+            await app.callAI_Conversation(
+                [{ role: "system", content: prompt }, { role: "user", content: `Generate vocabulary for topic: "${topicName}" in ${langInfo.name}` }],
+                btn,
+                (data) => {
+                    if (data && data.words && Array.isArray(data.words) && data.words.length > 0) {
+                        const finalTopicName = (data.topic || topicName).toUpperCase();
+                        let newTopic = db.topics.find(t => t.name.toUpperCase() === finalTopicName && (t.lang || 'en') === currentLang);
+                        if (!newTopic) {
+                            newTopic = {
+                                id: Date.now(),
+                                name: finalTopicName,
+                                lang: currentLang,
+                                level: levelNum,
+                                is_custom: true
+                            };
+                            db.topics.push(newTopic);
+                        }
+
+                        data.words.forEach((w, i) => {
+                            const exists = db.words.some(ew => ew.topic_id === newTopic.id && ew.english.toLowerCase() === (w.english || '').toLowerCase());
+                            if (!exists && w.english) {
+                                db.words.push({
+                                    id: Date.now() + i + 1,
+                                    topic_id: newTopic.id,
+                                    english: w.english,
+                                    spanish: w.spanish || '',
+                                    ipa: w.ipa || '',
+                                    sentence_en: w.sentence_en || '',
+                                    sentence_es: w.sentence_es || ''
+                                });
+                            }
+                        });
+
+                        app.saveDB();
+                        session.selectList(newTopic.id);
+                        app.closeCustomTopicModal();
+                        app.renderDashboardLists();
+                        if (!document.getElementById('view-vocab').classList.contains('hidden')) vocab.render();
+                        alert(`🎉 ¡Tema "${newTopic.name}" creado con ${data.words.length} palabras! Pulsa START para empezar a practicar.`);
+                    } else {
+                        alert("No se pudieron generar palabras. Inténtalo de nuevo.");
+                    }
+                    if (status) status.classList.add('hidden');
+                    if (btn) { btn.disabled = false; btn.innerText = "🪄 CREAR Y GENERAR VOCABULARIO"; }
+                }
+            );
+        },
+
+        openExpandTopicModal: () => {
+            const topic = db.topics.find(t => t.id == session.selectedListId && (t.lang || 'en') === currentLang);
+            if (!topic) {
+                app.openCustomTopicModal();
+                return;
+            }
+            const modal = document.getElementById('modal-expand-topic');
+            const sub = document.getElementById('expand-topic-name-subtitle');
+            const status = document.getElementById('expand-topic-status');
+            const btn = document.getElementById('btn-expand-topic-action');
+            if (status) status.classList.add('hidden');
+            if (btn) { btn.disabled = false; btn.innerText = `➕ PEDIR MÁS PALABRAS DE "${topic.name}"`; }
+            if (sub) {
+                const currentCount = db.words.filter(w => w.topic_id === topic.id).length;
+                sub.innerText = `Tema actual: "${topic.name}" (${currentCount} palabras ya guardadas)`;
+            }
+            app.setupModalTeacherAvatar('avatar-expand-topic');
+            if (modal) modal.classList.remove('hidden');
+        },
+
+        closeExpandTopicModal: () => {
+            const modal = document.getElementById('modal-expand-topic');
+            if (modal) modal.classList.add('hidden');
+            app.renderDashboardLists();
+        },
+
+        expandCurrentTopicFromModal: async () => {
+            const topic = db.topics.find(t => t.id == session.selectedListId && (t.lang || 'en') === currentLang);
+            if (!topic) return;
+
+            const existingWords = db.words.filter(w => w.topic_id === topic.id).map(w => w.english);
+            const status = document.getElementById('expand-topic-status');
+            const btn = document.getElementById('btn-expand-topic-action');
+            if (status) status.classList.remove('hidden');
+            if (btn) { btn.disabled = true; btn.innerText = "⏳ Ampliando vocabulario con IA..."; }
+
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const levelNum = app.getLangLevel();
+            const levels = ["Principiante A0/A1", "Elemental A2", "Intermedio B1", "Avanzado B2", "Dominio C1+"];
+            const currentLevelLabel = levels[levelNum] || "Intermedio";
+
+            const prompt = `Act as an expert language teacher in ${langInfo.name}.
+Generate 10 to 14 NEW and DIFFERENT words in ${langInfo.name} for the topic: "${topic.name}".
+Level: ${currentLevelLabel}.
+
+DO NOT REPEAT any of these words that are already in the list:
+${existingWords.slice(0, 50).join(', ')}
+
+CRITICAL: Return ONLY a valid JSON object:
+{
+  "words": [
+    {
+      "english": "word in ${langInfo.name}",
+      "spanish": "traducción clara al español",
+      "ipa": "/fonética/",
+      "sentence_en": "frase corta de ejemplo en ${langInfo.name}",
+      "sentence_es": "traducción de la frase al español"
+    }
+  ]
+}`;
+
+            await app.callAI_Conversation(
+                [{ role: "system", content: prompt }, { role: "user", content: `Expand topic: "${topic.name}" in ${langInfo.name}` }],
+                btn,
+                (data) => {
+                    if (data && data.words && Array.isArray(data.words) && data.words.length > 0) {
+                        let addedCount = 0;
+                        data.words.forEach((w, i) => {
+                            const exists = db.words.some(ew => ew.topic_id === topic.id && ew.english.toLowerCase() === (w.english || '').toLowerCase());
+                            if (!exists && w.english) {
+                                db.words.push({
+                                    id: Date.now() + i + 1,
+                                    topic_id: topic.id,
+                                    english: w.english,
+                                    spanish: w.spanish || '',
+                                    ipa: w.ipa || '',
+                                    sentence_en: w.sentence_en || '',
+                                    sentence_es: w.sentence_es || ''
+                                });
+                                addedCount++;
+                            }
+                        });
+
+                        app.saveDB();
+                        app.closeExpandTopicModal();
+                        app.renderDashboardLists();
+                        if (!document.getElementById('view-vocab').classList.contains('hidden')) vocab.render();
+                        const totalNow = db.words.filter(w => w.topic_id === topic.id).length;
+                        alert(`🎉 ¡Añadidas ${addedCount} palabras nuevas a "${topic.name}"! Ahora tiene ${totalNow} palabras.`);
+                    } else {
+                        alert("No se pudieron añadir más palabras. Inténtalo de nuevo.");
+                    }
+                    if (status) status.classList.add('hidden');
+                    if (btn) { btn.disabled = false; btn.innerText = "➕ PEDIR MÁS PALABRAS"; }
+                }
+            );
         },
 
         exportDB: () => {
@@ -3847,6 +4167,19 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         },
 
         changeTopic: (val) => {
+            if (val === '__NEW_TOPIC__') {
+                app.openCustomTopicModal();
+                vocab.render();
+                return;
+            }
+            if (val === '__EXPAND_TOPIC__') {
+                if (vocab.activeTopicId !== 'all') {
+                    session.selectedListId = vocab.activeTopicId;
+                }
+                app.openExpandTopicModal();
+                vocab.render();
+                return;
+            }
             vocab.activeTopicId = val;
             vocab.render();
         },
@@ -3905,14 +4238,26 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const topics = db.topics.filter(t => (t.lang || 'en') === currentLang);
-            selector.innerHTML = `<option value="all">${langInfo.allWordsBtnLabel || 'ALL WORDS'}</option>` +
-                topics.map(t => `<option value="${t.id}" ${t.id == vocab.activeTopicId ? 'selected' : ''}>${t.name.toUpperCase()}</option>`).join('');
+            const currentSelectedTopic = topics.find(t => t.id == vocab.activeTopicId);
+
+            let optionsHtml = `<option value="all">${langInfo.allWordsBtnLabel || 'ALL WORDS'}</option>`;
+            optionsHtml += `<option value="__NEW_TOPIC__" style="color: var(--neon-pink); font-weight: 900; background: #1a0815;">✨ + Pedir tema diferente a la profesora...</option>`;
+            if (currentSelectedTopic) {
+                optionsHtml += `<option value="__EXPAND_TOPIC__" style="color: var(--cyber-ok); font-weight: 900; background: #061a10;">➕ + Ampliar palabras de "${currentSelectedTopic.name}"...</option>`;
+            }
+            optionsHtml += topics.map(t => `<option value="${t.id}" ${t.id == vocab.activeTopicId ? 'selected' : ''}>${t.name.toUpperCase()}</option>`).join('');
+            selector.innerHTML = optionsHtml;
 
             let words = vocab.getFilteredWords().map(w => {
                 const p = db.progress.find(pr => pr.word_id === w.id);
                 const score = p && p.attempts > 0 ? Math.round((p.successes / p.attempts) * 100) : -1;
-                return { ...w, score };
-            }).sort((a,b) => a.score - b.score);
+                const needsReview = p && (p.needs_review || (p.attempts > 0 && p.successes === 0));
+                return { ...w, score, needsReview };
+            }).sort((a,b) => {
+                if (a.needsReview && !b.needsReview) return -1;
+                if (!a.needsReview && b.needsReview) return 1;
+                return a.score - b.score;
+            });
 
             vocab.updateSelectionUI();
 
@@ -3924,17 +4269,18 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             list.innerHTML = words.map(w => {
                 const cleanWord = w.english.includes('(') ? w.english.split('(')[0].trim() : w.english;
                 const isChecked = vocab.selectedIds.has(w.id);
-                const badge = w.score === -1 ? '<span class="tech" style="color:#888; font-size:0.65rem; border:1px solid #888; padding:2px 4px; border-radius:3px;">[NEW]</span>' :
+                const badge = w.needsReview ? '<span class="tech" style="color:var(--cyber-warn); font-size:0.68rem; border:1px solid var(--cyber-warn); padding:2px 5px; border-radius:3px; font-weight:bold; background:rgba(255,215,0,0.1);">* REPASAR</span>' :
+                    w.score === -1 ? '<span class="tech" style="color:#888; font-size:0.65rem; border:1px solid #888; padding:2px 4px; border-radius:3px;">[NEW]</span>' :
                     w.score < 50 ? '<span class="tech" style="color:var(--cyber-danger); font-size:0.65rem; border:1px solid var(--cyber-danger); padding:2px 4px; border-radius:3px;">[HARD]</span>' :
                     w.score < 80 ? '<span class="tech" style="color:var(--cyber-warn); font-size:0.65rem; border:1px solid var(--cyber-warn); padding:2px 4px; border-radius:3px;">[MEDIUM]</span>' :
                     '<span class="tech" style="color:var(--cyber-ok); font-size:0.65rem; border:1px solid var(--cyber-ok); padding:2px 4px; border-radius:3px;">[OK]</span>';
 
                 return `
-                <div class="vocab-item" style="background: rgba(18,18,20,0.95); border: 1px solid ${isChecked ? 'var(--neon-cyan)' : 'var(--cyber-border)'}; border-radius: 6px; padding: 14px; box-shadow: ${isChecked ? 'var(--cyber-glow)' : 'none'}; transition: all 0.2s;">
+                <div class="vocab-item" style="background: rgba(18,18,20,0.95); border: 1px solid ${w.needsReview ? 'var(--cyber-warn)' : isChecked ? 'var(--neon-cyan)' : 'var(--cyber-border)'}; border-radius: 6px; padding: 14px; box-shadow: ${w.needsReview ? '0 0 10px rgba(255,215,0,0.2)' : isChecked ? 'var(--cyber-glow)' : 'none'}; transition: all 0.2s;">
                     <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px;">
                         <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1;">
                             <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="vocab.toggleSelect(${w.id})" style="width: 20px; height: 20px; accent-color: var(--neon-cyan); cursor: pointer;">
-                            <span style="color: var(--neon-cyan); font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px;">${w.english}</span>
+                            <span style="color: var(--neon-cyan); font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px;">${w.english} ${w.needsReview ? '<span style="color:var(--cyber-warn); font-size:1.4rem; font-weight:bold; margin-left:4px;" title="Palabra marcada con asterisco para repasar">*</span>' : ''}</span>
                         </label>
                         ${badge}
                     </div>
@@ -3985,7 +4331,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const cleanSpoken = normalize(spoken);
 
             if (cleanTarget === cleanSpoken) return true;
-            if (cleanSpoken.includes(cleanTarget)) return true;
+            if (cleanSpoken.includes(cleanTarget) || cleanTarget.includes(cleanSpoken)) return true;
 
             // Split into words
             const targetWords = cleanTarget.split(' ').filter(w => w.length > 0);
@@ -3996,10 +4342,19 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const meaningfulTargetWords = targetWords.filter(w => !commonArticles.has(w));
             const meaningfulSpokenWords = spokenWords.filter(w => !commonArticles.has(w));
 
-            // Check direct match on any meaningful word
-            for (const tw of (meaningfulTargetWords.length > 0 ? meaningfulTargetWords : targetWords)) {
-                for (const sw of (meaningfulSpokenWords.length > 0 ? meaningfulSpokenWords : spokenWords)) {
+            const mTarget = meaningfulTargetWords.length > 0 ? meaningfulTargetWords : targetWords;
+            const mSpoken = meaningfulSpokenWords.length > 0 ? meaningfulSpokenWords : spokenWords;
+
+            // Check direct match or phonetic approximate match on any meaningful word
+            for (const tw of mTarget) {
+                for (const sw of mSpoken) {
                     if (sw === tw || sw.includes(tw) || tw.includes(sw)) return true;
+                    // Substring match of length >= 3
+                    if (tw.length >= 3 && sw.length >= 3 && (sw.startsWith(tw.substring(0, 3)) || tw.startsWith(sw.substring(0, 3)))) return true;
+                    // Phonetic sound-alike substitution
+                    const phonTarget = tw.replace(/[bv]/g, 'b').replace(/[csz]/g, 's').replace(/ph/g, 'f').replace(/sh|ch/g, 's').replace(/th/g, 't').replace(/[yj]/g, 'y');
+                    const phonSpoken = sw.replace(/[bv]/g, 'b').replace(/[csz]/g, 's').replace(/ph/g, 'f').replace(/sh|ch/g, 's').replace(/th/g, 't').replace(/[yj]/g, 'y');
+                    if (phonTarget === phonSpoken || phonSpoken.includes(phonTarget) || phonTarget.includes(phonSpoken)) return true;
                 }
             }
 
@@ -4024,23 +4379,18 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                 return costs[s2.length];
             };
 
-            const mainTarget = (meaningfulTargetWords.length > 0 ? meaningfulTargetWords.join(' ') : cleanTarget);
-            const mainSpoken = (meaningfulSpokenWords.length > 0 ? meaningfulSpokenWords.join(' ') : cleanSpoken);
+            const mainTarget = mTarget.join(' ');
+            const mainSpoken = mSpoken.join(' ');
             const maxLen = Math.max(mainTarget.length, mainSpoken.length);
             if (maxLen === 0) return true;
             
             const dist = levDist(mainTarget, mainSpoken);
             const similarity = 1 - (dist / maxLen);
 
-            // Level-dependent tolerance thresholds:
-            // Level 0 (A0): 0.20 threshold (very forgiving for beginners)
-            // Level 1 (A1-A2): 0.30 threshold
-            // Level 2 (B1): 0.40 threshold
-            // Level 3 (B2): 0.55 threshold
-            // Level 4 (C1+): 0.70 threshold (strict for advanced)
+            // Umbrales de evaluación de pronunciación sumamente laxos y tolerantes
             const levelNum = app.getLangLevel();
-            const thresholds = [0.20, 0.30, 0.40, 0.55, 0.70];
-            const requiredThreshold = thresholds[levelNum] !== undefined ? thresholds[levelNum] : 0.25;
+            const thresholds = [0.10, 0.15, 0.22, 0.30, 0.38];
+            const requiredThreshold = thresholds[levelNum] !== undefined ? thresholds[levelNum] : 0.15;
 
             return similarity >= requiredThreshold;
         },
@@ -4322,10 +4672,19 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
         },
 
         handleCorrect: () => {
-            const isRecovery = game.currentRetries >= 3;
-            const pointsEarned = isRecovery ? 1 : 2;
+            const pointsEarned = 2;
             game.lastPointsEarned = pointsEarned;
             app.addLevelPoints(db.academy_level, pointsEarned);
+
+            const wId = game.data && game.data[game.index] ? game.data[game.index].id : null;
+            if (wId) {
+                let prog = db.progress.find(p => p.word_id === wId);
+                if (prog) {
+                    prog.needs_review = false;
+                    prog.starred = false;
+                }
+                app.saveDB();
+            }
 
             const fb = document.getElementById('feedback-msg');
             if (fb) {
@@ -4354,53 +4713,68 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             const failOptions = document.getElementById('fail-options');
             const promptEl = document.getElementById('prompt-pronounce');
 
-            if (game.currentRetries >= 3) {
-                // Penalización tras 3 fallos
-                app.addLevelPoints(db.academy_level, -1);
-                if (fb) {
-                    fb.innerHTML = `❌ 3 fallos <span style="color:var(--cyber-danger); font-weight:bold;">(-1 pt)</span>. Escucha atentamente:`;
-                    fb.className = "feedback incorrect";
+            if (game.currentRetries >= 2) {
+                // Al fallar 2 veces: NUNCA restar puntos. Marcar con asterisco (*) y avanzar suavemente
+                const wId = game.data && game.data[game.index] ? game.data[game.index].id : null;
+                if (wId) {
+                    let prog = db.progress.find(p => p.word_id === wId);
+                    if (!prog) {
+                        prog = { word_id: wId, attempts: 2, successes: 0, needs_review: true };
+                        db.progress.push(prog);
+                    } else {
+                        prog.needs_review = true;
+                    }
+                    app.saveDB();
                 }
-                if (promptEl) promptEl.innerText = '👂 ESCUCHA LA PRONUNCIACIÓN CORRECTA';
 
-                // La profesora pronuncia muy lento para enseñar
-                setTimeout(() => game.speakWordSlow(), 400);
+                if (fb) {
+                    fb.innerHTML = `💪 <strong>¡Buen intento!</strong> Marcamos <em>${target}</em> con <strong>(*)</strong> para repasar luego y seguimos adelante.`;
+                    fb.className = "feedback";
+                    fb.style.color = "var(--cyber-warn)";
+                    fb.style.borderColor = "var(--cyber-warn)";
+                    fb.style.background = "rgba(255, 215, 0, 0.1)";
+                }
+                if (promptEl) promptEl.innerText = '⏭️ CONTINUAMOS CON LA SIGUIENTE PALABRA';
+
+                // Escuchar la palabra despacio para aprender la pronunciación
+                setTimeout(() => game.speakWordSlow(), 300);
 
                 if (failOptions) {
                     failOptions.innerHTML = `
-                        <button onclick="game.retryRecovery()" class="warning" style="width:100%; padding:10px; font-weight:bold;">🔄 Repetir para recuperar punto</button>
+                        <button onclick="game.nextFromFail()" class="secondary" style="width:100%; padding: 12px 18px; font-size: 1.1rem; border-radius: 8px; border-color: var(--neon-cyan); color: #FFF; font-weight: bold;">
+                            Siguiente palabra ➡
+                        </button>
                     `;
                     failOptions.classList.remove('hidden');
                 }
 
-                // Avance automático a la siguiente palabra tras 4.5 segundos
+                // Avance automático suave a la siguiente palabra
                 setTimeout(() => {
-                    if (game.currentRetries >= 3 && !document.getElementById('view-game').classList.contains('hidden') && !stt.isRecording) {
-                        game.next();
+                    if (game.currentRetries >= 2 && !document.getElementById('view-game').classList.contains('hidden') && !stt.isRecording) {
+                        game.nextFromFail();
                     }
-                }, 4500);
+                }, 2800);
 
             } else {
-                // Fallo 1 o 2
+                // Fallo 1 de 2: Se ofrece un intento más de forma amable
                 if (fb) {
-                    fb.innerText = `Intento ${game.currentRetries}/3. Vuelve a intentarlo.`;
+                    fb.innerText = `Intento 1/2. Inténtalo una vez más 🎙️`;
                     fb.className = "feedback incorrect";
                 }
                 if (promptEl) promptEl.innerText = '🎙️ VUELVE A PRONUNCIAR';
 
                 if (failOptions) {
                     failOptions.innerHTML = `
-                        <button onclick="game.retry()" class="warning" style="padding: 8px 12px; font-size: 0.8rem;">🔄 Reintentar</button>
-                        <button onclick="game.speakWordSlow()" class="secondary" style="padding: 8px 12px; font-size: 0.8rem;">🐢 Lento</button>
-                        <button onclick="game.next()" class="secondary" style="padding: 8px 12px; font-size: 0.8rem;">⏭️ Saltar</button>
+                        <button onclick="game.retry()" class="warning" style="padding: 10px 16px; font-size: 1rem; border-radius: 8px;">🔄 Reintentar</button>
+                        <button onclick="game.speakWordSlow()" class="secondary" style="padding: 10px 16px; font-size: 1rem; border-radius: 8px;">🐢 Escuchar lento</button>
+                        <button onclick="game.nextFromFail()" class="secondary" style="padding: 10px 16px; font-size: 1rem; border-radius: 8px;">⏭️ Pasar (*)</button>
                     `;
                     failOptions.classList.remove('hidden');
                 }
 
-                if (game.currentRetries === 1 && clean.length > 0) game.getSpecificAdvice(target, clean);
                 if (game.autoMic) {
                     setTimeout(() => {
-                        if (!stt.isRecording && !document.getElementById('view-game').classList.contains('hidden') && game.currentRetries < 3) {
+                        if (!stt.isRecording && !document.getElementById('view-game').classList.contains('hidden') && game.currentRetries < 2) {
                             game.retry();
                         }
                     }, 2200);
@@ -4408,12 +4782,13 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             }
         },
 
-        retryRecovery: () => {
-            const failOptions = document.getElementById('fail-options');
-            if (failOptions) failOptions.classList.add('hidden');
-            const fb = document.getElementById('feedback-msg');
-            if (fb) fb.innerText = "Pronuncia ahora para recuperar el punto:";
-            game.toggleMic();
+        nextFromFail: () => {
+            document.getElementById('fail-options')?.classList.add('hidden');
+            if (game.isSessionMode) {
+                session.onWordComplete();
+            } else {
+                game.next();
+            }
         },
 
         getSpecificAdvice: async (targetWord, spokenWord) => {
