@@ -2163,7 +2163,11 @@
                 }
             }, maxAllowedSec * 1000);
 
-            const langInfo = LANGUAGES[langCode] || (langCode === 'es' ? LANGUAGES.es : LANGUAGES.en);
+            // Robust language normalization for Spanish and all languages
+            const rawCode = (langCode || 'en').toLowerCase().replace('_', '-');
+            const cleanCode = rawCode.split('-')[0];
+            const langInfo = LANGUAGES[cleanCode] || LANGUAGES[rawCode] || (cleanCode === 'es' ? LANGUAGES.es : LANGUAGES.en);
+            const targetSpeechLang = langInfo.speechLang || (cleanCode === 'es' ? 'es-ES' : 'en-US');
             const effectiveRate = Math.max(0.35, Math.min(1.4, rate || 0.75));
 
             const speakNextChunk = () => {
@@ -2183,18 +2187,44 @@
 
                 const u = new SpeechSynthesisUtterance(chunkText);
                 ttsEngine.activeUtterance = u;
-                u.lang = langInfo.speechLang || 'en-US';
                 u.rate = effectiveRate;
 
                 const voices = window.speechSynthesis.getVoices();
                 if (voices && voices.length > 0) {
-                    let f = voices.find(v => (v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode)) && (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name)));
-                    if (!f) f = voices.find(v => v.lang.startsWith(langCode) || v.lang.replace('_', '-').startsWith(langCode));
-                    if (!f && (langCode === 'eu' || langCode === 'ca' || langCode === 'gl')) {
-                        f = voices.find(v => v.lang.startsWith('es') && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('helena') || v.name.toLowerCase().includes('monica') || v.name.toLowerCase().includes('laura') || v.name.toLowerCase().includes('google español')));
-                        if (!f) f = voices.find(v => v.lang.startsWith('es'));
+                    // 1. Try finding a native voice matching cleanCode ('es', 'en', 'de', etc.) with female preference
+                    let f = voices.find(v => {
+                        const vl = v.lang.toLowerCase().replace('_', '-');
+                        return (vl.startsWith(cleanCode) || vl.startsWith(rawCode) || vl.includes(cleanCode)) &&
+                               (langInfo.femaleVoices || []).some(name => v.name.toLowerCase().includes(name));
+                    });
+
+                    // 2. Try any voice matching the language code
+                    if (!f) {
+                        f = voices.find(v => {
+                            const vl = v.lang.toLowerCase().replace('_', '-');
+                            return vl.startsWith(cleanCode) || vl.startsWith(rawCode) || vl.includes(cleanCode);
+                        });
                     }
-                    if (f) u.voice = f;
+
+                    // 3. Fallback for Spanish co-official languages (eu, ca, gl) if regional voice not present
+                    if (!f && (cleanCode === 'eu' || cleanCode === 'ca' || cleanCode === 'gl')) {
+                        f = voices.find(v => {
+                            const vl = v.lang.toLowerCase().replace('_', '-');
+                            return vl.startsWith('es') && (LANGUAGES.es.femaleVoices || []).some(name => v.name.toLowerCase().includes(name));
+                        });
+                        if (!f) {
+                            f = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith('es'));
+                        }
+                    }
+
+                    if (f) {
+                        u.voice = f;
+                        u.lang = f.lang;
+                    } else {
+                        u.lang = targetSpeechLang;
+                    }
+                } else {
+                    u.lang = targetSpeechLang;
                 }
 
                 u.onstart = () => {
@@ -6074,14 +6104,22 @@ Return ONLY a valid JSON object:
         },
 
         speakSpanish: (customText) => {
-            const textToSpeak = (customText || translator.lastSpanishText || '').replace(/^["']|["']$/g, '').trim();
+            let textToSpeak = customText;
+            if (!textToSpeak) {
+                textToSpeak = translator.lastSpanishText || document.getElementById('trans-text-es')?.innerText || '';
+            }
+            textToSpeak = textToSpeak.replace(/^["']|["']$/g, '').trim();
             if (!textToSpeak) return;
             ttsEngine.stop();
-            ttsEngine.speak(textToSpeak, 'es-ES', translator.speed || 0.85);
+            ttsEngine.speak(textToSpeak, 'es', translator.speed || 0.85);
         },
 
         speakForeign: (customText) => {
-            const textToSpeak = (customText || translator.lastForeignText || '').replace(/^["']|["']$/g, '').trim();
+            let textToSpeak = customText;
+            if (!textToSpeak) {
+                textToSpeak = translator.lastForeignText || document.getElementById('trans-text-foreign')?.innerText || '';
+            }
+            textToSpeak = textToSpeak.replace(/^["']|["']$/g, '').trim();
             if (!textToSpeak) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             ttsEngine.stop();
