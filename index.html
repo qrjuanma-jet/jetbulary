@@ -73873,6 +73873,13 @@
                 const options = mimeType ? { mimeType } : {};
                 const recorder = new MediaRecorder(stream, options);
                 stt.mediaRecorder = recorder;
+                stt._currentFinalizer = () => {
+                    if (stt.mediaRecorder && stt.mediaRecorder.state !== 'inactive') {
+                        try { stt.mediaRecorder.stop(); } catch(e){}
+                    } else {
+                        stt.stop();
+                    }
+                };
 
                 recorder.ondataavailable = (e) => {
                     if (e.data && e.data.size > 0) stt.audioChunks.push(e.data);
@@ -76287,6 +76294,9 @@ Return ONLY a valid JSON object:
                 translator.updateCardStates(null);
                 translator.resetStatusBadge();
             } else {
+                if (translator.activeMic) {
+                    stt.finalizeCurrentSession();
+                }
                 translator.startListening('es');
             }
         },
@@ -76298,6 +76308,9 @@ Return ONLY a valid JSON object:
                 translator.updateCardStates(null);
                 translator.resetStatusBadge();
             } else {
+                if (translator.activeMic) {
+                    stt.finalizeCurrentSession();
+                }
                 translator.startListening('target');
             }
         },
