@@ -73499,6 +73499,131 @@
         analyser: null,
         activeTarget: null,
 
+        normalizeWord: (w) => {
+            if (!w) return '';
+            return w.toLowerCase().replace(/^[¿¡"'(\[]+|[.,\/#!$%\^&*;:{}=\-_`~()\]?"']+$/g, '');
+        },
+
+        mergeOverlap: (finalText, interimText) => {
+            if (!finalText) return (interimText || '').trim();
+            if (!interimText) return (finalText || '').trim();
+
+            const fWords = finalText.trim().split(/\s+/);
+            const iWords = interimText.trim().split(/\s+/);
+
+            const fNorm = fWords.map(stt.normalizeWord);
+            const iNorm = iWords.map(stt.normalizeWord);
+
+            const fJoined = fNorm.join(' ');
+            const iJoined = iNorm.join(' ');
+
+            // Si interim contiene a final por completo desde el inicio
+            if (iJoined.startsWith(fJoined)) {
+                return interimText.trim();
+            }
+
+            // Si final contiene a interim por completo al final
+            if (fJoined.endsWith(iJoined)) {
+                return finalText.trim();
+            }
+
+            // Comprobar sufijo más largo de final que coincida con prefijo de interim
+            const maxOverlap = Math.min(fWords.length, iWords.length);
+            for (let len = maxOverlap; len > 0; len--) {
+                const fSuffix = fNorm.slice(fWords.length - len).join(' ');
+                const iPrefix = iNorm.slice(0, len).join(' ');
+                if (fSuffix === iPrefix) {
+                    const remainingInterim = iWords.slice(len).join(' ');
+                    return remainingInterim ? (finalText.trim() + ' ' + remainingInterim) : finalText.trim();
+                }
+            }
+
+            return (finalText.trim() + ' ' + interimText.trim()).trim();
+        },
+
+        deduplicateStutter: (text) => {
+            if (!text) return '';
+            let clean = text.replace(/\s+/g, ' ').trim();
+            let words = clean.split(' ');
+            if (words.length <= 1) return clean;
+
+            // 1. Eliminar palabras individuales consecutivas duplicadas (ignorando signos y mayúsculas)
+            let deduped = [];
+            for (let i = 0; i < words.length; i++) {
+                const current = words[i];
+                const prev = deduped.length > 0 ? deduped[deduped.length - 1] : null;
+                if (prev && stt.normalizeWord(current) === stt.normalizeWord(prev) && stt.normalizeWord(current).length > 0) {
+                    continue;
+                }
+                deduped.push(current);
+            }
+
+            // 2. Eliminar frases consecutivas duplicadas de 2 a 6 palabras (ej: "cómo estás cómo estás" -> "cómo estás")
+            let phraseWords = deduped;
+            for (let phraseLen = Math.min(6, Math.floor(phraseWords.length / 2)); phraseLen >= 2; phraseLen--) {
+                let changed = false;
+                let newWords = [];
+                for (let i = 0; i < phraseWords.length; ) {
+                    if (i + 2 * phraseLen <= phraseWords.length) {
+                        const p1 = phraseWords.slice(i, i + phraseLen).map(stt.normalizeWord).join(' ');
+                        const p2 = phraseWords.slice(i + phraseLen, i + 2 * phraseLen).map(stt.normalizeWord).join(' ');
+                        if (p1 && p1 === p2) {
+                            for (let k = 0; k < phraseLen; k++) newWords.push(phraseWords[i + k]);
+                            i += 2 * phraseLen;
+                            changed = true;
+                            continue;
+                        }
+                    }
+                    newWords.push(phraseWords[i]);
+                    i++;
+                }
+                if (changed) phraseWords = newWords;
+            }
+
+            return phraseWords.join(' ').trim();
+        },
+
+        // Fix 2: Track the last processed final index to avoid reprocessing
+        _lastFinalIndex: -1,
+
+        // Helper: normalize an entire string for comparison (strip all punctuation, lowercase, collapse spaces)
+        _normalizeFull: (s) => {
+            if (!s) return '';
+            return s.toLowerCase().replace(/[.,\/#!$%\^\&*;:{}=\-_`~()\[\]?"'¿¡]+/g, '').replace(/\s+/g, ' ').trim();
+        },
+
+        cleanSpeechTranscript: (e) => {
+            if (!e || !e.results || e.results.length === 0) return '';
+
+            // Fix 2: Use e.resultIndex to only process NEW results from Android.
+            // Android Chrome's e.results contains ALL accumulated results, not just new ones.
+            // e.resultIndex indicates the first result that changed since the last event.
+            const startIdx = e.resultIndex || 0;
+
+            let bestText = '';
+            let bestIsFinal = false;
+
+            for (let i = startIdx; i < e.results.length; i++) {
+                // Skip results we've already processed as isFinal
+                if (i <= stt._lastFinalIndex) continue;
+
+                const text = (e.results[i][0] && e.results[i][0].transcript ? e.results[i][0].transcript : '').trim();
+                if (!text) continue;
+                const isFinal = e.results[i].isFinal;
+
+                // Track the highest index we've seen as isFinal
+                if (isFinal) stt._lastFinalIndex = i;
+
+                // Prefer longer text; if same length, prefer isFinal over interim
+                if (text.length > bestText.length || (text.length === bestText.length && isFinal && !bestIsFinal)) {
+                    bestText = text;
+                    bestIsFinal = isFinal;
+                }
+            }
+
+            return stt.deduplicateStutter(bestText);
+        },
+
         startRecording: async (target, langCode, onTranscriptCallback, onErrorCallback) => {
             stt.stop();
             window.speechSynthesis.cancel();
@@ -73510,29 +73635,36 @@
 
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             
-            // 1. SMART ADAPTIVE NATIVE WEB SPEECH API
+            // 1. SMART ADAPTIVE NATIVE WEB SPEECH API (OPTIMIZED FOR MOBILE & DESKTOP)
             if (SR) {
                 try {
                     const rec = new SR();
                     stt.speechRecognition = rec;
-                    const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
-                    rec.lang = langMap[langCode] || (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode] && LANGUAGES[langCode].speechLang) || 'en-US';
+                    const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', it: 'it-IT', pt: 'pt-PT', ru: 'ru-RU', ca: 'ca-ES', eu: 'eu-ES', gl: 'gl-ES' };
+                    rec.lang = langMap[langCode] || (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode] && LANGUAGES[langCode].speechLang) || 'es-ES';
                     
-                    // In sentence/conversation mode, keep continuous listening with adaptive silence detection
                     const isSentenceMode = (target === 'convo' || target === 'trans');
-                    rec.continuous = isSentenceMode;
+                    rec.continuous = false; // Sin buffer retrasado ni duplicaciones en móviles
                     rec.interimResults = true;
-                    rec.maxAlternatives = 3;
+                    rec.maxAlternatives = 1;
 
                     let handled = false;
                     let accumulatedText = '';
 
                     const finalize = (text) => {
                         if (handled) return;
+                        // Fix 3: Anti-bounce — reject finalize calls within 150ms of each other
+                        const now = Date.now();
+                        if (stt._lastFinalizeTime && now - stt._lastFinalizeTime < 150) return;
+                        stt._lastFinalizeTime = now;
                         handled = true;
                         if (stt.silenceTimer) { clearTimeout(stt.silenceTimer); stt.silenceTimer = null; }
+                        // Fix 4: Clear translator live bubbles immediately to prevent visual duplication
+                        if (typeof translator !== 'undefined' && translator.clearLiveBubbles) {
+                            translator.clearLiveBubbles();
+                        }
                         stt.stop();
-                        const cleanText = (text || accumulatedText || '').trim();
+                        const cleanText = stt.deduplicateStutter(text || accumulatedText || '').trim();
                         if (cleanText) {
                             onTranscriptCallback(cleanText);
                         } else if (onErrorCallback) {
@@ -73542,30 +73674,14 @@
 
                     rec.onresult = (e) => {
                         if (handled) return;
-                        
-                        let currentInterim = '';
-                        let currentFinal = '';
 
-                        for (let i = 0; i < e.results.length; i++) {
-                            const res = e.results[i];
-                            const transcript = (res[0] && res[0].transcript ? res[0].transcript : '').trim();
-                            if (!transcript) continue;
-
-                            if (res.isFinal) {
-                                currentFinal += ' ' + transcript;
-                            } else {
-                                currentInterim += ' ' + transcript;
-                            }
-                        }
-
-                        const combinedText = (currentFinal + ' ' + currentInterim).replace(/\s+/g, ' ').trim();
-                        if (combinedText) accumulatedText = combinedText;
+                        const cleanText = stt.cleanSpeechTranscript(e);
+                        if (cleanText) accumulatedText = cleanText;
 
                         // A) SINGLE-WORD MODE (Flashcard exercise)
                         if (target === 'game') {
                             if (typeof game !== 'undefined' && game.data && game.data[game.index]) {
                                 const targetWord = game.data[game.index].english;
-                                // Instant match if target word is heard
                                 for (let i = 0; i < e.results.length; i++) {
                                     for (let j = 0; j < e.results[i].length; j++) {
                                         const alt = (e.results[i][j].transcript || '').trim();
@@ -73577,32 +73693,37 @@
                                 }
                             }
                             if (e.results[e.results.length - 1].isFinal) {
-                                finalize(combinedText);
+                                finalize(accumulatedText);
                                 return;
                             }
                         }
 
-                        // B) SENTENCE / LESSON / CONVERSATION MODE (Smart Adaptive Silence)
+                        // B) SENTENCE / LESSON / CONVERSATION / TRANSLATOR MODE
                         if (isSentenceMode) {
-                            // Check if expected full sentence is already completed
+                            // Feedback en tiempo real para el traductor
+                            if (target === 'trans' && typeof translator !== 'undefined' && translator.onLiveInterim) {
+                                translator.onLiveInterim(accumulatedText);
+                            }
+
+                            // Comprobar si coincide con la frase esperada en lecciones
                             if (typeof conversation !== 'undefined' && conversation.expectedText && typeof game !== 'undefined' && game.isCloseMatch) {
-                                if (game.isCloseMatch(conversation.expectedText, combinedText)) {
-                                    finalize(combinedText);
+                                if (game.isCloseMatch(conversation.expectedText, accumulatedText)) {
+                                    finalize(accumulatedText);
                                     return;
                                 }
                             }
 
-                            // Instant real-time interim callback for translator
-                            if (target === 'trans' && typeof translator !== 'undefined' && translator.onLiveInterim) {
-                                translator.onLiveInterim(combinedText);
+                            // Si el motor marcó frase final, finalizar de inmediato sin esperas
+                            if (e.results[e.results.length - 1].isFinal) {
+                                finalize(accumulatedText);
+                                return;
                             }
 
-                            // Dynamic silence wait: Snappy 850ms in translation for instant real-time response
+                            // Temporizador rápido de silencio (500ms) si no llega isFinal
                             if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
-                            const silenceWait = (target === 'trans') ? 850 : 1400;
                             stt.silenceTimer = setTimeout(() => {
                                 finalize(accumulatedText);
-                            }, silenceWait);
+                            }, 500);
                         }
                     };
 
@@ -73635,7 +73756,7 @@
                     stt.isRecording = true;
                     rec.start();
 
-                    // Max timeout: 6s for single word, 16s for full sentences
+                    // Max timeout: 6s para palabra única, 16s para oraciones
                     stt.maxTimer = setTimeout(() => {
                         if (stt.isRecording) {
                             if (accumulatedText) finalize(accumulatedText);
@@ -73786,6 +73907,7 @@
                 try { stt.mediaRecorder.stop(); } catch(e){}
             }
             stt.isRecording = false;
+            stt._lastFinalIndex = -1; // Reset para la próxima sesión de grabación
             if (stt.audioStream) {
                 try { stt.audioStream.getTracks().forEach(track => track.stop()); } catch(e){}
                 stt.audioStream = null;
