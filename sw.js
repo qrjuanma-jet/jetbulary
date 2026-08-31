@@ -1,9 +1,19 @@
-const CACHE_NAME = 'jetbulary-cache-v91';
+const CACHE_NAME = 'jetbulary-cache-v103';
 const PRECACHE_URLS = [
     './',
     'index.html',
     'manifest.json',
-    'icon.png'
+    'icon.png',
+    'flag_sp.jpg',
+    'flag_en.jpg',
+    'flag_de.jpg',
+    'flag_fr.jpg',
+    'flag_it.jpg',
+    'flag_pt.jpg',
+    'flag_ru.jpg',
+    'flag_ca.jpg',
+    'flag_eu.jpg',
+    'flag_gl.jpg'
 ];
 
 self.addEventListener('install', (event) => {

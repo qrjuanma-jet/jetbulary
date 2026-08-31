@@ -236,7 +236,77 @@
             .word-target { font-size: 1.5rem; }
             h2 { font-size: 1.1rem; }
         }
-    </style>
+    
+        /* TRANSLATOR ROUND ACTION BUTTONS & CONVERSATION STREAM */
+        .trans-round-btn {
+            width: 58px;
+            height: 58px;
+            border-radius: 50% !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem !important;
+            padding: 0 !important;
+            margin: 0;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            border-width: 2.5px !important;
+            border-style: solid !important;
+            flex-shrink: 0;
+        }
+        .btn-speaker-es {
+            border-color: var(--neon-pink) !important;
+            background: rgba(255,0,85,0.12) !important;
+            color: var(--neon-pink) !important;
+        }
+        .btn-speaker-es:hover {
+            background: rgba(255,0,85,0.3) !important;
+            box-shadow: 0 0 20px rgba(255,0,85,0.6) !important;
+            transform: scale(1.08);
+        }
+        .btn-mic-es {
+            border-color: var(--neon-pink) !important;
+            background: rgba(255,0,85,0.2) !important;
+            color: #FFF !important;
+            box-shadow: 0 0 15px rgba(255,0,85,0.4) !important;
+        }
+        .btn-mic-es:hover, .btn-mic-es.listening {
+            background: var(--neon-pink) !important;
+            color: #FFF !important;
+            box-shadow: 0 0 25px var(--neon-pink) !important;
+            transform: scale(1.1);
+            animation: pulse-mic 1s infinite alternate;
+        }
+        .btn-speaker-foreign {
+            border-color: var(--neon-cyan) !important;
+            background: rgba(0,243,255,0.12) !important;
+            color: var(--neon-cyan) !important;
+        }
+        .btn-speaker-foreign:hover {
+            background: rgba(0,243,255,0.3) !important;
+            box-shadow: 0 0 20px rgba(0,243,255,0.6) !important;
+            transform: scale(1.08);
+        }
+        .btn-mic-foreign {
+            border-color: var(--neon-cyan) !important;
+            background: rgba(0,243,255,0.2) !important;
+            color: #FFF !important;
+            box-shadow: 0 0 15px rgba(0,243,255,0.4) !important;
+        }
+        .btn-mic-foreign:hover, .btn-mic-foreign.listening {
+            background: var(--neon-cyan) !important;
+            color: #000 !important;
+            box-shadow: 0 0 25px var(--neon-cyan) !important;
+            transform: scale(1.1);
+            animation: pulse-mic 1s infinite alternate;
+        }
+
+        @keyframes pulse-mic {
+            0% { transform: scale(1.02); filter: drop-shadow(0 0 4px currentColor); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 16px currentColor); }
+        }
+</style>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -372,10 +442,17 @@
 
     <!-- ====== VIEW: GAME (VOCABULARY TRAINING) ====== -->
     <div id="view-game" class="container hidden" onclick="game.onBackgroundClick(event)" style="position: relative;">
-        <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 5px auto 18px;">
-            <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 80px; height: 80px; border-radius: 15px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
-            <div class="avatar-container" id="avatar-game" onclick="app.openTeacherModal()" style="width: 90px; height: 90px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+        <!-- TOP HEADER: HOME BUTTON + LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 5px auto 18px; max-width: 100%;">
+            <button onclick="app.showDashboard()" class="secondary tech" style="width: auto; padding: 10px 14px; font-size: 0.8rem; font-weight: bold; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.08); display: flex; align-items: center; gap: 6px; box-shadow: var(--cyber-glow); cursor: pointer; flex-shrink: 0;" title="Volver a la pantalla principal">
+                <span style="font-size: 1.15rem;">🏠</span>
+                <span>HOME</span>
+            </button>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 14px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 75px; height: 75px; border-radius: 15px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
+                <div class="avatar-container" id="avatar-game" onclick="app.openTeacherModal()" style="width: 80px; height: 80px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+            </div>
+            <div style="width: 70px; visibility: hidden; flex-shrink: 0;" class="header-spacer"></div>
         </div>
 
         <!-- Session words overview (Cards with English, IPA, and Spanish) -->
@@ -421,10 +498,17 @@
 
     <!-- ====== VIEW: CONVERSATION ====== -->
     <div id="view-conversation" class="container hidden">
-        <!-- TOP HEADER: LOGO + TEACHER -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin: 5px auto 18px;">
-            <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 80px; height: 80px; border-radius: 15px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
-            <div class="avatar-container" id="avatar-convo" onclick="app.openTeacherModal()" style="width: 90px; height: 90px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+        <!-- TOP HEADER: HOME BUTTON + LOGO + TEACHER -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 5px auto 18px; max-width: 100%;">
+            <button onclick="app.showDashboard()" class="secondary tech" style="width: auto; padding: 10px 14px; font-size: 0.8rem; font-weight: bold; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.08); display: flex; align-items: center; gap: 6px; box-shadow: var(--cyber-glow); cursor: pointer; flex-shrink: 0;" title="Volver a la pantalla principal">
+                <span style="font-size: 1.15rem;">🏠</span>
+                <span>HOME</span>
+            </button>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 14px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 75px; height: 75px; border-radius: 15px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
+                <div class="avatar-container" id="avatar-convo" onclick="app.openTeacherModal()" style="width: 80px; height: 80px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+            </div>
+            <div style="width: 70px; visibility: hidden; flex-shrink: 0;" class="header-spacer"></div>
         </div>
 
         <h2>Conversation: <span id="conversation-topic-title"></span></h2>
@@ -489,211 +573,165 @@
         <div id="vocab-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
     </div>
 
-    <!-- ====== VIEW: TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION IN GIANT LETTERS + SPEAKER BUTTON) ====== -->
-    <div id="view-translator" class="hidden" style="position: fixed; inset: 0; width: 100vw; height: 100dvh; background: #05050a; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 25px 35px; box-sizing: border-box;">
+    <!-- ====== VIEW: TRANSLATOR (LANDSCAPE DUAL SPLIT SCREEN: CASTELLANO IZQUIERDA / EXTRANJERO DERECHA) ====== -->
+    <div id="view-translator" class="hidden" style="position: fixed; inset: 0; width: 100vw; height: 100dvh; background: #05050a; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 14px; box-sizing: border-box; overflow: hidden;">
         
-        <!-- TOP MINIMAL BAR: EXIT ONLY & SUBTLE STATUS -->
-        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <button onclick="translator.exitToDashboard()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.25); color: #AAA; border-radius: 8px; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; cursor: pointer;" title="Volver al menú principal">
-                ⬅ Salir
-            </button>
-            <div id="trans-indicator-badge" style="font-size: 0.95rem; font-weight: 800; color: var(--neon-cyan); display: flex; align-items: center; gap: 8px;">
-                <span id="trans-indicator-dot" style="width: 10px; height: 10px; border-radius: 50%; background: var(--neon-pink); display: inline-block; animation: pulse-mic 1s infinite alternate;"></span>
-                <span id="trans-indicator-text">Escuchando en Español...</span>
-            </div>
-        </div>
-
-        <!-- CENTER STAGE: TEXTO EN EL OTRO IDIOMA EN LETRAS GIGANTES -->
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; overflow-y: auto;">
-            <div id="trans-translated-text" style="font-size: clamp(2.8rem, 6.8vw, 5.2rem); font-weight: 900; color: var(--neon-cyan); line-height: 1.25; text-shadow: 0 0 35px rgba(0,243,255,0.6); word-break: break-word; max-width: 1200px; margin: auto;">
-                "Habla ahora..."
-            </div>
-        </div>
-
-        <!-- BOTTOM ACTION: ÚNICAMENTE EL BOTÓN DE ALTAVOZ PARA LEER EN ALTO -->
-        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding-bottom: 15px;">
-            <button onclick="translator.speakCurrentTranslation()" style="width: 85px; height: 85px; border-radius: 50%; font-size: 2.6rem; background: rgba(0,243,255,0.15); border: 2.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 30px rgba(0,243,255,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;" title="Leer en voz alta">
-                🔊
-            </button>
-        </div>
-
-    </div>
-
-    <!-- ====== VIEW: PRIVACY ====== -->
-    <div id="view-privacy" class="container hidden" style="text-align: left;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
-                <div class="avatar-container" id="avatar-privacy" onclick="app.openTeacherModal()" style="width: 70px; height: 70px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
-                <h2 style="margin: 0; font-size: 1.2rem;">Política de Privacidad</h2>
-            </div>
-            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
-        </div>
-        <div class="hud-card">
-            <p style="color:#AAA;">Tu clave de API (Groq API Key) se utiliza exclusivamente para conectar de forma directa con el motor de inferencia de Groq y no se almacena en ningún servidor externo.</p>
-            <p style="color:#AAA; margin-top:10px;">No recopilamos ni compartimos datos personales. Todo el progreso se guarda localmente en tu navegador mediante localStorage.</p>
-            <p style="color:#AAA; margin-top:10px;">Esta aplicación utiliza Google AdSense para la optimización de publicidad. Google puede utilizar cookies para anuncios personalizados.</p>
-            <p style="color:#AAA; margin-top:10px;">Contacto: <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a></p>
-        </div>
-    </div>
-
-    <!-- ====== VIEW: TERMS ====== -->
-    <div id="view-terms" class="container hidden" style="text-align: left;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
-                <div class="avatar-container" id="avatar-terms" onclick="app.openTeacherModal()" style="width: 70px; height: 70px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
-                <h2 style="margin: 0; font-size: 1.2rem;">Términos de Uso</h2>
-            </div>
-            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
-        </div>
-        <div class="hud-card">
-            <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
-            <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
-            <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a>.</p>
-        </div>
-    </div>
-
-    <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR ====== -->
-    <div id="modal-teacher-select" class="hidden" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div class="hud-card" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0;">
-            <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;">✕</button>
-            <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.05rem; margin-bottom: 6px;">[ CHOOSE YOUR TEACHER ]</h3>
-            <p style="color: #888; font-size: 0.82rem; margin-bottom: 20px;">Tap a teacher to switch language and sessions</p>
-
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- ENGLISH (EMMA) -->
-                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇬🇧 Emma (English)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">English Teacher</div>
-                    </div>
-                    <span class="lang-check" id="check-en" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold;">✓</span>
-                </div>
-
-                <!-- GERMAN (GRETA) -->
-                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Deutschlehrerin</div>
-                    </div>
-                    <span class="lang-check" id="check-de" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
-                </div>
-
-                <!-- FRENCH (CAMILLE) -->
-                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
-                    <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇫🇷 Camille (Français)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professeure de Français</div>
-                    </div>
-                    <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ====== MODAL: API KEY INFO & PRIVACY EXPLANATION ====== -->
-    <div id="modal-apikey-info" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
-        <div class="hud-card" style="max-width: 580px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
-            <button onclick="app.closeApiKeyInfoModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
+        <!-- TOP CONTROL BAR -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-shrink: 0; width: 100%; flex-wrap: nowrap;">
             
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <span style="font-size: 1.8rem;">🔑</span>
-                <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0;">¿POR QUÉ ES NECESARIA LA API KEY EN JETBULARY?</h3>
-            </div>
-
-            <p style="color: #CCC; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
-                Jetbulary está diseñado bajo el principio de <strong style="color: #FFF;">privacidad total y soberanía del alumno</strong>. A diferencia de otras apps, no recopilamos ni almacenamos tus datos.
-            </p>
-
-            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
-                <!-- SECCIÓN 1: QUÉ ES -->
-                <div style="background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px; padding: 14px;">
-                    <div style="font-weight: bold; color: var(--neon-cyan); font-size: 0.92rem; margin-bottom: 5px;">⚡ 1. ¿Qué es una API Key?</div>
-                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
-                        Es tu llave digital personal y gratuita que comunica directamente tu navegador con los servidores de inteligencia artificial ultrarrápida (Groq / LLaMA 3 y Whisper).
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 2: PRIVACIDAD TOTAL -->
-                <div style="background: rgba(0,255,149,0.05); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 14px;">
-                    <div style="font-weight: bold; color: var(--cyber-ok); font-size: 0.92rem; margin-bottom: 5px;">🔒 2. Privacidad Total: No guardamos información de ningún alumno</div>
-                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
-                        <ul style="margin: 6px 0 0 16px; padding: 0;">
-                            <li><strong style="color:#FFF;">Sin cuentas ni contraseñas:</strong> No te pedimos crear usuarios, ni contraseñas, ni recopilamos tu correo electrónico.</li>
-                            <li><strong style="color:#FFF;">Tus datos son 100% tuyos:</strong> Jetbulary no almacena tus audios, ni tus respuestas, ni tus estadísticas en servidores externos. Todo tu progreso se guarda localmente en tu propio dispositivo (<code style="color:var(--neon-pink);">localStorage</code>).</li>
-                            <li><strong style="color:#FFF;">Conexión directa y cifrada:</strong> Cuando practicas y hablas con la profesora, la comunicación viaja cifrada directamente entre tu navegador y la IA sin intermediarios.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 3: PARA QUÉ SIRVE -->
-                <div style="background: rgba(255,0,85,0.05); border: 1px solid rgba(255,0,85,0.25); border-radius: 8px; padding: 14px;">
-                    <div style="font-weight: bold; color: var(--neon-pink); font-size: 0.92rem; margin-bottom: 5px;">🎙️ 3. ¿Para qué sirve exactamente en Jetbulary?</div>
-                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
-                        <ul style="margin: 6px 0 0 16px; padding: 0;">
-                            <li><strong style="color:#FFF;">Escucha y transcripción instantánea (&lt; 200 ms):</strong> Procesa tu pronunciación mediante el motor Whisper nativo en tiempo real sin pausas.</li>
-                            <li><strong style="color:#FFF;">Profesora y lecciones inteligentes:</strong> Genera explicaciones gramaticales, contrasta con el español y evalúa tu pronunciación adaptándose a tu nivel del MCER (A0 a C1+).</li>
-                            <li><strong style="color:#FFF;">Traducción simultánea en tiempo real:</strong> Potencia el traductor a pantalla completa con latencia mínima.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 4: GRATIS Y CONTROL -->
-                <div style="background: rgba(255,184,0,0.06); border: 1px solid rgba(255,184,0,0.3); border-radius: 8px; padding: 14px;">
-                    <div style="font-weight: bold; color: var(--cyber-warn); font-size: 0.92rem; margin-bottom: 5px;">🎁 4. Gratuita para siempre y bajo tu control</div>
-                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
-                        Groq ofrece a cada persona miles de peticiones al día completamente gratis. Tú eres el único dueño de tu clave: puedes revocarla, pausarla o renovarla en cualquier momento desde la consola oficial con 1 solo clic.
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="app.closeApiKeyInfoModal()" class="success" style="width: 100%; padding: 14px; font-weight: bold; font-size: 0.95rem; letter-spacing: 1px;">
-                ✓ ENTENDIDO / CERRAR
+            <!-- HOME / EXIT BUTTON -->
+            <button onclick="translator.exitToDashboard()" class="secondary tech" style="width: auto; padding: 6px 12px; font-size: 0.78rem; font-weight: bold; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.08); display: flex; align-items: center; gap: 5px; box-shadow: var(--cyber-glow); cursor: pointer; flex-shrink: 0;" title="Volver al menú principal">
+                <span>🏠</span>
+                <span>HOME</span>
             </button>
-        </div>
-    </div>
 
-    <!-- ====== MODAL: BACKUP & RESTORE MANAGER ====== -->
-    <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
-        <div class="hud-card" style="max-width: 520px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
-            <button onclick="app.closeBackupModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
-            
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <span style="font-size: 1.8rem;">💾</span>
-                <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0;">PROTECCIÓN DE PROGRESO Y COPIAS</h3>
-            </div>
-
-            <p style="color: #CCC; font-size: 0.86rem; line-height: 1.5; margin-bottom: 16px;">
-                Tu progreso se guarda automáticamente con <strong style="color:var(--cyber-ok);">doble capa persistente (IndexedDB + Almacenamiento Protegido)</strong> para resistir el borrado de caché o historial. Además, puedes descargar tu copia de seguridad manual en cualquier momento.
-            </p>
-
-            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px;">
-                <!-- AUTO-PROTECCIÓN INFO -->
-                <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 12px 14px;">
-                    <div style="color: var(--cyber-ok); font-weight: bold; font-size: 0.88rem; margin-bottom: 4px;">🛡️ Protección Automática Activa</div>
-                    <div style="color: #AAA; font-size: 0.8rem; line-height: 1.4;">
-                        Cada palabra, punto y nivel se guarda instantáneamente en una base de datos interna permanente para que nunca pierdas tu avance si se limpia la caché.
+            <!-- CENTER: SLIDER AUTOMÁTICO + BOTÓN MODO VOCABULARIO (IA) + STATUS BADGE -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: nowrap;">
+                <!-- SLIDER SWITCH AUTOMÁTICO -->
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; background: rgba(0,0,0,0.6); border: 1.5px solid var(--neon-cyan); padding: 4px 10px; border-radius: 20px; box-shadow: var(--cyber-glow); flex-shrink: 0;">
+                    <span style="font-family: 'Orbitron', sans-serif; font-size: 0.72rem; font-weight: 900; color: var(--neon-cyan); letter-spacing: 0.5px;">⚡ AUTOMÁTICO</span>
+                    <div style="position: relative; width: 38px; height: 18px; background: rgba(255,255,255,0.15); border-radius: 10px; transition: all 0.3s;" id="auto-switch-track">
+                        <input type="checkbox" id="chk-trans-auto" onchange="translator.onToggleAuto(this.checked)" style="display: none;">
+                        <div id="auto-switch-thumb" style="position: absolute; top: 1px; left: 1px; width: 16px; height: 16px; border-radius: 50%; background: #888; transition: all 0.3s;"></div>
                     </div>
-                </div>
+                </label>
 
-                <!-- DESCARGAR COPIA -->
-                <button onclick="app.exportBackup()" class="secondary" style="width: 100%; padding: 14px; font-size: 0.9rem; font-weight: bold; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <span>📥 Descargar Copia de Seguridad (.json)</span>
+                <!-- BOTÓN MODO VOCABULARIO (IA) -->
+                <button onclick="translator.openVocabModeModal()" class="tech" style="width: auto; padding: 5px 12px; font-size: 0.76rem; font-weight: 900; border-radius: 20px; border: 1.5px solid var(--cyber-ok); color: #FFF; background: linear-gradient(135deg, rgba(0,255,149,0.25), rgba(0,243,255,0.1)); display: flex; align-items: center; gap: 6px; box-shadow: 0 0 12px rgba(0,255,149,0.35); cursor: pointer; flex-shrink: 0;" title="Añadir palabras a tus listas con IA">
+                    <span style="font-size: 1rem;">📚</span>
+                    <span>MODO VOCABULARIO</span>
                 </button>
 
-                <!-- RESTAURAR COPIA -->
-                <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 14px;">
-        <!-- BOTTOM ACTION: ÚNICAMENTE EL BOTÓN DE ALTAVOZ PARA LEER EN ALTO -->
-        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding-bottom: 15px;">
-            <button onclick="translator.speakCurrentTranslation()" style="width: 85px; height: 85px; border-radius: 50%; font-size: 2.6rem; background: rgba(0,243,255,0.15); border: 2.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 30px rgba(0,243,255,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;" title="Leer en voz alta">
-                🔊
+                <!-- STATUS BADGE -->
+                <div id="trans-indicator-badge" style="font-size: 0.78rem; font-weight: 800; color: #AAA; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">
+                    <span id="trans-indicator-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #666; display: inline-block;"></span>
+                    <span id="trans-indicator-text">Modo Manual</span>
+                </div>
+            </div>
+
+            <!-- RIGHT: SELECTOR RÁPIDO DE IDIOMA DEL INTERLOCUTOR -->
+            <button onclick="app.openTeacherModal()" class="secondary" style="width: auto; padding: 4px 10px; font-size: 0.78rem; display: flex; align-items: center; gap: 6px; border-color: rgba(0,243,255,0.4); flex-shrink: 0;" title="Cambiar idioma del interlocutor">
+                <img id="trans-target-flag" src="flag_en.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 8px rgba(0,243,255,0.3);" alt="Bandera">
+                <span id="trans-target-lang-name" style="font-weight: bold; color: var(--neon-cyan);">English</span>
+                <span style="font-size: 0.65rem; color: #888;">▾</span>
             </button>
         </div>
 
+        <!-- MAIN SPLIT SCREEN STAGE (50% CASTELLANO IZQUIERDA | 50% IDIOMA EXTRANJERO DERECHA) -->
+        <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-height: 0; width: 100%;">
+            
+            <!-- COLUMNA IZQUIERDA: CASTELLANO (TÚ) -->
+            <div id="card-spanish-speaker" class="hud-card" style="display: flex; flex-direction: column; justify-content: space-between; border: 2px solid var(--neon-pink); padding: 10px 12px; background: rgba(255,0,85,0.04); border-radius: 12px; margin: 0; box-shadow: 0 0 15px rgba(255,0,85,0.15); overflow: hidden; min-height: 0;">
+                <!-- CABECERA -->
+                <div style="display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed rgba(255,0,85,0.3); padding-bottom: 6px; margin-bottom: 6px; flex-shrink: 0;">
+                    <img src="flag_sp.jpg" style="width: 26px; height: 26px; border-radius: 6px; object-fit: cover; box-shadow: 0 0 10px rgba(255,0,85,0.4);" alt="Bandera de España">
+                    <strong style="color: var(--neon-pink); font-size: 0.9rem; letter-spacing: 0.5px;">CASTELLANO (Tú)</strong>
+                </div>
+
+                <!-- CONVERSATION STREAM CASTELLANO (SCROLLABLE) -->
+                <div id="trans-stream-es" style="flex: 1; background: rgba(0,0,0,0.55); border-radius: 10px; padding: 10px 12px; border: 1.5px solid rgba(255,0,85,0.25); display: flex; flex-direction: column; overflow-y: auto; min-height: 0; gap: 6px;">
+                    <div style="text-align: center; color: #666; font-size: 0.85rem; margin: auto;">Pulsa 🎤 abajo o habla para comenzar...</div>
+                </div>
+
+                <!-- LIVE INTERIM BUBBLE -->
+                <div id="trans-live-es" class="hidden" style="margin-top: 4px; padding: 4px 8px; background: rgba(255,0,85,0.15); border-left: 3px solid var(--neon-pink); border-radius: 4px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
+
+                <!-- BOTTOM CONTROLS: ROUND BUTTONS (SEPARADOS EN LOS LATERALES INFERIORES) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 6px 2px 6px; width: 100%; box-sizing: border-box; flex-shrink: 0;">
+                    <button id="btn-mic-es" onclick="translator.toggleSpanishMic()" class="trans-round-btn btn-mic-es" title="Hablar en Castellano">🎤</button>
+                    <button id="btn-speaker-es" onclick="translator.speakSpanishStream()" class="trans-round-btn btn-speaker-es" title="Escuchar pronunciación en Castellano">🔊</button>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: IDIOMA EXTRANJERO (INTERLOCUTOR) -->
+            <div id="card-native-speaker" class="hud-card" style="display: flex; flex-direction: column; justify-content: space-between; border: 2px solid var(--neon-cyan); padding: 10px 12px; background: rgba(0,243,255,0.04); border-radius: 12px; margin: 0; box-shadow: 0 0 15px rgba(0,243,255,0.15); overflow: hidden; min-height: 0;">
+                <!-- CABECERA -->
+                <div style="display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed rgba(0,243,255,0.3); padding-bottom: 6px; margin-bottom: 6px; flex-shrink: 0;">
+                    <img id="badge-foreign-flag" src="flag_en.jpg" style="width: 26px; height: 26px; border-radius: 6px; object-fit: cover; box-shadow: 0 0 10px rgba(0,243,255,0.4);" alt="Bandera">
+                    <strong id="badge-foreign-name" style="color: var(--neon-cyan); font-size: 0.9rem; letter-spacing: 0.5px;">ENGLISH (Interlocutor)</strong>
+                </div>
+
+                <!-- CONVERSATION STREAM IDIOMA EXTRANJERO (SCROLLABLE) -->
+                <div id="trans-stream-foreign" style="flex: 1; background: rgba(0,0,0,0.55); border-radius: 10px; padding: 10px 12px; border: 1.5px solid rgba(0,243,255,0.25); display: flex; flex-direction: column; overflow-y: auto; min-height: 0; gap: 6px;">
+                    <div style="text-align: center; color: #666; font-size: 0.85rem; margin: auto;">Pulsa 🎤 abajo para que hable el interlocutor...</div>
+                </div>
+
+                <!-- LIVE INTERIM BUBBLE -->
+                <div id="trans-live-foreign" class="hidden" style="margin-top: 4px; padding: 4px 8px; background: rgba(0,243,255,0.15); border-left: 3px solid var(--neon-cyan); border-radius: 4px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
+
+                <!-- BOTTOM CONTROLS: ROUND BUTTONS (SEPARADOS EN LOS LATERALES INFERIORES) -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 6px 2px 6px; width: 100%; box-sizing: border-box; flex-shrink: 0;">
+                    <button id="btn-mic-foreign" onclick="translator.toggleForeignMic()" class="trans-round-btn btn-mic-foreign" title="Hablar en idioma interlocutor">🎤</button>
+                    <button id="btn-speaker-foreign" onclick="translator.speakForeignStream()" class="trans-round-btn btn-speaker-foreign" title="Escuchar pronunciación del interlocutor">🔊</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: MODO VOCABULARIO ASISTIDO POR IA ====== -->
+    <div id="modal-vocab-ai-mode" class="hidden" style="position: fixed; inset: 0; z-index: 999999; background: rgba(0,0,0,0.92); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
+        <div class="hud-card" style="max-width: 580px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: center; border: 2px solid var(--cyber-ok); box-shadow: 0 0 30px rgba(0,255,149,0.3); position: relative; margin: 0; padding: 22px 20px;">
+            <button onclick="translator.closeVocabModeModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;">
+                <span style="font-size: 1.6rem;">📚</span>
+                <h3 class="tech" style="color: var(--cyber-ok); font-size: 1.15rem; margin: 0; letter-spacing: 1px;">MODO VOCABULARIO (IA)</h3>
+            </div>
+            
+            <p id="vocab-ai-instructions" style="color: #CCC; font-size: 0.86rem; line-height: 1.4; margin-bottom: 16px;">
+                Di una palabra o frase en castellano. La IA la traducirá, te propondrá la mejor lista temática y la añadirá automáticamente a tu progreso.
+            </p>
+
+            <!-- BOTÓN GRANDE DE MICRÓFONO PARA HABLAR -->
+            <button id="btn-vocab-ai-mic" onclick="translator.toggleVocabModeMic()" class="tech" style="width: 100%; max-width: 360px; margin: 0 auto 16px; padding: 14px; font-size: 0.95rem; font-weight: 900; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.2), rgba(0,243,255,0.08)); color: #FFF; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 0 15px rgba(0,255,149,0.3);">
+                <span style="font-size: 1.4rem;">🎤</span>
+                <span id="lbl-vocab-ai-mic">TOCAR PARA DECIR PALABRA</span>
+            </button>
+
+            <!-- CAJA DE RESULTADO Y DIÁLOGO IA -->
+            <div id="vocab-ai-result-box" class="hidden" style="background: rgba(0,0,0,0.6); border: 1.5px solid var(--neon-cyan); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; text-align: left;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 8px;">
+                    <div>
+                        <div style="font-size: 0.72rem; color: #888; text-transform: uppercase;">Palabra en Castellano:</div>
+                        <div id="vocab-ai-spanish-word" style="font-size: 1.15rem; font-weight: 700; color: #FFF;">"..."</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.72rem; color: var(--neon-cyan); text-transform: uppercase;" id="lbl-vocab-ai-target-title">Traducción:</div>
+                        <div id="vocab-ai-target-word" style="font-size: 1.35rem; font-weight: 900; color: var(--neon-cyan);">"..."</div>
+                        <div id="vocab-ai-ipa" style="font-size: 0.85rem; color: var(--neon-pink); font-family: monospace;">/.../</div>
+                    </div>
+                </div>
+
+                <!-- MENSAJE CONVERSACIONAL DE LA IA SOBRE LA LISTA -->
+                <div style="background: rgba(0,255,149,0.08); border-left: 3px solid var(--cyber-ok); padding: 10px 12px; border-radius: 4px; margin-bottom: 12px;">
+                    <div style="font-size: 0.75rem; color: var(--cyber-ok); font-weight: bold; margin-bottom: 4px;">🤖 Asistente de Vocabulario:</div>
+                    <div id="vocab-ai-message" style="font-size: 0.88rem; color: #EEE; line-height: 1.4;">
+                        Analizando lista temática...
+                    </div>
+                </div>
+
+                <!-- ACCIONES DE CONFIRMACIÓN -->
+                <div id="vocab-ai-action-buttons" style="display: flex; flex-direction: column; gap: 8px;">
+                    <button id="btn-vocab-ai-confirm" onclick="translator.confirmAddVocabWord()" class="success" style="width: 100%; padding: 12px; font-weight: 900; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>✅</span>
+                        <span id="lbl-vocab-ai-confirm">Sí, Guardar en la Lista</span>
+                    </button>
+                    <button id="btn-vocab-ai-new-list" onclick="translator.confirmAddNewTopicVocabWord()" class="secondary" style="width: 100%; padding: 10px; font-size: 0.82rem; font-weight: bold; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+                        ➕ Crear y Guardar en Nueva Lista
+                    </button>
+                </div>
+
+                <!-- CONFIRMACIÓN DE ÉXITO -->
+                <div id="vocab-ai-success-msg" class="hidden" style="margin-top: 10px; padding: 10px; background: rgba(0,255,149,0.2); border: 1px solid var(--cyber-ok); border-radius: 8px; text-align: center; color: var(--cyber-ok); font-weight: bold; font-size: 0.92rem;">
+                    ⭐ ¡Palabra añadida con éxito a tu vocabulario!
+                </div>
+            </div>
+
+            <button onclick="translator.closeVocabModeModal()" class="secondary" style="width: 100%; padding: 10px; font-weight: bold; font-size: 0.85rem; border-color: #555; color: #888;">
+                Cerrar Modo Vocabulario
+            </button>
+        </div>
     </div>
 
     <!-- ====== VIEW: PRIVACY ====== -->
@@ -731,46 +769,107 @@
         </div>
     </div>
 
-    <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR ====== -->
+    <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR (9 LANGUAGES) ====== -->
     <div id="modal-teacher-select" class="hidden" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div class="hud-card" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0;">
-            <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;">✕</button>
+        <div class="hud-card" style="max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 20px 18px;">
+            <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
             <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.05rem; margin-bottom: 6px;">[ CHOOSE YOUR TEACHER ]</h3>
-            <p style="color: #888; font-size: 0.82rem; margin-bottom: 20px;">Tap a teacher to switch language and sessions</p>
+            <p style="color: #888; font-size: 0.82rem; margin-bottom: 16px;">Tap a teacher to switch language and sessions</p>
 
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
                 <!-- ENGLISH (EMMA) -->
-                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_en.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇬🇧 Emma (English)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">English Teacher</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇬🇧 Emma (English)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">English Teacher</div>
                     </div>
                     <span class="lang-check" id="check-en" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold;">✓</span>
                 </div>
 
                 <!-- GERMAN (GRETA) -->
-                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_de.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Deutschlehrerin</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Deutschlehrerin</div>
                     </div>
                     <span class="lang-check" id="check-de" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
                 </div>
 
                 <!-- FRENCH (CAMILLE) -->
-                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
-                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_fr.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇫🇷 Camille (Français)</div>
-                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professeure de Français</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇫🇷 Camille (Français)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professeure de Français</div>
                     </div>
                     <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- ITALIAN (CHIARA) -->
+                <div onclick="app.setLanguage('it')" class="teacher-select-card" id="lang-card-it" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_it.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇮🇹 Chiara (Italiano)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Insegnante d'Italiano</div>
+                    </div>
+                    <span class="lang-check" id="check-it" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- PORTUGUESE (INÊS) -->
+                <div onclick="app.setLanguage('pt')" class="teacher-select-card" id="lang-card-pt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_pt.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇵🇹 Inês (Português)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professora de Português</div>
+                    </div>
+                    <span class="lang-check" id="check-pt" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- RUSSIAN (ANASTASIA) -->
+                <div onclick="app.setLanguage('ru')" class="teacher-select-card" id="lang-card-ru" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_ru.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇷🇺 Anastasia (Русский)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Преподаватель русского</div>
+                    </div>
+                    <span class="lang-check" id="check-ru" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- CATALAN (MONTSERRAT) -->
+                <div onclick="app.setLanguage('ca')" class="teacher-select-card" id="lang-card-ca" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_ca.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇦🇩 Montserrat (Català)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professora de Català</div>
+                    </div>
+                    <span class="lang-check" id="check-ca" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- BASQUE (AMAIA) -->
+                <div onclick="app.setLanguage('eu')" class="teacher-select-card" id="lang-card-eu" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_eu.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇪🇸 Amaia (Euskara)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Euskara Irakaslea</div>
+                    </div>
+                    <span class="lang-check" id="check-eu" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- GALICIAN (IRIA) -->
+                <div onclick="app.setLanguage('gl')" class="teacher-select-card" id="lang-card-gl" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_gl.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇪🇸 Iria (Galego)</div>
+                        <div style="font-size: 0.76rem; color: var(--neon-cyan);">Profesora de Galego</div>
+                    </div>
+                    <span class="lang-check" id="check-gl" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!-- ====== MODAL: API KEY INFO & PRIVACY EXPLANATION ====== -->
     <div id="modal-apikey-info" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
@@ -880,7 +979,7 @@
 
     <!-- ====== MODAL: SHARE JETBULARY (WHATSAPP, TELEGRAM, QR, CAFÉ) ====== -->
     <div id="modal-share" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
-        <div class="hud-card" style="max-width: 360px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
+        <div class="hud-card" style="max-width: 360px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 20px 18px;">
             <button onclick="app.closeShareModal()" style="position: absolute; top: 10px; right: 12px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
             
             <img src="icon.png" alt="Jetbulary" style="width: 65px; height: 65px; border-radius: 14px; border: 1.5px solid var(--neon-cyan); box-shadow: var(--cyber-glow); margin: 0 auto 10px; display: block;">
@@ -1138,6 +1237,7 @@
             flag: 'flag_en.jpg',
             face: 'face_en.jpg',
             gif: 'gif_en.gif',
+            video: 'video_en.mp4',
             speechLang: 'en-US',
             femaleVoices: ['female', 'woman', 'girl', 'samantha', 'zira', 'google', 'english'],
             youglishLang: 'english',
@@ -1152,6 +1252,7 @@
             flag: 'flag_de.jpg',
             face: 'face_de.jpg',
             gif: 'gif_de.gif',
+            video: 'video_de.mp4',
             speechLang: 'de-DE',
             femaleVoices: ['female', 'woman', 'katja', 'hedda', 'marlene', 'vicki', 'google deutsch', 'deutsch'],
             youglishLang: 'german',
@@ -1166,12 +1267,103 @@
             flag: 'flag_fr.jpg',
             face: 'face_fr.jpg',
             gif: 'gif_fr.gif',
+            video: 'video_fr.mp4',
             speechLang: 'fr-FR',
             femaleVoices: ['female', 'woman', 'hortense', 'julie', 'celine', 'google français', 'français'],
             youglishLang: 'french',
             teacherTitle: 'Professeure de Français',
             aiPromptLang: 'French (Français)',
             translatorBtnLabel: 'TRADUCTRICE'
+        },
+        it: {
+            code: 'it',
+            name: 'Italiano',
+            teacherName: 'Chiara',
+            flag: 'flag_it.jpg',
+            face: 'face_it.jpg',
+            gif: 'gif_it.gif',
+            video: 'video_it.mp4',
+            speechLang: 'it-IT',
+            femaleVoices: ['female', 'woman', 'elsa', 'cosimo', 'alice', 'federica', 'google italiano', 'italiano'],
+            youglishLang: 'italian',
+            teacherTitle: "Insegnante d'Italiano",
+            aiPromptLang: 'Italian (Italiano)',
+            translatorBtnLabel: 'TRADUTTRICE'
+        },
+        pt: {
+            code: 'pt',
+            name: 'Português',
+            teacherName: 'Inês',
+            flag: 'flag_pt.jpg',
+            face: 'face_pt.jpg',
+            gif: 'gif_pt.gif',
+            video: 'video_pt.mp4',
+            speechLang: 'pt-PT',
+            femaleVoices: ['female', 'woman', 'helena', 'raquel', 'luciana', 'google português', 'português'],
+            youglishLang: 'portuguese',
+            teacherTitle: 'Professora de Português',
+            aiPromptLang: 'Portuguese (Português)',
+            translatorBtnLabel: 'TRADUTORA'
+        },
+        ru: {
+            code: 'ru',
+            name: 'Русский',
+            teacherName: 'Anastasia',
+            flag: 'flag_ru.jpg',
+            face: 'face_ru.jpg',
+            gif: 'gif_ru.gif',
+            video: 'video_ru.mp4',
+            speechLang: 'ru-RU',
+            femaleVoices: ['female', 'woman', 'irina', 'tatyana', 'elena', 'google русский', 'русский'],
+            youglishLang: 'russian',
+            teacherTitle: 'Преподаватель русского',
+            aiPromptLang: 'Russian (Русский)',
+            translatorBtnLabel: 'ПЕРЕВОДЧИЦА'
+        },
+        ca: {
+            code: 'ca',
+            name: 'Català',
+            teacherName: 'Montserrat',
+            flag: 'flag_ca.jpg',
+            face: 'face_ca.jpg',
+            gif: 'gif_ca.gif',
+            video: 'video_ca.mp4',
+            speechLang: 'ca-ES',
+            femaleVoices: ['female', 'woman', 'montserrat', 'laia', 'joana', 'google català', 'català', 'valencian'],
+            youglishLang: 'catalan',
+            teacherTitle: 'Professora de Català',
+            aiPromptLang: 'Catalan (Català)',
+            translatorBtnLabel: 'TRADUCTORA'
+        },
+        eu: {
+            code: 'eu',
+            name: 'Euskara',
+            teacherName: 'Amaia',
+            flag: 'flag_eu.jpg',
+            face: 'face_eu.jpg',
+            gif: 'gif_eu.gif',
+            video: 'video_eu.mp4',
+            speechLang: 'eu-ES',
+            femaleVoices: ['female', 'woman', 'amaia', 'miren', 'aritz', 'google euskara', 'basque', 'euskara'],
+            youglishLang: 'basque',
+            teacherTitle: 'Euskara Irakaslea',
+            aiPromptLang: 'Basque (Euskara)',
+            translatorBtnLabel: 'ITZULTZAILEA'
+        },
+        gl: {
+            code: 'gl',
+            name: 'Galego',
+            teacherName: 'Iria',
+            flag: 'flag_gl.jpg',
+            face: 'face_gl.jpg',
+            gif: 'gif_gl.gif',
+            video: 'video_gl.mp4',
+            speechLang: 'gl-ES',
+            femaleVoices: ['female', 'woman', 'iria', 'carme', 'sabela', 'google galego', 'galician', 'galego'],
+            youglishLang: 'galician',
+            teacherTitle: 'Profesora de Galego',
+            aiPromptLang: 'Galician (Galego)',
+            translatorBtnLabel: 'TRADUTORA'
         }
     };
 
@@ -73400,12 +73592,17 @@
                                 }
                             }
 
-                            // Reset silence timer on every new speech chunk:
-                            // Waits 1.4s of continuous silence after the user finishes speaking
+                            // Instant real-time interim callback for translator
+                            if (target === 'trans' && typeof translator !== 'undefined' && translator.onLiveInterim) {
+                                translator.onLiveInterim(combinedText);
+                            }
+
+                            // Dynamic silence wait: Snappy 850ms in translation for instant real-time response
                             if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
+                            const silenceWait = (target === 'trans') ? 850 : 1400;
                             stt.silenceTimer = setTimeout(() => {
                                 finalize(accumulatedText);
-                            }, 1400);
+                            }, silenceWait);
                         }
                     };
 
@@ -73537,7 +73734,7 @@
                         let speechStarted = false;
                         let silenceStart = null;
                         // 500ms for single word, 1500ms for full sentence practice
-                        const silenceThresholdMs = isSentenceMode ? 1500 : 500;
+                        const silenceThresholdMs = (target === 'trans') ? 2600 : isSentenceMode ? 1600 : 500;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
 
                         const checkAudioLevel = () => {
@@ -74088,6 +74285,9 @@
         },
 
         init: async () => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration error:', err));
+            }
             if (navigator.storage && navigator.storage.persist) {
                 try { navigator.storage.persist(); } catch(e) {}
             }
@@ -74163,6 +74363,11 @@
                 const teacherModal = document.getElementById('modal-teacher-select');
                 if (teacherModal && !teacherModal.classList.contains('hidden')) {
                     teacherModal.classList.add('hidden');
+                    return;
+                }
+                const vocabAiModal = document.getElementById('modal-vocab-ai-mode');
+                if (vocabAiModal && !vocabAiModal.classList.contains('hidden')) {
+                    translator.closeVocabModeModal();
                     return;
                 }
                 const transView = document.getElementById('view-translator');
@@ -74417,7 +74622,7 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             a.click(); URL.revokeObjectURL(url);
         },
 
-        installApp: () => {
+        installApp: async () => {
             const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
             
@@ -74427,17 +74632,26 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             }
 
             if (window.deferredPrompt) {
-                window.deferredPrompt.prompt();
-                window.deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
+                try {
+                    window.deferredPrompt.prompt();
+                    const choiceResult = await window.deferredPrompt.userChoice;
+                    if (choiceResult && choiceResult.outcome === 'accepted') {
                         console.log('User accepted install');
+                        app.closeShareModal(true);
                     }
-                    window.deferredPrompt = null;
-                });
+                } catch(e) {
+                    console.log('Install prompt error:', e);
+                }
+                window.deferredPrompt = null;
             } else if (isIOS) {
                 alert("📲 Para instalar Jetbulary en tu iPhone / iPad (iOS):\n\n1. Abre esta página en Safari.\n2. Pulsa en el botón 'Compartir' (icono de un cuadrado con flecha hacia arriba ⎋ abajo en la barra).\n3. Desliza hacia abajo y pulsa en 'Añadir a la pantalla de inicio' ➕.\n4. Pulsa 'Añadir' en la esquina superior derecha.\n\n¡Listo! Aparecerá el icono de Jetbulary en tu pantalla de inicio.");
             } else {
-                alert("📲 Para instalar Jetbulary en tu móvil Android:\n\n1. Pulsa en los 3 puntos (⋮) arriba a la derecha en Chrome.\n2. Selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.\n3. Confirma la instalación.");
+                const isAndroid = /Android/i.test(navigator.userAgent);
+                if (isAndroid) {
+                    alert("📲 Para instalar Jetbulary en tu móvil Android:\n\n1. Pulsa en los 3 puntos (⋮) arriba a la derecha en Chrome.\n2. Selecciona 'Instalar aplicación' o 'Añadir a la pantalla de inicio'.\n3. Confirma la instalación.");
+                } else {
+                    alert("📲 Para instalar Jetbulary en tu ordenador (PC / Mac):\n\n1. En Chrome o Edge, pulsa el icono de instalar ⊕ o 📲 situado a la derecha en la barra de direcciones (URL).\n2. O pulsa en los 3 puntos (⋮) > 'Guardar y compartir' > 'Instalar Jetbulary'.");
+                }
             }
         },
 
@@ -74718,17 +74932,24 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
                     </div>
                     <div style="color: var(--neon-pink); font-size: 0.95rem; margin-left: 32px; margin-bottom: 12px; font-weight: 500;">${w.spanish}</div>
                     
-                    <!-- ACTION BUTTONS: WORD / SENTENCE / YOUGLISH -->
+                    ${w.sentence_en ? `
+                    <!-- CONTEXTUAL SENTENCE DISPLAY -->
+                    <div style="margin-left: 32px; margin-bottom: 10px; padding: 8px 12px; background: rgba(255,255,255,0.04); border-left: 3px solid var(--cyber-warn); border-radius: 6px; font-size: 0.88rem; color: #DDD;">
+                        <div style="font-weight: 500; line-height: 1.35; color: #FFF;">💬 "${w.sentence_en}"</div>
+                        ${w.sentence_es ? `<div style="font-size: 0.8rem; color: #999; margin-top: 3px;">📖 ${w.sentence_es}</div>` : ''}
+                    </div>` : ''}
+
+                    <!-- ACTION BUTTONS: WORD / SENTENCE / YOUGLISH NATIVES -->
                     <div style="display: flex; gap: 8px; margin-left: 32px; flex-wrap: wrap;">
-                        <button onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;">
-                            🔊 Word
+                        <button onclick="game.speakText('${cleanWord.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 600;" title="Escuchar pronunciación de la palabra">
+                            🔊 Palabra
                         </button>
                         ${w.sentence_en ? `
-                        <button onclick="game.speakText('${w.sentence_en.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--cyber-warn); color: var(--cyber-warn); font-weight: 600;">
-                            💬 Sentence
+                        <button onclick="game.speakText('${w.sentence_en.replace(/'/g, "\\'")}')" class="secondary" style="width: auto; padding: 8px 14px; font-size: 0.8rem; border-color: var(--cyber-warn); color: var(--cyber-warn); font-weight: 600;" title="Escuchar frase completa en contexto">
+                            💬 Frase en Contexto
                         </button>` : ''}
-                        <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/${langInfo.youglishLang}" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; font-size: 0.8rem; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,243,255,0.08); color: var(--neon-cyan); text-decoration: none; border-radius: 4px; font-weight: 600;">
-                            👂 Natives
+                        <a href="https://youglish.com/pronounce/${encodeURIComponent(cleanWord)}/${langInfo.youglishLang}" target="_blank" class="tech" style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; font-size: 0.8rem; border: 1px solid rgba(0,243,255,0.4); background: rgba(0,243,255,0.08); color: var(--neon-cyan); text-decoration: none; border-radius: 4px; font-weight: 600;" title="Escuchar a nativos reales pronunciarla en YouTube">
+                            👂 Escuchar Nativos (YouGlish)
                         </a>
                     </div>
                 </div>`;
@@ -75720,42 +75941,107 @@ Return ONLY a valid JSON object:
         }
     };
 
-    // ====== TRANSLATOR (SCREEN 100% EMPTY: DIRECT TRANSLATION + SPEAKER) ======
+    // ====== TRANSLATOR (REAL-TIME CONVERSATION STREAM WITH DASHES & ROUND BUTTONS) ======
     const translator = {
-        recognition: null,
         activeMic: null,
-        autoLoopActive: false,
+        isAutoActive: false,
         isSpeaking: false,
-        restartTimer: null,
-        speed: 0.85,
         wakeLock: null,
-        currentTranslation: '',
-        currentTranslationLang: 'target',
+        restartTimer: null,
+        spanishPhrases: [],
+        foreignPhrases: [],
 
         init: () => {
-            const textEl = document.getElementById('trans-translated-text');
-            if (textEl) {
-                textEl.innerText = '"Habla ahora..."';
-                textEl.style.color = '#FFFFFF';
-            }
-            translator.currentTranslation = '';
-            translator.currentTranslationLang = 'target';
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
-            // Auto apaisado on portrait
+            const targetFlagEl = document.getElementById('trans-target-flag');
+            const targetNameEl = document.getElementById('trans-target-lang-name');
+            if (targetFlagEl) targetFlagEl.src = langInfo.flag || 'flag_en.jpg';
+            if (targetNameEl) targetNameEl.innerText = langInfo.name;
+
+            const badgeFlag = document.getElementById('badge-foreign-flag');
+            const badgeName = document.getElementById('badge-foreign-name');
+            if (badgeFlag) badgeFlag.src = langInfo.flag || 'flag_en.jpg';
+            if (badgeName) badgeName.innerText = `${langInfo.name.toUpperCase()} (Interlocutor)`;
+
+            // Auto landscape orientation lock
             if (screen.orientation && screen.orientation.lock) {
                 try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
-            } else if (window.innerHeight > window.innerWidth) {
-                const transView = document.getElementById('view-translator');
-                if (transView) transView.classList.add('apaisado-forced');
+            }
+            const transView = document.getElementById('view-translator');
+            if (transView) {
+                if (window.innerHeight > window.innerWidth) {
+                    transView.classList.add('apaisado-forced');
+                } else {
+                    transView.classList.remove('apaisado-forced');
+                }
             }
 
-            translator.startAutoLoop();
+            translator.renderConversationStreams();
+
+            // Sync auto switch UI state
+            const chk = document.getElementById('chk-trans-auto');
+            if (chk) translator.onToggleAuto(chk.checked);
+        },
+
+        onToggleAuto: (checked) => {
+            translator.isAutoActive = checked;
+            const track = document.getElementById('auto-switch-track');
+            const thumb = document.getElementById('auto-switch-thumb');
+            const badge = document.getElementById('trans-indicator-badge');
+            const dot = document.getElementById('trans-indicator-dot');
+            const text = document.getElementById('trans-indicator-text');
+
+            if (checked) {
+                if (track) track.style.background = 'rgba(0, 255, 149, 0.4)';
+                if (thumb) {
+                    thumb.style.transform = 'translateX(20px)';
+                    thumb.style.background = 'var(--cyber-ok)';
+                    thumb.style.boxShadow = '0 0 10px var(--cyber-ok)';
+                }
+                if (badge) badge.style.borderColor = 'var(--cyber-ok)';
+                if (dot) { dot.style.background = 'var(--cyber-ok)'; dot.style.animation = 'pulse-mic 1s infinite'; }
+                if (text) { text.innerText = 'Automático: Listo'; text.style.color = 'var(--cyber-ok)'; }
+
+                translator.startAutoLoop();
+            } else {
+                if (track) track.style.background = 'rgba(255, 255, 255, 0.15)';
+                if (thumb) {
+                    thumb.style.transform = 'translateX(0px)';
+                    thumb.style.background = '#888';
+                    thumb.style.boxShadow = 'none';
+                }
+                if (badge) badge.style.borderColor = 'rgba(255,255,255,0.1)';
+                if (dot) { dot.style.background = '#666'; dot.style.animation = 'none'; }
+                if (text) { text.innerText = 'Modo Manual'; text.style.color = '#AAA'; }
+
+                translator.stopAutoLoop();
+            }
+        },
+
+        startAutoLoop: () => {
+            translator.stop();
+            translator.requestWakeLock();
+            translator.startListening('es');
+        },
+
+        stopAutoLoop: () => {
+            clearTimeout(translator.restartTimer);
+            translator.stop();
+        },
+
+        requestWakeLock: async () => {
+            if ('wakeLock' in navigator) {
+                try { translator.wakeLock = await navigator.wakeLock.request('screen'); }
+                catch(e) { console.log("WakeLock error:", e); }
+            }
         },
 
         exitToDashboard: () => {
-            translator.autoLoopActive = false;
+            const chk = document.getElementById('chk-trans-auto');
+            if (chk) chk.checked = false;
+            translator.onToggleAuto(false);
             translator.stop();
-            clearTimeout(translator.restartTimer);
             const transView = document.getElementById('view-translator');
             if (transView) transView.classList.remove('apaisado-forced');
             if (screen.orientation && screen.orientation.unlock) {
@@ -75768,66 +76054,118 @@ Return ONLY a valid JSON object:
             app.showDashboard();
         },
 
-        requestWakeLock: async () => {
-            if ('wakeLock' in navigator) {
-                try { translator.wakeLock = await navigator.wakeLock.request('screen'); }
-                catch(e) { console.log("WakeLock error:", e); }
+        toggleSpanishMic: () => {
+            if (translator.activeMic === 'es') {
+                stt.stop();
+                translator.activeMic = null;
+            } else {
+                translator.startListening('es');
             }
         },
 
-        startAutoLoop: () => {
-            translator.autoLoopActive = true;
-            translator.requestWakeLock();
-            translator.startListening('es');
+        toggleForeignMic: () => {
+            if (translator.activeMic === 'target') {
+                stt.stop();
+                translator.activeMic = null;
+            } else {
+                translator.startListening('target');
+            }
         },
 
-        stopAutoLoop: () => {
-            translator.autoLoopActive = false;
-            clearTimeout(translator.restartTimer);
-            translator.stop();
+        onLiveInterim: (liveText) => {
+            if (!liveText || !translator.activeMic) return;
+            const isEs = translator.activeMic === 'es';
+            const liveEsEl = document.getElementById('trans-live-es');
+            const liveForeignEl = document.getElementById('trans-live-foreign');
+
+            if (isEs) {
+                if (liveEsEl) {
+                    liveEsEl.innerHTML = `<strong>- ${liveText}</strong> <span style="animation: pulse-mic 0.8s infinite;">▍</span>`;
+                    liveEsEl.classList.remove('hidden');
+                }
+                if (liveForeignEl) {
+                    liveForeignEl.innerHTML = `<span style="opacity: 0.65; color: var(--neon-cyan);">- Traduciendo en tiempo real...</span>`;
+                    liveForeignEl.classList.remove('hidden');
+                }
+            } else {
+                if (liveForeignEl) {
+                    liveForeignEl.innerHTML = `<strong>- ${liveText}</strong> <span style="animation: pulse-mic 0.8s infinite;">▍</span>`;
+                    liveForeignEl.classList.remove('hidden');
+                }
+                if (liveEsEl) {
+                    liveEsEl.innerHTML = `<span style="opacity: 0.65; color: var(--neon-pink);">- Traduciendo en tiempo real...</span>`;
+                    liveEsEl.classList.remove('hidden');
+                }
+            }
         },
 
-        startListening: async (mode) => {
+        clearLiveBubbles: () => {
+            const liveEsEl = document.getElementById('trans-live-es');
+            const liveForeignEl = document.getElementById('trans-live-foreign');
+            if (liveEsEl) liveEsEl.classList.add('hidden');
+            if (liveForeignEl) liveForeignEl.classList.add('hidden');
+        },
+
+        startListening: (mode) => {
             translator.stopRecognitionOnly();
             clearTimeout(translator.restartTimer);
 
-            if (!translator.autoLoopActive || translator.isSpeaking) return;
+            if (translator.isSpeaking) return;
 
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             translator.activeMic = mode;
             translator.requestWakeLock();
 
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const targetLang = mode === 'es' ? 'es' : langInfo.code;
+
             const dot = document.getElementById('trans-indicator-dot');
-            const label = document.getElementById('trans-indicator-text');
-            if (dot && label) {
+            const text = document.getElementById('trans-indicator-text');
+            if (dot && text) {
                 if (mode === 'es') {
                     dot.style.background = 'var(--neon-pink)';
-                    label.innerText = 'Escuchando en Español... (Habla tú)';
-                    label.style.color = 'var(--neon-pink)';
+                    dot.style.animation = 'pulse-mic 1s infinite alternate';
+                    text.innerText = '🔴 Escuchando en Castellano...';
+                    text.style.color = 'var(--neon-pink)';
                 } else {
                     dot.style.background = 'var(--neon-cyan)';
-                    label.innerText = `Escuchando en ${langInfo.name}... (Habla tu interlocutor)`;
-                    label.style.color = 'var(--neon-cyan)';
+                    dot.style.animation = 'pulse-mic 1s infinite alternate';
+                    text.innerText = `🔵 Escuchando en ${langInfo.name}...`;
+                    text.style.color = 'var(--neon-cyan)';
                 }
             }
 
-            const targetLang = mode === 'es' ? 'es' : langInfo.code;
+            const btnMicEs = document.getElementById('btn-mic-es');
+            const btnMicForeign = document.getElementById('btn-mic-foreign');
+            if (mode === 'es' && btnMicEs) btnMicEs.classList.add('listening');
+            if (mode === 'target' && btnMicForeign) btnMicForeign.classList.add('listening');
+
             stt.startRecording(
                 'trans',
                 targetLang,
                 (transcript) => {
                     translator.activeMic = null;
+                    translator.clearLiveBubbles();
+                    if (btnMicEs) btnMicEs.classList.remove('listening');
+                    if (btnMicForeign) btnMicForeign.classList.remove('listening');
                     if (transcript && transcript.trim()) {
                         translator.handleSpokenInput(transcript.trim(), mode);
+                    } else if (translator.isAutoActive) {
+                        translator.restartTimer = setTimeout(() => {
+                            if (translator.isAutoActive && !translator.isSpeaking && !translator.activeMic) {
+                                translator.startListening(mode);
+                            }
+                        }, 400);
                     }
                 },
                 (err) => {
                     console.log("Trans error:", err);
                     translator.activeMic = null;
-                    if (translator.autoLoopActive && !translator.isSpeaking) {
-                        clearTimeout(translator.restartTimer);
+                    translator.clearLiveBubbles();
+                    if (btnMicEs) btnMicEs.classList.remove('listening');
+                    if (btnMicForeign) btnMicForeign.classList.remove('listening');
+                    if (translator.isAutoActive && !translator.isSpeaking) {
                         translator.restartTimer = setTimeout(() => {
-                            if (translator.autoLoopActive && !translator.isSpeaking && !translator.activeMic) {
+                            if (translator.isAutoActive && !translator.isSpeaking && !translator.activeMic) {
                                 translator.startListening(mode);
                             }
                         }, 600);
@@ -75839,6 +76177,11 @@ Return ONLY a valid JSON object:
         stopRecognitionOnly: () => {
             stt.stop();
             translator.activeMic = null;
+            translator.clearLiveBubbles();
+            const btnMicEs = document.getElementById('btn-mic-es');
+            const btnMicForeign = document.getElementById('btn-mic-foreign');
+            if (btnMicEs) btnMicEs.classList.remove('listening');
+            if (btnMicForeign) btnMicForeign.classList.remove('listening');
         },
 
         stop: () => {
@@ -75848,109 +76191,410 @@ Return ONLY a valid JSON object:
             window.speechSynthesis.cancel();
         },
 
-        handleSpokenInput: async (text, mode) => {
-            if (!text || text.trim().length === 0) return;
+        handleSpokenInput: async (spokenText, mode) => {
+            if (!spokenText || !spokenText.trim()) return;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const isFromSpanish = mode === 'es';
 
-            const textEl = document.getElementById('trans-translated-text');
-            if (textEl) {
-                textEl.innerText = "Traduciendo...";
-                textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
+            // Show placeholder in conversation streams immediately while AI translates
+            if (isFromSpanish) {
+                translator.spanishPhrases.push(spokenText);
+                translator.foreignPhrases.push("Traduciendo...");
+            } else {
+                translator.foreignPhrases.push(spokenText);
+                translator.spanishPhrases.push("Traduciendo...");
             }
+            translator.renderConversationStreams();
 
-            const prompt = `You are an instant simultaneous interpreter.
-Source text: "${text}"
-${isFromSpanish ? `Translate from Spanish directly into ${langInfo.name}.` : `Translate from ${langInfo.name} directly into Spanish.`}
+            const prompt = `You are a real-time simultaneous translator.
+Source sentence: "${spokenText}"
+${isFromSpanish ? `Translate from Spanish accurately and naturally into ${langInfo.name}.` : `Translate from ${langInfo.name} accurately and naturally into Spanish.`}
 
-CRITICAL: Return ONLY a JSON object:
+CRITICAL: Return ONLY valid JSON:
 {
-  "translation": "translated text here"
+  "translation": "translated text"
 }`;
 
-            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate: "${text}"`}], null, (data) => {
-                const transResult = (data.translation || '').trim();
+            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Translate: "${spokenText}"`}], null, (data) => {
+                const transResult = (data && data.translation ? data.translation : '').trim() || spokenText;
                 
-                if (textEl) {
-                    textEl.innerText = `"${transResult}"`;
-                    textEl.style.color = isFromSpanish ? 'var(--neon-cyan)' : '#FFFFFF';
+                const lastIdx = translator.spanishPhrases.length - 1;
+                if (lastIdx >= 0) {
+                    if (isFromSpanish) {
+                        translator.foreignPhrases[lastIdx] = transResult;
+                    } else {
+                        translator.spanishPhrases[lastIdx] = transResult;
+                    }
                 }
 
-                translator.currentTranslation = transResult;
-                translator.currentTranslationLang = isFromSpanish ? currentLang : 'es';
+                translator.renderConversationStreams();
 
-                // Next turn: switch to the other speaker after 1.2s
-                if (translator.autoLoopActive) {
-                    setTimeout(() => {
-                        if (translator.autoLoopActive && !translator.isSpeaking) {
-                            translator.startListening(isFromSpanish ? 'target' : 'es');
+                // EN MODO AUTOMÁTICO: Pronuncia inmediatamente y pasa el turno al otro interlocutor
+                if (translator.isAutoActive) {
+                    const speakLang = isFromSpanish ? currentLang : 'es';
+                    translator.speakWithNativeAccent(transResult, speakLang, () => {
+                        if (translator.isAutoActive) {
+                            setTimeout(() => {
+                                if (translator.isAutoActive && !translator.isSpeaking) {
+                                    translator.startListening(isFromSpanish ? 'target' : 'es');
+                                }
+                            }, 500);
                         }
-                    }, 1200);
+                    });
                 }
             });
         },
 
-        speakCurrentTranslation: () => {
-            if (!translator.currentTranslation) return;
-            if (translator.currentTranslationLang === 'es') {
-                translator.speakSpanish(translator.currentTranslation);
-            } else {
-                translator.speakForeign(translator.currentTranslation);
+        renderConversationStreams: () => {
+            const streamEs = document.getElementById('trans-stream-es');
+            const streamForeign = document.getElementById('trans-stream-foreign');
+            if (!streamEs || !streamForeign) return;
+
+            const total = Math.max(translator.spanishPhrases.length, translator.foreignPhrases.length);
+            if (total === 0) {
+                streamEs.innerHTML = '<div style="text-align:center; color:#666; font-size:0.85rem; margin:auto;">Pulsa 🎤 abajo o habla para comenzar...</div>';
+                streamForeign.innerHTML = '<div style="text-align:center; color:#666; font-size:0.85rem; margin:auto;">Pulsa 🎤 abajo para que hable el interlocutor...</div>';
+                return;
+            }
+
+            // Render Spanish Stream with Dashes & Larger Latest Phrase
+            streamEs.innerHTML = translator.spanishPhrases.map((phrase, idx) => {
+                const isLatest = idx === translator.spanishPhrases.length - 1;
+                if (isLatest) {
+                    return `
+                        <div class="trans-msg-latest" style="font-size: clamp(1.2rem, 2.2vw, 1.85rem); font-weight: 800; color: #FFF; line-height: 1.25; padding: 6px 4px; text-shadow: 0 0 15px rgba(255,0,85,0.45); word-break: break-word;">
+                            - ${phrase}
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="trans-msg-past" style="font-size: 0.95rem; color: #AAA; line-height: 1.35; padding: 2px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); word-break: break-word;">
+                            - ${phrase}
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            // Render Foreign Stream with Dashes & Larger Latest Phrase
+            streamForeign.innerHTML = translator.foreignPhrases.map((phrase, idx) => {
+                const isLatest = idx === translator.foreignPhrases.length - 1;
+                if (isLatest) {
+                    return `
+                        <div class="trans-msg-latest" style="font-size: clamp(1.2rem, 2.2vw, 1.85rem); font-weight: 800; color: var(--neon-cyan); line-height: 1.25; padding: 6px 4px; text-shadow: 0 0 15px rgba(0,243,255,0.45); word-break: break-word;">
+                            - ${phrase}
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="trans-msg-past" style="font-size: 0.95rem; color: #AAA; line-height: 1.35; padding: 2px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); word-break: break-word;">
+                            - ${phrase}
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            // Auto-scroll to bottom of both streams
+            requestAnimationFrame(() => {
+                streamEs.scrollTop = streamEs.scrollHeight;
+                streamForeign.scrollTop = streamForeign.scrollHeight;
+            });
+        },
+
+        speakSpanishStream: () => {
+            const latest = translator.spanishPhrases[translator.spanishPhrases.length - 1];
+            if (!latest || latest === 'Traduciendo...') return;
+            translator.speakWithNativeAccent(latest, 'es');
+        },
+
+        speakForeignStream: () => {
+            const latest = translator.foreignPhrases[translator.foreignPhrases.length - 1];
+            if (!latest || latest === 'Traduciendo...') return;
+            translator.speakWithNativeAccent(latest, currentLang);
+        },
+
+        // ====== MODO VOCABULARIO ASISTIDO POR IA ======
+        pendingVocabData: null,
+        isVocabMicActive: false,
+
+        openVocabModeModal: () => {
+            translator.stop();
+            const modal = document.getElementById('modal-vocab-ai-mode');
+            if (modal) {
+                modal.classList.remove('hidden');
+                const resultBox = document.getElementById('vocab-ai-result-box');
+                const successMsg = document.getElementById('vocab-ai-success-msg');
+                if (resultBox) resultBox.classList.add('hidden');
+                if (successMsg) successMsg.classList.add('hidden');
+                translator.pendingVocabData = null;
             }
         },
 
-        speakForeign: (text, onEndCallback) => {
-            translator.stopRecognitionOnly();
-            translator.isSpeaking = true;
-            window.speechSynthesis.cancel();
-
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            const u = new SpeechSynthesisUtterance(text);
-            u.lang = langInfo.speechLang;
-            u.rate = translator.speed || 0.85;
-
-            const voices = window.speechSynthesis.getVoices();
-            let voice = voices.find(v => v.lang === langInfo.speechLang || v.lang.startsWith(currentLang));
-            if (voice) u.voice = voice;
-
-            u.onend = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-            u.onerror = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
-            };
-
-            window.speechSynthesis.speak(u);
+        closeVocabModeModal: () => {
+            translator.stopVocabMic();
+            const modal = document.getElementById('modal-vocab-ai-mode');
+            if (modal) modal.classList.add('hidden');
+            translator.pendingVocabData = null;
         },
 
-        speakSpanish: (text, onEndCallback) => {
+        toggleVocabModeMic: () => {
+            if (translator.isVocabMicActive) {
+                translator.stopVocabMic();
+            } else {
+                translator.startVocabMic();
+            }
+        },
+
+        startVocabMic: () => {
+            translator.stop();
+            translator.isVocabMicActive = true;
+            const btn = document.getElementById('btn-vocab-ai-mic');
+            const lbl = document.getElementById('lbl-vocab-ai-mic');
+            if (btn) {
+                btn.classList.add('listening');
+                btn.style.borderColor = 'var(--cyber-warn)';
+            }
+            if (lbl) lbl.innerText = 'ESCUCHANDO PALABRA EN ESPAÑOL...';
+
+            stt.startRecording(
+                'trans',
+                'es',
+                (transcript) => {
+                    translator.isVocabMicActive = false;
+                    if (btn) { btn.classList.remove('listening'); btn.style.borderColor = 'var(--cyber-ok)'; }
+                    if (lbl) lbl.innerText = 'TOCAR PARA DECIR OTRA PALABRA';
+                    if (transcript && transcript.trim()) {
+                        translator.processVocabWord(transcript.trim());
+                    }
+                },
+                (err) => {
+                    console.log("Vocab mic error:", err);
+                    translator.isVocabMicActive = false;
+                    if (btn) { btn.classList.remove('listening'); btn.style.borderColor = 'var(--cyber-ok)'; }
+                    if (lbl) lbl.innerText = 'TOCAR PARA DECIR PALABRA';
+                }
+            );
+        },
+
+        stopVocabMic: () => {
+            stt.stop();
+            translator.isVocabMicActive = false;
+            const btn = document.getElementById('btn-vocab-ai-mic');
+            const lbl = document.getElementById('lbl-vocab-ai-mic');
+            if (btn) { btn.classList.remove('listening'); btn.style.borderColor = 'var(--cyber-ok)'; }
+            if (lbl) lbl.innerText = 'TOCAR PARA DECIR PALABRA';
+        },
+
+        processVocabWord: async (spanishWord) => {
+            if (!spanishWord) return;
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const existingTopics = db.topics.filter(t => (t.lang || 'en') === currentLang);
+            const topicNames = existingTopics.map(t => t.name);
+
+            const resultBox = document.getElementById('vocab-ai-result-box');
+            const spanishEl = document.getElementById('vocab-ai-spanish-word');
+            const targetEl = document.getElementById('vocab-ai-target-word');
+            const ipaEl = document.getElementById('vocab-ai-ipa');
+            const msgEl = document.getElementById('vocab-ai-message');
+            const successMsg = document.getElementById('vocab-ai-success-msg');
+            const actionBtns = document.getElementById('vocab-ai-action-buttons');
+
+            if (resultBox) resultBox.classList.remove('hidden');
+            if (successMsg) successMsg.classList.add('hidden');
+            if (actionBtns) actionBtns.classList.remove('hidden');
+            if (spanishEl) spanishEl.innerText = `"${spanishWord}"`;
+            if (targetEl) targetEl.innerText = "Traduciendo...";
+            if (ipaEl) ipaEl.innerText = "";
+            if (msgEl) msgEl.innerText = "Categorizando temática y buscando la mejor lista con IA...";
+
+            const prompt = `You are an expert vocabulary curator and language teacher.
+The student said the Spanish word or phrase: "${spanishWord}".
+Target learning language: ${langInfo.name}.
+Existing topics in the student's database for ${langInfo.name}: ${JSON.stringify(topicNames)}.
+
+TASKS:
+1. Translate accurately into ${langInfo.name}. (If verb, include infinitive with main forms).
+2. Provide IPA phonetic transcription.
+3. Provide an example sentence in ${langInfo.name} and in Spanish.
+4. Intelligent Categorization:
+   - Match with the most appropriate existing topic if one fits well.
+   - If NONE of the existing topics is a good fit, generate a concise, uppercase, relevant NEW topic name in Spanish (e.g. "COMIDA Y ALIMENTOS", "VIAJES Y TRANSPORTE", "HOGAR Y FAMILIA", "TRABAJO Y NEGOCIOS").
+5. Create a natural question in Spanish:
+   - If matching existing topic: "He traducido '${spanishWord}' ➔ '{translated}'. La guardaré en la lista '{selectedTopic}'. ¿Te parece bien esta o creamos una nueva?"
+   - If creating new topic: "He traducido '${spanishWord}' ➔ '{translated}'. Propongo crear la lista temática '{selectedTopic}'. ¿Te parece bien o creamos otra?"
+
+Return ONLY a JSON object:
+{
+  "spanish": "${spanishWord}",
+  "translated": "translated word in ${langInfo.name}",
+  "ipa": "/phonetics/",
+  "sentence_target": "example in ${langInfo.name}",
+  "sentence_es": "example in Spanish",
+  "selectedTopic": "TOPIC NAME IN UPPERCASE",
+  "isNewTopic": false,
+  "aiQuestion": "question text in Spanish"
+}`;
+
+            await app.callAI_Conversation([{role: "system", content: prompt}, {role: "user", content: `Process vocabulary word: "${spanishWord}"`}], null, (data) => {
+                if (!data || !data.translated) return;
+                translator.pendingVocabData = data;
+
+                if (targetEl) targetEl.innerText = `"${data.translated}"`;
+                if (ipaEl) ipaEl.innerText = data.ipa || '';
+                if (msgEl) msgEl.innerText = data.aiQuestion || `He seleccionado la lista "${data.selectedTopic}". ¿Te parece bien guardarla ahí?`;
+
+                const confirmBtnLbl = document.getElementById('lbl-vocab-ai-confirm');
+                if (confirmBtnLbl) confirmBtnLbl.innerText = `Sí, Guardar en "${data.selectedTopic}"`;
+
+                translator.speakWithNativeAccent(data.aiQuestion || `He seleccionado la lista ${data.selectedTopic}`, 'es');
+            });
+        },
+
+        confirmAddVocabWord: () => {
+            const data = translator.pendingVocabData;
+            if (!data) return;
+
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            let topicObj = db.topics.find(t => (t.lang || 'en') === currentLang && t.name.toLowerCase() === (data.selectedTopic || '').toLowerCase());
+            if (!topicObj) {
+                topicObj = { id: Date.now(), name: (data.selectedTopic || 'VOCABULARIO GENERAL').toUpperCase(), lang: currentLang };
+                db.topics.push(topicObj);
+            }
+
+            let wordId = Date.now() + Math.floor(Math.random() * 1000);
+            let existing = db.words.find(w => w.topic_id === topicObj.id && (w.english.toLowerCase() === data.translated.toLowerCase() || w.spanish.toLowerCase() === data.spanish.toLowerCase()));
+            if (!existing) {
+                db.words.push({
+                    id: wordId,
+                    topic_id: topicObj.id,
+                    english: data.translated,
+                    spanish: data.spanish,
+                    ipa: data.ipa || '',
+                    sentence_en: data.sentence_target || data.translated,
+                    sentence_es: data.sentence_es || data.spanish
+                });
+                app.saveDB();
+                app.renderDashboardLists();
+            } else {
+                wordId = existing.id;
+            }
+
+            const successMsg = document.getElementById('vocab-ai-success-msg');
+            const actionBtns = document.getElementById('vocab-ai-action-buttons');
+            if (actionBtns) actionBtns.classList.add('hidden');
+            if (successMsg) {
+                successMsg.innerHTML = `⭐ ¡Palabra <strong>"${data.translated}"</strong> guardada con éxito en <strong>${topicObj.name}</strong>!<br><span style="font-size:0.82rem; color:#FFF;">Abriendo pantalla de vocabulario para escuchar contexto y nativos...</span>`;
+                successMsg.classList.remove('hidden');
+            }
+
+            translator.speakWithNativeAccent(data.translated, currentLang, () => {
+                setTimeout(() => {
+                    translator.closeVocabModeModal();
+                    const transView = document.getElementById('view-translator');
+                    if (transView) transView.classList.remove('apaisado-forced');
+                    if (screen.orientation && screen.orientation.unlock) {
+                        try { screen.orientation.unlock(); } catch(e){}
+                    }
+                    if (translator.wakeLock) {
+                        try { translator.wakeLock.release(); } catch(e){}
+                        translator.wakeLock = null;
+                    }
+                    
+                    vocab.activeTopicId = topicObj.id;
+                    vocab.searchQuery = '';
+                    app.switchView('view-vocab');
+                    vocab.render();
+
+                    setTimeout(() => {
+                        const targetWordText = data.translated.toLowerCase();
+                        document.querySelectorAll('.vocab-item').forEach(el => {
+                            if (el.textContent.toLowerCase().includes(targetWordText)) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                el.style.border = '2px solid var(--cyber-ok)';
+                                el.style.boxShadow = '0 0 25px rgba(0,255,149,0.7)';
+                            }
+                        });
+                    }, 250);
+                }, 800);
+            });
+        },
+
+        confirmAddNewTopicVocabWord: () => {
+            const data = translator.pendingVocabData;
+            if (!data) return;
+
+            const newTopicName = prompt("Escribe el nombre de la nueva lista:", data.selectedTopic || "NUEVA LISTA");
+            if (!newTopicName || !newTopicName.trim()) return;
+
+            data.selectedTopic = newTopicName.trim().toUpperCase();
+            translator.confirmAddVocabWord();
+        },
+
+        // MOTOR DE VOZ NATIVO ULTRA-PRECISO PARA CADA IDIOMA Y ACENTO
+        speakWithNativeAccent: (text, langCode, onEnd) => {
+            if (!text || !text.trim() || text === 'Traduciendo...') { if (onEnd) onEnd(); return; }
             translator.stopRecognitionOnly();
             translator.isSpeaking = true;
             window.speechSynthesis.cancel();
 
             const u = new SpeechSynthesisUtterance(text);
-            u.lang = 'es-ES';
-            u.rate = translator.speed || 0.85;
+            const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.85);
+            u.rate = sliderRate;
 
-            const voices = window.speechSynthesis.getVoices();
-            let esVoice = voices.find(v => v.lang.startsWith('es'));
-            if (esVoice) u.voice = esVoice;
-
-            u.onend = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
+            const langConfig = {
+                es: { code: 'es-ES', voiceTags: ['es-es', 'spanish', 'castellano', 'monica', 'jorge', 'pablo', 'helena', 'laura', 'google español', 'diego', 'alvaro'] },
+                en: { code: 'en-US', voiceTags: ['en-us', 'en-gb', 'samantha', 'zira', 'google english', 'david', 'mark', 'catherine', 'english'] },
+                de: { code: 'de-DE', voiceTags: ['de-de', 'katja', 'hedda', 'marlene', 'vicki', 'google deutsch', 'deutsch', 'german'] },
+                fr: { code: 'fr-FR', voiceTags: ['fr-fr', 'hortense', 'julie', 'celine', 'google français', 'français', 'french', 'paul'] },
+                it: { code: 'it-IT', voiceTags: ['it-it', 'elsa', 'cosimo', 'alice', 'federica', 'google italiano', 'italiano', 'italian'] },
+                pt: { code: 'pt-PT', voiceTags: ['pt-pt', 'pt-br', 'joana', 'inês', 'google português', 'português', 'portuguese'] },
+                ru: { code: 'ru-RU', voiceTags: ['ru-ru', 'irina', 'tatyana', 'google русский', 'русский', 'russian'] },
+                ca: { code: 'ca-ES', voiceTags: ['ca-es', 'catalan', 'català', 'montserrat', 'ca'] },
+                eu: { code: 'eu-ES', voiceTags: ['eu-es', 'euskara', 'basque', 'eu'] },
+                gl: { code: 'gl-ES', voiceTags: ['gl-es', 'galego', 'galician', 'gl'] }
             };
-            u.onerror = () => {
-                translator.isSpeaking = false;
-                if (onEndCallback) onEndCallback();
+
+            const targetConf = langConfig[langCode] || { code: langCode, voiceTags: [langCode] };
+            u.lang = targetConf.code;
+
+            const applyVoiceAndSpeak = () => {
+                const voices = window.speechSynthesis.getVoices() || [];
+                if (voices.length > 0) {
+                    let matchedVoice = voices.find(v => {
+                        const vName = v.name.toLowerCase();
+                        const vLang = v.lang.toLowerCase().replace('_', '-');
+                        return targetConf.voiceTags.some(tag => vName.includes(tag) || vLang.includes(tag));
+                    });
+                    if (!matchedVoice) {
+                        matchedVoice = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith(langCode));
+                    }
+                    if (matchedVoice) {
+                        u.voice = matchedVoice;
+                    }
+                }
+
+                u.onend = () => {
+                    translator.isSpeaking = false;
+                    if (onEnd) onEnd();
+                };
+
+                u.onerror = (e) => {
+                    console.warn("TTS error:", e);
+                    translator.isSpeaking = false;
+                    if (onEnd) onEnd();
+                };
+
+                window.speechSynthesis.speak(u);
             };
 
-            window.speechSynthesis.speak(u);
+            if (window.speechSynthesis.getVoices().length > 0) {
+                applyVoiceAndSpeak();
+            } else {
+                window.speechSynthesis.onvoiceschanged = applyVoiceAndSpeak;
+                setTimeout(applyVoiceAndSpeak, 100);
+            }
         }
     };
-
+    
     // ====== PWA INSTALL & SERVICE WORKER ======
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
