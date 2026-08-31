@@ -306,6 +306,39 @@
             0% { transform: scale(1.02); filter: drop-shadow(0 0 4px currentColor); }
             100% { transform: scale(1.15); filter: drop-shadow(0 0 16px currentColor); }
         }
+
+        /* --- TRANSLATOR CARD PULSE ON LISTENING --- */
+        .card-listening-es {
+            border-color: var(--neon-pink) !important;
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.65), inset 0 0 15px rgba(255, 0, 85, 0.15) !important;
+            animation: pulse-card-es 1.2s infinite alternate ease-in-out !important;
+        }
+        @keyframes pulse-card-es {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 0, 85, 0.35), inset 0 0 8px rgba(255, 0, 85, 0.08);
+                background: rgba(255, 0, 85, 0.05) !important;
+            }
+            100% {
+                box-shadow: 0 0 35px rgba(255, 0, 85, 0.8), inset 0 0 25px rgba(255, 0, 85, 0.25);
+                background: rgba(255, 0, 85, 0.14) !important;
+            }
+        }
+
+        .card-listening-foreign {
+            border-color: var(--neon-cyan) !important;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.65), inset 0 0 15px rgba(0, 243, 255, 0.15) !important;
+            animation: pulse-card-foreign 1.2s infinite alternate ease-in-out !important;
+        }
+        @keyframes pulse-card-foreign {
+            0% {
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.35), inset 0 0 8px rgba(0, 243, 255, 0.08);
+                background: rgba(0, 243, 255, 0.05) !important;
+            }
+            100% {
+                box-shadow: 0 0 35px rgba(0, 243, 255, 0.8), inset 0 0 25px rgba(0, 243, 255, 0.25);
+                background: rgba(0, 243, 255, 0.14) !important;
+            }
+        }
 </style>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
@@ -73624,6 +73657,8 @@
             return stt.deduplicateStutter(bestText);
         },
 
+        _currentFinalizer: null,
+
         startRecording: async (target, langCode, onTranscriptCallback, onErrorCallback) => {
             stt.stop();
             window.speechSynthesis.cancel();
@@ -73643,8 +73678,9 @@
                     const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES', it: 'it-IT', pt: 'pt-PT', ru: 'ru-RU', ca: 'ca-ES', eu: 'eu-ES', gl: 'gl-ES' };
                     rec.lang = langMap[langCode] || (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode] && LANGUAGES[langCode].speechLang) || 'es-ES';
                     
-                    const isSentenceMode = (target === 'convo' || target === 'trans');
-                    rec.continuous = false; // Sin buffer retrasado ni duplicaciones en móviles
+                    const isTransMode = (target === 'trans');
+                    const isSentenceMode = (target === 'convo' || isTransMode);
+                    rec.continuous = isTransMode ? true : false; // Para traductor continuo durante la frase
                     rec.interimResults = true;
                     rec.maxAlternatives = 1;
 
@@ -73658,6 +73694,7 @@
                         if (stt._lastFinalizeTime && now - stt._lastFinalizeTime < 150) return;
                         stt._lastFinalizeTime = now;
                         handled = true;
+                        stt._currentFinalizer = null;
                         if (stt.silenceTimer) { clearTimeout(stt.silenceTimer); stt.silenceTimer = null; }
                         // Fix 4: Clear translator live bubbles immediately to prevent visual duplication
                         if (typeof translator !== 'undefined' && translator.clearLiveBubbles) {
@@ -73671,6 +73708,29 @@
                             onErrorCallback("No se detectó voz");
                         }
                     };
+
+                    stt._currentFinalizer = () => {
+                        if (accumulatedText && accumulatedText.trim()) {
+                            finalize(accumulatedText);
+                        } else {
+                            stt.stop();
+                            if (onErrorCallback) onErrorCallback("Cancelado");
+                        }
+                    };
+
+                    // Temporizador inicial de silencio para el traductor: 3 segundos
+                    if (isTransMode) {
+                        if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
+                        stt.silenceTimer = setTimeout(() => {
+                            if (!handled) {
+                                if (accumulatedText) finalize(accumulatedText);
+                                else {
+                                    stt.stop();
+                                    if (onErrorCallback) onErrorCallback("No se detectó voz");
+                                }
+                            }
+                        }, 3000);
+                    }
 
                     rec.onresult = (e) => {
                         if (handled) return;
@@ -73713,17 +73773,18 @@
                                 }
                             }
 
-                            // Si el motor marcó frase final, finalizar de inmediato sin esperas
-                            if (e.results[e.results.length - 1].isFinal) {
-                                finalize(accumulatedText);
-                                return;
-                            }
-
-                            // Temporizador rápido de silencio (500ms) si no llega isFinal
+                            // Temporizador de silencio: 3000ms para traductor (descanso de 3 segundos), 500ms para conversación
+                            const silenceDelay = isTransMode ? 3000 : 500;
                             if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
                             stt.silenceTimer = setTimeout(() => {
                                 finalize(accumulatedText);
-                            }, 500);
+                            }, silenceDelay);
+
+                            // En modo lección/conversación normal cerramos con isFinal; en traductor dejamos 3s de descanso natural
+                            if (!isTransMode && e.results[e.results.length - 1].isFinal) {
+                                finalize(accumulatedText);
+                                return;
+                            }
                         }
                     };
 
@@ -73748,21 +73809,25 @@
 
                     rec.onend = () => {
                         if (!handled) {
-                            if (accumulatedText) finalize(accumulatedText);
-                            else stt.stop();
+                            if (accumulatedText) {
+                                finalize(accumulatedText);
+                            } else {
+                                stt.stop();
+                                if (onErrorCallback) onErrorCallback("No se detectó voz");
+                            }
                         }
                     };
 
                     stt.isRecording = true;
                     rec.start();
 
-                    // Max timeout: 6s para palabra única, 16s para oraciones
+                    // Max timeout: 6s para palabra única, 20s para oraciones de traductor
                     stt.maxTimer = setTimeout(() => {
                         if (stt.isRecording) {
                             if (accumulatedText) finalize(accumulatedText);
                             else stt.stop();
                         }
-                    }, isSentenceMode ? 16000 : 6000);
+                    }, isTransMode ? 20000 : isSentenceMode ? 16000 : 6000);
 
                     return;
                 } catch(srErr) {
@@ -73779,7 +73844,8 @@
             const btn = btnId ? document.getElementById(btnId) : null;
             if (btn) btn.classList.add('listening');
 
-            const isSentenceMode = (target === 'convo' || target === 'trans');
+            const isTransMode = (target === 'trans');
+            const isSentenceMode = (target === 'convo' || isTransMode);
 
             try {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -73854,8 +73920,8 @@
 
                         let speechStarted = false;
                         let silenceStart = null;
-                        // 500ms for single word, 1500ms for full sentence practice
-                        const silenceThresholdMs = (target === 'trans') ? 2600 : isSentenceMode ? 1600 : 500;
+                        // 500ms for single word, 3000ms for translator, 1600ms for sentence practice
+                        const silenceThresholdMs = isTransMode ? 3000 : isSentenceMode ? 1600 : 500;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
 
                         const checkAudioLevel = () => {
@@ -73883,7 +73949,7 @@
 
                 stt.maxTimer = setTimeout(() => {
                     if (stt.isRecording) stt.stop();
-                }, isSentenceMode ? 16000 : 6000);
+                }, isTransMode ? 20000 : isSentenceMode ? 16000 : 6000);
 
             } catch(err) {
                 console.error("Audio recording error:", err);
@@ -73897,6 +73963,7 @@
         },
 
         stop: () => {
+            stt._currentFinalizer = null;
             if (stt.maxTimer) clearTimeout(stt.maxTimer);
             if (stt.silenceTimer) { clearTimeout(stt.silenceTimer); stt.silenceTimer = null; }
             if (stt.speechRecognition) {
@@ -73917,6 +73984,14 @@
                 stt.audioContext = null;
             }
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
+        },
+
+        finalizeCurrentSession: () => {
+            if (typeof stt._currentFinalizer === 'function') {
+                stt._currentFinalizer();
+            } else {
+                stt.stop();
+            }
         }
     };
 
@@ -76176,10 +76251,41 @@ Return ONLY a valid JSON object:
             app.showDashboard();
         },
 
+        updateCardStates: (activeMode) => {
+            const cardEs = document.getElementById('card-spanish-speaker');
+            const cardForeign = document.getElementById('card-native-speaker');
+            const btnMicEs = document.getElementById('btn-mic-es');
+            const btnMicForeign = document.getElementById('btn-mic-foreign');
+
+            if (cardEs) cardEs.classList.toggle('card-listening-es', activeMode === 'es');
+            if (cardForeign) cardForeign.classList.toggle('card-listening-foreign', activeMode === 'target');
+            if (btnMicEs) btnMicEs.classList.toggle('listening', activeMode === 'es');
+            if (btnMicForeign) btnMicForeign.classList.toggle('listening', activeMode === 'target');
+        },
+
+        resetStatusBadge: () => {
+            const dot = document.getElementById('trans-indicator-dot');
+            const text = document.getElementById('trans-indicator-text');
+            if (!dot || !text) return;
+            if (translator.isAutoActive) {
+                dot.style.background = 'var(--cyber-ok)';
+                dot.style.animation = 'pulse-mic 1s infinite';
+                text.innerText = 'Automático: Listo';
+                text.style.color = 'var(--cyber-ok)';
+            } else {
+                dot.style.background = '#666';
+                dot.style.animation = 'none';
+                text.innerText = 'Modo Manual (Listo)';
+                text.style.color = '#AAA';
+            }
+        },
+
         toggleSpanishMic: () => {
             if (translator.activeMic === 'es') {
-                stt.stop();
+                stt.finalizeCurrentSession();
                 translator.activeMic = null;
+                translator.updateCardStates(null);
+                translator.resetStatusBadge();
             } else {
                 translator.startListening('es');
             }
@@ -76187,8 +76293,10 @@ Return ONLY a valid JSON object:
 
         toggleForeignMic: () => {
             if (translator.activeMic === 'target') {
-                stt.stop();
+                stt.finalizeCurrentSession();
                 translator.activeMic = null;
+                translator.updateCardStates(null);
+                translator.resetStatusBadge();
             } else {
                 translator.startListening('target');
             }
@@ -76236,6 +76344,7 @@ Return ONLY a valid JSON object:
 
             translator.activeMic = mode;
             translator.requestWakeLock();
+            translator.updateCardStates(mode);
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const targetLang = mode === 'es' ? 'es' : langInfo.code;
@@ -76256,19 +76365,14 @@ Return ONLY a valid JSON object:
                 }
             }
 
-            const btnMicEs = document.getElementById('btn-mic-es');
-            const btnMicForeign = document.getElementById('btn-mic-foreign');
-            if (mode === 'es' && btnMicEs) btnMicEs.classList.add('listening');
-            if (mode === 'target' && btnMicForeign) btnMicForeign.classList.add('listening');
-
             stt.startRecording(
                 'trans',
                 targetLang,
                 (transcript) => {
                     translator.activeMic = null;
+                    translator.updateCardStates(null);
+                    translator.resetStatusBadge();
                     translator.clearLiveBubbles();
-                    if (btnMicEs) btnMicEs.classList.remove('listening');
-                    if (btnMicForeign) btnMicForeign.classList.remove('listening');
                     if (transcript && transcript.trim()) {
                         translator.handleSpokenInput(transcript.trim(), mode);
                     } else if (translator.isAutoActive) {
@@ -76282,9 +76386,9 @@ Return ONLY a valid JSON object:
                 (err) => {
                     console.log("Trans error:", err);
                     translator.activeMic = null;
+                    translator.updateCardStates(null);
+                    translator.resetStatusBadge();
                     translator.clearLiveBubbles();
-                    if (btnMicEs) btnMicEs.classList.remove('listening');
-                    if (btnMicForeign) btnMicForeign.classList.remove('listening');
                     if (translator.isAutoActive && !translator.isSpeaking) {
                         translator.restartTimer = setTimeout(() => {
                             if (translator.isAutoActive && !translator.isSpeaking && !translator.activeMic) {
@@ -76299,11 +76403,9 @@ Return ONLY a valid JSON object:
         stopRecognitionOnly: () => {
             stt.stop();
             translator.activeMic = null;
+            translator.updateCardStates(null);
+            translator.resetStatusBadge();
             translator.clearLiveBubbles();
-            const btnMicEs = document.getElementById('btn-mic-es');
-            const btnMicForeign = document.getElementById('btn-mic-foreign');
-            if (btnMicEs) btnMicEs.classList.remove('listening');
-            if (btnMicForeign) btnMicForeign.classList.remove('listening');
         },
 
         stop: () => {
