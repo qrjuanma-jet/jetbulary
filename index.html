@@ -185,17 +185,17 @@
         /* --- HUD CARD --- */
         .hud-card { background: rgba(18,18,20,0.95); border: 1px solid var(--cyber-border); padding: 30px; border-radius: 4px; margin-bottom: 20px; }
 
-        /* --- SESSION WORDS GRID --- */
-        .session-words { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 15px 0 20px; }
+        /* --- SESSION WORDS GRID (2x2 GRID) --- */
+        .session-words { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 12px; }
         .session-word-card {
-            padding: 16px 12px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.25);
-            border-radius: 8px; text-align: center; transition: all 0.3s; cursor: pointer;
+            padding: 10px 8px; background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.25);
+            border-radius: 8px; text-align: center; transition: all 0.25s; cursor: pointer;
         }
-        .session-word-card.active { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow-strong); background: rgba(0,243,255,0.15); transform: scale(1.03); }
+        .session-word-card.active { border-color: var(--neon-cyan); box-shadow: var(--cyber-glow-strong); background: rgba(0,243,255,0.15); transform: scale(1.02); }
         .session-word-card.done { border-color: var(--cyber-ok); background: rgba(0,255,149,0.06); opacity: 0.65; }
-        .session-word-card .word-en { color: var(--neon-cyan); font-weight: 800; font-size: 1.35rem; letter-spacing: 0.5px; }
-        .session-word-card .word-ipa { color: #00f3ff; font-size: 0.9rem; font-family: 'Orbitron', monospace; margin: 3px 0; opacity: 0.9; }
-        .session-word-card .word-es { color: var(--neon-pink); font-size: 0.95rem; margin-top: 4px; font-weight: 500; }
+        .session-word-card .word-en { color: var(--neon-cyan); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.5px; }
+        .session-word-card .word-ipa { color: #00f3ff; font-size: 0.8rem; font-family: 'Orbitron', monospace; margin: 2px 0; opacity: 0.9; }
+        .session-word-card .word-es { color: var(--neon-pink); font-size: 0.85rem; margin-top: 2px; font-weight: 500; }
 
         /* --- CONVERSATION AREA --- */
         .convo-history { max-height: 400px; overflow-y: auto; margin: 15px 0; text-align: left; }
@@ -228,7 +228,11 @@
 
         /* Responsive */
         @media (max-width: 480px) {
-            .session-words { grid-template-columns: 1fr; }
+            .session-words { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 6px 0 10px; }
+            .session-word-card { padding: 8px 4px; }
+            .session-word-card .word-en { font-size: 1.05rem; }
+            .session-word-card .word-ipa { font-size: 0.75rem; }
+            .session-word-card .word-es { font-size: 0.8rem; }
             .word-target { font-size: 1.5rem; }
             h2 { font-size: 1.1rem; }
         }
@@ -707,6 +711,11 @@
             <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.1rem; margin: 0 0 16px 0; letter-spacing: 1px;">JETBULARY</h3>
 
             <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <!-- PWA INSTALL BUTTON -->
+                <button onclick="app.installApp()" id="install-btn" class="tech" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(0, 243, 255, 0.15); border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; box-shadow: var(--cyber-glow);">
+                    <span style="font-size: 1.2rem;">📲</span>
+                    <span>Instalar Jetbulary</span>
+                </button>
                 <!-- WHATSAPP -->
                 <a href="https://api.whatsapp.com/send?text=%C2%A1Aprende%20idiomas%20hablando%20con%20profesoras%20nativas%20de%20IA%20en%20Jetbulary!%20%F0%9F%9A%80%20https%3A%2F%2Fjetbulary.com" target="_blank" class="tech" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(37, 211, 102, 0.15); border: 1.5px solid #25D366; color: #25D366; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.95rem; cursor: pointer;">
                     <span style="font-size: 1.2rem;">💬</span>
@@ -746,12 +755,7 @@
 
     <!-- ====== GLOBAL FOOTER ====== -->
     <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 30px auto 0 auto; padding: 25px 15px 35px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.82rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
-        <!-- PWA INSTALL BUTTON -->
-        <div style="margin-bottom: 16px;">
-            <button onclick="app.installApp()" id="install-btn" class="secondary" style="width: auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 22px; font-size: 0.85rem; border-color: var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; box-shadow: var(--cyber-glow); font-weight: 600;">
-                📲 Instalar Jetbulary
-            </button>
-        </div>
+        
 
         <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;">
             <a href="#" onclick="app.openBackupModal(); return false;" style="color: var(--neon-cyan); text-decoration: none;">💾 Copia de seguridad</a>

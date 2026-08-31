@@ -2,16 +2,25 @@
   "name": "Jetbulary — Learn Languages with AI",
   "short_name": "Jetbulary",
   "description": "Aprende vocabulario inmersivo en inglés y otros idiomas con IA en tiempo real.",
-  "start_url": "index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#050505",
-  "theme_color": "#00F3FF",
+  "theme_color": "#050505",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
