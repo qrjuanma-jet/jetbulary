@@ -687,6 +687,183 @@
 
                 <!-- RESTAURAR COPIA -->
                 <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 14px;">
+        <!-- BOTTOM ACTION: ÚNICAMENTE EL BOTÓN DE ALTAVOZ PARA LEER EN ALTO -->
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding-bottom: 15px;">
+            <button onclick="translator.speakCurrentTranslation()" style="width: 85px; height: 85px; border-radius: 50%; font-size: 2.6rem; background: rgba(0,243,255,0.15); border: 2.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 30px rgba(0,243,255,0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;" title="Leer en voz alta">
+                🔊
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ====== VIEW: PRIVACY ====== -->
+    <div id="view-privacy" class="container hidden" style="text-align: left;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
+                <div class="avatar-container" id="avatar-privacy" onclick="app.openTeacherModal()" style="width: 70px; height: 70px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+                <h2 style="margin: 0; font-size: 1.2rem;">Política de Privacidad</h2>
+            </div>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
+        </div>
+        <div class="hud-card">
+            <p style="color:#AAA;">Tu clave de API (Groq API Key) se utiliza exclusivamente para conectar de forma directa con el motor de inferencia de Groq y no se almacena en ningún servidor externo.</p>
+            <p style="color:#AAA; margin-top:10px;">No recopilamos ni compartimos datos personales. Todo el progreso se guarda localmente en tu navegador mediante localStorage.</p>
+            <p style="color:#AAA; margin-top:10px;">Esta aplicación utiliza Google AdSense para la optimización de publicidad. Google puede utilizar cookies para anuncios personalizados.</p>
+            <p style="color:#AAA; margin-top:10px;">Contacto: <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a></p>
+        </div>
+    </div>
+
+    <!-- ====== VIEW: TERMS ====== -->
+    <div id="view-terms" class="container hidden" style="text-align: left;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 18px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="icon.png" alt="Jetbulary Logo" onclick="app.shareApp()" style="width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--neon-cyan); cursor: pointer;" title="Compartir Jetbulary (WhatsApp, Telegram...)">
+                <div class="avatar-container" id="avatar-terms" onclick="app.openTeacherModal()" style="width: 70px; height: 70px; margin: 0; cursor: pointer;" title="Tap to change teacher / language"></div>
+                <h2 style="margin: 0; font-size: 1.2rem;">Términos de Uso</h2>
+            </div>
+            <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
+        </div>
+        <div class="hud-card">
+            <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
+            <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
+            <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a>.</p>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: TEACHER / LANGUAGE SELECTOR ====== -->
+    <div id="modal-teacher-select" class="hidden" style="position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div class="hud-card" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0;">
+            <button onclick="app.closeTeacherModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.4rem; cursor: pointer; padding: 5px;">✕</button>
+            <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.05rem; margin-bottom: 6px;">[ CHOOSE YOUR TEACHER ]</h3>
+            <p style="color: #888; font-size: 0.82rem; margin-bottom: 20px;">Tap a teacher to switch language and sessions</p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- ENGLISH (EMMA) -->
+                <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_en.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇬🇧 Emma (English)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">English Teacher</div>
+                    </div>
+                    <span class="lang-check" id="check-en" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold;">✓</span>
+                </div>
+
+                <!-- GERMAN (GRETA) -->
+                <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_de.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Deutschlehrerin</div>
+                    </div>
+                    <span class="lang-check" id="check-de" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+
+                <!-- FRENCH (CAMILLE) -->
+                <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                    <img src="gif_fr.gif" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: bold; font-size: 1.05rem; color: #FFF;">🇫🇷 Camille (Français)</div>
+                        <div style="font-size: 0.78rem; color: var(--neon-cyan);">Professeure de Français</div>
+                    </div>
+                    <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: API KEY INFO & PRIVACY EXPLANATION ====== -->
+    <div id="modal-apikey-info" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
+        <div class="hud-card" style="max-width: 580px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
+            <button onclick="app.closeApiKeyInfoModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="font-size: 1.8rem;">🔑</span>
+                <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0;">¿POR QUÉ ES NECESARIA LA API KEY EN JETBULARY?</h3>
+            </div>
+
+            <p style="color: #CCC; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                Jetbulary está diseñado bajo el principio de <strong style="color: #FFF;">privacidad total y soberanía del alumno</strong>. A diferencia de otras apps, no recopilamos ni almacenamos tus datos.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                <!-- SECCIÓN 1: QUÉ ES -->
+                <div style="background: rgba(0,243,255,0.05); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--neon-cyan); font-size: 0.92rem; margin-bottom: 5px;">⚡ 1. ¿Qué es una API Key?</div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
+                        Es tu llave digital personal y gratuita que comunica directamente tu navegador con los servidores de inteligencia artificial ultrarrápida (Groq / LLaMA 3 y Whisper).
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: PRIVACIDAD TOTAL -->
+                <div style="background: rgba(0,255,149,0.05); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--cyber-ok); font-size: 0.92rem; margin-bottom: 5px;">🔒 2. Privacidad Total: No guardamos información de ningún alumno</div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
+                        <ul style="margin: 6px 0 0 16px; padding: 0;">
+                            <li><strong style="color:#FFF;">Sin cuentas ni contraseñas:</strong> No te pedimos crear usuarios, ni contraseñas, ni recopilamos tu correo electrónico.</li>
+                            <li><strong style="color:#FFF;">Tus datos son 100% tuyos:</strong> Jetbulary no almacena tus audios, ni tus respuestas, ni tus estadísticas en servidores externos. Todo tu progreso se guarda localmente en tu propio dispositivo (<code style="color:var(--neon-pink);">localStorage</code>).</li>
+                            <li><strong style="color:#FFF;">Conexión directa y cifrada:</strong> Cuando practicas y hablas con la profesora, la comunicación viaja cifrada directamente entre tu navegador y la IA sin intermediarios.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: PARA QUÉ SIRVE -->
+                <div style="background: rgba(255,0,85,0.05); border: 1px solid rgba(255,0,85,0.25); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--neon-pink); font-size: 0.92rem; margin-bottom: 5px;">🎙️ 3. ¿Para qué sirve exactamente en Jetbulary?</div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
+                        <ul style="margin: 6px 0 0 16px; padding: 0;">
+                            <li><strong style="color:#FFF;">Escucha y transcripción instantánea (&lt; 200 ms):</strong> Procesa tu pronunciación mediante el motor Whisper nativo en tiempo real sin pausas.</li>
+                            <li><strong style="color:#FFF;">Profesora y lecciones inteligentes:</strong> Genera explicaciones gramaticales, contrasta con el español y evalúa tu pronunciación adaptándose a tu nivel del MCER (A0 a C1+).</li>
+                            <li><strong style="color:#FFF;">Traducción simultánea en tiempo real:</strong> Potencia el traductor a pantalla completa con latencia mínima.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: GRATIS Y CONTROL -->
+                <div style="background: rgba(255,184,0,0.06); border: 1px solid rgba(255,184,0,0.3); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--cyber-warn); font-size: 0.92rem; margin-bottom: 5px;">🎁 4. Gratuita para siempre y bajo tu control</div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
+                        Groq ofrece a cada persona miles de peticiones al día completamente gratis. Tú eres el único dueño de tu clave: puedes revocarla, pausarla o renovarla en cualquier momento desde la consola oficial con 1 solo clic.
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="app.closeApiKeyInfoModal()" class="success" style="width: 100%; padding: 14px; font-weight: bold; font-size: 0.95rem; letter-spacing: 1px;">
+                ✓ ENTENDIDO / CERRAR
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: BACKUP & RESTORE MANAGER ====== -->
+    <div id="modal-backup-manager" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
+        <div class="hud-card" style="max-width: 520px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--neon-cyan); box-shadow: var(--cyber-glow-strong); position: relative; margin: 0; padding: 22px;">
+            <button onclick="app.closeBackupModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="font-size: 1.8rem;">💾</span>
+                <h3 class="tech" style="color: var(--neon-cyan); font-size: 1.15rem; margin: 0;">PROTECCIÓN DE PROGRESO Y COPIAS</h3>
+            </div>
+
+            <p style="color: #CCC; font-size: 0.86rem; line-height: 1.5; margin-bottom: 16px;">
+                Tu progreso se guarda automáticamente con <strong style="color:var(--cyber-ok);">doble capa persistente (IndexedDB + Almacenamiento Protegido)</strong> para resistir el borrado de caché o historial. Además, puedes descargar tu copia de seguridad manual en cualquier momento.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px;">
+                <!-- AUTO-PROTECCIÓN INFO -->
+                <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 12px 14px;">
+                    <div style="color: var(--cyber-ok); font-weight: bold; font-size: 0.88rem; margin-bottom: 4px;">🛡️ Protección Automática Activa</div>
+                    <div style="color: #AAA; font-size: 0.8rem; line-height: 1.4;">
+                        Cada palabra, punto y nivel se guarda instantáneamente en una base de datos interna permanente para que nunca pierdas tu avance si se limpia la caché.
+                    </div>
+                </div>
+
+                <!-- DESCARGAR COPIA -->
+                <button onclick="app.exportBackup()" class="secondary" style="width: 100%; padding: 14px; font-size: 0.9rem; font-weight: bold; border-color: var(--neon-cyan); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span>📥 Descargar Copia de Seguridad (.json)</span>
+                </button>
+
+                <!-- RESTAURAR COPIA -->
+                <div style="border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 14px;">
                     <div style="font-size: 0.85rem; color: #FFF; font-weight: bold; margin-bottom: 8px;">📂 Restaurar Copia en otro móvil o navegador:</div>
                     <input type="file" id="backup-file-input" accept=".json" style="display: none;" onchange="app.importBackupFile(this.files[0])">
                     <button onclick="document.getElementById('backup-file-input').click()" class="warning" style="width: 100%; padding: 12px; font-size: 0.85rem; font-weight: bold;">
@@ -715,6 +892,12 @@
                 <button onclick="app.installApp()" id="install-btn" class="tech" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(0, 243, 255, 0.15); border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; box-shadow: var(--cyber-glow);">
                     <span style="font-size: 1.2rem;">📲</span>
                     <span>Instalar Jetbulary</span>
+                </button>
+
+                <!-- INSTALAR MOTORES DE IDIOMA / AJUSTES NATIVOS -->
+                <button onclick="app.openVoiceSettingsModal()" class="tech" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(0, 255, 149, 0.12); border: 1.5px solid var(--cyber-ok); color: var(--cyber-ok); border-radius: 6px; font-weight: bold; font-size: 0.95rem; cursor: pointer; box-shadow: 0 0 10px rgba(0,255,149,0.2);">
+                    <span style="font-size: 1.2rem;">🗣️</span>
+                    <span>Instalar Voces e Idiomas</span>
                 </button>
                 <!-- WHATSAPP -->
                 <a href="https://api.whatsapp.com/send?text=%C2%A1Aprende%20idiomas%20hablando%20con%20profesoras%20nativas%20de%20IA%20en%20Jetbulary!%20%F0%9F%9A%80%20https%3A%2F%2Fjetbulary.com" target="_blank" class="tech" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: rgba(37, 211, 102, 0.15); border: 1.5px solid #25D366; color: #25D366; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.95rem; cursor: pointer;">
@@ -749,6 +932,77 @@
 
             <button onclick="app.closeShareModal()" class="secondary" style="width: 100%; padding: 8px; font-size: 0.8rem; border: none; color: #777;">
                 Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== MODAL: INSTALAR MOTORES DE IDIOMA Y AJUSTES DE VOZ NATIVOS ====== -->
+    <div id="modal-voice-settings" class="hidden" style="position: fixed; inset: 0; z-index: 99999; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
+        <div class="hud-card" style="max-width: 520px; width: 100%; max-height: 88vh; overflow-y: auto; text-align: left; border: 2px solid var(--cyber-ok); box-shadow: 0 0 20px rgba(0,255,149,0.3); position: relative; margin: 0; padding: 22px;">
+            <button onclick="app.closeVoiceSettingsModal()" style="position: absolute; top: 12px; right: 14px; background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; padding: 5px;" title="Cerrar">✕</button>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <span style="font-size: 1.8rem;">🗣️</span>
+                <h3 class="tech" style="color: var(--cyber-ok); font-size: 1.15rem; margin: 0;">MOTORES DE VOZ E IDIOMAS NATIVOS</h3>
+            </div>
+
+            <p style="color: #CCC; font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px;">
+                Tener instalados los paquetes de voz en tu dispositivo permite una <strong style="color: #FFF;">velocidad instantánea de pronunciación y una calidad de audio de profesora nativa superior</strong> sin gastar datos.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px;">
+                <!-- ANDROID -->
+                <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.3); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--cyber-ok); font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>🤖</span> En Móvil Android:
+                    </div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5; margin-bottom: 10px;">
+                        Descarga los datos de voz para inglés, alemán o francés (Servicios de voz de Google):
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button onclick="app.openAndroidVoiceSettings()" class="tech" style="width: 100%; padding: 10px; font-size: 0.85rem; font-weight: bold; border: 1px solid var(--cyber-ok); color: var(--cyber-ok); background: rgba(0,255,149,0.12); border-radius: 4px; cursor: pointer;">
+                            ⚙️ Abrir Ajustes de Voz de Android
+                        </button>
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.tts" target="_blank" class="tech" style="width: 100%; padding: 10px; font-size: 0.85rem; font-weight: bold; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.1); border-radius: 4px; cursor: pointer; text-decoration: none; text-align: center; box-sizing: border-box;">
+                            📥 Servicios de Voz de Google (Play Store)
+                        </a>
+                    </div>
+                    <div style="color: #888; font-size: 0.78rem; line-height: 1.4; margin-top: 8px;">
+                        💡 En Ajustes de tu móvil: <em>Ajustes &gt; Idioma e introducción &gt; Síntesis de voz &gt; Icono engranaje &gt; Instalar datos de voz</em>.
+                    </div>
+                </div>
+
+                <!-- IPHONE / IPAD (IOS) -->
+                <div style="background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--neon-cyan); font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>🍎</span> En iPhone / iPad (iOS):
+                    </div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5;">
+                        <ol style="margin: 6px 0 0 16px; padding: 0;">
+                            <li>Abre <strong>Ajustes</strong> en tu iPhone.</li>
+                            <li>Entra en <strong>Accesibilidad &gt; Contenido leído &gt; Voces</strong>.</li>
+                            <li>Selecciona <strong>Inglés</strong> (o Alemán/Francés) y descarga la voz <strong>Mejorada / Siri</strong> (ej. <em>Samantha</em> o <em>Ava</em>).</li>
+                            <li>(Para el micrófono): En <strong>Ajustes &gt; General &gt; Teclado</strong> activa <strong>Dictado</strong> y marca los idiomas deseados.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- WINDOWS / PC -->
+                <div style="background: rgba(255,0,85,0.06); border: 1px solid rgba(255,0,85,0.25); border-radius: 8px; padding: 14px;">
+                    <div style="font-weight: bold; color: var(--neon-pink); font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>💻</span> En Ordenador (Windows / Mac):
+                    </div>
+                    <div style="color: #BBB; font-size: 0.84rem; line-height: 1.5; margin-bottom: 8px;">
+                        Instala los paquetes de reconocimiento y síntesis de voz del sistema:
+                    </div>
+                    <a href="ms-settings:speech" class="tech" style="display: block; width: 100%; padding: 10px; font-size: 0.85rem; font-weight: bold; border: 1px solid var(--neon-pink); color: var(--neon-pink); background: rgba(255,0,85,0.1); border-radius: 4px; cursor: pointer; text-decoration: none; text-align: center; box-sizing: border-box;">
+                        ⚙️ Abrir Configuración de Voz de Windows
+                    </a>
+                </div>
+            </div>
+
+            <button onclick="app.closeVoiceSettingsModal()" class="secondary" style="width: 100%; padding: 10px; font-size: 0.85rem; border-color: #555; color: #AAA;">
+                Entendido / Cerrar
             </button>
         </div>
     </div>
@@ -72215,9 +72469,8 @@
                     "english": "de feito (II)",
                     "spanish": "de hecho / en realidad (II)",
                     "ipa": "/de ˈfej.to/",
-                    "sentence_en": "Pratiquez l'expression: De feito, as exportacións medraron un vinte por cento.",
-                    "sentence_es": "Practica la expresión: De hecho, las exportaciones crecieron un veinte por ciento."
-                },
+                    "sentence_en": "Pratiquez l'expression: De feito, as exportacións medraron um vinte por cento.",
+                    "sentence_es": "Practica la expresión: De hecho, las exportaciones crecieron un veinte por ciento."},
                 {
                     "english": "a pesar de (II)",
                     "spanish": "a pesar de (II)",
@@ -73041,13 +73294,15 @@
         }
     };
 
-    // ====== REWRITTEN AUDIO & STT ENGINE (MEDIARECORDER + GROQ WHISPER + AUTO-VAD) ======
+    // ====== INTELLIGENT ADAPTIVE DUAL STT ENGINE (SMART SILENCE & LOW-LATENCY) ======
     const stt = {
         mediaRecorder: null,
         audioStream: null,
         audioChunks: [],
+        speechRecognition: null,
         isRecording: false,
         maxTimer: null,
+        silenceTimer: null,
         audioContext: null,
         analyser: null,
         activeTarget: null,
@@ -73060,6 +73315,153 @@
             const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
             const btn = btnId ? document.getElementById(btnId) : null;
             if (btn) btn.classList.add('listening');
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            // 1. SMART ADAPTIVE NATIVE WEB SPEECH API
+            if (SR) {
+                try {
+                    const rec = new SR();
+                    stt.speechRecognition = rec;
+                    const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
+                    rec.lang = langMap[langCode] || (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode] && LANGUAGES[langCode].speechLang) || 'en-US';
+                    
+                    // In sentence/conversation mode, keep continuous listening with adaptive silence detection
+                    const isSentenceMode = (target === 'convo' || target === 'trans');
+                    rec.continuous = isSentenceMode;
+                    rec.interimResults = true;
+                    rec.maxAlternatives = 3;
+
+                    let handled = false;
+                    let accumulatedText = '';
+
+                    const finalize = (text) => {
+                        if (handled) return;
+                        handled = true;
+                        if (stt.silenceTimer) { clearTimeout(stt.silenceTimer); stt.silenceTimer = null; }
+                        stt.stop();
+                        const cleanText = (text || accumulatedText || '').trim();
+                        if (cleanText) {
+                            onTranscriptCallback(cleanText);
+                        } else if (onErrorCallback) {
+                            onErrorCallback("No se detectó voz");
+                        }
+                    };
+
+                    rec.onresult = (e) => {
+                        if (handled) return;
+                        
+                        let currentInterim = '';
+                        let currentFinal = '';
+
+                        for (let i = 0; i < e.results.length; i++) {
+                            const res = e.results[i];
+                            const transcript = (res[0] && res[0].transcript ? res[0].transcript : '').trim();
+                            if (!transcript) continue;
+
+                            if (res.isFinal) {
+                                currentFinal += ' ' + transcript;
+                            } else {
+                                currentInterim += ' ' + transcript;
+                            }
+                        }
+
+                        const combinedText = (currentFinal + ' ' + currentInterim).replace(/\s+/g, ' ').trim();
+                        if (combinedText) accumulatedText = combinedText;
+
+                        // A) SINGLE-WORD MODE (Flashcard exercise)
+                        if (target === 'game') {
+                            if (typeof game !== 'undefined' && game.data && game.data[game.index]) {
+                                const targetWord = game.data[game.index].english;
+                                // Instant match if target word is heard
+                                for (let i = 0; i < e.results.length; i++) {
+                                    for (let j = 0; j < e.results[i].length; j++) {
+                                        const alt = (e.results[i][j].transcript || '').trim();
+                                        if (alt && game.isCloseMatch(targetWord, alt)) {
+                                            finalize(alt);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                            if (e.results[e.results.length - 1].isFinal) {
+                                finalize(combinedText);
+                                return;
+                            }
+                        }
+
+                        // B) SENTENCE / LESSON / CONVERSATION MODE (Smart Adaptive Silence)
+                        if (isSentenceMode) {
+                            // Check if expected full sentence is already completed
+                            if (typeof conversation !== 'undefined' && conversation.expectedText && typeof game !== 'undefined' && game.isCloseMatch) {
+                                if (game.isCloseMatch(conversation.expectedText, combinedText)) {
+                                    finalize(combinedText);
+                                    return;
+                                }
+                            }
+
+                            // Reset silence timer on every new speech chunk:
+                            // Waits 1.4s of continuous silence after the user finishes speaking
+                            if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
+                            stt.silenceTimer = setTimeout(() => {
+                                finalize(accumulatedText);
+                            }, 1400);
+                        }
+                    };
+
+                    rec.onerror = (e) => {
+                        if (handled) return;
+                        console.warn("SpeechRecognition error:", e.error);
+                        if (e.error === 'no-speech') {
+                            if (!accumulatedText) {
+                                stt.stop();
+                                if (onErrorCallback) onErrorCallback("No se detectó voz");
+                            } else {
+                                finalize(accumulatedText);
+                            }
+                        } else if (e.error === 'not-allowed' || e.error === 'permission-denied') {
+                            stt.stop();
+                            alert("⚠️ Por favor concede permiso de micrófono a Jetbulary para hablar.");
+                        } else {
+                            stt.stop();
+                            stt.startMediaRecorder(target, langCode, onTranscriptCallback, onErrorCallback);
+                        }
+                    };
+
+                    rec.onend = () => {
+                        if (!handled) {
+                            if (accumulatedText) finalize(accumulatedText);
+                            else stt.stop();
+                        }
+                    };
+
+                    stt.isRecording = true;
+                    rec.start();
+
+                    // Max timeout: 6s for single word, 16s for full sentences
+                    stt.maxTimer = setTimeout(() => {
+                        if (stt.isRecording) {
+                            if (accumulatedText) finalize(accumulatedText);
+                            else stt.stop();
+                        }
+                    }, isSentenceMode ? 16000 : 6000);
+
+                    return;
+                } catch(srErr) {
+                    console.warn("SpeechRecognition start failed, falling back to Whisper:", srErr);
+                }
+            }
+
+            // 2. ULTRA-OPTIMIZED GROQ WHISPER ENGINE FALLBACK (Adaptive VAD)
+            stt.startMediaRecorder(target, langCode, onTranscriptCallback, onErrorCallback);
+        },
+
+        startMediaRecorder: async (target, langCode, onTranscriptCallback, onErrorCallback) => {
+            const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
+            const btn = btnId ? document.getElementById(btnId) : null;
+            if (btn) btn.classList.add('listening');
+
+            const isSentenceMode = (target === 'convo' || target === 'trans');
 
             try {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -73102,7 +73504,7 @@
 
                     const finalMime = mimeType || 'audio/webm';
                     const audioBlob = new Blob(stt.audioChunks, { type: finalMime });
-                    if (audioBlob.size < 400) return;
+                    if (audioBlob.size < 300) return;
 
                     try {
                         const transcript = await app.transcribeAudioWithGroq(audioBlob, langCode);
@@ -73117,10 +73519,10 @@
                     }
                 };
 
-                recorder.start(100);
+                recorder.start(40);
                 stt.isRecording = true;
 
-                // Voice Activity Detection (Auto stop when silence is detected)
+                // Smart Adaptive Voice Activity Detection (Auto stop when natural silence is detected)
                 try {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
                     if (AudioCtx) {
@@ -73128,12 +73530,14 @@
                         stt.audioContext = ctx;
                         const source = ctx.createMediaStreamSource(stream);
                         const analyser = ctx.createAnalyser();
-                        analyser.fftSize = 512;
+                        analyser.fftSize = 256;
                         source.connect(analyser);
                         stt.analyser = analyser;
 
                         let speechStarted = false;
                         let silenceStart = null;
+                        // 500ms for single word, 1500ms for full sentence practice
+                        const silenceThresholdMs = isSentenceMode ? 1500 : 500;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
 
                         const checkAudioLevel = () => {
@@ -73143,12 +73547,12 @@
                             for (let i = 0; i < buffer.length; i++) sum += buffer[i];
                             const avg = sum / buffer.length;
 
-                            if (avg > 15) {
+                            if (avg > 11) {
                                 speechStarted = true;
                                 silenceStart = null;
                             } else if (speechStarted) {
                                 if (!silenceStart) silenceStart = Date.now();
-                                else if (Date.now() - silenceStart > 1300) {
+                                else if (Date.now() - silenceStart > silenceThresholdMs) {
                                     stt.stop();
                                     return;
                                 }
@@ -73159,53 +73563,43 @@
                     }
                 } catch(e) { console.log("VAD error:", e); }
 
-                // Max timeout 7s
                 stt.maxTimer = setTimeout(() => {
                     if (stt.isRecording) stt.stop();
-                }, 7000);
+                }, isSentenceMode ? 16000 : 6000);
 
             } catch(err) {
                 console.error("Audio recording error:", err);
                 if (btn) btn.classList.remove('listening');
                 if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
                     alert("⚠️ Por favor concede permiso de micrófono a Jetbulary para hablar.");
-                } else {
-                    stt.fallbackWebSpeech(target, langCode, onTranscriptCallback, onErrorCallback);
+                } else if (onErrorCallback) {
+                    onErrorCallback(err.message);
                 }
             }
         },
 
         stop: () => {
             if (stt.maxTimer) clearTimeout(stt.maxTimer);
+            if (stt.silenceTimer) { clearTimeout(stt.silenceTimer); stt.silenceTimer = null; }
+            if (stt.speechRecognition) {
+                try { stt.speechRecognition.abort(); } catch(e){}
+                stt.speechRecognition = null;
+            }
             if (stt.mediaRecorder && stt.mediaRecorder.state !== 'inactive') {
                 try { stt.mediaRecorder.stop(); } catch(e){}
             }
             stt.isRecording = false;
+            if (stt.audioStream) {
+                try { stt.audioStream.getTracks().forEach(track => track.stop()); } catch(e){}
+                stt.audioStream = null;
+            }
             if (stt.audioContext) {
                 try { stt.audioContext.close(); } catch(e){}
                 stt.audioContext = null;
             }
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
-        },
-
-        fallbackWebSpeech: (target, langCode, onTranscriptCallback, onErrorCallback) => {
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SR) return;
-            const btnId = target === 'game' ? 'mic-btn' : target === 'convo' ? 'mic-btn-convo' : null;
-            const btn = btnId ? document.getElementById(btnId) : null;
-            if (btn) btn.classList.add('listening');
-
-            const rec = new SR();
-            const langMap = { en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
-            rec.lang = langMap[langCode] || 'en-US';
-            rec.continuous = false;
-            rec.interimResults = false;
-            rec.onresult = (e) => {
-                if (e.results && e.results[0] && e.results[0][0]) {
-                    const text = e.results[0][0].transcript;
-                    if (text) onTranscriptCallback(text.trim());
-                }
-            };
+        }
+    };
             rec.onerror = (e) => { if (btn) btn.classList.remove('listening'); if (onErrorCallback) onErrorCallback(e.error); };
             rec.onend = () => { if (btn) btn.classList.remove('listening'); };
             try { rec.start(); } catch(e) { if (btn) btn.classList.remove('listening'); }
@@ -73655,12 +74049,40 @@
         openShareModal: () => {
             const modal = document.getElementById('modal-share');
             if (modal) modal.classList.remove('hidden');
+            history.pushState({ modal: 'share' }, null, '#share');
         },
-        closeShareModal: () => {
+        closeShareModal: (skipHistoryBack = false) => {
             const modal = document.getElementById('modal-share');
             if (modal) modal.classList.add('hidden');
             const qrBox = document.getElementById('qr-display-box');
             if (qrBox) qrBox.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'share') {
+                history.back();
+            }
+        },
+        openVoiceSettingsModal: () => {
+            app.closeShareModal(true);
+            const modal = document.getElementById('modal-voice-settings');
+            if (modal) modal.classList.remove('hidden');
+            history.pushState({ modal: 'voice-settings' }, null, '#voice-settings');
+        },
+        closeVoiceSettingsModal: (skipHistoryBack = false) => {
+            const modal = document.getElementById('modal-voice-settings');
+            if (modal) modal.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'voice-settings') {
+                history.back();
+            }
+        },
+        openAndroidVoiceSettings: () => {
+            try {
+                window.location.href = "intent:#Intent;action=com.android.settings.TTS_SETTINGS;end";
+            } catch(e) {
+                try {
+                    window.location.href = "intent:#Intent;action=android.settings.VOICE_INPUT_SETTINGS;end";
+                } catch(err) {
+                    window.open("https://play.google.com/store/apps/details?id=com.google.android.tts", "_blank");
+                }
+            }
         },
         shareApp: () => {
             app.openShareModal();
@@ -73722,6 +74144,12 @@
             app.updateLessonButtonsVisibility();
 
             window.onpopstate = (event) => {
+                const voiceModal = document.getElementById('modal-voice-settings');
+                if (voiceModal && !voiceModal.classList.contains('hidden')) {
+                    voiceModal.classList.add('hidden');
+                    return;
+                }
+                
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
                     shareModal.classList.add('hidden');
@@ -74646,27 +75074,6 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             }
         },
 
-        check: (transcript) => {
-            document.getElementById('spoken-text').innerText = `You said: "${transcript}"`;
-            let target = game.data[game.index].english.toLowerCase();
-            if (target.includes('(')) target = target.split('(')[0].trim();
-            let clean = transcript.toLowerCase().replace(/[.,!?]/g, '').trim();
-            const correct = game.isCloseMatch(target, clean);
-            const wId = game.data[game.index].id;
-            let prog = db.progress.find(p => p.word_id === wId);
-            if (!prog) { prog = { word_id: wId, attempts: 0, successes: 0 }; db.progress.push(prog); }
-            prog.attempts++;
-            if (correct) prog.successes++;
-            app.saveDB();
-            game.stopMic();
-            if (correct) game.handleCorrect(); else game.handleIncorrect(target, clean);
-        },
-
-        stopMic: () => {
-            stt.stop();
-            game.stopTimer();
-        },
-
         handleCorrect: () => {
             const isRecovery = game.currentRetries >= 3;
             const pointsEarned = isRecovery ? 1 : 2;
@@ -74837,16 +75244,17 @@ The student is practicing these vocabulary words: ${wordsList}.
 Their academic level is ${level}.
 
 YOUR TASK:
-Create a SHORT, natural text in ${langInfo.aiPromptLang} of EXACTLY 2 SENTENCES that naturally incorporates all target words.
+Create a SINGLE, VERY SHORT, and natural sentence in ${langInfo.aiPromptLang} (MAXIMUM 4 TO 7 WORDS TOTAL) using ONLY 1 or 2 of the target words.
+The sentence MUST be extremely easy, clear, and quick for the student to pronounce in a single breath without feeling rushed.
 Also provide its Spanish translation.
 
 CRITICAL: Respond ONLY with a valid JSON object:
 {
-  "speech": "Your short 2-sentence ${langInfo.aiPromptLang} text here",
+  "speech": "Your short 4-7 word sentence in ${langInfo.aiPromptLang}",
   "speech_trans": "Traducción completa al español"
 }`;
 
-            const userPrompt = `Create a 2-sentence lesson text in ${langInfo.aiPromptLang} using these words: ${wordsList}.`;
+            const userPrompt = `Create ONE very short sentence (4 to 7 words maximum) using: ${wordsList}.`;
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
                 conversation.expectedText = data.speech;
