@@ -161,26 +161,33 @@
             </div>
 
             <!-- BARRA DE ENERGÍA / RENDIMIENTO (RDTO.) DEBAJO DE LA PROFESORA -->
-            <div id="game-performance-container" style="width: 100%; max-width: 410px; margin: 4px auto 0; background: rgba(0,0,0,0.65); border: 1.5px solid rgba(0,243,255,0.35); border-radius: 20px; padding: 5px 10px 5px 12px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 14px rgba(0,243,255,0.18);">
+            <div id="game-performance-container" style="width: 100%; max-width: 440px; margin: 4px auto 0; background: rgba(0,0,0,0.65); border: 1.5px solid rgba(0,243,255,0.35); border-radius: 24px; padding: 6px 12px 6px 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 14px rgba(0,243,255,0.18);">
                 <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 900; color: var(--neon-cyan); letter-spacing: 0.5px; white-space: nowrap;">Rdto.</span>
                 <span style="font-size: 1.1rem; line-height: 1;" title="Bajo rendimiento">😢</span>
                 <div style="flex: 1; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.15);">
                     <div id="game-performance-bar" style="height: 100%; width: 75%; background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff95, #00f3ff); border-radius: 5px; transition: width 0.4s ease-in-out, box-shadow 0.4s ease; box-shadow: 0 0 10px rgba(0,255,149,0.5);"></div>
                 </div>
                 <span style="font-size: 1.1rem; line-height: 1;" title="Alto rendimiento">😊</span>
-                <span id="game-performance-pct" style="font-family: 'Orbitron', monospace; font-size: 0.72rem; font-weight: 800; color: #FFF; min-width: 32px; text-align: right;">75%</span>
-                <button type="button" onclick="game.showPerformanceReport()" class="tech" style="width: 25px; height: 25px; border-radius: 50%; border: 1.5px solid var(--neon-cyan); background: rgba(0,243,255,0.15); color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; padding: 0; margin-left: 2px; box-shadow: 0 0 8px rgba(0,243,255,0.35); transition: all 0.2s;" title="Informe de Rendimiento y Consejos de la Profesora">?</button>
+                <span id="game-performance-pct" style="font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 800; color: #FFF; min-width: 32px; text-align: right;">75%</span>
+                <button id="btn-report-game" type="button" onclick="game.showPerformanceReport()" class="btn-report-button" title="Ver Informe Pedagógico y Consejos de la Profesora">?</button>
             </div>
         </div>
 
         <!-- Session words overview (Cards with English, IPA, and Spanish) -->
         <div id="session-words-overview" class="session-words"></div>
 
-        <!-- LESSON & FREE CONVERSATION ACTION BUTTONS -->
+        <!-- LESSON & SKILL LESSON ACTION BUTTONS -->
         <div style="margin: 14px 0 10px; display: flex; flex-direction: column; gap: 10px;">
-            <button onclick="session.startLesson()" class="tech" style="width: 100%; padding: 14px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,149,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
+            <button id="btn-lesson-main" onclick="session.startLesson()" class="tech btn-lesson-pulse" style="width: 100%; padding: 14px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,149,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
                 <span style="color: var(--cyber-ok); font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">🎯 <span id="lbl-lesson-btn">LESSON</span></span>
                 <span style="font-size: 0.76rem; color: #CCC; text-transform: none; letter-spacing: 0;">Practica el texto y gana puntos</span>
+            </button>
+
+            <!-- SINGLE UNIFIED BUTTON: GRAMMAR+ (CONSULTA Y TEMARIO EXIGIBLE DEL NIVEL) -->
+            <button id="btn-grammar-plus" onclick="game.showGrammarConsultation()" class="tech" style="width: 100%; padding: 13px 18px; border: 1.5px solid var(--neon-cyan); background: linear-gradient(135deg, rgba(0,243,255,0.18), rgba(0,255,149,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 14px rgba(0,243,255,0.22); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.95rem; letter-spacing: 1px;">
+                <span style="font-size: 1.15rem;">📚</span>
+                <span id="lbl-grammar-plus-btn" style="color: var(--neon-cyan);">GRAMMAR+</span>
+                <span style="font-size: 0.72rem; color: #AAA; font-family: 'Segoe UI', sans-serif; font-weight: normal; margin-left: 6px; text-transform: none;">Guía & Exigencias del Nivel</span>
             </button>
 
             <button id="btn-free-conversation" onclick="conversation.startFreeConversation()" class="tech" style="width: 100%; padding: 13px 18px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
@@ -231,15 +238,15 @@
             </div>
 
             <!-- BARRA DE ENERGÍA / RENDIMIENTO (RDTO.) EN CONVERSACIÓN -->
-            <div id="convo-performance-container" style="width: 100%; max-width: 410px; margin: 4px auto 0; background: rgba(0,0,0,0.65); border: 1.5px solid rgba(0,243,255,0.35); border-radius: 20px; padding: 5px 10px 5px 12px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 14px rgba(0,243,255,0.18);">
+            <div id="convo-performance-container" style="width: 100%; max-width: 440px; margin: 4px auto 0; background: rgba(0,0,0,0.65); border: 1.5px solid rgba(0,243,255,0.35); border-radius: 24px; padding: 6px 12px 6px 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 14px rgba(0,243,255,0.18);">
                 <span style="font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 900; color: var(--neon-cyan); letter-spacing: 0.5px; white-space: nowrap;">Rdto.</span>
                 <span style="font-size: 1.1rem; line-height: 1;" title="Bajo rendimiento">😢</span>
                 <div style="flex: 1; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.15);">
                     <div id="convo-performance-bar" style="height: 100%; width: 75%; background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff95, #00f3ff); border-radius: 5px; transition: width 0.4s ease-in-out, box-shadow 0.4s ease; box-shadow: 0 0 10px rgba(0,255,149,0.5);"></div>
                 </div>
                 <span style="font-size: 1.1rem; line-height: 1;" title="Alto rendimiento">😊</span>
-                <span id="convo-performance-pct" style="font-family: 'Orbitron', monospace; font-size: 0.72rem; font-weight: 800; color: #FFF; min-width: 32px; text-align: right;">75%</span>
-                <button type="button" onclick="game.showPerformanceReport()" class="tech" style="width: 25px; height: 25px; border-radius: 50%; border: 1.5px solid var(--neon-cyan); background: rgba(0,243,255,0.15); color: var(--neon-cyan); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; padding: 0; margin-left: 2px; box-shadow: 0 0 8px rgba(0,243,255,0.35); transition: all 0.2s;" title="Informe de Rendimiento y Consejos de la Profesora">?</button>
+                <span id="convo-performance-pct" style="font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 800; color: #FFF; min-width: 32px; text-align: right;">75%</span>
+                <button id="btn-report-convo" type="button" onclick="game.showPerformanceReport()" class="btn-report-button" title="Ver Informe Pedagógico y Consejos de la Profesora">?</button>
             </div>
         </div>
 
@@ -604,14 +611,57 @@
                 <!-- Loading State or Generated Content inserted by JS -->
             </div>
 
-            <!-- FOOTER -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 18px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(0, 243, 255, 0.15);">
-                <button id="btn-speak-report-main" onclick="game.speakReportSpokenSummary()" class="tech" style="flex: 1; padding: 10px 14px; border: 1.5px solid var(--neon-cyan); background: rgba(0,243,255,0.12); color: #FFF; font-weight: 800; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;">
+            <!-- FOOTER: 3 BUTTONS (ALTAVOZ, DESCARGAR PDF, YOUGLISH) -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; background: rgba(0,0,0,0.75); border-top: 1px solid rgba(0, 243, 255, 0.25);">
+                <button id="btn-speak-report-main" onclick="game.speakReportSpokenSummary()" class="tech" style="flex: 1; padding: 11px 10px; border: 1.5px solid var(--neon-cyan); background: linear-gradient(135deg, rgba(0,243,255,0.2), rgba(0,255,149,0.15)); color: #FFF; font-weight: 800; border-radius: 10px; font-size: 0.84rem; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 0 12px rgba(0,243,255,0.35); transition: all 0.2s;">
                     <span style="font-size: 1.2rem;">🔊</span>
-                    <span id="lbl-speak-report-btn">Listen to Teacher</span>
+                    <span id="lbl-speak-report-btn">Escuchar Profesora</span>
                 </button>
-                <button onclick="game.closePerformanceReport()" class="secondary tech" style="width: auto; padding: 10px 18px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; cursor: pointer;">
-                    OK
+                <button onclick="game.generateSyllabusPDF()" class="tech" style="flex: 1; padding: 11px 10px; border: 1.5px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.25), rgba(0,243,255,0.15)); color: #FFF; font-weight: 800; border-radius: 10px; font-size: 0.84rem; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 0 12px rgba(0,255,149,0.35); transition: all 0.2s;">
+                    <span style="font-size: 1.2rem;">📥</span>
+                    <span>Temario PDF</span>
+                </button>
+                <button onclick="game.openYouGlishDirect()" class="tech" style="width: auto; padding: 8px 12px; border: 1.5px solid #E50914; background: linear-gradient(135deg, rgba(229,9,20,0.35), rgba(255,0,85,0.2)); border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 14px rgba(229,9,20,0.45); transition: all 0.2s;" title="Escuchar a hablantes nativos reales en YouGlish sobre este tema">
+                    <svg width="26" height="26" viewBox="0 0 48 48" style="display: block;">
+                        <rect width="48" height="48" rx="10" fill="#E50914"/>
+                        <path d="M18 14L34 24L18 34V14Z" fill="#FFFFFF"/>
+                        <text x="5" y="44" fill="#FFFFFF" font-family="'Orbitron', sans-serif" font-weight="bold" font-size="8.5" letter-spacing="0.5">YOUGLISH</text>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ====== MODAL: GUÍA DE GRAMÁTICA+ Y EXIGENCIAS DEL NIVEL ====== -->
+    <div id="modal-grammar-plus" class="hidden" style="position: fixed; inset: 0; z-index: 9999999; background: rgba(0,0,0,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;" onclick="if(event.target === this) game.closeGrammarConsultation()">
+        <div class="hud-card" style="width: 100%; max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; background: rgba(10, 15, 26, 0.98); border: 2px solid var(--neon-cyan); border-radius: 16px; box-shadow: 0 0 35px rgba(0, 243, 255, 0.4); overflow: hidden; padding: 0; margin: 0;">
+            
+            <!-- HEADER -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(0, 243, 255, 0.08); border-bottom: 1px solid rgba(0, 243, 255, 0.25);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="avatar-container" id="avatar-grammar-modal" style="width: 50px; height: 50px; margin: 0; border-radius: 50%;"></div>
+                    <div>
+                        <div style="font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 900; color: var(--neon-cyan); letter-spacing: 0.5px;" id="grammar-modal-title">GRAMMAR+ · GUÍA DEL NIVEL</div>
+                        <div style="font-size: 0.74rem; color: #BBB;" id="grammar-modal-subtitle">Estructuras, fonética y exigencias oficiales</div>
+                    </div>
+                </div>
+                <button onclick="game.closeGrammarConsultation()" class="tech" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.5); color: #FFF; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;" title="Cerrar">✕</button>
+            </div>
+
+            <!-- BODY (SCROLLABLE) -->
+            <div id="grammar-modal-body" style="padding: 18px 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; text-align: left;">
+                <!-- Generated Content inserted dynamically -->
+            </div>
+
+            <!-- FOOTER -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; background: rgba(0,0,0,0.75); border-top: 1px solid rgba(0, 243, 255, 0.25);">
+                <button id="btn-speak-grammar-summary" onclick="game.speakGrammarSummary()" class="tech" style="flex: 1; padding: 11px 12px; border: 1.5px solid var(--neon-cyan); background: linear-gradient(135deg, rgba(0,243,255,0.2), rgba(0,255,149,0.15)); color: #FFF; font-weight: 800; border-radius: 10px; font-size: 0.86rem; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 0 12px rgba(0,243,255,0.35);">
+                    <span style="font-size: 1.2rem;">🔊</span>
+                    <span id="lbl-speak-grammar-btn">Escuchar Profesora</span>
+                </button>
+                <button onclick="game.closeGrammarConsultation()" class="tech" style="flex: 1; padding: 11px 12px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #DDD; font-weight: 800; border-radius: 10px; font-size: 0.86rem; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+                    <span>Entendido 👍</span>
                 </button>
             </div>
 

@@ -174,11 +174,14 @@
             if (freeConvoBtn) {
                 freeConvoBtn.classList.remove('hidden'); // Siempre disponible para todos los niveles
             }
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const lessonLbl = document.getElementById('lbl-lesson-btn');
             if (lessonLbl) {
-                if (currentLang === 'de') lessonLbl.innerText = 'LEKTION';
-                else if (currentLang === 'fr') lessonLbl.innerText = 'LEÇON';
-                else lessonLbl.innerText = 'LESSON';
+                lessonLbl.innerText = langInfo.lessonBtnLabel || 'LESSON';
+            }
+            const grammarPlusLbl = document.getElementById('lbl-grammar-plus-btn');
+            if (grammarPlusLbl) {
+                grammarPlusLbl.innerText = langInfo.grammarPlusBtnLabel || (langInfo.grammarBtnLabel ? `${langInfo.grammarBtnLabel}+` : 'GRAMMAR+');
             }
         },
 
@@ -400,6 +403,18 @@
                 const teacherModal = document.getElementById('modal-teacher-select');
                 if (teacherModal && !teacherModal.classList.contains('hidden')) {
                     teacherModal.classList.add('hidden');
+                    return;
+                }
+                const grammarPlusModal = document.getElementById('modal-grammar-plus');
+                if (grammarPlusModal && !grammarPlusModal.classList.contains('hidden')) {
+                    if (typeof game !== 'undefined' && game.closeGrammarConsultation) game.closeGrammarConsultation(true);
+                    else grammarPlusModal.classList.add('hidden');
+                    return;
+                }
+                const reportModal = document.getElementById('modal-performance-report');
+                if (reportModal && !reportModal.classList.contains('hidden')) {
+                    if (typeof game !== 'undefined' && game.closePerformanceReport) game.closePerformanceReport(true);
+                    else reportModal.classList.add('hidden');
                     return;
                 }
                 const vocabAiModal = document.getElementById('modal-vocab-ai-mode');

@@ -6,6 +6,26 @@
         cycleCount: 0,
         phase: 'vocab',
         selectedListId: null,
+        lessonCompleted: false,
+        lastLessonData: null,
+
+        updatePulsingState: () => {
+            const lessonBtn = document.getElementById('btn-lesson-main');
+            const gameReportBtn = document.getElementById('btn-report-game');
+            const convoReportBtn = document.getElementById('btn-report-convo');
+
+            if (session.lessonCompleted) {
+                // FASE 2: Lección completada -> Deja de parpadear LESSON y parpadea el botón ?
+                if (lessonBtn) lessonBtn.classList.remove('btn-lesson-pulse');
+                if (gameReportBtn) gameReportBtn.classList.add('pulsing');
+                if (convoReportBtn) convoReportBtn.classList.add('pulsing');
+            } else {
+                // FASE 1: Antes de completar la lección -> Parpadea el botón LESSON
+                if (lessonBtn) lessonBtn.classList.add('btn-lesson-pulse');
+                if (gameReportBtn) gameReportBtn.classList.remove('pulsing');
+                if (convoReportBtn) convoReportBtn.classList.remove('pulsing');
+            }
+        },
 
         selectList: (id) => {
             session.selectedListId = id === '' ? null : id;
@@ -44,6 +64,8 @@
             session.currentWords = words;
             session.currentWordIndex = 0;
             session.phase = 'vocab';
+            session.lessonCompleted = false;
+            session.lastLessonData = null;
 
             game.data = words;
             game.index = 0;
@@ -54,6 +76,7 @@
             game.updateAvatar();
             if (game.updatePerformance) game.updatePerformance(0);
             app.updateLessonButtonsVisibility();
+            session.updatePulsingState();
             session.renderWordsOverview();
             game.loadCard();
         },
@@ -65,7 +88,30 @@
             }
             session.markCurrentWordsAsLearned();
             session.phase = 'lesson';
-            conversation.start(session.currentWords, "Lesson Practice (Earn Points)");
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            conversation.start(session.currentWords, `${langInfo.lessonBtnLabel || 'LESSON'} · ${langInfo.name}`, 'standard');
+        },
+
+        startGrammarLesson: () => {
+            if (!session.currentWords || session.currentWords.length === 0) {
+                session.start();
+                return;
+            }
+            session.markCurrentWordsAsLearned();
+            session.phase = 'lesson';
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            conversation.start(session.currentWords, `${langInfo.grammarBtnLabel || 'GRAMMAR'} · ${langInfo.name}`, 'grammar');
+        },
+
+        startPronunciationLesson: () => {
+            if (!session.currentWords || session.currentWords.length === 0) {
+                session.start();
+                return;
+            }
+            session.markCurrentWordsAsLearned();
+            session.phase = 'lesson';
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            conversation.start(session.currentWords, `${langInfo.pronunciationBtnLabel || 'PRONUNCIATION'} · ${langInfo.name}`, 'pronunciation');
         },
 
         renderWordsOverview: () => {

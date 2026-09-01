@@ -19,10 +19,11 @@
             if (btnOn && btnOff) { btnOn.className = state ? 'auto-mic-on' : 'secondary'; btnOff.className = state ? 'secondary' : 'auto-mic-on'; }
         },
 
-        start: async (words, topicTitle = "Lesson Practice (Earn Points)") => {
+        start: async (words, topicTitle = "Lesson Practice", lessonMode = 'standard') => {
             if (!words || words.length === 0) return alert("No words to practice.");
             conversation.targetWords = words;
             conversation.convoType = 'lesson';
+            conversation.lessonMode = lessonMode;
             conversation.currentLessonFailures = 0;
             conversation.bestScoreThisExercise = 0;
             conversation.bestPointsThisExercise = 0;
@@ -34,7 +35,8 @@
             document.getElementById('conversation-topic-title').innerText = topicTitle;
 
             const historyEl = document.getElementById('conversation-history');
-            historyEl.innerHTML = `<p style="color: var(--cyber-warn);">🎓 ${langInfo.teacherName} is preparing your lesson text in ${langInfo.name}...</p>`;
+            const modeDesc = lessonMode === 'grammar' ? (langInfo.grammarBtnLabel || 'Gramática') : lessonMode === 'pronunciation' ? (langInfo.pronunciationBtnLabel || 'Pronunciación') : (langInfo.lessonBtnLabel || 'Lección');
+            historyEl.innerHTML = `<p style="color: var(--cyber-warn);">🎓 ${langInfo.teacherName} está preparando tu lección de ${modeDesc} en ${langInfo.name}...</p>`;
             document.getElementById('convo-spoken-text').innerText = '...';
 
             conversation.history = [];
@@ -47,22 +49,33 @@
             const level = levelMap[currentLevelNum];
             const isAdvanced = currentLevelNum >= 3;
 
-            const systemPrompt = `You are ${langInfo.teacherName}, a friendly and expert ${langInfo.aiPromptLang} teacher.
+            let specificInstructions = '';
+            if (lessonMode === 'grammar') {
+                specificInstructions = `SPECIAL FOCUS: GRAMMAR LESSON (${langInfo.grammarBtnLabel || 'Grammar'}). Select a key grammatical pattern, connector, verb tense, or structural rule associated with these words for level ${level}. In 'focus_tip', provide a brief 1-sentence explanation of the grammar rule in Spanish.`;
+            } else if (lessonMode === 'pronunciation') {
+                specificInstructions = `SPECIAL FOCUS: PRONUNCIATION LESSON (${langInfo.pronunciationBtnLabel || 'Pronunciation'}). Select a key phonetic sound, IPA vowel distinction, linking trick, or word stress rule of these words for level ${level}. In 'focus_tip', provide a brief 1-sentence native articulation trick in Spanish.`;
+            } else {
+                specificInstructions = `SPECIAL FOCUS: GENERAL LESSON PRACTICE (${langInfo.lessonBtnLabel || 'Lesson'}). Create a natural, clear sentence using the vocabulary in everyday context.`;
+            }
+
+            const systemPrompt = `You are ${langInfo.teacherName}, a friendly and expert native ${langInfo.aiPromptLang} teacher.
 The student is practicing these vocabulary words: ${wordsList}.
 Their academic level is ${level}.
+${specificInstructions}
 
 YOUR TASK:
-Create a SINGLE, VERY SHORT, and natural sentence in ${langInfo.aiPromptLang} (MAXIMUM 4 TO 7 WORDS TOTAL) using ONLY 1 or 2 of the target words.
+Create a SINGLE, VERY SHORT, and natural sentence in ${langInfo.aiPromptLang} (MAXIMUM 4 TO 7 WORDS TOTAL) practicing the target words under the specified focus.
 The sentence MUST be extremely easy, clear, and quick for the student to pronounce in a single breath without feeling rushed.
-Also provide its Spanish translation.
+Also provide its Spanish translation and focus tip if applicable.
 
 CRITICAL: Respond ONLY with a valid JSON object:
 {
   "speech": "Your short 4-7 word sentence in ${langInfo.aiPromptLang}",
-  "speech_trans": "Traducción completa al español"
+  "speech_trans": "Traducción completa al español",
+  "focus_tip": "Breve consejo o regla clave en español (opcional)"
 }`;
 
-            const userPrompt = `Create ONE very short sentence (4 to 7 words maximum) using: ${wordsList}.`;
+            const userPrompt = `Create ONE very short practice sentence (4 to 7 words maximum) for: ${wordsList} (Focus: ${lessonMode}).`;
 
             await app.callAI_Conversation([{role: "system", content: systemPrompt}, {role: "user", content: userPrompt}], null, (data) => {
                 conversation.expectedText = data.speech;
@@ -82,22 +95,30 @@ CRITICAL: Respond ONLY with a valid JSON object:
                     </div>
                 ` : `
                     <div class="convo-msg convo-msg-teacher">
-                        <strong>🔊 ${langInfo.teacherName} (Listen carefully):</strong><br>
+                        <strong>🔊 ${langInfo.teacherName} (Escucha atentamente):</strong><br>
                         <div style="margin-top:8px; font-size: 1.15rem; color: #FFF; line-height: 1.6;">${data.speech}</div>
                     </div>
                 `;
 
+                const focusTipMarkup = data.focus_tip ? `
+                    <div class="convo-msg convo-msg-system" style="border-left-color: ${lessonMode === 'grammar' ? 'var(--neon-cyan)' : lessonMode === 'pronunciation' ? 'var(--neon-pink)' : 'var(--cyber-ok)'};">
+                        <strong>${lessonMode === 'grammar' ? '📚 Regla Gramatical:' : lessonMode === 'pronunciation' ? '🗣️ Truco de Pronunciación:' : '💡 Clave de la Lección:'}</strong><br>
+                        <div style="margin-top: 5px; color: #FFF; font-size: 0.92rem; line-height: 1.4;">${data.focus_tip}</div>
+                    </div>
+                ` : '';
+
                 historyEl.innerHTML = `
                     <div class="convo-msg convo-msg-system">
-                        🎯 <strong>Target Words:</strong><br>
+                        🎯 <strong>Palabras Objetivo:</strong><br>
                         <div style="margin-top:6px;">${wordsChips}</div>
                     </div>
+                    ${focusTipMarkup}
                     ${teacherAudioMarkup}
                     <div class="convo-msg convo-msg-system" style="border-left-color: var(--neon-pink);">
                         <strong>📖 Texto en castellano${isAdvanced ? ` (Dilo en ${langInfo.name}):` : ':'}</strong><br>
                         <div style="margin-top: 6px; font-size: 1.05rem; color: var(--neon-pink); font-weight: ${isAdvanced ? '600' : 'normal'};">${data.speech_trans}</div>
                     </div>
-                    <div class="convo-msg convo-msg-system">🎤 <strong>Tu turno:</strong> Pulsa el micrófono y di el texto en ${langInfo.name} como la profesora.</div>
+                    <div class="convo-msg convo-msg-system">🎤 <strong>Tu turno:</strong> Pulsa el micrófono y di la frase en ${langInfo.name} como la profesora.</div>
                 `;
 
                 game.speakText(data.speech);
@@ -526,9 +547,21 @@ Return ONLY a valid JSON object:
 
                 // Volver solo y automáticamente a la pantalla principal tras recibir la evaluación
                 if (conversation.convoType === 'lesson') {
+                    if (typeof session !== 'undefined') {
+                        session.lessonCompleted = true;
+                        session.lastLessonData = {
+                            phrase: conversation.expectedText,
+                            spoken: transcript,
+                            score: score,
+                            verdict: verdict,
+                            tips: data.tips || ''
+                        };
+                        session.updatePulsingState();
+                    }
                     setTimeout(() => {
                         if (!document.getElementById('view-conversation').classList.contains('hidden')) {
                             app.showDashboard();
+                            if (typeof session !== 'undefined') session.updatePulsingState();
                         }
                     }, 2400);
                 }

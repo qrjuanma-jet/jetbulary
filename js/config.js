@@ -13,7 +13,11 @@ const LANGUAGES = {
         youglishLang: 'english',
         teacherTitle: 'English Teacher',
         aiPromptLang: 'English',
-        translatorBtnLabel: 'TRANSLATOR'
+        translatorBtnLabel: 'TRANSLATOR',
+        lessonBtnLabel: 'LESSON',
+        grammarBtnLabel: 'GRAMMAR',
+        grammarPlusBtnLabel: 'GRAMMAR+',
+        pronunciationBtnLabel: 'PRONUNCIATION'
     },
     de: {
         code: 'de',
@@ -28,7 +32,11 @@ const LANGUAGES = {
         youglishLang: 'german',
         teacherTitle: 'Deutschlehrerin',
         aiPromptLang: 'German (Deutsch)',
-        translatorBtnLabel: 'ÜBERSETZERIN'
+        translatorBtnLabel: 'ÜBERSETZERIN',
+        lessonBtnLabel: 'LEKTION',
+        grammarBtnLabel: 'GRAMMATIK',
+        grammarPlusBtnLabel: 'GRAMMATIK+',
+        pronunciationBtnLabel: 'AUSSPRACHE'
     },
     fr: {
         code: 'fr',
@@ -43,7 +51,11 @@ const LANGUAGES = {
         youglishLang: 'french',
         teacherTitle: 'Professeure de Français',
         aiPromptLang: 'French (Français)',
-        translatorBtnLabel: 'TRADUCTRICE'
+        translatorBtnLabel: 'TRADUCTRICE',
+        lessonBtnLabel: 'LEÇON',
+        grammarBtnLabel: 'GRAMMAIRE',
+        grammarPlusBtnLabel: 'GRAMMAIRE+',
+        pronunciationBtnLabel: 'PRONONCIATION'
     },
     it: {
         code: 'it',
@@ -58,7 +70,11 @@ const LANGUAGES = {
         youglishLang: 'italian',
         teacherTitle: "Insegnante d'Italiano",
         aiPromptLang: 'Italian (Italiano)',
-        translatorBtnLabel: 'TRADUTTRICE'
+        translatorBtnLabel: 'TRADUTTRICE',
+        lessonBtnLabel: 'LEZIONE',
+        grammarBtnLabel: 'GRAMMATICA',
+        grammarPlusBtnLabel: 'GRAMMATICA+',
+        pronunciationBtnLabel: 'PRONUNCIA'
     },
     pt: {
         code: 'pt',
@@ -73,7 +89,11 @@ const LANGUAGES = {
         youglishLang: 'portuguese',
         teacherTitle: 'Professora de Português',
         aiPromptLang: 'Portuguese (Português)',
-        translatorBtnLabel: 'TRADUTORA'
+        translatorBtnLabel: 'TRADUTORA',
+        lessonBtnLabel: 'LIÇÃO',
+        grammarBtnLabel: 'GRAMÁTICA',
+        grammarPlusBtnLabel: 'GRAMÁTICA+',
+        pronunciationBtnLabel: 'PRONÚNCIA'
     },
     ru: {
         code: 'ru',
@@ -88,7 +108,11 @@ const LANGUAGES = {
         youglishLang: 'russian',
         teacherTitle: 'Преподаватель русского',
         aiPromptLang: 'Russian (Русский)',
-        translatorBtnLabel: 'ПЕРЕВОДЧИЦА'
+        translatorBtnLabel: 'ПЕРЕВОДЧИЦA',
+        lessonBtnLabel: 'УРОК',
+        grammarBtnLabel: 'ГРАММАТИКА',
+        grammarPlusBtnLabel: 'ГРАММАТИКА+',
+        pronunciationBtnLabel: 'ПРОИЗНОШЕНИЕ'
     },
     ca: {
         code: 'ca',
@@ -103,7 +127,11 @@ const LANGUAGES = {
         youglishLang: 'catalan',
         teacherTitle: 'Professora de Català',
         aiPromptLang: 'Catalan (Català)',
-        translatorBtnLabel: 'TRADUCTORA'
+        translatorBtnLabel: 'TRADUCTORA',
+        lessonBtnLabel: 'LLIÇÓ',
+        grammarBtnLabel: 'GRAMÀTICA',
+        grammarPlusBtnLabel: 'GRAMÀTICA+',
+        pronunciationBtnLabel: 'PRONÚNCIA'
     },
     eu: {
         code: 'eu',
@@ -118,7 +146,11 @@ const LANGUAGES = {
         youglishLang: 'basque',
         teacherTitle: 'Euskara Irakaslea',
         aiPromptLang: 'Basque (Euskara)',
-        translatorBtnLabel: 'ITZULTZAILEA'
+        translatorBtnLabel: 'ITZULTZAILEA',
+        lessonBtnLabel: 'IKASGAIA',
+        grammarBtnLabel: 'GRAMATIKA',
+        grammarPlusBtnLabel: 'GRAMATIKA+',
+        pronunciationBtnLabel: 'AHOSKERA'
     },
     gl: {
         code: 'gl',
@@ -133,6 +165,10 @@ const LANGUAGES = {
         youglishLang: 'galician',
         teacherTitle: 'Profesora de Galego',
         aiPromptLang: 'Galician (Galego)',
-        translatorBtnLabel: 'TRADUTORA'
+        translatorBtnLabel: 'TRADUTORA',
+        lessonBtnLabel: 'LECCIÓN',
+        grammarBtnLabel: 'GRAMÁTICA',
+        grammarPlusBtnLabel: 'GRAMÁTICA+',
+        pronunciationBtnLabel: 'PRONUNCIA'
     }
 };
