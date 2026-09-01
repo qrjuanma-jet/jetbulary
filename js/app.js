@@ -115,13 +115,7 @@
         },
 
         addLevelPoints: (levelNum, delta) => {
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
-            const lvl = parseInt(levelNum !== undefined ? levelNum : (db.academy_level || 0));
-            const currentPts = db.level_points[lvl] || 0;
-            db.level_points[lvl] = Math.max(0, currentPts + delta);
-            app.saveDB();
-            app.renderLevelBadges();
-            app.renderDashboardLists();
+            // Sistema de puntos desactivado
         },
 
         selectLevelDirectly: (lvl) => {
@@ -143,8 +137,7 @@
             const display = document.getElementById('academy-level-display');
             if (display) {
                 const labels = app.getLevelLabels();
-                const pts = (db.level_points && db.level_points[parseInt(val)]) || 0;
-                display.innerHTML = `<span style="color:var(--neon-cyan); font-weight:900;">${labels[parseInt(val)] || labels[0]}</span> <span style="font-size:0.8rem; color:var(--cyber-ok); margin-left:6px;">(${pts} pts)</span>`;
+                display.innerHTML = `<span style="color:var(--neon-cyan); font-weight:900;">${labels[parseInt(val)] || labels[0]}</span>`;
             }
             app.renderLevelBadges();
             app.updateLessonButtonsVisibility();
@@ -153,17 +146,14 @@
         renderLevelBadges: () => {
             const container = document.getElementById('level-badges-container');
             if (!container) return;
-            if (!db.level_points) db.level_points = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
             const labels = ['A0', 'A1-A2', 'B1', 'B2', 'C1+'];
             container.innerHTML = labels.map((lbl, idx) => {
-                const pts = db.level_points[idx] || 0;
                 const isCurrent = (db.academy_level || 0) === idx;
                 const border = isCurrent ? 'var(--neon-cyan)' : 'rgba(0,255,149,0.35)';
                 const bg = isCurrent ? 'rgba(0,243,255,0.22)' : 'rgba(0,255,149,0.06)';
                 return `
-                    <div onclick="app.selectLevelDirectly(${idx})" style="flex: 1; min-width: 54px; padding: 7px 3px; text-align: center; border: 1.5px solid ${border}; background: ${bg}; border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.2s; box-shadow: ${isCurrent ? '0 0 10px rgba(0,243,255,0.3)' : 'none'};" title="Elegir nivel ${lbl}">
+                    <div onclick="app.selectLevelDirectly(${idx})" style="flex: 1; min-width: 54px; padding: 9px 4px; text-align: center; border: 1.5px solid ${border}; background: ${bg}; border-radius: 6px; font-size: 0.76rem; cursor: pointer; transition: all 0.2s; box-shadow: ${isCurrent ? '0 0 10px rgba(0,243,255,0.3)' : 'none'};" title="Elegir nivel ${lbl}">
                         <div style="font-weight: 900; color: ${isCurrent ? 'var(--neon-cyan)' : '#FFF'};">${lbl}</div>
-                        <div style="color: var(--cyber-ok); font-size: 0.68rem; margin-top: 2px; font-weight: bold;">${pts}p</div>
                     </div>
                 `;
             }).join('');

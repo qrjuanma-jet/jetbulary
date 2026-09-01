@@ -1,7 +1,7 @@
 // ====== CONVERSATION & AI PRONUNCIATION ANALYZER ======
     const conversation = {
         history: [], turn: 0, recognition: null, autoMic: true, expectedText: '', expectedTrans: '', targetWords: [],
-        convoType: 'lesson', currentLessonFailures: 0, bestScoreThisExercise: 0, bestPointsThisExercise: 0,
+        convoType: 'lesson', currentLessonFailures: 0, bestScoreThisExercise: 0,
 
         repeat: () => { 
             if (conversation.expectedText) game.speakText(conversation.expectedText);
@@ -26,7 +26,6 @@
             conversation.lessonMode = lessonMode;
             conversation.currentLessonFailures = 0;
             conversation.bestScoreThisExercise = 0;
-            conversation.bestPointsThisExercise = 0;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const wordsList = words.map(w => w.english.includes('(') ? w.english.split('(')[0].trim() : w.english).join(', ');
 
@@ -138,7 +137,6 @@ CRITICAL: Respond ONLY with a valid JSON object:
         startFreeConversation: async () => {
             conversation.convoType = 'free';
             conversation.bestScoreThisExercise = 0;
-            conversation.bestPointsThisExercise = 0;
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const learnedWords = db.words.filter(w => {
                 const prog = db.progress.find(p => p.word_id === w.id);
@@ -497,28 +495,16 @@ Return ONLY a valid JSON object:
                 if (analyzingEl) analyzingEl.remove();
 
                 const score = data.accuracy || 85;
-                const currentLvl = app.getLangLevel ? app.getLangLevel() : (db.academy_level || 0);
-                const baseMultiplier = currentLvl >= 3 ? 3 : currentLvl >= 1 ? 2 : 1;
-                const totalPtsForScore = score >= 85 ? (10 * baseMultiplier) : (score >= 70 ? (6 * baseMultiplier) : (3 * baseMultiplier));
-
-                // Solo se consiguen puntos adicionales al repetir si se supera la puntuacion anterior
-                let earnedPts = 0;
                 if (score > conversation.bestScoreThisExercise) {
-                    earnedPts = Math.max(0, totalPtsForScore - conversation.bestPointsThisExercise);
                     conversation.bestScoreThisExercise = score;
-                    conversation.bestPointsThisExercise = Math.max(conversation.bestPointsThisExercise, totalPtsForScore);
                 }
 
-                if (earnedPts > 0) {
-                    if (app.addLevelPoints) app.addLevelPoints(currentLvl, earnedPts);
-                }
                 if (typeof game !== 'undefined' && game.updatePerformance) {
                     game.updatePerformance(score >= 75 ? 6 : -3);
                 }
 
                 const scoreColor = score >= 80 ? 'var(--cyber-ok)' : score >= 60 ? 'var(--cyber-warn)' : 'var(--neon-cyan)';
                 const verdict = data.verdict || (score >= 80 ? '¡Excelente!' : '¡Buen intento!');
-                const ptsText = earnedPts > 0 ? `+${earnedPts} pts` : `0 pts`;
 
                 if (score >= 75) {
                     audio.celebrate();
@@ -531,9 +517,6 @@ Return ONLY a valid JSON object:
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                             <span class="tech" style="color:${scoreColor}; font-size:1.15rem; font-weight:900;">
                                 ${score}% · ${verdict}
-                            </span>
-                            <span class="tech" style="color:var(--cyber-ok); font-size:0.95rem; font-weight:bold; background:rgba(0,255,149,0.1); border:1px solid var(--cyber-ok); padding:3px 10px; border-radius:6px;">
-                                ${ptsText}
                             </span>
                         </div>
                         ${data.tips ? `<div style="margin-top:10px; color:#DDD; font-size:0.92rem; line-height:1.4;"><span style="color:var(--cyber-warn); font-weight:bold;">💡</span> ${data.tips}</div>` : ''}

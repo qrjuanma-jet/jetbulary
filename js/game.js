@@ -1580,12 +1580,10 @@ Respond ONLY with a valid JSON object matching this schema:
 
         handleCorrect: () => {
             const isRecovery = game.currentRetries >= 3;
-            const pointsEarned = isRecovery ? 1 : 2;
-            app.addLevelPoints(db.academy_level, pointsEarned);
             game.updatePerformance(isRecovery ? 4 : 8);
 
             const fb = document.getElementById('feedback-msg');
-            fb.innerHTML = `Correct! 🎉 <span style="color:var(--cyber-ok); font-size:0.9rem;">(+${pointsEarned} pts)</span>`;
+            fb.innerHTML = `Correct! 🎉`;
             fb.className = "feedback correct";
             audio.success();
             document.getElementById('mic-btn').classList.add('hidden');

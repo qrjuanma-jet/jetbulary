@@ -141,7 +141,7 @@
                     
                     const isTransMode = (target === 'trans');
                     const isSentenceMode = (target === 'convo' || isTransMode);
-                    rec.continuous = isTransMode ? true : false; // Para traductor continuo durante la frase
+                    rec.continuous = isSentenceMode ? true : false; // Continuo para lecciones, frases y traductor
                     rec.interimResults = true;
                     rec.maxAlternatives = 1;
 
@@ -179,7 +179,7 @@
                         }
                     };
 
-                    // Temporizador inicial de silencio para el traductor: 3 segundos
+                    // Temporizador inicial de silencio si no empieza a hablar
                     if (isTransMode) {
                         if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
                         stt.silenceTimer = setTimeout(() => {
@@ -190,7 +190,7 @@
                                     if (onErrorCallback) onErrorCallback("No se detectó voz");
                                 }
                             }
-                        }, 3000);
+                        }, 4000);
                     }
 
                     rec.onresult = (e) => {
@@ -234,15 +234,15 @@
                                 }
                             }
 
-                            // Temporizador de silencio: 2200ms para traductor (pausa natural y entonación de frases complejas), 500ms para conversación
-                            const silenceDelay = isTransMode ? 2200 : 500;
+                            // Temporizador de silencio generoso: 3000ms para lección y conversación (permite respirar y pensar con calma)
+                            const silenceDelay = target === 'convo' ? 3000 : (isTransMode ? 2500 : 1000);
                             if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
                             stt.silenceTimer = setTimeout(() => {
                                 finalize(accumulatedText);
                             }, silenceDelay);
 
-                            // En modo lección/conversación normal cerramos con isFinal; en traductor dejamos descanso natural
-                            if (!isTransMode && e.results[e.results.length - 1].isFinal) {
+                            // En modo palabra única cerramos con isFinal; en oraciones/lecciones dejamos tiempo para completar la frase
+                            if (!isSentenceMode && e.results[e.results.length - 1].isFinal) {
                                 finalize(accumulatedText);
                                 return;
                             }
@@ -270,21 +270,12 @@
 
                     rec.onend = () => {
                         if (!handled) {
-                            if (isTransMode) {
-                                if (accumulatedText && accumulatedText.trim()) {
-                                    if (stt.silenceTimer) return; // Esperar al temporizador de silencio para no cortar frases
-                                    finalize(accumulatedText);
-                                } else {
-                                    stt.stop();
-                                    if (onErrorCallback) onErrorCallback("No se detectó voz");
-                                }
+                            if (accumulatedText && accumulatedText.trim()) {
+                                if (stt.silenceTimer) return; // Esperar al temporizador de silencio para no cortar frases
+                                finalize(accumulatedText);
                             } else {
-                                if (accumulatedText) {
-                                    finalize(accumulatedText);
-                                } else {
-                                    stt.stop();
-                                    if (onErrorCallback) onErrorCallback("No se detectó voz");
-                                }
+                                stt.stop();
+                                if (onErrorCallback) onErrorCallback("No se detectó voz");
                             }
                         }
                     };
@@ -292,13 +283,13 @@
                     stt.isRecording = true;
                     rec.start();
 
-                    // Max timeout: 6s para palabra única, 20s para oraciones de traductor
+                    // Max timeout: 6s para palabra única, 30s para lecciones y oraciones
                     stt.maxTimer = setTimeout(() => {
                         if (stt.isRecording) {
                             if (accumulatedText) finalize(accumulatedText);
                             else stt.stop();
                         }
-                    }, isTransMode ? 20000 : isSentenceMode ? 16000 : 6000);
+                    }, isSentenceMode ? 30000 : 6000);
 
                     return;
                 } catch(srErr) {
@@ -406,8 +397,8 @@
 
                         let speechStarted = false;
                         let silenceStart = null;
-                        // 500ms para palabra suelta, 1800ms para traductor, 1600ms para lección
-                        const silenceThresholdMs = isTransMode ? 1800 : isSentenceMode ? 1600 : 500;
+                        // 500ms para palabra suelta, 3000ms para lección y oraciones
+                        const silenceThresholdMs = isSentenceMode ? 3000 : 500;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
 
                         const checkAudioLevel = () => {
@@ -436,7 +427,7 @@
 
                 stt.maxTimer = setTimeout(() => {
                     if (stt.isRecording) stt.stop();
-                }, isTransMode ? 20000 : isSentenceMode ? 16000 : 6000);
+                }, isSentenceMode ? 30000 : 6000);
 
             } catch(err) {
                 console.error("Audio recording error:", err);

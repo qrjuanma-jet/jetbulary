@@ -180,7 +180,7 @@
         <div style="margin: 14px 0 10px; display: flex; flex-direction: column; gap: 10px;">
             <button id="btn-lesson-main" onclick="session.startLesson()" class="tech btn-lesson-pulse" style="width: 100%; padding: 14px 18px; border: 2px solid var(--cyber-ok); background: linear-gradient(135deg, rgba(0,255,149,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,149,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
                 <span style="color: var(--cyber-ok); font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">🎯 <span id="lbl-lesson-btn">LESSON</span></span>
-                <span style="font-size: 0.76rem; color: #CCC; text-transform: none; letter-spacing: 0;">Practica el texto y gana puntos</span>
+                <span style="font-size: 0.76rem; color: #CCC; text-transform: none; letter-spacing: 0;">Practica la frase con la profesora</span>
             </button>
 
             <!-- SINGLE UNIFIED BUTTON: GRAMMAR+ (CONSULTA Y TEMARIO EXIGIBLE DEL NIVEL) -->
@@ -583,10 +583,39 @@
             </div>
             <button onclick="app.showDashboard()" class="secondary" style="width: auto; padding: 8px 16px; font-size: 0.8rem;">⬅ Volver</button>
         </div>
-        <div class="hud-card">
-            <p style="color:#AAA;">Al utilizar Jetbulary, aceptas utilizar el servicio de forma responsable y dentro de los términos de la API de Groq.</p>
-            <p style="color:#AAA; margin-top:10px;">Esta es una herramienta educativa gratuita orientada al aprendizaje del idioma inglés. El servicio se proporciona "tal cual" sin garantías explícitas.</p>
-            <p style="color:#AAA; margin-top:10px;">Para cualquier consulta, escribe a <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan);">info@jetbulary.com</a>.</p>
+        <div class="hud-card" style="line-height: 1.6;">
+            <div style="background: rgba(0,243,255,0.08); border-left: 4px solid var(--neon-cyan); padding: 12px 16px; border-radius: 6px; margin-bottom: 14px;">
+                <strong style="color: var(--neon-cyan); font-size: 0.95rem;">🌐 Proyecto Personal y Educativo sin Fines Comerciales</strong>
+                <p style="color: #DDD; font-size: 0.85rem; margin-top: 4px;">
+                    Jetbulary es un <strong>proyecto personal</strong> nacido con la ilusión de aprender idiomas aprovechando el potencial de las <strong>nuevas tecnologías</strong> (inteligencia artificial, reconocimiento de voz y análisis fonético en tiempo real).
+                </p>
+                <p style="color: #DDD; font-size: 0.85rem; margin-top: 6px;">
+                    Es una iniciativa <strong>100% gratuita y no comercial</strong>: al desarrollador le apasiona compartir estas herramientas con la comunidad y está siempre encantado de <strong>escuchar vuestras ideas, propuestas y sugerencias</strong> para seguir mejorándola día a día.
+                </p>
+            </div>
+
+            <p style="color:#BBB; font-size: 0.88rem;">
+                Al utilizar Jetbulary, aceptas hacer un uso responsable de las funcionalidades interactivas y pedagógicas de la plataforma.
+            </p>
+
+            <div style="margin-top: 16px; padding: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;">
+                <strong style="color: #FFF; font-size: 0.92rem;">🤝 Agradecimientos y Reconocimientos Especiales</strong>
+                <p style="color: #CCC; font-size: 0.84rem; margin-top: 6px;">
+                    Deseamos expresar nuestro sincero y profundo agradecimiento a las extraordinarias plataformas que hacen posible esta experiencia de aprendizaje:
+                </p>
+                <ul style="color: #DDD; font-size: 0.85rem; margin-top: 8px; padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+                    <li>
+                        ⚡ <strong><a href="https://groq.com" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan); text-decoration: underline; font-weight: bold;">Groq (groq.com)</a></strong>: Por su revolucionaria tecnología de inferencia de lenguaje de ultra baja latencia y modelos de inteligencia artificial de última generación. Animamos a todos los usuarios a conocer su innovador trabajo en <a href="https://groq.com" target="_blank" rel="noopener noreferrer" style="color: var(--neon-cyan); text-decoration: underline;">https://groq.com</a>.
+                    </li>
+                    <li>
+                        🎬 <strong><a href="https://youglish.com" target="_blank" rel="noopener noreferrer" style="color: var(--neon-pink); text-decoration: underline; font-weight: bold;">YouGlish (youglish.com)</a></strong>: Por su excepcional plataforma de inmersión y búsqueda en videos de hablantes nativos reales en situaciones auténticas. Te recomendamos encarecidamente visitar y explorar su magnífica herramienta en <a href="https://youglish.com" target="_blank" rel="noopener noreferrer" style="color: var(--neon-pink); text-decoration: underline;">https://youglish.com</a>.
+                    </li>
+                </ul>
+            </div>
+
+            <p style="color:#888; font-size: 0.82rem; margin-top: 16px;">
+                El servicio se ofrece "tal cual" con fines de estudio y práctica personal. Si tienes cualquier sugerencia, consulta o feedback, escribe directamente a <a href="mailto:info@jetbulary.com" style="color:var(--neon-cyan); text-decoration: underline;">info@jetbulary.com</a>.
+            </p>
         </div>
     </div>
 

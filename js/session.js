@@ -176,7 +176,7 @@
                 session.markCurrentWordsAsLearned();
                 const fb = document.getElementById('feedback-msg');
                 if (fb) {
-                    fb.innerHTML = `🎉 <strong>¡4 palabras completadas!</strong> Pulsa <strong>LESSON</strong> para practicar el texto y ganar puntos.`;
+                    fb.innerHTML = `🎉 <strong>¡4 palabras completadas!</strong> Pulsa <strong>LESSON</strong> para practicar la frase con la profesora.`;
                     fb.className = "feedback correct";
                 }
             }
