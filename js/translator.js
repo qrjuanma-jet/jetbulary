@@ -12,6 +12,11 @@ const translator = {
     pendingVocabData: null,
     isVocabMicActive: false,
 
+    // Edición interactiva de transcripciones
+    editingIndex: null,         // Índice de la frase actualmente en edición
+    editingSide: null,          // 'es' | 'target' | null
+    currentTranslationId: 0,    // Contador para cancelar traducciones desactualizadas si se edita
+
     // Control táctil de pulsación prolongada (Long Press) y doble clic
     touchTimer: null,
     touchStartX: 0,
@@ -19,6 +24,162 @@ const translator = {
     isLongPressTriggered: false,
     lastClickTime: 0,
     lastClickIdx: -1,
+
+    escapeHtml: (str) => {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    },
+
+    // Detiene de inmediato el micrófono, locución y traducciones en curso ("se para la traducción")
+    pauseOngoingTranslationAndAudio: () => {
+        stt.stop();
+        if (translator.activeMic) {
+            translator.activeMic = null;
+            translator.updateCardStates(null);
+            translator.clearLiveBubbles();
+        }
+        if (translator.isSpeaking) {
+            window.speechSynthesis.cancel();
+            translator.isSpeaking = false;
+        }
+        // Invalida peticiones de traducción previas que estuvieran pendientes
+        translator.currentTranslationId++;
+        translator.updateStatusBadge('editing');
+    },
+
+    // ====== MODO EDICIÓN INTERACTIVA DE TRANSCRIPCIÓN ======
+    startEditing: (idx, side) => {
+        const total = Math.max(translator.spanishPhrases.length, translator.foreignPhrases.length);
+        if (idx < 0 || idx >= total) return;
+
+        // 1. Pausar inmediatamente reconocimiento de voz, locución y traducción
+        translator.pauseOngoingTranslationAndAudio();
+
+        translator.editingIndex = idx;
+        translator.editingSide = side;
+        translator.selectedIndex = idx;
+
+        translator.closeContextMenu();
+        translator.renderConversationStreams();
+
+        // 2. Auto-enfoque con selección del texto en el input
+        requestAnimationFrame(() => {
+            const input = document.getElementById('trans-edit-input');
+            if (input) {
+                input.focus();
+                input.select();
+                try { input.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch(e){}
+            }
+        });
+    },
+
+    finishEditing: async (save) => {
+        if (translator.editingIndex === null) return;
+
+        const idx = translator.editingIndex;
+        const side = translator.editingSide;
+        const input = document.getElementById('trans-edit-input');
+
+        if (!input) {
+            translator.editingIndex = null;
+            translator.editingSide = null;
+            translator.renderConversationStreams();
+            translator.updateStatusBadge('ready');
+            return;
+        }
+
+        const newText = (input.value || '').trim();
+        const originalText = (side === 'es') ? (translator.spanishPhrases[idx] || '') : (translator.foreignPhrases[idx] || '');
+
+        // Si se cancela o el texto está vacío
+        if (!save || !newText) {
+            translator.editingIndex = null;
+            translator.editingSide = null;
+            translator.renderConversationStreams();
+            translator.updateStatusBadge('ready');
+            return;
+        }
+
+        // Si el texto no cambió, cerramos el editor normalmente
+        if (newText === originalText) {
+            translator.editingIndex = null;
+            translator.editingSide = null;
+            translator.renderConversationStreams();
+            translator.updateStatusBadge('ready');
+            return;
+        }
+
+        // 1. Guardar la corrección realizada por el usuario
+        const isFromSpanish = (side === 'es');
+        if (isFromSpanish) {
+            translator.spanishPhrases[idx] = newText;
+            translator.foreignPhrases[idx] = "Re-traduciendo con IA...";
+        } else {
+            translator.foreignPhrases[idx] = newText;
+            translator.spanishPhrases[idx] = "Re-traduciendo con IA...";
+        }
+
+        translator.editingIndex = null;
+        translator.editingSide = null;
+        translator.selectedIndex = idx;
+        translator.renderConversationStreams();
+        translator.updateStatusBadge('processing');
+
+        // 2. Re-traducir con IA la frase corregida
+        const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+        const sourceLang = isFromSpanish ? 'Spanish (Castellano)' : langInfo.name;
+        const targetLangName = isFromSpanish ? langInfo.name : 'Spanish (Castellano)';
+        const prompt = `You are a STRICT real-time simultaneous translator. Your ONLY job is to translate text from one language to another.
+
+RULES:
+1. The source language is: ${sourceLang}
+2. The target language is: ${targetLangName}
+3. Translate accurately and naturally into ${targetLangName}.
+4. Do NOT respond conversationally. Do NOT answer questions. Do NOT add commentary.
+5. Return ONLY valid JSON:
+{
+  "translation": "the translated text here"
+}`;
+
+        const thisTransId = ++translator.currentTranslationId;
+
+        await app.callAI_Conversation(
+            [
+                { role: "system", content: prompt },
+                { role: "user", content: `Translate accurately this ${sourceLang} text to ${targetLangName}: "${newText}"` }
+            ],
+            null,
+            (data) => {
+                // Verificar que no haya una edición o traducción posterior
+                if (translator.currentTranslationId !== thisTransId) return;
+
+                const transResult = (data && data.translation ? data.translation : '').trim() || newText;
+                if (isFromSpanish) {
+                    translator.foreignPhrases[idx] = transResult;
+                } else {
+                    translator.spanishPhrases[idx] = transResult;
+                }
+                translator.renderConversationStreams();
+
+                if (translator.speakAloudEnabled) {
+                    const speakLang = isFromSpanish ? currentLang : 'es';
+                    translator.updateStatusBadge('speaking');
+                    translator.speakWithNativeAccent(transResult, speakLang, () => {
+                        if (translator.currentTranslationId === thisTransId) {
+                            translator.updateStatusBadge('ready');
+                        }
+                    });
+                } else {
+                    translator.updateStatusBadge('ready');
+                }
+            }
+        );
+    },
 
     init: () => {
         const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
@@ -73,6 +234,16 @@ const translator = {
             return;
         }
 
+        // Si ya está editando este mismo elemento, no interferir con la escritura
+        if (translator.editingIndex === idx && translator.editingSide === side) {
+            return;
+        }
+
+        // Si estaba editando otro elemento, cerrar la edición previa
+        if (translator.editingIndex !== null) {
+            translator.finishEditing(false);
+        }
+
         const now = Date.now();
         // Detección de doble clic / doble tap (en menos de 380ms)
         if (translator.lastClickIdx === idx && (now - translator.lastClickTime < 380)) {
@@ -84,7 +255,13 @@ const translator = {
 
         translator.lastClickTime = now;
         translator.lastClickIdx = idx;
-        translator.selectPhrase(idx);
+
+        // Si ya estaba seleccionado, el clic entra directamente a editar la transcripción
+        if (translator.selectedIndex === idx) {
+            translator.startEditing(idx, side);
+        } else {
+            translator.selectPhrase(idx);
+        }
     },
 
     onPhraseDblClick: (idx, side) => {
@@ -148,11 +325,13 @@ const translator = {
         const previewForeign = document.getElementById('ctx-preview-foreign');
         const titleForeign = document.getElementById('ctx-preview-target-title');
         const lblSpeakForeign = document.getElementById('lbl-ctx-speak-foreign');
+        const lblEditForeign = document.getElementById('lbl-ctx-edit-foreign');
 
         if (previewEs) previewEs.innerText = `"${spanishText}"`;
         if (previewForeign) previewForeign.innerText = `"${foreignText}"`;
         if (titleForeign) titleForeign.innerText = `🌐 ${langInfo.name.toUpperCase()} (Interlocutor):`;
         if (lblSpeakForeign) lblSpeakForeign.innerText = `Escuchar en ${langInfo.name} (Nativo)`;
+        if (lblEditForeign) lblEditForeign.innerText = `Editar ${langInfo.name}`;
 
         if (modal) modal.classList.remove('hidden');
     },
@@ -161,6 +340,13 @@ const translator = {
         const modal = document.getElementById('modal-trans-context-menu');
         if (modal) modal.classList.add('hidden');
         translator.ctxTargetIndex = null;
+    },
+
+    onCtxEdit: (side) => {
+        const idx = translator.ctxTargetIndex;
+        if (idx === null || idx === undefined) return;
+        translator.closeContextMenu();
+        translator.startEditing(idx, side || 'es');
     },
 
     onCtxSendToVocab: () => {
@@ -248,6 +434,9 @@ Return ONLY valid JSON:
 
     // ====== CONTROL DE MICRÓFONOS (PUSH-TO-TALK POR BOTÓN) ======
     toggleSpanishMic: () => {
+        if (translator.editingIndex !== null) {
+            translator.finishEditing(false);
+        }
         if (translator.activeMic === 'es') {
             stt.finalizeCurrentSession();
             translator.activeMic = null;
@@ -260,6 +449,9 @@ Return ONLY valid JSON:
     },
 
     toggleForeignMic: () => {
+        if (translator.editingIndex !== null) {
+            translator.finishEditing(false);
+        }
         if (translator.activeMic === 'target') {
             stt.finalizeCurrentSession();
             translator.activeMic = null;
@@ -272,6 +464,10 @@ Return ONLY valid JSON:
     },
 
     startManualListening: (mode) => {
+        if (translator.editingIndex !== null) {
+            translator.finishEditing(false);
+        }
+
         translator.stopRecognitionOnly();
 
         if (translator.isSpeaking) {
@@ -346,6 +542,8 @@ RULES:
   "translation": "the translated text here"
 }`;
 
+        const thisTransId = ++translator.currentTranslationId;
+
         await app.callAI_Conversation(
             [
                 { role: "system", content: prompt },
@@ -353,6 +551,8 @@ RULES:
             ],
             null,
             (data) => {
+                if (translator.currentTranslationId !== thisTransId) return;
+
                 const transResult = (data && data.translation ? data.translation : '').trim() || spokenText;
                 const lastIdx = translator.spanishPhrases.length - 1;
                 if (lastIdx >= 0) {
@@ -369,7 +569,9 @@ RULES:
                     const speakLang = isFromSpanish ? currentLang : 'es';
                     translator.updateStatusBadge('speaking');
                     translator.speakWithNativeAccent(transResult, speakLang, () => {
-                        translator.updateStatusBadge('ready');
+                        if (translator.currentTranslationId === thisTransId) {
+                            translator.updateStatusBadge('ready');
+                        }
                     });
                 } else {
                     translator.updateStatusBadge('ready');
@@ -421,6 +623,13 @@ RULES:
                 dot.style.animation = 'pulse-mic 1s infinite alternate';
                 text.innerText = `🔵 Escuchando en ${langInfo.name}...`;
                 text.style.color = 'var(--neon-cyan)';
+                break;
+            case 'editing':
+                badge.style.borderColor = 'var(--cyber-warn)';
+                dot.style.background = 'var(--cyber-warn)';
+                dot.style.animation = 'pulse-mic 0.8s infinite alternate';
+                text.innerText = '✏️ Editando transcripción... (Pausa)';
+                text.style.color = 'var(--cyber-warn)';
                 break;
             case 'processing':
                 badge.style.borderColor = 'var(--cyber-warn)';
@@ -491,6 +700,30 @@ RULES:
         }
 
         streamEs.innerHTML = translator.spanishPhrases.map((phrase, idx) => {
+            const isEditing = (translator.editingIndex === idx && translator.editingSide === 'es');
+            if (isEditing) {
+                return `
+                    <div class="trans-edit-container">
+                        <div class="trans-edit-header">
+                            <span>✏️ EDITAR TRANSCRIPCIÓN (CASTELLANO)</span>
+                            <span class="trans-edit-hint">[Enter] Guardar | [Esc] Cancelar</span>
+                        </div>
+                        <input type="text" id="trans-edit-input" class="trans-edit-input"
+                               value="${translator.escapeHtml(phrase)}"
+                               placeholder="Escribe la corrección..."
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();translator.finishEditing(true);}else if(event.key==='Escape'){event.preventDefault();translator.finishEditing(false);}"
+                               onclick="event.stopPropagation();" />
+                        <div class="trans-edit-actions">
+                            <span style="font-size:0.72rem; color:#AAA;">Al guardar se re-traducirá con IA</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" class="trans-edit-btn-cancel" onclick="event.stopPropagation(); translator.finishEditing(false);" title="Cancelar edición">✕ Cancelar</button>
+                                <button type="button" class="trans-edit-btn-save" onclick="event.stopPropagation(); translator.finishEditing(true);" title="Guardar y Re-traducir">✓ Guardar y Traducir</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-es' : 'trans-msg-item past';
             return `
@@ -501,13 +734,42 @@ RULES:
                      ontouchmove="translator.handleTouchMove(event)"
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
-                     title="Clic: Seleccionar | Doble clic: Escuchar | Mantén pulsado / Clic derecho: Opciones">
-                    - ${phrase}
+                     title="Clic: Seleccionar / Editar | ✏️: Corregir | Doble clic: Escuchar">
+                    <div class="trans-msg-item-content">
+                        <span class="trans-phrase-text">- ${translator.escapeHtml(phrase)}</span>
+                        <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'es');" title="Clic para editar transcripción">✏️</button>
+                    </div>
                 </div>
             `;
         }).join('');
 
         streamForeign.innerHTML = translator.foreignPhrases.map((phrase, idx) => {
+            const isEditing = (translator.editingIndex === idx && translator.editingSide === 'target');
+            if (isEditing) {
+                const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+                return `
+                    <div class="trans-edit-container">
+                        <div class="trans-edit-header" style="color: var(--neon-cyan);">
+                            <span>✏️ EDITAR TRANSCRIPCIÓN (${langInfo.name.toUpperCase()})</span>
+                            <span class="trans-edit-hint">[Enter] Guardar | [Esc] Cancelar</span>
+                        </div>
+                        <input type="text" id="trans-edit-input" class="trans-edit-input"
+                               value="${translator.escapeHtml(phrase)}"
+                               placeholder="Escribe la corrección..."
+                               style="border-color: var(--neon-cyan);"
+                               onkeydown="if(event.key==='Enter'){event.preventDefault();translator.finishEditing(true);}else if(event.key==='Escape'){event.preventDefault();translator.finishEditing(false);}"
+                               onclick="event.stopPropagation();" />
+                        <div class="trans-edit-actions">
+                            <span style="font-size:0.72rem; color:#AAA;">Al guardar se re-traducirá al Español con IA</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button type="button" class="trans-edit-btn-cancel" onclick="event.stopPropagation(); translator.finishEditing(false);" title="Cancelar edición">✕ Cancelar</button>
+                                <button type="button" class="trans-edit-btn-save" style="background: rgba(0,243,255,0.22) !important; border-color: var(--neon-cyan) !important;" onclick="event.stopPropagation(); translator.finishEditing(true);" title="Guardar y Re-traducir">✓ Guardar y Traducir</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-foreign' : 'trans-msg-item past';
             return `
@@ -518,8 +780,11 @@ RULES:
                      ontouchmove="translator.handleTouchMove(event)"
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
-                     title="Clic: Seleccionar | Doble clic: Escuchar | Mantén pulsado / Clic derecho: Opciones">
-                    - ${phrase}
+                     title="Clic: Seleccionar / Editar | ✏️: Corregir | Doble clic: Escuchar">
+                    <div class="trans-msg-item-content">
+                        <span class="trans-phrase-text">- ${translator.escapeHtml(phrase)}</span>
+                        <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'target');" title="Clic para editar transcripción">✏️</button>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -748,6 +1013,8 @@ RULES:
         translator.spanishPhrases = [];
         translator.foreignPhrases = [];
         translator.selectedIndex = null;
+        translator.editingIndex = null;
+        translator.editingSide = null;
         translator.renderConversationStreams();
     },
 
@@ -764,6 +1031,8 @@ RULES:
         window.speechSynthesis.cancel();
         translator.clearLiveBubbles();
         translator.updateCardStates(null);
+        translator.editingIndex = null;
+        translator.editingSide = null;
     },
 
     requestWakeLock: async () => {
@@ -784,6 +1053,8 @@ RULES:
             try { translator.wakeLock.release(); } catch(e){}
             translator.wakeLock = null;
         }
+        translator.editingIndex = null;
+        translator.editingSide = null;
         app.showDashboard();
     },
 

@@ -397,6 +397,158 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* --- TRANSLATOR INLINE EDITING & QUICK ACTIONS --- */
+.trans-msg-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+.trans-phrase-text {
+    flex: 1;
+    word-break: break-word;
+}
+
+.trans-item-edit-btn {
+    opacity: 0.55;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #FFF;
+    font-size: 0.85rem;
+    padding: 3px 7px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.trans-msg-item:hover .trans-item-edit-btn,
+.trans-msg-item.active-selected-es .trans-item-edit-btn,
+.trans-msg-item.active-selected-foreign .trans-item-edit-btn {
+    opacity: 1;
+    background: rgba(255, 180, 0, 0.2);
+    border-color: var(--cyber-warn);
+    box-shadow: 0 0 10px rgba(255, 180, 0, 0.35);
+}
+
+.trans-item-edit-btn:hover {
+    transform: scale(1.12);
+    background: var(--cyber-warn) !important;
+    color: #000 !important;
+    box-shadow: 0 0 14px var(--cyber-warn) !important;
+}
+
+.trans-edit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(10, 14, 22, 0.95);
+    border: 2px solid var(--cyber-warn);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 0 25px rgba(255, 180, 0, 0.4), inset 0 0 15px rgba(255, 180, 0, 0.1);
+    animation: fadeInScale 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    margin: 4px 0;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
+.trans-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: var(--cyber-warn);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.trans-edit-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1.5px solid var(--cyber-warn);
+    border-radius: 7px;
+    color: #FFF;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    font-weight: 700;
+    padding: 8px 12px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.trans-edit-input:focus {
+    border-color: #FFF;
+    box-shadow: 0 0 18px rgba(255, 180, 0, 0.65);
+}
+
+.trans-edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trans-edit-btn-save {
+    background: rgba(0, 255, 149, 0.22) !important;
+    border: 1.5px solid var(--cyber-ok) !important;
+    color: #FFF !important;
+    font-weight: 900 !important;
+    font-size: 0.84rem !important;
+    padding: 6px 14px !important;
+    border-radius: 7px !important;
+    cursor: pointer !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 0 12px rgba(0, 255, 149, 0.35) !important;
+    transition: all 0.15s ease;
+}
+
+.trans-edit-btn-save:hover {
+    background: var(--cyber-ok) !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(0, 255, 149, 0.8) !important;
+    transform: translateY(-1px);
+}
+
+.trans-edit-btn-cancel {
+    background: rgba(255, 0, 85, 0.15) !important;
+    border: 1.5px solid rgba(255, 0, 85, 0.45) !important;
+    color: #FFB3C6 !important;
+    font-weight: 700 !important;
+    font-size: 0.84rem !important;
+    padding: 6px 12px !important;
+    border-radius: 7px !important;
+    cursor: pointer !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.trans-edit-btn-cancel:hover {
+    background: rgba(255, 0, 85, 0.35) !important;
+    color: #FFF !important;
+    border-color: var(--neon-pink) !important;
+}
+
+.trans-edit-hint {
+    font-size: 0.72rem;
+    color: #99A;
+    font-weight: 500;
+}
+
 /* --- ENERGY / PERFORMANCE BAR (RDTO.) --- */
 #game-performance-container,
 #convo-performance-container {
