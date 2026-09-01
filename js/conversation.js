@@ -427,7 +427,7 @@ CRITICAL: Return ONLY a valid JSON object:
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const micBtn = document.getElementById('mic-btn-convo');
             if (stt.isRecording) {
-                stt.stop();
+                stt.finalizeCurrentSession();
                 return;
             }
 

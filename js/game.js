@@ -109,6 +109,54 @@
             return similarity >= requiredThreshold;
         },
 
+        // Comprobación estricta para frases completas de lección (evita cortar al alumno tras la primera palabra)
+        isFullSentenceMatch: (target, spoken) => {
+            if (!target || !spoken) return false;
+            const normalize = (str) => str.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'’]/g, " ")
+                .replace(/\s+/g, " ").trim();
+
+            const cleanTarget = normalize(target);
+            const cleanSpoken = normalize(spoken);
+
+            if (cleanTarget === cleanSpoken) return true;
+
+            const targetWords = cleanTarget.split(' ').filter(w => w.length > 0);
+            const spokenWords = cleanSpoken.split(' ').filter(w => w.length > 0);
+
+            // Si el alumno ha pronunciado menos del 85% de las palabras, la frase aún NO está terminada
+            if (spokenWords.length < Math.ceil(targetWords.length * 0.85)) return false;
+
+            const levDist = (s1, s2) => {
+                const costs = [];
+                for (let i = 0; i <= s1.length; i++) {
+                    let lastValue = i;
+                    for (let j = 0; j <= s2.length; j++) {
+                        if (i === 0) costs[j] = j;
+                        else if (j > 0) {
+                            let newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                                newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                            }
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                    if (i > 0) costs[s2.length] = lastValue;
+                }
+                return costs[s2.length];
+            };
+
+            const maxLen = Math.max(cleanTarget.length, cleanSpoken.length);
+            if (maxLen === 0) return true;
+            const dist = levDist(cleanTarget, cleanSpoken);
+            const similarity = 1 - (dist / maxLen);
+
+            // Requiere al menos un 88% de coincidencia global sobre la frase completa
+            return similarity >= 0.88;
+        },
+
         start: (topicId) => {
             let words = db.words.filter(w => w.topic_id === topicId);
             if (words.length === 0) return alert("No words available.");

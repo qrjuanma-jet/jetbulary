@@ -226,16 +226,24 @@
                                 translator.onLiveInterim(accumulatedText);
                             }
 
-                            // Comprobar si coincide con la frase esperada en lecciones
-                            if (typeof conversation !== 'undefined' && conversation.expectedText && typeof game !== 'undefined' && game.isCloseMatch) {
-                                if (game.isCloseMatch(conversation.expectedText, accumulatedText)) {
+                            // Feedback en tiempo real para lección y conversación
+                            if (target === 'convo') {
+                                const convoSpokenEl = document.getElementById('convo-spoken-text');
+                                if (convoSpokenEl) {
+                                    convoSpokenEl.innerHTML = `<span style="color:var(--neon-cyan); font-weight:bold;">🎤 Escuchando:</span> "${accumulatedText}" <span style="animation: pulse-mic 0.8s infinite;">▍</span>`;
+                                }
+                            }
+
+                            // Comprobar si coincide con la frase COMPLETA esperada en lecciones (solo cuando se ha dicho toda la frase completa)
+                            if (typeof conversation !== 'undefined' && conversation.expectedText && typeof game !== 'undefined' && game.isFullSentenceMatch) {
+                                if (game.isFullSentenceMatch(conversation.expectedText, accumulatedText)) {
                                     finalize(accumulatedText);
                                     return;
                                 }
                             }
 
-                            // Temporizador de silencio generoso: 3000ms para lección y conversación (permite respirar y pensar con calma)
-                            const silenceDelay = target === 'convo' ? 3000 : (isTransMode ? 2500 : 1000);
+                            // Temporizador de silencio generoso: 5000ms para lección y conversación (permite respirar y pensar con calma)
+                            const silenceDelay = target === 'convo' ? 5000 : (isTransMode ? 3500 : 1200);
                             if (stt.silenceTimer) clearTimeout(stt.silenceTimer);
                             stt.silenceTimer = setTimeout(() => {
                                 finalize(accumulatedText);
@@ -283,13 +291,13 @@
                     stt.isRecording = true;
                     rec.start();
 
-                    // Max timeout: 6s para palabra única, 30s para lecciones y oraciones
+                    // Max timeout: 6s para palabra única, 45s para lecciones y oraciones
                     stt.maxTimer = setTimeout(() => {
                         if (stt.isRecording) {
                             if (accumulatedText) finalize(accumulatedText);
                             else stt.stop();
                         }
-                    }, isSentenceMode ? 30000 : 6000);
+                    }, isSentenceMode ? 45000 : 6000);
 
                     return;
                 } catch(srErr) {
@@ -397,8 +405,8 @@
 
                         let speechStarted = false;
                         let silenceStart = null;
-                        // 500ms para palabra suelta, 3000ms para lección y oraciones
-                        const silenceThresholdMs = isSentenceMode ? 3000 : 500;
+                        // 500ms para palabra suelta, 5000ms para lección y oraciones
+                        const silenceThresholdMs = isSentenceMode ? 5000 : 500;
                         const buffer = new Uint8Array(analyser.frequencyBinCount);
 
                         const checkAudioLevel = () => {
@@ -427,7 +435,7 @@
 
                 stt.maxTimer = setTimeout(() => {
                     if (stt.isRecording) stt.stop();
-                }, isSentenceMode ? 30000 : 6000);
+                }, isSentenceMode ? 45000 : 6000);
 
             } catch(err) {
                 console.error("Audio recording error:", err);
