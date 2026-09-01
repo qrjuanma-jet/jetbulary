@@ -1,9 +1,21 @@
-const CACHE_NAME = 'jetbulary-cache-v105';
+const CACHE_NAME = 'jetbulary-cache-v119';
 const PRECACHE_URLS = [
     './',
     'index.html',
     'manifest.json',
     'icon.png',
+    'css/styles.css',
+    'js/config.js',
+    'js/data/topics.js',
+    'js/db.js',
+    'js/audio.js',
+    'js/stt.js',
+    'js/session.js',
+    'js/app.js',
+    'js/vocab.js',
+    'js/game.js',
+    'js/conversation.js',
+    'js/translator.js',
     'flag_sp.jpg',
     'flag_en.jpg',
     'flag_de.jpg',
@@ -15,6 +27,7 @@ const PRECACHE_URLS = [
     'flag_eu.jpg',
     'flag_gl.jpg'
 ];
+
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
