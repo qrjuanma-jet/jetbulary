@@ -2,7 +2,7 @@
 const translator = {
     activeMic: null,            // 'es' | 'target' | null
     isSpeaking: false,          // Bloqueo estricto durante locución TTS
-    speakAloudEnabled: true,    // Lectura en voz alta activada por defecto
+    speakAloudEnabled: false,   // Lectura automática desactivada por defecto (se activa con botón VOZ o altavoces)
     wakeLock: null,
     spanishPhrases: [],
     foreignPhrases: [],
@@ -207,6 +207,30 @@ RULES:
         translator.renderConversationStreams();
         translator.updateStatusBadge('ready');
         translator.updateCardStates(null);
+        translator.syncSpeakAloudUI();
+    },
+
+    syncSpeakAloudUI: () => {
+        const icon = document.getElementById('trans-tts-icon');
+        const label = document.getElementById('trans-tts-label');
+        const btn = document.getElementById('btn-trans-tts-toggle');
+        if (translator.speakAloudEnabled) {
+            if (icon) icon.innerText = '🔊';
+            if (label) label.innerText = 'VOZ: ON';
+            if (btn) {
+                btn.style.borderColor = 'var(--cyber-ok)';
+                btn.style.color = 'var(--cyber-ok)';
+                btn.style.background = 'rgba(0,255,149,0.15)';
+            }
+        } else {
+            if (icon) icon.innerText = '🔇';
+            if (label) label.innerText = 'VOZ: OFF';
+            if (btn) {
+                btn.style.borderColor = 'rgba(255,255,255,0.25)';
+                btn.style.color = '#AAA';
+                btn.style.background = 'rgba(0,0,0,0.5)';
+            }
+        }
     },
 
     checkOrientation: () => {
@@ -853,6 +877,13 @@ RULES:
             : total - 1;
         const phrase = translator.spanishPhrases[activeIdx];
         if (!phrase || phrase === 'Traduciendo...') return;
+
+        const btn = document.getElementById('btn-speaker-es');
+        if (btn) {
+            btn.style.transform = 'scale(1.15)';
+            setTimeout(() => { if (btn) btn.style.transform = 'scale(1)'; }, 180);
+        }
+
         translator.speakWithNativeAccent(phrase, 'es');
     },
 
@@ -864,33 +895,23 @@ RULES:
             : total - 1;
         const phrase = translator.foreignPhrases[activeIdx];
         if (!phrase || phrase === 'Traduciendo...') return;
+
+        const btn = document.getElementById('btn-speaker-foreign');
+        if (btn) {
+            btn.style.transform = 'scale(1.15)';
+            setTimeout(() => { if (btn) btn.style.transform = 'scale(1)'; }, 180);
+        }
+
         translator.speakWithNativeAccent(phrase, currentLang);
     },
 
     // ====== TOGGLE DE VOZ ALTA (TTS) ======
     toggleSpeakAloud: () => {
         translator.speakAloudEnabled = !translator.speakAloudEnabled;
-        const icon = document.getElementById('trans-tts-icon');
-        const label = document.getElementById('trans-tts-label');
-        const btn = document.getElementById('btn-trans-tts-toggle');
-
-        if (translator.speakAloudEnabled) {
-            if (icon) icon.innerText = '🔊';
-            if (label) label.innerText = 'VOZ: ON';
-            if (btn) {
-                btn.style.borderColor = 'var(--cyber-ok)';
-                btn.style.color = 'var(--cyber-ok)';
-                btn.style.background = 'rgba(0,255,149,0.15)';
-            }
-        } else {
-            if (icon) icon.innerText = '🔇';
-            if (label) label.innerText = 'VOZ: OFF';
-            if (btn) {
-                btn.style.borderColor = 'rgba(255,255,255,0.25)';
-                btn.style.color = '#AAA';
-                btn.style.background = 'rgba(0,0,0,0.5)';
-            }
-            window.speechSynthesis.cancel();
+        translator.syncSpeakAloudUI();
+        if (!translator.speakAloudEnabled) {
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
             translator.isSpeaking = false;
         }
     },
@@ -917,6 +938,7 @@ RULES:
         if (typeof audio !== 'undefined' && audio.speakNative) {
             audio.speakNative(text, langCode, handleEnd, translator.speed || 0.85);
         } else {
+            window.speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(text);
             u.lang = langCode === 'es' ? 'es-ES' : (LANGUAGES[langCode]?.speechLang || 'en-US');
             u.onend = handleEnd;
@@ -925,7 +947,7 @@ RULES:
         }
     },
 
-    // ====== SELECTOR DESPLEGABLE DE IDIOMAS ======
+    // ====== SELECTOR DESPLEGABLE DE IDIOMAS (2 COLUMNAS PARA MODO APAISADO) ======
     toggleLanguageDropdown: () => {
         const dropdown = document.getElementById('trans-lang-dropdown');
         if (!dropdown) return;
@@ -937,11 +959,12 @@ RULES:
             for (const [code, info] of Object.entries(LANGUAGES)) {
                 const isActive = code === currentLang;
                 html += `
-                    <div onclick="translator.switchTranslatorLang('${code}')" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer; border-radius: 6px; background: ${isActive ? 'rgba(0,243,255,0.15)' : 'transparent'}; border: 1px solid ${isActive ? 'var(--neon-cyan)' : 'transparent'}; transition: all 0.15s;"
-                        onmouseover="this.style.background='rgba(0,243,255,0.1)'" onmouseout="this.style.background='${isActive ? 'rgba(0,243,255,0.15)' : 'transparent'}'">
-                        <img src="${info.flag}" style="width: 24px; height: 24px; border-radius: 4px; object-fit: cover;" alt="${info.name}">
-                        <span style="font-weight: ${isActive ? '900' : '600'}; color: ${isActive ? 'var(--neon-cyan)' : '#CCC'}; font-size: 0.88rem;">${info.name}</span>
-                        ${isActive ? '<span style="color: var(--cyber-ok); font-weight: bold; margin-left: auto;">✓</span>' : ''}
+                    <div onclick="translator.switchTranslatorLang('${code}')" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; cursor: pointer; border-radius: 6px; background: ${isActive ? 'rgba(0,243,255,0.22)' : 'rgba(255,255,255,0.03)'}; border: 1px solid ${isActive ? 'var(--neon-cyan)' : 'rgba(255,255,255,0.08)'}; transition: all 0.15s; user-select: none;"
+                        onmouseover="this.style.background='rgba(0,243,255,0.15)'; this.style.borderColor='var(--neon-cyan)';"
+                        onmouseout="this.style.background='${isActive ? 'rgba(0,243,255,0.22)' : 'rgba(255,255,255,0.03)'}'; this.style.borderColor='${isActive ? 'var(--neon-cyan)' : 'rgba(255,255,255,0.08)'}';">
+                        <img src="${info.flag}" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" alt="${info.name}">
+                        <span style="font-weight: ${isActive ? '900' : '600'}; color: ${isActive ? 'var(--neon-cyan)' : '#DDD'}; font-size: 0.83rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${info.name}</span>
+                        ${isActive ? '<span style="color: var(--cyber-ok); font-weight: bold; margin-left: auto; font-size: 0.8rem;">✓</span>' : ''}
                     </div>
                 `;
             }
@@ -1244,3 +1267,15 @@ Return ONLY valid JSON:
         translator.confirmAddVocabWord();
     }
 };
+
+// Cerrar dropdown de idiomas al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (translator.langDropdownOpen) {
+        const dropdown = document.getElementById('trans-lang-dropdown');
+        const btn = document.getElementById('btn-trans-lang-select');
+        if (dropdown && !dropdown.contains(e.target) && btn && !btn.contains(e.target)) {
+            dropdown.classList.add('hidden');
+            translator.langDropdownOpen = false;
+        }
+    }
+});

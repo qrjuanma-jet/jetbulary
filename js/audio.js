@@ -36,10 +36,14 @@ const audio = {
 
     // ====== MOTOR DE VOZ NATIVO CON MÁXIMO REALISMO Y ACENTO AUTÉNTICO ======
     currentAudio: null,
+    speechSessionId: 0,
 
     stopSpeech: () => {
+        audio.speechSessionId++; // Invalida cualquier sesión previa o callback pendiente
         if (audio.currentAudio) {
             try {
+                audio.currentAudio.onended = null;
+                audio.currentAudio.onerror = null;
                 audio.currentAudio.pause();
                 audio.currentAudio.currentTime = 0;
                 audio.currentAudio.src = '';
@@ -58,57 +62,81 @@ const audio = {
         }
 
         audio.stopSpeech();
+        const sessionId = audio.speechSessionId;
 
         const cleanText = text.replace(/<[^>]*>/g, '').trim();
         const langInfo = (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode]) ? LANGUAGES[langCode] : { code: langCode || 'en', speechLang: 'en-US' };
         const ttsLang = langInfo.code || langCode || 'en';
 
-        // 1. MOTOR PRIMARIO: Google Neural Native TTS (Audio nativo de alta fidelidad)
-        // Auténticos hablantes nativos para Euskera (eu), Català (ca), Galego (gl), Alemán (de), Francés (fr), etc.
-        // En Euskera la 'z' se pronuncia siempre como /s/, no como zeta castellana /θ/.
-        if (cleanText.length <= 300) {
-            const encoded = encodeURIComponent(cleanText);
-            const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${ttsLang}&client=tw-ob&q=${encoded}`;
-            const audioObj = new Audio(googleUrl);
-            audio.currentAudio = audioObj;
-
-            const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.85);
-            const rate = rateOverride !== undefined ? rateOverride : sliderRate;
-            audioObj.playbackRate = Math.max(0.6, Math.min(1.4, rate));
-
-            let finished = false;
-            const done = () => {
-                if (finished) return;
-                finished = true;
+        let fallbackTriggered = false;
+        const triggerFallback = () => {
+            if (sessionId !== audio.speechSessionId) return;
+            if (fallbackTriggered) return;
+            fallbackTriggered = true;
+            if (audio.currentAudio) {
+                audio.currentAudio.onended = null;
+                audio.currentAudio.onerror = null;
                 audio.currentAudio = null;
-                if (onEnd) onEnd();
-            };
-
-            audioObj.onended = done;
-            audioObj.onerror = () => {
-                // Si falla o no hay conexión externa, recurre a Web Speech API con adaptación fonética
-                audio.speakWebSpeech(cleanText, langCode, onEnd, rateOverride);
-            };
-
-            const playPromise = audioObj.play();
-            if (playPromise !== undefined) {
-                playPromise.catch((err) => {
-                    console.log("Direct audio playback blocked/error, fallback to Web Speech:", err);
-                    audio.speakWebSpeech(cleanText, langCode, onEnd, rateOverride);
-                });
             }
-            return;
+            audio.speakWebSpeech(cleanText, langCode, onEnd, rateOverride, sessionId);
+        };
+
+        // 1. MOTOR PRIMARIO: Google Neural Native TTS (Audio nativo de alta fidelidad)
+        // Auténticos hablantes nativos para Euskera (eu), Català (ca), Galego (gl), Alemán (de), etc.
+        if (cleanText.length <= 250) {
+            try {
+                const encoded = encodeURIComponent(cleanText);
+                const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${ttsLang}&client=tw-ob&q=${encoded}`;
+                const audioObj = new Audio();
+                audioObj.referrerPolicy = 'no-referrer';
+                audio.currentAudio = audioObj;
+
+                const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.85);
+                const rate = rateOverride !== undefined ? rateOverride : sliderRate;
+                audioObj.playbackRate = Math.max(0.6, Math.min(1.4, rate));
+
+                let finished = false;
+                audioObj.onended = () => {
+                    if (sessionId !== audio.speechSessionId) return;
+                    if (finished) return;
+                    finished = true;
+                    audio.currentAudio = null;
+                    if (onEnd) onEnd();
+                };
+
+                audioObj.onerror = () => {
+                    if (sessionId !== audio.speechSessionId) return;
+                    triggerFallback();
+                };
+
+                audioObj.src = googleUrl;
+                const playPromise = audioObj.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        if (sessionId !== audio.speechSessionId) return;
+                        triggerFallback();
+                    });
+                }
+                return;
+            } catch(e) {
+                triggerFallback();
+                return;
+            }
         }
 
-        // Para textos muy largos, usar Web Speech API
-        audio.speakWebSpeech(cleanText, langCode, onEnd, rateOverride);
+        // Para textos más largos, recurrir a Web Speech API
+        audio.speakWebSpeech(cleanText, langCode, onEnd, rateOverride, sessionId);
     },
 
-    speakWebSpeech: (text, langCode, onEnd, rateOverride) => {
+    speakWebSpeech: (text, langCode, onEnd, rateOverride, sessionId) => {
+        if (sessionId && sessionId !== audio.speechSessionId) return;
         if (!('speechSynthesis' in window)) {
             if (onEnd) onEnd();
             return;
         }
+
+        // Cancelar estrictamente cualquier locución pendiente para no encolar frases
+        window.speechSynthesis.cancel();
 
         const langInfo = (typeof LANGUAGES !== 'undefined' && LANGUAGES[langCode]) ? LANGUAGES[langCode] : { code: langCode || 'en', speechLang: 'en-US' };
         const u = new SpeechSynthesisUtterance();
@@ -179,6 +207,7 @@ const audio = {
 
         let finished = false;
         const done = () => {
+            if (sessionId && sessionId !== audio.speechSessionId) return;
             if (finished) return;
             finished = true;
             if (onEnd) onEnd();
@@ -192,7 +221,7 @@ const audio = {
 
         setTimeout(() => {
             if (!finished) done();
-        }, Math.max(3500, adaptedText.length * 110));
+        }, Math.max(3000, adaptedText.length * 100));
 
         window.speechSynthesis.speak(u);
     }
