@@ -159,6 +159,14 @@
             }).join('');
         },
 
+        updateHeaderTranslatorBtn: () => {
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            const label = langInfo.translatorBtnLabel || 'TRANSLATOR';
+            document.querySelectorAll('.lbl-translator-btn').forEach(el => {
+                el.innerText = label;
+            });
+        },
+
         updateLessonButtonsVisibility: () => {
             const freeConvoBtn = document.getElementById('btn-free-conversation');
             if (freeConvoBtn) {

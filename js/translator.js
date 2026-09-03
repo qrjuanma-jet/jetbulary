@@ -329,7 +329,13 @@ RULES:
 
         if (previewEs) previewEs.innerText = `"${spanishText}"`;
         if (previewForeign) previewForeign.innerText = `"${foreignText}"`;
-        if (titleForeign) titleForeign.innerText = `🌐 ${langInfo.name.toUpperCase()} (Interlocutor):`;
+        if (titleForeign) {
+            const flagImg = document.getElementById('ctx-preview-target-flag');
+            const nameSpan = document.getElementById('ctx-preview-target-name');
+            if (flagImg) flagImg.src = langInfo.flag || 'flag_en.jpg';
+            if (nameSpan) nameSpan.innerText = `${langInfo.name.toUpperCase()} (Interlocutor):`;
+            else titleForeign.innerHTML = `<img src="${langInfo.flag || 'flag_en.jpg'}" style="width: 16px; height: 16px; border-radius: 3px; object-fit: cover;" alt="${langInfo.name}"> <span>${langInfo.name.toUpperCase()} (Interlocutor):</span>`;
+        }
         if (lblSpeakForeign) lblSpeakForeign.innerText = `Escuchar en ${langInfo.name} (Nativo)`;
         if (lblEditForeign) lblEditForeign.innerText = `Editar ${langInfo.name}`;
 

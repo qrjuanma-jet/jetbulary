@@ -435,11 +435,11 @@
             <!-- PHRASE PAIR PREVIEW -->
             <div style="background: rgba(0,0,0,0.55); border-radius: 10px; padding: 12px 14px; border: 1.5px solid rgba(255,255,255,0.1); margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
                 <div>
-                    <div style="font-size: 0.72rem; color: var(--neon-pink); font-weight: 800; text-transform: uppercase;">🇪🇸 Castellano:</div>
+                    <div style="font-size: 0.72rem; color: var(--neon-pink); font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 6px;"><img src="flag_sp.jpg" style="width: 16px; height: 16px; border-radius: 3px; object-fit: cover;" alt="ES"> <span>Castellano:</span></div>
                     <div id="ctx-preview-spanish" style="font-size: 1.05rem; font-weight: 700; color: #FFF; margin-top: 2px;">"..."</div>
                 </div>
                 <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
-                    <div style="font-size: 0.72rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase;" id="ctx-preview-target-title">🌐 Interlocutor:</div>
+                    <div style="font-size: 0.72rem; color: var(--neon-cyan); font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 6px;" id="ctx-preview-target-title"><img id="ctx-preview-target-flag" src="flag_en.jpg" style="width: 16px; height: 16px; border-radius: 3px; object-fit: cover;" alt="Target"> <span id="ctx-preview-target-name">Interlocutor:</span></div>
                     <div id="ctx-preview-foreign" style="font-size: 1.15rem; font-weight: 800; color: var(--neon-cyan); margin-top: 2px;">"..."</div>
                 </div>
             </div>
@@ -721,7 +721,10 @@
                 <div onclick="app.setLanguage('en')" class="teacher-select-card" id="lang-card-en" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_en.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇬🇧 Emma (English)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_en.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="English">
+                            <span>Emma (English)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">English Teacher</div>
                     </div>
                     <span class="lang-check" id="check-en" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold;">✓</span>
@@ -731,7 +734,10 @@
                 <div onclick="app.setLanguage('de')" class="teacher-select-card" id="lang-card-de" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_de.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇩🇪 Greta (Deutsch)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_de.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Deutsch">
+                            <span>Greta (Deutsch)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Deutschlehrerin</div>
                     </div>
                     <span class="lang-check" id="check-de" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -741,7 +747,10 @@
                 <div onclick="app.setLanguage('fr')" class="teacher-select-card" id="lang-card-fr" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_fr.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇫🇷 Camille (Français)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_fr.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Français">
+                            <span>Camille (Français)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professeure de Français</div>
                     </div>
                     <span class="lang-check" id="check-fr" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -751,7 +760,10 @@
                 <div onclick="app.setLanguage('it')" class="teacher-select-card" id="lang-card-it" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_it.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇮🇹 Chiara (Italiano)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_it.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Italiano">
+                            <span>Chiara (Italiano)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Insegnante d'Italiano</div>
                     </div>
                     <span class="lang-check" id="check-it" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -761,7 +773,10 @@
                 <div onclick="app.setLanguage('pt')" class="teacher-select-card" id="lang-card-pt" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_pt.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇵🇹 Inês (Português)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_pt.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Português">
+                            <span>Inês (Português)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professora de Português</div>
                     </div>
                     <span class="lang-check" id="check-pt" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -771,7 +786,10 @@
                 <div onclick="app.setLanguage('ru')" class="teacher-select-card" id="lang-card-ru" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_ru.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇷🇺 Anastasia (Русский)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_ru.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Русский">
+                            <span>Anastasia (Русский)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Преподаватель русского</div>
                     </div>
                     <span class="lang-check" id="check-ru" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -781,7 +799,10 @@
                 <div onclick="app.setLanguage('ca')" class="teacher-select-card" id="lang-card-ca" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_ca.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇦🇩 Montserrat (Català)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_ca.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Català">
+                            <span>Montserrat (Català)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Professora de Català</div>
                     </div>
                     <span class="lang-check" id="check-ca" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -791,7 +812,10 @@
                 <div onclick="app.setLanguage('eu')" class="teacher-select-card" id="lang-card-eu" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_eu.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇪🇸 Amaia (Euskara)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_eu.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Euskara">
+                            <span>Amaia (Euskara)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Euskara Irakaslea</div>
                     </div>
                     <span class="lang-check" id="check-eu" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
@@ -801,7 +825,10 @@
                 <div onclick="app.setLanguage('gl')" class="teacher-select-card" id="lang-card-gl" style="display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.3); border-radius: 8px; cursor: pointer; transition: all 0.2s;">
                     <img src="gif_gl.gif" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--neon-cyan); object-fit: cover;">
                     <div style="text-align: left; flex: 1;">
-                        <div style="font-weight: bold; font-size: 1rem; color: #FFF;">🇪🇸 Iria (Galego)</div>
+                        <div style="font-weight: bold; font-size: 1rem; color: #FFF; display: flex; align-items: center; gap: 8px;">
+                            <img src="flag_gl.jpg" style="width: 22px; height: 22px; border-radius: 4px; object-fit: cover; box-shadow: 0 0 6px rgba(0,243,255,0.3);" alt="Galego">
+                            <span>Iria (Galego)</span>
+                        </div>
                         <div style="font-size: 0.76rem; color: var(--neon-cyan);">Profesora de Galego</div>
                     </div>
                     <span class="lang-check" id="check-gl" style="color: var(--cyber-ok); font-size: 1.3rem; font-weight: bold; display: none;">✓</span>
