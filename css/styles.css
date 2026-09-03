@@ -112,17 +112,22 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     padding: 6px 0;
 }
 
-/* --- MODO APAISADO FORZADO (ROTACIÓN 90° EN VERTICAL) --- */
-#view-translator.apaisado-forced {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 100dvh !important;
-    height: 100dvw !important;
-    transform: translate(-50%, -50%) rotate(90deg) !important;
-    transform-origin: center center !important;
-    z-index: 99999 !important;
-    box-sizing: border-box !important;
+/* --- TRANSLATOR SPLIT SCREEN STAGE (HORIZONTAL / VERTICAL RESPONSIVE) --- */
+.trans-split-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    min-height: 0;
+    width: 100%;
+}
+
+@media (max-width: 768px), (orientation: portrait) {
+    .trans-split-stage {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: 1fr 1fr !important;
+        gap: 8px !important;
+    }
 }
 
 /* --- MIC BUTTON --- */

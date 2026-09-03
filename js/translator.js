@@ -198,14 +198,6 @@ RULES:
         if (screen.orientation && screen.orientation.lock) {
             try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
         }
-        const transView = document.getElementById('view-translator');
-        if (transView) {
-            if (window.innerHeight > window.innerWidth) {
-                transView.classList.add('apaisado-forced');
-            } else {
-                transView.classList.remove('apaisado-forced');
-            }
-        }
 
         translator.renderConversationStreams();
         translator.updateStatusBadge('ready');
@@ -730,6 +722,7 @@ RULES:
                 `;
             }
 
+            const cleanPhrase = (phrase || '').replace(/^-\s*/, '');
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-es' : 'trans-msg-item past';
             return `
@@ -740,9 +733,9 @@ RULES:
                      ontouchmove="translator.handleTouchMove(event)"
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
-                     title="Clic: Seleccionar / Editar | ✏️: Corregir | Doble clic: Escuchar">
+                     title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
                     <div class="trans-msg-item-content">
-                        <span class="trans-phrase-text">- ${translator.escapeHtml(phrase)}</span>
+                        <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
                         <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'es');" title="Clic para editar transcripción">✏️</button>
                     </div>
                 </div>
@@ -776,6 +769,7 @@ RULES:
                 `;
             }
 
+            const cleanPhrase = (phrase || '').replace(/^-\s*/, '');
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-foreign' : 'trans-msg-item past';
             return `
@@ -786,14 +780,22 @@ RULES:
                      ontouchmove="translator.handleTouchMove(event)"
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
-                     title="Clic: Seleccionar / Editar | ✏️: Corregir | Doble clic: Escuchar">
+                     title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
                     <div class="trans-msg-item-content">
-                        <span class="trans-phrase-text">- ${translator.escapeHtml(phrase)}</span>
+                        <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
                         <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'target');" title="Clic para editar transcripción">✏️</button>
                     </div>
                 </div>
             `;
         }).join('');
+
+        // Auto-scroll al final de ambas columnas para mantener visible la última frase
+        requestAnimationFrame(() => {
+            if (translator.editingIndex === null) {
+                streamEs.scrollTop = streamEs.scrollHeight;
+                streamForeign.scrollTop = streamForeign.scrollHeight;
+            }
+        });
     },
 
     onLiveInterim: (liveText) => {
@@ -1050,8 +1052,6 @@ RULES:
 
     exitToDashboard: () => {
         translator.stop();
-        const transView = document.getElementById('view-translator');
-        if (transView) transView.classList.remove('apaisado-forced');
         if (screen.orientation && screen.orientation.unlock) {
             try { screen.orientation.unlock(); } catch(e){}
         }
@@ -1253,8 +1253,6 @@ Return ONLY valid JSON:
         translator.speakWithNativeAccent(data.translated, currentLang, () => {
             setTimeout(() => {
                 translator.closeVocabModeModal();
-                const transView = document.getElementById('view-translator');
-                if (transView) transView.classList.remove('apaisado-forced');
                 if (screen.orientation && screen.orientation.unlock) {
                     try { screen.orientation.unlock(); } catch(e){}
                 }
