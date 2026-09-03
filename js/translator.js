@@ -734,10 +734,8 @@ RULES:
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
                      title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
-                    <div class="trans-msg-item-content">
-                        <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
-                        <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'es');" title="Clic para editar transcripción">✏️</button>
-                    </div>
+                    <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
+                    <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'es');" title="Clic para editar frase">✏️</button>
                 </div>
             `;
         }).join('');
@@ -781,10 +779,8 @@ RULES:
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
                      title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
-                    <div class="trans-msg-item-content">
-                        <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
-                        <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'target');" title="Clic para editar transcripción">✏️</button>
-                    </div>
+                    <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
+                    <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'target');" title="Clic para editar frase">✏️</button>
                 </div>
             `;
         }).join('');

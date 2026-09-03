@@ -112,22 +112,17 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     padding: 6px 0;
 }
 
-/* --- TRANSLATOR SPLIT SCREEN STAGE (HORIZONTAL / VERTICAL RESPONSIVE) --- */
+/* --- TRANSLATOR SPLIT SCREEN STAGE (PERMANENT HORIZONTAL DUAL SCREEN: 50% CASTELLANO | 50% INTERLOCUTOR) --- */
 .trans-split-stage {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: 1fr !important;
     gap: 12px;
     min-height: 0;
     width: 100%;
-}
-
-@media (max-width: 768px), (orientation: portrait) {
-    .trans-split-stage {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: 1fr 1fr !important;
-        gap: 8px !important;
-    }
+    height: 100%;
+    overflow: hidden;
 }
 
 /* --- MIC BUTTON --- */
@@ -347,17 +342,22 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     }
 }
 
-/* --- TRANSLATOR INTERACTIVE PHRASE ITEMS --- */
+/* --- TRANSLATOR INTERACTIVE DIALOGUE ITEMS --- */
 .trans-msg-item {
     transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
     cursor: pointer;
     border-radius: 8px;
-    padding: 6px 8px;
-    margin-bottom: 3px;
+    padding: 6px 38px 6px 10px;
+    margin-bottom: 5px;
     position: relative;
     user-select: none;
     -webkit-user-select: none;
     touch-action: pan-y;
+    line-height: 1.35;
+    word-break: break-word;
+    white-space: normal;
+    display: block;
+    width: 100%;
 }
 
 .trans-msg-item:hover {
@@ -387,12 +387,12 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
 }
 
 .trans-msg-item.past {
-    font-size: 0.93rem;
-    color: #8f9ba8;
+    font-size: 0.95rem;
+    color: #AAA;
     line-height: 1.35;
     border-left: 3px solid transparent;
-    opacity: 0.72;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    opacity: 0.85;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .trans-msg-item.past:hover {
@@ -402,35 +402,30 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     background: rgba(255, 255, 255, 0.08);
 }
 
-/* --- TRANSLATOR INLINE EDITING & QUICK ACTIONS --- */
-.trans-msg-item-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    width: 100%;
-}
-
 .trans-phrase-text {
-    flex: 1;
+    display: inline;
     word-break: break-word;
 }
 
 .trans-item-edit-btn {
-    opacity: 0.55;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.4;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: #FFF;
-    font-size: 0.85rem;
-    padding: 3px 7px;
+    font-size: 0.82rem;
+    padding: 3px 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
+    z-index: 2;
 }
 
 .trans-msg-item:hover .trans-item-edit-btn,
@@ -443,7 +438,7 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
 }
 
 .trans-item-edit-btn:hover {
-    transform: scale(1.12);
+    transform: translateY(-50%) scale(1.12);
     background: var(--cyber-warn) !important;
     color: #000 !important;
     box-shadow: 0 0 14px var(--cyber-warn) !important;
