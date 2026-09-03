@@ -373,12 +373,16 @@ RULES:
         if (lblEditForeign) lblEditForeign.innerText = `Editar ${langInfo.name}`;
 
         if (modal) modal.classList.remove('hidden');
+        history.pushState({ modal: 'trans-context-menu' }, null, '#trans-context-menu');
     },
 
-    closeContextMenu: () => {
+    closeContextMenu: (skipHistoryBack = false) => {
         const modal = document.getElementById('modal-trans-context-menu');
         if (modal) modal.classList.add('hidden');
         translator.ctxTargetIndex = null;
+        if (!skipHistoryBack && history.state && history.state.modal === 'trans-context-menu') {
+            history.back();
+        }
     },
 
     onCtxEdit: (side) => {
@@ -970,8 +974,12 @@ RULES:
             }
             dropdown.innerHTML = html;
             dropdown.classList.remove('hidden');
+            history.pushState({ modal: 'trans-lang-dropdown' }, null, '#trans-lang-dropdown');
         } else {
             dropdown.classList.add('hidden');
+            if (history.state && history.state.modal === 'trans-lang-dropdown') {
+                history.back();
+            }
         }
     },
 
@@ -989,6 +997,9 @@ RULES:
         translator.langDropdownOpen = false;
         const dropdown = document.getElementById('trans-lang-dropdown');
         if (dropdown) dropdown.classList.add('hidden');
+        if (history.state && history.state.modal === 'trans-lang-dropdown') {
+            history.back();
+        }
 
         translator.spanishPhrases = [];
         translator.foreignPhrases = [];
@@ -1022,12 +1033,30 @@ RULES:
         }
     },
 
-    exitToDashboard: () => {
+    exitToDashboard: (fromPopstate = false) => {
         translator.stop();
+        if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+        else window.speechSynthesis.cancel();
+
         window.removeEventListener('resize', translator.checkOrientation);
         window.removeEventListener('orientationchange', translator.checkOrientation);
+
         const transView = document.getElementById('view-translator');
-        if (transView) transView.classList.remove('apaisado-forced');
+        if (transView) {
+            transView.classList.add('hidden');
+            transView.classList.remove('apaisado-forced');
+        }
+
+        const dropdown = document.getElementById('trans-lang-dropdown');
+        if (dropdown) dropdown.classList.add('hidden');
+        translator.langDropdownOpen = false;
+
+        const ctxMenu = document.getElementById('modal-trans-context-menu');
+        if (ctxMenu) ctxMenu.classList.add('hidden');
+
+        const vocabModal = document.getElementById('modal-vocab-ai-mode');
+        if (vocabModal) vocabModal.classList.add('hidden');
+
         if (screen.orientation && screen.orientation.unlock) {
             try { screen.orientation.unlock(); } catch(e){}
         }
@@ -1037,7 +1066,14 @@ RULES:
         }
         translator.editingIndex = null;
         translator.editingSide = null;
-        app.showDashboard();
+
+        // Si el usuario pulsó el botón HOME en pantalla y la URL está en #translator, usar history.back()
+        if (!fromPopstate && window.location.hash === '#translator') {
+            history.back();
+            return;
+        }
+
+        app.showDashboard('none');
     },
 
     // ====== MODO VOCABULARIO ASISTIDO POR IA (DESDE MICRÓFONO O DESDE SELECCIÓN) ======
@@ -1051,14 +1087,18 @@ RULES:
             if (resultBox) resultBox.classList.add('hidden');
             if (successMsg) successMsg.classList.add('hidden');
             translator.pendingVocabData = null;
+            history.pushState({ modal: 'vocab-mode' }, null, '#vocab-mode');
         }
     },
 
-    closeVocabModeModal: () => {
+    closeVocabModeModal: (skipHistoryBack = false) => {
         translator.stopVocabMic();
         const modal = document.getElementById('modal-vocab-ai-mode');
         if (modal) modal.classList.add('hidden');
         translator.pendingVocabData = null;
+        if (!skipHistoryBack && history.state && history.state.modal === 'vocab-mode') {
+            history.back();
+        }
     },
 
     toggleVocabModeMic: () => {

@@ -287,6 +287,7 @@
 
             const modal = document.getElementById('modal-performance-report');
             if (modal) modal.classList.remove('hidden');
+            history.pushState({ modal: 'performance-report' }, null, '#performance-report');
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const avatarModal = document.getElementById('avatar-report-modal');
@@ -1195,7 +1196,7 @@ Respond ONLY with a valid JSON object matching this schema:
             }
         },
 
-        closePerformanceReport: () => {
+        closePerformanceReport: (skipHistoryBack = false) => {
             window.speechSynthesis.cancel();
             game.isSpeakingReport = false;
             game.stopTeleprompterScroll();
@@ -1205,6 +1206,9 @@ Respond ONLY with a valid JSON object matching this schema:
             if (modal) modal.classList.add('hidden');
             const lbl = document.getElementById('lbl-speak-report-btn');
             if (lbl) lbl.innerText = "Escuchar Profesora";
+            if (!skipHistoryBack && history.state && history.state.modal === 'performance-report') {
+                history.back();
+            }
         },
 
         lastGrammarTextToSpeak: '',

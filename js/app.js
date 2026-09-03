@@ -377,61 +377,106 @@
             app.updateLessonButtonsVisibility();
 
             window.onpopstate = (event) => {
+                // 1. Cerrar dropdown de idiomas del traductor si está abierto
+                if (window.translator && translator.langDropdownOpen) {
+                    const dropdown = document.getElementById('trans-lang-dropdown');
+                    if (dropdown && !dropdown.classList.contains('hidden')) {
+                        dropdown.classList.add('hidden');
+                        translator.langDropdownOpen = false;
+                        return;
+                    }
+                }
+
+                // 2. Cerrar menú contextual del traductor si está abierto
+                const ctxMenu = document.getElementById('modal-trans-context-menu');
+                if (ctxMenu && !ctxMenu.classList.contains('hidden')) {
+                    if (window.translator && translator.closeContextMenu) translator.closeContextMenu(true);
+                    else ctxMenu.classList.add('hidden');
+                    return;
+                }
+
+                // 3. Cerrar modal de modo vocabulario IA si está abierto
+                const vocabAiModal = document.getElementById('modal-vocab-ai-mode');
+                if (vocabAiModal && !vocabAiModal.classList.contains('hidden')) {
+                    if (window.translator && translator.closeVocabModeModal) translator.closeVocabModeModal(true);
+                    else vocabAiModal.classList.add('hidden');
+                    return;
+                }
+
+                // 4. Modales de la aplicación
                 const voiceModal = document.getElementById('modal-voice-settings');
                 if (voiceModal && !voiceModal.classList.contains('hidden')) {
-                    voiceModal.classList.add('hidden');
+                    if (app.closeVoiceSettingsModal) app.closeVoiceSettingsModal(true);
+                    else voiceModal.classList.add('hidden');
                     return;
                 }
                 
                 const shareModal = document.getElementById('modal-share');
                 if (shareModal && !shareModal.classList.contains('hidden')) {
-                    shareModal.classList.add('hidden');
+                    if (app.closeShareModal) app.closeShareModal(true);
+                    else shareModal.classList.add('hidden');
                     return;
                 }
+
                 const backupModal = document.getElementById('modal-backup-manager');
                 if (backupModal && !backupModal.classList.contains('hidden')) {
-                    backupModal.classList.add('hidden');
+                    if (app.closeBackupModal) app.closeBackupModal(true);
+                    else backupModal.classList.add('hidden');
                     return;
                 }
+
                 const infoModal = document.getElementById('modal-apikey-info');
                 if (infoModal && !infoModal.classList.contains('hidden')) {
-                    infoModal.classList.add('hidden');
+                    if (app.closeApiKeyInfoModal) app.closeApiKeyInfoModal(true);
+                    else infoModal.classList.add('hidden');
                     return;
                 }
+
                 const teacherModal = document.getElementById('modal-teacher-select');
                 if (teacherModal && !teacherModal.classList.contains('hidden')) {
-                    teacherModal.classList.add('hidden');
+                    if (app.closeTeacherModal) app.closeTeacherModal(true);
+                    else teacherModal.classList.add('hidden');
                     return;
                 }
+
                 const grammarPlusModal = document.getElementById('modal-grammar-plus');
                 if (grammarPlusModal && !grammarPlusModal.classList.contains('hidden')) {
                     if (typeof game !== 'undefined' && game.closeGrammarConsultation) game.closeGrammarConsultation(true);
                     else grammarPlusModal.classList.add('hidden');
                     return;
                 }
+
                 const reportModal = document.getElementById('modal-performance-report');
                 if (reportModal && !reportModal.classList.contains('hidden')) {
                     if (typeof game !== 'undefined' && game.closePerformanceReport) game.closePerformanceReport(true);
                     else reportModal.classList.add('hidden');
                     return;
                 }
-                const vocabAiModal = document.getElementById('modal-vocab-ai-mode');
-                if (vocabAiModal && !vocabAiModal.classList.contains('hidden')) {
-                    translator.closeVocabModeModal();
-                    return;
-                }
+
+                // 5. Si estamos en la vista del traductor, salir al dashboard de forma limpia
                 const transView = document.getElementById('view-translator');
                 if (transView && !transView.classList.contains('hidden')) {
-                    translator.exitToDashboard();
+                    translator.exitToDashboard(true);
                     return;
                 }
+
+                // 6. Si el evento popstate trae un estado de vista previo explícito
                 if (event.state && event.state.view) {
                     if (event.state.view === 'view-dashboard') app.showDashboard('none');
                     else app.switchView(event.state.view, 'none');
-                } else {
-                    const isDash = !document.getElementById('view-dashboard').classList.contains('hidden');
-                    if (!isDash) app.showDashboard('none');
+                    return;
                 }
+
+                // 7. Si la pantalla activa NO es el dashboard principal, volver siempre al dashboard principal
+                const dashView = document.getElementById('view-dashboard');
+                const isDash = dashView && !dashView.classList.contains('hidden');
+                if (!isDash) {
+                    app.showDashboard('none');
+                    return;
+                }
+
+                // 8. Si YA estamos en view-dashboard y no hay ningún modal ni pantalla secundaria abierta:
+                // No hacemos nada para permitir que Android salga de la aplicación con normalidad.
             };
         },
 
@@ -443,8 +488,10 @@
             if (slider) slider.value = val;
         },
 
-        showDashboard: (h) => {
-            window.speechSynthesis.cancel();
+        showDashboard: (h = 'push') => {
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
+
             if (typeof session !== 'undefined' && session.markCurrentWordsAsLearned) {
                 session.markCurrentWordsAsLearned();
             }
@@ -462,6 +509,14 @@
                 if (banner) banner.classList.add('hidden');
             }
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
+
+            // Si se llama con 'push' desde una pantalla secundaria con hash en la URL,
+            // usar history.back() para que no se apilen estados redundantes en el historial de Android
+            if (h === 'push' && window.location.hash && window.location.hash !== '#dashboard') {
+                history.back();
+                return;
+            }
+
             app.switchView('view-dashboard', h);
             if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
             app.autoSelectNextPendingTopic();
@@ -522,21 +577,34 @@
         showTerms: () => app.switchView('view-terms'),
 
         switchView: (id, historyAction = 'push') => {
-            document.querySelectorAll('.container[id^="view-"]').forEach(el => { el.classList.add('hidden'); el.style.zIndex = '1'; el.style.position = 'relative'; });
-            const target = document.getElementById(id);
-            if (target) {
-                target.classList.remove('hidden'); target.style.zIndex = '500'; target.style.position = 'relative';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                target.querySelectorAll('button').forEach(btn => { btn.style.zIndex = '600'; btn.style.pointerEvents = 'auto'; });
-            }
+            // Ocultar rigurosamente TODAS las pantallas sin excepción
+            document.querySelectorAll('[id^="view-"]').forEach(el => {
+                el.classList.add('hidden');
+                el.style.zIndex = '1';
+                el.style.position = 'relative';
+            });
 
-            if (id !== 'view-translator') {
-                const transView = document.getElementById('view-translator');
-                if (transView) transView.classList.remove('apaisado-forced');
+            // Limpieza estricta del traductor si no es la pantalla activa
+            const transView = document.getElementById('view-translator');
+            if (id !== 'view-translator' && transView) {
+                transView.classList.add('hidden');
+                transView.classList.remove('apaisado-forced');
                 if (window.translator && translator.checkOrientation) {
                     window.removeEventListener('resize', translator.checkOrientation);
                     window.removeEventListener('orientationchange', translator.checkOrientation);
                 }
+            }
+
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.remove('hidden');
+                target.style.zIndex = '500';
+                target.style.position = id === 'view-translator' ? 'fixed' : 'relative';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                target.querySelectorAll('button').forEach(btn => {
+                    btn.style.zIndex = '600';
+                    btn.style.pointerEvents = 'auto';
+                });
             }
 
             const newUrl = "#" + id.replace('view-', '');
