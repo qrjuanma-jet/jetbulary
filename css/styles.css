@@ -125,6 +125,19 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     overflow: hidden;
 }
 
+/* --- MODO APAISADO FORZADO (ROTACIÓN 90° EN DISPOSITIVOS EN VERTICAL) --- */
+#view-translator.apaisado-forced {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 100dvh !important;
+    height: 100dvw !important;
+    transform: translate(-50%, -50%) rotate(90deg) !important;
+    transform-origin: center center !important;
+    z-index: 99999 !important;
+    box-sizing: border-box !important;
+}
+
 /* --- MIC BUTTON --- */
 .mic-btn {
     width: 80px; height: 80px; border-radius: 50%; font-size: 2rem;

@@ -194,14 +194,31 @@ RULES:
         if (badgeFlag) badgeFlag.src = langInfo.flag || 'flag_en.jpg';
         if (badgeName) badgeName.innerText = `${langInfo.name.toUpperCase()} (Interlocutor)`;
 
-        // Auto landscape orientation lock si el dispositivo lo soporta
+        // Modo apaisado permanente para el traductor
         if (screen.orientation && screen.orientation.lock) {
             try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
         }
+        translator.checkOrientation();
+        window.removeEventListener('resize', translator.checkOrientation);
+        window.removeEventListener('orientationchange', translator.checkOrientation);
+        window.addEventListener('resize', translator.checkOrientation);
+        window.addEventListener('orientationchange', translator.checkOrientation);
 
         translator.renderConversationStreams();
         translator.updateStatusBadge('ready');
         translator.updateCardStates(null);
+    },
+
+    checkOrientation: () => {
+        const transView = document.getElementById('view-translator');
+        if (!transView || transView.classList.contains('hidden')) return;
+
+        // Si la pantalla es más alta que ancha (pantalla en vertical), forzar rotación a modo apaisado
+        if (window.innerHeight > window.innerWidth) {
+            transView.classList.add('apaisado-forced');
+        } else {
+            transView.classList.remove('apaisado-forced');
+        }
     },
 
     // ====== SELECCIÓN INTERACTIVA DE FRASES (GRANDE / PEQUEÑA) ======
@@ -886,89 +903,25 @@ RULES:
         }
         translator.stopRecognitionOnly();
         translator.isSpeaking = true;
-        window.speechSynthesis.cancel();
-
-        const u = new SpeechSynthesisUtterance(text);
-        const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.85);
-        u.rate = sliderRate;
-
-        const langConfig = {
-            es: { code: 'es-ES', voiceTags: ['es-es', 'spanish', 'castellano', 'monica', 'jorge', 'pablo', 'helena', 'laura', 'google español', 'diego', 'alvaro'] },
-            en: { code: 'en-US', voiceTags: ['en-us', 'en-gb', 'samantha', 'zira', 'google english', 'david', 'mark', 'catherine', 'english'] },
-            de: { code: 'de-DE', voiceTags: ['de-de', 'katja', 'hedda', 'marlene', 'vicki', 'google deutsch', 'deutsch', 'german'] },
-            fr: { code: 'fr-FR', voiceTags: ['fr-fr', 'hortense', 'julie', 'celine', 'google français', 'français', 'french', 'paul'] },
-            it: { code: 'it-IT', voiceTags: ['it-it', 'elsa', 'cosimo', 'alice', 'federica', 'google italiano', 'italiano', 'italian'] },
-            pt: { code: 'pt-PT', voiceTags: ['pt-pt', 'pt-br', 'joana', 'inês', 'google português', 'português', 'portuguese'] },
-            ru: { code: 'ru-RU', voiceTags: ['ru-ru', 'irina', 'tatyana', 'google русский', 'русский', 'russian'] },
-            ca: { code: 'ca-ES', voiceTags: ['ca-es', 'catalan', 'català', 'montserrat'], fallbackCode: 'es-ES' },
-            eu: { code: 'eu-ES', voiceTags: ['eu-es', 'euskara', 'basque', 'miren', 'aritz'], fallbackCode: 'es-ES' },
-            gl: { code: 'gl-ES', voiceTags: ['gl-es', 'galego', 'galician', 'sabela', 'anxo'], fallbackCode: 'es-ES' }
-        };
-
-        const targetConf = langConfig[langCode] || { code: langCode, voiceTags: [langCode] };
-        u.lang = targetConf.code;
-
-        const applyVoiceAndSpeak = () => {
-            const voices = window.speechSynthesis.getVoices() || [];
-            if (voices.length > 0) {
-                // 1. Coincidencia específica por etiquetas de voz
-                let matchedVoice = voices.find(v => {
-                    const vName = v.name.toLowerCase();
-                    const vLang = v.lang.toLowerCase().replace('_', '-');
-                    return targetConf.voiceTags.some(tag => {
-                        if (tag.length <= 3) return vLang.startsWith(tag) || vLang === tag;
-                        return vName.includes(tag) || vLang.includes(tag);
-                    });
-                });
-
-                // 2. Coincidencia por código de idioma estricto
-                if (!matchedVoice) {
-                    matchedVoice = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith(langCode + '-'));
-                }
-
-                // 3. Respaldo para idiomas regionales con fonética española nativa
-                if (!matchedVoice && targetConf.fallbackCode) {
-                    matchedVoice = voices.find(v => {
-                        const vLang = v.lang.toLowerCase().replace('_', '-');
-                        const vName = v.name.toLowerCase();
-                        return vLang.startsWith('es-') || vName.includes('spanish') || vName.includes('español') || vName.includes('helena') || vName.includes('laura') || vName.includes('pablo');
-                    });
-                }
-
-                if (matchedVoice) {
-                    u.voice = matchedVoice;
-                }
-            }
-
-            let finished = false;
-            const complete = () => {
-                if (finished) return;
-                finished = true;
-                translator.isSpeaking = false;
-                if (onEnd) onEnd();
-            };
-
-            u.onend = complete;
-            u.onerror = (e) => {
-                console.warn("TTS error:", e);
-                complete();
-            };
-
-            // Timeout de seguridad en caso de que el navegador no dispare onend
-            setTimeout(() => {
-                if (!finished && translator.isSpeaking) {
-                    complete();
-                }
-            }, Math.max(4000, text.length * 120));
-
-            window.speechSynthesis.speak(u);
-        };
-
-        if (window.speechSynthesis.getVoices().length > 0) {
-            applyVoiceAndSpeak();
+        if (typeof audio !== 'undefined' && audio.stopSpeech) {
+            audio.stopSpeech();
         } else {
-            window.speechSynthesis.onvoiceschanged = applyVoiceAndSpeak;
-            setTimeout(applyVoiceAndSpeak, 100);
+            window.speechSynthesis.cancel();
+        }
+
+        const handleEnd = () => {
+            translator.isSpeaking = false;
+            if (onEnd) onEnd();
+        };
+
+        if (typeof audio !== 'undefined' && audio.speakNative) {
+            audio.speakNative(text, langCode, handleEnd, translator.speed || 0.85);
+        } else {
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = langCode === 'es' ? 'es-ES' : (LANGUAGES[langCode]?.speechLang || 'en-US');
+            u.onend = handleEnd;
+            u.onerror = handleEnd;
+            window.speechSynthesis.speak(u);
         }
     },
 
@@ -1048,6 +1001,10 @@ RULES:
 
     exitToDashboard: () => {
         translator.stop();
+        window.removeEventListener('resize', translator.checkOrientation);
+        window.removeEventListener('orientationchange', translator.checkOrientation);
+        const transView = document.getElementById('view-translator');
+        if (transView) transView.classList.remove('apaisado-forced');
         if (screen.orientation && screen.orientation.unlock) {
             try { screen.orientation.unlock(); } catch(e){}
         }

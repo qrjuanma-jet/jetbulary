@@ -529,6 +529,16 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 target.querySelectorAll('button').forEach(btn => { btn.style.zIndex = '600'; btn.style.pointerEvents = 'auto'; });
             }
+
+            if (id !== 'view-translator') {
+                const transView = document.getElementById('view-translator');
+                if (transView) transView.classList.remove('apaisado-forced');
+                if (window.translator && translator.checkOrientation) {
+                    window.removeEventListener('resize', translator.checkOrientation);
+                    window.removeEventListener('orientationchange', translator.checkOrientation);
+                }
+            }
+
             const newUrl = "#" + id.replace('view-', '');
             if (historyAction === 'push') history.pushState({ view: id }, null, newUrl);
             else if (historyAction === 'replace') history.replaceState({ view: id }, null, newUrl);

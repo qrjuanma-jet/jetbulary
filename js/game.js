@@ -251,34 +251,34 @@
 
         speakAdvice: (text, rateOverride = 0.85) => {
             if (!text) return;
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(text);
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            u.rate = rateOverride;
-            u.lang = langInfo.speechLang;
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
 
-            const voices = window.speechSynthesis.getVoices();
-            if (voices && voices.length > 0) {
-                let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
-                if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code) || v.lang.replace('_', '-').startsWith(langInfo.code));
-                if (f) u.voice = f;
-            }
-
-            u.onstart = () => {
+            const onStartAnim = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
                 const mainBtn = document.getElementById('btn-speak-report-main');
                 if (mainBtn) mainBtn.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.8)';
             };
 
-            u.onend = () => {
+            const onEndAnim = () => {
                 document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
                 document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
                 const mainBtn = document.getElementById('btn-speak-report-main');
                 if (mainBtn) mainBtn.style.boxShadow = 'none';
             };
 
-            window.speechSynthesis.speak(u);
+            onStartAnim();
+            if (typeof audio !== 'undefined' && audio.speakNative) {
+                audio.speakNative(text, currentLang, onEndAnim, rateOverride);
+            } else {
+                const u = new SpeechSynthesisUtterance(text);
+                u.rate = rateOverride;
+                u.lang = LANGUAGES[currentLang]?.speechLang || 'es-ES';
+                u.onend = onEndAnim;
+                u.onerror = onEndAnim;
+                window.speechSynthesis.speak(u);
+            }
         },
 
         showPerformanceReport: async () => {
@@ -1495,67 +1495,48 @@ Respond ONLY with a valid JSON object matching this schema:
         speakText: (text, rateOverride) => {
             if (!text) return;
             game.stopMic();
-            window.speechSynthesis.cancel();
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
             game.lastText = text;
-            const u = new SpeechSynthesisUtterance(text);
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
 
-            // Rate from slider or override
-            const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.7);
-            u.rate = rateOverride !== undefined ? rateOverride : sliderRate;
-            u.lang = langInfo.speechLang;
-
-            const applyVoiceAndSpeak = () => {
-                const voices = window.speechSynthesis.getVoices();
-                if (voices && voices.length > 0) {
-                    let f = voices.find(v => v.lang.startsWith(langInfo.code) && langInfo.femaleVoices.some(name => v.name.toLowerCase().includes(name)));
-                    if (!f) f = voices.find(v => v.lang.startsWith(langInfo.code) || v.lang.replace('_', '-').startsWith(langInfo.code));
-                    if (f) u.voice = f;
-                }
-
-                u.onstart = () => {
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
-                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
-                };
-
-                u.onend = () => {
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                    document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
-
-                    // Auto mic for game view
-                    if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
-                        setTimeout(() => {
-                            if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
-                                game.toggleMic(); scrollToMicArea('mic-btn');
-                            }
-                        }, 500);
-                    }
-                    // Auto mic for conversation
-                    if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                        setTimeout(() => {
-                            if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
-                                conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
-                            }
-                        }, 1000);
-                    }
-                };
-
-                u.onerror = (e) => {
-                    console.warn("Speech error:", e);
-                    document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
-                };
-
-                window.speechSynthesis.speak(u);
+            const onStartAnim = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.add('talking'));
+                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.gifSrc) img.src = img.dataset.gifSrc; });
             };
 
-            if (window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = () => {
-                    window.speechSynthesis.onvoiceschanged = null;
-                    applyVoiceAndSpeak();
-                };
-                setTimeout(applyVoiceAndSpeak, 100);
+            const onEndAnim = () => {
+                document.querySelectorAll('.avatar-container').forEach(el => el.classList.remove('talking'));
+                document.querySelectorAll('.avatar-img').forEach(img => { if (img.dataset.staticSrc) img.src = img.dataset.staticSrc; else if (img.dataset.idleSrc) img.src = img.dataset.idleSrc; });
+
+                // Auto mic for game view
+                if (game.autoMic && !document.getElementById('view-game').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn').classList.contains('listening') && !document.getElementById('view-game').classList.contains('hidden')) {
+                            game.toggleMic(); scrollToMicArea('mic-btn');
+                        }
+                    }, 500);
+                }
+                // Auto mic for conversation
+                if (conversation.autoMic && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                    setTimeout(() => {
+                        if (!document.getElementById('mic-btn-convo').classList.contains('listening') && !document.getElementById('view-conversation').classList.contains('hidden')) {
+                            conversation.toggleMic(); scrollToMicArea('mic-btn-convo');
+                        }
+                    }, 1000);
+                }
+            };
+
+            onStartAnim();
+            if (typeof audio !== 'undefined' && audio.speakNative) {
+                audio.speakNative(text, currentLang, onEndAnim, rateOverride);
             } else {
-                applyVoiceAndSpeak();
+                const u = new SpeechSynthesisUtterance(text);
+                const sliderRate = parseFloat(document.getElementById('speech-speed-slider')?.value || 0.7);
+                u.rate = rateOverride !== undefined ? rateOverride : sliderRate;
+                u.lang = LANGUAGES[currentLang]?.speechLang || 'en-US';
+                u.onend = onEndAnim;
+                u.onerror = onEndAnim;
+                window.speechSynthesis.speak(u);
             }
         },
 
