@@ -209,6 +209,9 @@
                 };
                 c.appendChild(img);
             });
+            if (typeof app !== 'undefined' && app.setupTeacherAvatars) {
+                app.setupTeacherAvatars();
+            }
         },
 
         loadCard: () => {
@@ -1714,3 +1717,5 @@ Respond ONLY with a valid JSON object matching this schema:
         },
         stopTimer: () => { if (game.timerInterval) clearInterval(game.timerInterval); document.getElementById('timer-container')?.classList.add('hidden'); }
     };
+
+    window.game = game;

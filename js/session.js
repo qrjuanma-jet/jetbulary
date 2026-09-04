@@ -182,3 +182,5 @@
             }
         }
     };
+
+    window.session = session;

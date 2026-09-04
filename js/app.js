@@ -46,6 +46,248 @@
             }
         },
 
+        previousViewBeforeVideo: null,
+        wasTeacherModalOpenBeforeVideo: false,
+
+        playTeacherVideo: (lang) => {
+            const modal = document.getElementById('modal-teacher-video');
+            const video = document.getElementById('teacher-fullscreen-video');
+            if (!modal || !video) return;
+
+            // Guardar contexto previo para regresar exactamente a la pantalla anterior
+            app.previousViewBeforeVideo = null;
+            document.querySelectorAll('[id^="view-"]').forEach(el => {
+                if (!el.classList.contains('hidden')) app.previousViewBeforeVideo = el.id;
+            });
+            const teacherModal = document.getElementById('modal-teacher-select');
+            app.wasTeacherModalOpenBeforeVideo = (teacherModal && !teacherModal.classList.contains('hidden'));
+            if (app.wasTeacherModalOpenBeforeVideo) {
+                teacherModal.classList.add('hidden');
+            }
+
+            video.src = `video_${lang || currentLang}.mp4`;
+            modal.classList.remove('hidden');
+
+            video.currentTime = 0;
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log("Video playback catch:", e);
+                });
+            }
+            history.pushState({ modal: 'teacher-video' }, null, '#teacher-video');
+        },
+
+        closeTeacherVideo: (skipHistoryBack = false) => {
+            const modal = document.getElementById('modal-teacher-video');
+            const video = document.getElementById('teacher-fullscreen-video');
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+                video.src = '';
+            }
+            if (modal) modal.classList.add('hidden');
+
+            if (!skipHistoryBack && history.state && history.state.modal === 'teacher-video') {
+                history.back();
+            }
+
+            // Regresar a la pantalla previa
+            if (app.wasTeacherModalOpenBeforeVideo) {
+                const teacherModal = document.getElementById('modal-teacher-select');
+                if (teacherModal) teacherModal.classList.remove('hidden');
+            } else if (app.previousViewBeforeVideo) {
+                if (app.previousViewBeforeVideo === 'view-dashboard') {
+                    app.showDashboard('none');
+                } else {
+                    app.switchView(app.previousViewBeforeVideo, 'none');
+                }
+            } else {
+                app.showDashboard('none');
+            }
+        },
+
+        setupTeacherAvatars: () => {
+            document.querySelectorAll('.avatar-container').forEach(avatar => {
+                avatar.style.cursor = 'pointer';
+                avatar.title = '1 toque: Elegir profesora | Mantener pulsado: Vídeo de bienvenida';
+
+                let pressTimer = null;
+                let isLongPress = false;
+                let startX = 0, startY = 0;
+
+                const startPress = (e) => {
+                    isLongPress = false;
+                    if (e && e.touches && e.touches[0]) {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                    } else if (e) {
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                    if (pressTimer) clearTimeout(pressTimer);
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        if (navigator.vibrate) try { navigator.vibrate(60); } catch(err) {}
+                        app.playTeacherVideo(currentLang);
+                    }, 450);
+                };
+
+                const movePress = (e) => {
+                    if (pressTimer) {
+                        let curX = 0, curY = 0;
+                        if (e && e.touches && e.touches[0]) {
+                            curX = e.touches[0].clientX;
+                            curY = e.touches[0].clientY;
+                        } else if (e) {
+                            curX = e.clientX;
+                            curY = e.clientY;
+                        }
+                        const dx = Math.abs(curX - startX);
+                        const dy = Math.abs(curY - startY);
+                        if (dx > 12 || dy > 12) {
+                            clearTimeout(pressTimer);
+                            pressTimer = null;
+                        }
+                    }
+                };
+
+                const cancelPress = () => {
+                    if (pressTimer) {
+                        clearTimeout(pressTimer);
+                        pressTimer = null;
+                    }
+                };
+
+                avatar.ontouchstart = startPress;
+                avatar.ontouchmove = movePress;
+                avatar.ontouchend = (e) => {
+                    cancelPress();
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setTimeout(() => { isLongPress = false; }, 300);
+                    }
+                };
+                avatar.ontouchcancel = cancelPress;
+
+                avatar.onmousedown = startPress;
+                avatar.onmousemove = movePress;
+                avatar.onmouseup = cancelPress;
+                avatar.onmouseleave = cancelPress;
+
+                avatar.onclick = (e) => {
+                    if (isLongPress) {
+                        isLongPress = false;
+                        if (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                        return false;
+                    }
+                    app.openTeacherModal();
+                };
+
+                avatar.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    app.playTeacherVideo(currentLang);
+                    return false;
+                };
+            });
+        },
+
+        setupTeacherCards: () => {
+            document.querySelectorAll('.teacher-select-card').forEach(card => {
+                const lang = card.getAttribute('data-lang') || (card.id ? card.id.replace('lang-card-', '') : null);
+                if (!lang) return;
+                card.setAttribute('data-lang', lang);
+
+                let pressTimer = null;
+                let isLongPress = false;
+                let startX = 0, startY = 0;
+
+                const startPress = (e) => {
+                    isLongPress = false;
+                    if (e && e.touches && e.touches[0]) {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                    } else if (e) {
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                    if (pressTimer) clearTimeout(pressTimer);
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        if (navigator.vibrate) try { navigator.vibrate(60); } catch(err) {}
+                        app.playTeacherVideo(lang);
+                    }, 450);
+                };
+
+                const movePress = (e) => {
+                    if (pressTimer) {
+                        let curX = 0, curY = 0;
+                        if (e && e.touches && e.touches[0]) {
+                            curX = e.touches[0].clientX;
+                            curY = e.touches[0].clientY;
+                        } else if (e) {
+                            curX = e.clientX;
+                            curY = e.clientY;
+                        }
+                        const dx = Math.abs(curX - startX);
+                        const dy = Math.abs(curY - startY);
+                        if (dx > 12 || dy > 12) {
+                            clearTimeout(pressTimer);
+                            pressTimer = null;
+                        }
+                    }
+                };
+
+                const cancelPress = () => {
+                    if (pressTimer) {
+                        clearTimeout(pressTimer);
+                        pressTimer = null;
+                    }
+                };
+
+                card.ontouchstart = startPress;
+                card.ontouchmove = movePress;
+                card.ontouchend = (e) => {
+                    cancelPress();
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setTimeout(() => { isLongPress = false; }, 300);
+                    }
+                };
+                card.ontouchcancel = cancelPress;
+
+                card.onmousedown = startPress;
+                card.onmousemove = movePress;
+                card.onmouseup = cancelPress;
+                card.onmouseleave = cancelPress;
+
+                card.onclick = (e) => {
+                    if (isLongPress) {
+                        isLongPress = false;
+                        if (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                        return false;
+                    }
+                    app.setLanguage(lang);
+                };
+
+                card.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    app.playTeacherVideo(lang);
+                    return false;
+                };
+            });
+        },
+
         setLanguage: (langCode) => {
             if (!LANGUAGES[langCode]) return;
             currentLang = langCode;
@@ -373,33 +615,40 @@
             app.checkCookies();
             app.renderDashboardLists();
             if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
+            app.setupTeacherAvatars();
+            app.setupTeacherCards();
             app.updateHeaderTranslatorBtn();
             app.updateLessonButtonsVisibility();
 
             window.onpopstate = (event) => {
-                // 1. Cerrar dropdown de idiomas del traductor si está abierto
-                if (window.translator && translator.langDropdownOpen) {
-                    const dropdown = document.getElementById('trans-lang-dropdown');
-                    if (dropdown && !dropdown.classList.contains('hidden')) {
-                        dropdown.classList.add('hidden');
-                        translator.langDropdownOpen = false;
-                        return;
-                    }
+                // 0. Si el vídeo a pantalla completa de la profesora está abierto, cerrarlo
+                const videoModal = document.getElementById('modal-teacher-video');
+                if (videoModal && !videoModal.classList.contains('hidden')) {
+                    app.closeTeacherVideo(true);
+                    return;
                 }
 
-                // 2. Cerrar menú contextual del traductor si está abierto
+                // 1. Cerrar menú contextual del traductor si está abierto
                 const ctxMenu = document.getElementById('modal-trans-context-menu');
                 if (ctxMenu && !ctxMenu.classList.contains('hidden')) {
-                    if (window.translator && translator.closeContextMenu) translator.closeContextMenu(true);
+                    if (typeof translator !== 'undefined' && translator.closeContextMenu) translator.closeContextMenu(true);
                     else ctxMenu.classList.add('hidden');
                     return;
                 }
 
-                // 3. Cerrar modal de modo vocabulario IA si está abierto
+                // 2. Cerrar modal de modo vocabulario IA si está abierto
                 const vocabAiModal = document.getElementById('modal-vocab-ai-mode');
                 if (vocabAiModal && !vocabAiModal.classList.contains('hidden')) {
-                    if (window.translator && translator.closeVocabModeModal) translator.closeVocabModeModal(true);
+                    if (typeof translator !== 'undefined' && translator.closeVocabModeModal) translator.closeVocabModeModal(true);
                     else vocabAiModal.classList.add('hidden');
+                    return;
+                }
+
+                // 3. Cerrar dropdown de idiomas del traductor si está abierto
+                const dropdown = document.getElementById('trans-lang-dropdown');
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    dropdown.classList.add('hidden');
+                    if (typeof translator !== 'undefined') translator.langDropdownOpen = false;
                     return;
                 }
 
@@ -453,29 +702,57 @@
                     return;
                 }
 
-                // 5. Si estamos en la vista del traductor, salir al dashboard de forma limpia
+                // 5. Si estamos en la vista del traductor (o hash #translator), salir al dashboard de forma limpia
                 const transView = document.getElementById('view-translator');
-                if (transView && !transView.classList.contains('hidden')) {
-                    translator.exitToDashboard(true);
+                const isTransActive = (transView && !transView.classList.contains('hidden')) || window.location.hash === '#translator';
+                if (isTransActive) {
+                    if (typeof translator !== 'undefined' && translator.exitToDashboard) {
+                        translator.exitToDashboard(true);
+                    } else {
+                        if (transView) {
+                            transView.classList.add('hidden');
+                            transView.classList.remove('apaisado-forced');
+                        }
+                        app.showDashboard('none');
+                    }
                     return;
                 }
 
                 // 6. Si el evento popstate trae un estado de vista previo explícito
                 if (event.state && event.state.view) {
-                    if (event.state.view === 'view-dashboard') app.showDashboard('none');
-                    else app.switchView(event.state.view, 'none');
-                    return;
+                    if (event.state.view === 'view-dashboard') {
+                        const dashView = document.getElementById('view-dashboard');
+                        if (dashView && !dashView.classList.contains('hidden')) {
+                            // Ya estamos en la pantalla principal; permitir salida en Android
+                            return;
+                        }
+                        app.showDashboard('none');
+                        return;
+                    } else if (event.state.view === 'view-apikey') {
+                        const apikeyView = document.getElementById('view-apikey');
+                        if (apikeyView && !apikeyView.classList.contains('hidden')) {
+                            return;
+                        }
+                        app.switchView('view-apikey', 'none');
+                        return;
+                    } else {
+                        app.switchView(event.state.view, 'none');
+                        return;
+                    }
                 }
 
-                // 7. Si la pantalla activa NO es el dashboard principal, volver siempre al dashboard principal
+                // 7. Si la pantalla activa NO es la principal (dashboard ni apikey), volver siempre al dashboard
                 const dashView = document.getElementById('view-dashboard');
-                const isDash = dashView && !dashView.classList.contains('hidden');
-                if (!isDash) {
-                    app.showDashboard('none');
+                const apikeyView = document.getElementById('view-apikey');
+                const isRoot = (dashView && !dashView.classList.contains('hidden')) || (apikeyView && !apikeyView.classList.contains('hidden'));
+                if (!isRoot) {
+                    const savedKey = localStorage.getItem(API_KEY_STORAGE);
+                    if (savedKey) app.showDashboard('none');
+                    else app.switchView('view-apikey', 'none');
                     return;
                 }
 
-                // 8. Si YA estamos en view-dashboard y no hay ningún modal ni pantalla secundaria abierta:
+                // 8. Si YA estamos en view-dashboard o view-apikey y no hay ningún modal ni pantalla secundaria abierta:
                 // No hacemos nada para permitir que Android salga de la aplicación con normalidad.
             };
         },
@@ -488,7 +765,7 @@
             if (slider) slider.value = val;
         },
 
-        showDashboard: (h = 'push') => {
+        showDashboard: (h = 'replace') => {
             if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
             else window.speechSynthesis.cancel();
 
@@ -496,7 +773,7 @@
                 session.markCurrentWordsAsLearned();
             }
             if (typeof translator !== 'undefined') {
-                translator.stop();
+                try { translator.stop(); } catch(e){}
             }
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') {
@@ -510,15 +787,11 @@
             }
             document.querySelectorAll('.listening').forEach(el => el.classList.remove('listening'));
 
-            // Si se llama con 'push' desde una pantalla secundaria con hash en la URL,
-            // usar history.back() para que no se apilen estados redundantes en el historial de Android
-            if (h === 'push' && window.location.hash && window.location.hash !== '#dashboard') {
-                history.back();
-                return;
-            }
-
-            app.switchView('view-dashboard', h);
+            const action = (h === 'none') ? 'none' : 'replace';
+            app.switchView('view-dashboard', action);
             if (typeof game !== 'undefined' && game.updateAvatar) game.updateAvatar();
+            app.setupTeacherAvatars();
+            app.setupTeacherCards();
             app.autoSelectNextPendingTopic();
             app.renderDashboardLists();
             app.renderLevelBadges();
@@ -962,3 +1235,5 @@ Ensure minimum 40 real, useful words in ${langInfo.name} aligned to level "${lev
             return raw;
         },
     };
+
+    window.app = app;

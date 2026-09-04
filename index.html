@@ -10,7 +10,7 @@
     <meta name="keywords" content="Jetbulary, learn English, learn German, learn French, AI language learning, real time translation">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=137">
+    <link rel="stylesheet" href="css/styles.css?v=138">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -318,10 +318,10 @@
         <!-- TOP CONTROL BAR -->
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-shrink: 0; width: 100%; flex-wrap: nowrap;">
             
-            <!-- HOME / EXIT BUTTON -->
-            <button onclick="translator.exitToDashboard()" class="secondary tech" style="width: auto; padding: 6px 12px; font-size: 0.78rem; font-weight: bold; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.08); display: flex; align-items: center; gap: 5px; box-shadow: var(--cyber-glow); cursor: pointer; flex-shrink: 0;" title="Volver al menú principal">
-                <span>🏠</span>
-                <span>HOME</span>
+            <!-- BOTÓN VOLVER / CANCELAR -->
+            <button id="btn-trans-exit" onclick="translator.exitToDashboard()" class="secondary tech" style="width: auto; padding: 6px 14px; font-size: 0.8rem; font-weight: bold; border-radius: 8px; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.08); display: flex; align-items: center; gap: 6px; box-shadow: var(--cyber-glow); cursor: pointer; flex-shrink: 0;" title="Cancelar y volver a la pantalla principal">
+                <span style="font-size: 1rem;">✕</span>
+                <span>CANCELAR</span>
             </button>
 
             <!-- CENTER: BOTÓN TOGGLE VOZ + BOTÓN MODO VOCABULARIO (IA) + STATUS BADGE -->
@@ -1073,6 +1073,12 @@
         </div>
     </div>
 
+    <!-- ====== FULLSCREEN TEACHER WELCOME VIDEO ====== -->
+    <div id="modal-teacher-video" class="hidden" style="position: fixed; inset: 0; z-index: 9999999; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100vw; height: 100dvh;" onclick="app.closeTeacherVideo()">
+        <video id="teacher-fullscreen-video" playsinline webkit-playsinline style="width: 100%; height: 100%; object-fit: contain; background: #000;" onended="app.closeTeacherVideo()"></video>
+        <button type="button" onclick="event.stopPropagation(); app.closeTeacherVideo();" style="position: absolute; top: 20px; right: 20px; z-index: 10; background: rgba(0,0,0,0.65); border: 1.5px solid var(--neon-cyan); color: #FFF; border-radius: 50%; width: 44px; height: 44px; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--cyber-glow);" title="Cerrar vídeo">✕</button>
+    </div>
+
     <!-- ====== GLOBAL FOOTER ====== -->
     <footer id="global-footer" style="max-width: 700px; width: 100%; margin: 30px auto 0 auto; padding: 25px 15px 35px; border-top: 1px solid rgba(0,243,255,0.2); text-align: center; font-size: 0.82rem; color: #888; position: relative; z-index: 1000; box-sizing: border-box;">
         
@@ -1096,14 +1102,14 @@
     <script src="js/config.js"></script>
     <script src="js/data/topics.js"></script>
     <script src="js/db.js"></script>
-    <script src="js/audio.js?v=137"></script>
-    <script src="js/stt.js"></script>
-    <script src="js/session.js"></script>
-    <script src="js/app.js?v=137"></script>
-    <script src="js/vocab.js"></script>
-    <script src="js/game.js?v=137"></script>
-    <script src="js/conversation.js"></script>
-    <script src="js/translator.js?v=137"></script>
+    <script src="js/audio.js?v=138"></script>
+    <script src="js/stt.js?v=138"></script>
+    <script src="js/session.js?v=138"></script>
+    <script src="js/app.js?v=138"></script>
+    <script src="js/vocab.js?v=138"></script>
+    <script src="js/game.js?v=138"></script>
+    <script src="js/conversation.js?v=138"></script>
+    <script src="js/translator.js?v=138"></script>
 
     <script>
         // ====== PWA INSTALL & SERVICE WORKER ======

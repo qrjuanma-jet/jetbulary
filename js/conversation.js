@@ -551,3 +551,5 @@ Return ONLY a valid JSON object:
             });
         }
     };
+
+    window.conversation = conversation;

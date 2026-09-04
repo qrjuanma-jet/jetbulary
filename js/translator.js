@@ -1067,10 +1067,11 @@ RULES:
         translator.editingIndex = null;
         translator.editingSide = null;
 
-        // Si el usuario pulsó el botón HOME en pantalla y la URL está en #translator, usar history.back()
+        // Si venimos del botón CANCELAR en pantalla y la URL está en #translator, sincronizar hash
         if (!fromPopstate && window.location.hash === '#translator') {
-            history.back();
-            return;
+            try {
+                history.replaceState({ view: 'view-dashboard' }, null, '#dashboard');
+            } catch(e) {}
         }
 
         app.showDashboard('none');
@@ -1319,3 +1320,5 @@ document.addEventListener('click', (e) => {
         }
     }
 });
+
+window.translator = translator;

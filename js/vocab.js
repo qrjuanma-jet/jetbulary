@@ -135,3 +135,5 @@
             conversation.start(selectedWords, "Custom Vocabulary Practice");
         }
     };
+
+    window.vocab = vocab;

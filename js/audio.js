@@ -226,3 +226,5 @@ const audio = {
         window.speechSynthesis.speak(u);
     }
 };
+
+window.audio = audio;
