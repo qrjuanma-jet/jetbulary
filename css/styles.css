@@ -121,11 +121,9 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     right: 0 !important;
     bottom: 0 !important;
     width: 100vw !important;
-    max-width: 100vw !important;
     height: 100dvh !important;
-    max-height: 100dvh !important;
     margin: 0 !important;
-    padding: 10px 14px !important;
+    padding: 8px 10px !important;
     background: #05050a !important;
     z-index: 99999 !important;
     display: flex !important;
@@ -158,7 +156,7 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     grid-template-rows: 1fr !important;
-    gap: 12px;
+    gap: 8px;
     min-height: 0;
     width: 100%;
     height: 100%;
@@ -177,19 +175,24 @@ input:focus { outline: none; border-color: var(--neon-cyan); box-shadow: var(--c
     }
 }
 
-/* --- MODO APAISADO FORZADO (ROTACIÓN 90° EXCLUSIVA PARA MÓVILES TÁCTILES EN VERTICAL) --- */
-@media (max-width: 900px) and (orientation: portrait) and (hover: none) and (pointer: coarse) {
-    #view-translator.apaisado-forced {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        width: 100dvh !important;
-        height: 100dvw !important;
-        transform: translate(-50%, -50%) rotate(90deg) !important;
-        transform-origin: center center !important;
-        z-index: 99999 !important;
-        box-sizing: border-box !important;
-    }
+/* --- MODO APAISADO FORZADO (ROTACIÓN 90° EXCLUSIVA PARA MÓVILES EN VERTICAL) --- */
+#view-translator.apaisado-forced {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    inset: auto !important;
+    width: 100dvh !important;
+    height: 100dvw !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: translate(-50%, -50%) rotate(90deg) !important;
+    transform-origin: center center !important;
+    z-index: 99999 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 8px 10px !important;
 }
 
 /* --- MIC BUTTON --- */

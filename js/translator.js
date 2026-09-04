@@ -203,7 +203,10 @@ RULES:
         window.removeEventListener('resize', translator.checkOrientation);
         window.removeEventListener('orientationchange', translator.checkOrientation);
         window.addEventListener('resize', translator.checkOrientation);
-        window.addEventListener('orientationchange', translator.checkOrientation);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(translator.checkOrientation, 50);
+            setTimeout(translator.checkOrientation, 250);
+        });
 
         translator.renderConversationStreams();
         translator.updateStatusBadge('ready');
@@ -238,16 +241,51 @@ RULES:
         const transView = document.getElementById('view-translator');
         if (!transView || transView.classList.contains('hidden')) return;
 
-        // Detectar si el usuario está en un dispositivo móvil táctil (smartphone)
-        const isTouchMobile = /Android|iPhone|iPod/i.test(navigator.userAgent) ||
-            ((window.matchMedia && window.matchMedia('(pointer: coarse)').matches) && Math.max(window.screen.width, window.screen.height) < 1100);
+        // Intentar bloquear orientación apaisada en navegadores compatibles
+        if (screen.orientation && screen.orientation.lock) {
+            try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
+        }
 
-        // La rotación a 90° es EXCLUSIVAMENTE para móviles táctiles sostenidos en vertical
-        // En ordenadores de sobremesa, portátiles o PC con ratón NUNCA se rota la pantalla
-        if (isTouchMobile && window.innerHeight > window.innerWidth) {
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const isMobileDevice = /Android|iPhone|iPod|iPad/i.test(navigator.userAgent) ||
+            (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
+        // En PC siempre va en apaisado nativo sin rotación
+        // En móvil con pantalla vertical forzamos rotación a 90° ocupando toda la pantalla
+        if (isMobileDevice && isPortrait) {
             transView.classList.add('apaisado-forced');
+            const screenLong = Math.max(window.innerHeight, window.innerWidth);
+            const screenShort = Math.min(window.innerHeight, window.innerWidth);
+            transView.style.position = 'fixed';
+            transView.style.top = '50%';
+            transView.style.left = '50%';
+            transView.style.right = 'auto';
+            transView.style.bottom = 'auto';
+            transView.style.inset = 'auto';
+            transView.style.width = screenLong + 'px';
+            transView.style.height = screenShort + 'px';
+            transView.style.maxWidth = 'none';
+            transView.style.maxHeight = 'none';
+            transView.style.transform = 'translate(-50%, -50%) rotate(90deg)';
+            transView.style.transformOrigin = 'center center';
+            transView.style.margin = '0';
+            transView.style.boxSizing = 'border-box';
         } else {
             transView.classList.remove('apaisado-forced');
+            transView.style.position = 'fixed';
+            transView.style.top = '0';
+            transView.style.left = '0';
+            transView.style.right = '0';
+            transView.style.bottom = '0';
+            transView.style.inset = '0';
+            transView.style.width = '100vw';
+            transView.style.height = '100dvh';
+            transView.style.maxWidth = '100vw';
+            transView.style.maxHeight = '100dvh';
+            transView.style.transform = 'none';
+            transView.style.transformOrigin = '';
+            transView.style.margin = '0';
+            transView.style.boxSizing = 'border-box';
         }
     },
 
