@@ -10,7 +10,7 @@
     <meta name="keywords" content="Jetbulary, learn English, learn German, learn French, AI language learning, real time translation">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=138">
+    <link rel="stylesheet" href="css/styles.css?v=142">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3361037839787257" crossorigin="anonymous"></script>
 </head>
@@ -313,7 +313,7 @@
     </div>
 
     <!-- ====== VIEW: TRANSLATOR (LANDSCAPE DUAL SPLIT SCREEN: CASTELLANO IZQUIERDA / EXTRANJERO DERECHA) ====== -->
-    <div id="view-translator" class="container hidden" style="position: fixed; inset: 0; width: 100vw; height: 100dvh; background: #05050a; z-index: 99999; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 14px; box-sizing: border-box; overflow: hidden;">
+    <div id="view-translator" class="hidden">
         
         <!-- TOP CONTROL BAR -->
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-shrink: 0; width: 100%; flex-wrap: nowrap;">
@@ -341,7 +341,7 @@
                 <!-- STATUS BADGE -->
                 <div id="trans-indicator-badge" style="font-size: 0.78rem; font-weight: 800; color: #AAA; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;">
                     <span id="trans-indicator-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #666; display: inline-block;"></span>
-                    <span id="trans-indicator-text">Listo (Pulsa 🎤)</span>
+                    <span id="trans-indicator-text">✅ Listo · Pulsa 🎤</span>
                 </div>
             </div>
 
@@ -376,7 +376,7 @@
                 </div>
 
                 <!-- LIVE INTERIM BUBBLE -->
-                <div id="trans-live-es" class="hidden" style="margin-top: 4px; padding: 4px 8px; background: rgba(255,0,85,0.15); border-left: 3px solid var(--neon-pink); border-radius: 4px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
+                <div id="trans-live-es" class="hidden" style="margin-top: 4px; padding: 4px 10px; background: rgba(255,0,85,0.15); border-radius: 6px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
 
                 <!-- BOTTOM CONTROLS: ROUND BUTTONS (MIC + STOP + SPEAKER) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 6px 2px 6px; width: 100%; box-sizing: border-box; flex-shrink: 0;">
@@ -404,7 +404,7 @@
                 </div>
 
                 <!-- LIVE INTERIM BUBBLE -->
-                <div id="trans-live-foreign" class="hidden" style="margin-top: 4px; padding: 4px 8px; background: rgba(0,243,255,0.15); border-left: 3px solid var(--neon-cyan); border-radius: 4px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
+                <div id="trans-live-foreign" class="hidden" style="margin-top: 4px; padding: 4px 10px; background: rgba(0,243,255,0.15); border-radius: 6px; font-size: 0.92rem; color: #FFF; font-style: italic; min-height: 20px;"></div>
 
                 <!-- BOTTOM CONTROLS: ROUND BUTTONS (MIC + STOP + SPEAKER) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 6px 2px 6px; width: 100%; box-sizing: border-box; flex-shrink: 0;">
@@ -1102,14 +1102,14 @@
     <script src="js/config.js"></script>
     <script src="js/data/topics.js"></script>
     <script src="js/db.js"></script>
-    <script src="js/audio.js?v=138"></script>
-    <script src="js/stt.js?v=138"></script>
-    <script src="js/session.js?v=138"></script>
-    <script src="js/app.js?v=138"></script>
-    <script src="js/vocab.js?v=138"></script>
-    <script src="js/game.js?v=138"></script>
-    <script src="js/conversation.js?v=138"></script>
-    <script src="js/translator.js?v=138"></script>
+    <script src="js/audio.js?v=142"></script>
+    <script src="js/stt.js?v=142"></script>
+    <script src="js/session.js?v=142"></script>
+    <script src="js/app.js?v=142"></script>
+    <script src="js/vocab.js?v=142"></script>
+    <script src="js/game.js?v=142"></script>
+    <script src="js/conversation.js?v=142"></script>
+    <script src="js/translator.js?v=142"></script>
 
     <script>
         // ====== PWA INSTALL & SERVICE WORKER ======

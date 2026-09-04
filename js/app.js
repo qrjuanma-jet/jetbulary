@@ -862,17 +862,53 @@
             if (id !== 'view-translator' && transView) {
                 transView.classList.add('hidden');
                 transView.classList.remove('apaisado-forced');
+                // Restaurar estilos inline que pudo haber forzado
+                transView.style.position = '';
+                transView.style.inset = '';
+                transView.style.width = '';
+                transView.style.maxWidth = '';
+                transView.style.height = '';
+                transView.style.maxHeight = '';
+                transView.style.margin = '';
+                transView.style.zIndex = '';
                 if (window.translator && translator.checkOrientation) {
                     window.removeEventListener('resize', translator.checkOrientation);
                     window.removeEventListener('orientationchange', translator.checkOrientation);
                 }
             }
 
+            // El footer global queda FUERA de todas las vistas, hay que ocultarlo
+            // explícitamente cuando el traductor está activo (es fullscreen y lo tapa todo)
+            const footer = document.getElementById('global-footer');
+            if (id === 'view-translator') {
+                if (footer) footer.style.display = 'none';
+            } else {
+                if (footer) footer.style.display = '';
+            }
+
             const target = document.getElementById(id);
             if (target) {
                 target.classList.remove('hidden');
-                target.style.zIndex = '500';
-                target.style.position = id === 'view-translator' ? 'fixed' : 'relative';
+                if (id === 'view-translator') {
+                    // Forzar full-viewport tanto por CSS como por inline para máxima compatibilidad
+                    target.style.position = 'fixed';
+                    target.style.inset = '0';
+                    target.style.top = '0';
+                    target.style.left = '0';
+                    target.style.right = '0';
+                    target.style.bottom = '0';
+                    target.style.width = '100vw';
+                    target.style.maxWidth = '100vw';
+                    target.style.height = '100dvh';
+                    target.style.maxHeight = '100dvh';
+                    target.style.margin = '0';
+                    target.style.zIndex = '99999';
+                    target.style.background = '#05050a';
+                    target.style.overflow = 'hidden';
+                } else {
+                    target.style.zIndex = '500';
+                    target.style.position = 'relative';
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 target.querySelectorAll('button').forEach(btn => {
                     btn.style.zIndex = '600';

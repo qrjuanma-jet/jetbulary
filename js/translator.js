@@ -93,8 +93,8 @@ const translator = {
             return;
         }
 
-        const newText = (input.value || '').trim();
-        const originalText = (side === 'es') ? (translator.spanishPhrases[idx] || '') : (translator.foreignPhrases[idx] || '');
+        const newText = (input.value || '').trim().replace(/^[-–—•·\s]+/, '').trim();
+        const originalText = ((side === 'es') ? (translator.spanishPhrases[idx] || '') : (translator.foreignPhrases[idx] || '')).trim().replace(/^[-–—•·\s]+/, '').trim();
 
         // Si se cancela o el texto está vacío
         if (!save || !newText) {
@@ -158,7 +158,8 @@ RULES:
                 // Verificar que no haya una edición o traducción posterior
                 if (translator.currentTranslationId !== thisTransId) return;
 
-                const transResult = (data && data.translation ? data.translation : '').trim() || newText;
+                let transResult = (data && data.translation ? data.translation : '').trim() || newText;
+                transResult = transResult.replace(/^[-–—•·\s]+/, '').replace(/^["'«»“”„]+|["'«»“”„]+$/g, '').trim();
                 if (isFromSpanish) {
                     translator.foreignPhrases[idx] = transResult;
                 } else {
@@ -237,8 +238,13 @@ RULES:
         const transView = document.getElementById('view-translator');
         if (!transView || transView.classList.contains('hidden')) return;
 
-        // Si la pantalla es más alta que ancha (pantalla en vertical), forzar rotación a modo apaisado
-        if (window.innerHeight > window.innerWidth) {
+        // Detectar si el usuario está en un dispositivo móvil táctil (smartphone)
+        const isTouchMobile = /Android|iPhone|iPod/i.test(navigator.userAgent) ||
+            ((window.matchMedia && window.matchMedia('(pointer: coarse)').matches) && Math.max(window.screen.width, window.screen.height) < 1100);
+
+        // La rotación a 90° es EXCLUSIVAMENTE para móviles táctiles sostenidos en vertical
+        // En ordenadores de sobremesa, portátiles o PC con ratón NUNCA se rota la pantalla
+        if (isTouchMobile && window.innerHeight > window.innerWidth) {
             transView.classList.add('apaisado-forced');
         } else {
             transView.classList.remove('apaisado-forced');
@@ -596,7 +602,8 @@ RULES:
             (data) => {
                 if (translator.currentTranslationId !== thisTransId) return;
 
-                const transResult = (data && data.translation ? data.translation : '').trim() || spokenText;
+                let transResult = (data && data.translation ? data.translation : '').trim() || spokenText;
+                transResult = transResult.replace(/^[-–—•·\s]+/, '').replace(/^["'«»“”„]+|["'«»“”„]+$/g, '').trim();
                 const lastIdx = translator.spanishPhrases.length - 1;
                 if (lastIdx >= 0) {
                     if (isFromSpanish) {
@@ -671,7 +678,7 @@ RULES:
                 badge.style.borderColor = 'var(--cyber-warn)';
                 dot.style.background = 'var(--cyber-warn)';
                 dot.style.animation = 'pulse-mic 0.8s infinite alternate';
-                text.innerText = '✏️ Editando transcripción... (Pausa)';
+                text.innerText = '✏️ Editando transcripción — Pausa';
                 text.style.color = 'var(--cyber-warn)';
                 break;
             case 'processing':
@@ -692,7 +699,7 @@ RULES:
                 badge.style.borderColor = 'rgba(255,255,255,0.15)';
                 dot.style.background = '#666';
                 dot.style.animation = 'none';
-                text.innerText = 'Listo (Pulsa 🎤)';
+                text.innerText = '✅ Listo · Pulsa 🎤';
                 text.style.color = '#AAA';
                 break;
         }
@@ -745,6 +752,11 @@ RULES:
         streamEs.innerHTML = translator.spanishPhrases.map((phrase, idx) => {
             const isEditing = (translator.editingIndex === idx && translator.editingSide === 'es');
             if (isEditing) {
+                const cleanForEdit = (phrase || '')
+                    .trim()
+                    .replace(/^[-–—•·\s]+/, '')
+                    .replace(/^["'«»“”„]+|["'«»“”„]+$/g, '')
+                    .trim();
                 return `
                     <div class="trans-edit-container">
                         <div class="trans-edit-header">
@@ -752,7 +764,7 @@ RULES:
                             <span class="trans-edit-hint">[Enter] Guardar | [Esc] Cancelar</span>
                         </div>
                         <input type="text" id="trans-edit-input" class="trans-edit-input"
-                               value="${translator.escapeHtml(phrase)}"
+                               value="${translator.escapeHtml(cleanForEdit)}"
                                placeholder="Escribe la corrección..."
                                onkeydown="if(event.key==='Enter'){event.preventDefault();translator.finishEditing(true);}else if(event.key==='Escape'){event.preventDefault();translator.finishEditing(false);}"
                                onclick="event.stopPropagation();" />
@@ -767,7 +779,12 @@ RULES:
                 `;
             }
 
-            const cleanPhrase = (phrase || '').replace(/^-\s*/, '');
+            const cleanPhrase = (phrase || '')
+                .trim()
+                .replace(/^[-–—•·\s]+/, '')
+                .replace(/^["'«»“”„]+|["'«»“”„]+$/g, '')
+                .trim();
+            const displayText = cleanPhrase ? `- ${cleanPhrase}` : '';
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-es' : 'trans-msg-item past';
             return `
@@ -779,7 +796,7 @@ RULES:
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
                      title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
-                    <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
+                    <span class="trans-phrase-text">${translator.escapeHtml(displayText)}</span>
                     <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'es');" title="Clic para editar frase">✏️</button>
                 </div>
             `;
@@ -789,6 +806,11 @@ RULES:
             const isEditing = (translator.editingIndex === idx && translator.editingSide === 'target');
             if (isEditing) {
                 const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+                const cleanForEdit = (phrase || '')
+                    .trim()
+                    .replace(/^[-–—•·\s]+/, '')
+                    .replace(/^["'«»“”„]+|["'«»“”„]+$/g, '')
+                    .trim();
                 return `
                     <div class="trans-edit-container">
                         <div class="trans-edit-header" style="color: var(--neon-cyan);">
@@ -796,7 +818,7 @@ RULES:
                             <span class="trans-edit-hint">[Enter] Guardar | [Esc] Cancelar</span>
                         </div>
                         <input type="text" id="trans-edit-input" class="trans-edit-input"
-                               value="${translator.escapeHtml(phrase)}"
+                               value="${translator.escapeHtml(cleanForEdit)}"
                                placeholder="Escribe la corrección..."
                                style="border-color: var(--neon-cyan);"
                                onkeydown="if(event.key==='Enter'){event.preventDefault();translator.finishEditing(true);}else if(event.key==='Escape'){event.preventDefault();translator.finishEditing(false);}"
@@ -804,7 +826,7 @@ RULES:
                         <div class="trans-edit-actions">
                             <span style="font-size:0.72rem; color:#AAA;">Al guardar se re-traducirá al Español con IA</span>
                             <div style="display: flex; gap: 6px;">
-                                <button type="button" class="trans-edit-btn-cancel" onclick="event.stopPropagation(); translator.finishEditing(false);" title="Cancelar edición">✕ Cancelar</button>
+                                 <button type="button" class="trans-edit-btn-cancel" onclick="event.stopPropagation(); translator.finishEditing(false);" title="Cancelar edición">✕ Cancelar</button>
                                 <button type="button" class="trans-edit-btn-save" style="background: rgba(0,243,255,0.22) !important; border-color: var(--neon-cyan) !important;" onclick="event.stopPropagation(); translator.finishEditing(true);" title="Guardar y Re-traducir">✓ Guardar y Traducir</button>
                             </div>
                         </div>
@@ -812,7 +834,12 @@ RULES:
                 `;
             }
 
-            const cleanPhrase = (phrase || '').replace(/^-\s*/, '');
+            const cleanPhrase = (phrase || '')
+                .trim()
+                .replace(/^[-–—•·\s]+/, '')
+                .replace(/^["'«»“”„]+|["'«»“”„]+$/g, '')
+                .trim();
+            const displayText = cleanPhrase ? `- ${cleanPhrase}` : '';
             const isSelected = (idx === activeIdx);
             const classes = isSelected ? 'trans-msg-item active-selected-foreign' : 'trans-msg-item past';
             return `
@@ -824,7 +851,7 @@ RULES:
                      ontouchend="translator.handleTouchEnd(event)"
                      ontouchcancel="translator.handleTouchEnd(event)"
                      title="Clic: Seleccionar / Destacar | ✏️: Editar | Doble clic: Escuchar">
-                    <span class="trans-phrase-text">- ${translator.escapeHtml(cleanPhrase)}</span>
+                    <span class="trans-phrase-text">${translator.escapeHtml(displayText)}</span>
                     <button type="button" class="trans-item-edit-btn" onclick="event.stopPropagation(); translator.startEditing(${idx}, 'target');" title="Clic para editar frase">✏️</button>
                 </div>
             `;
@@ -843,10 +870,13 @@ RULES:
         if (!liveText) return;
         const liveEsEl = document.getElementById('trans-live-es');
         const liveForeignEl = document.getElementById('trans-live-foreign');
+        const cleanLive = (liveText || '').trim().replace(/^[-–—•·\s]+/, '').replace(/^["'«»“”„]+|["'«»“”„]+$/g, '').trim();
+
+        if (!cleanLive) return;
 
         if (translator.activeMic === 'es') {
             if (liveEsEl) {
-                liveEsEl.innerHTML = `<strong>- ${liveText}</strong> <span style="animation: pulse-mic 0.8s infinite;">▍</span>`;
+                liveEsEl.innerHTML = `<strong>- ${translator.escapeHtml(cleanLive)}</strong>`;
                 liveEsEl.classList.remove('hidden');
             }
             if (liveForeignEl) {
@@ -855,7 +885,7 @@ RULES:
             }
         } else if (translator.activeMic === 'target') {
             if (liveForeignEl) {
-                liveForeignEl.innerHTML = `<strong>- ${liveText}</strong> <span style="animation: pulse-mic 0.8s infinite;">▍</span>`;
+                liveForeignEl.innerHTML = `<strong>- ${translator.escapeHtml(cleanLive)}</strong>`;
                 liveForeignEl.classList.remove('hidden');
             }
             if (liveEsEl) {
@@ -922,7 +952,8 @@ RULES:
 
     // ====== MOTOR DE VOZ NATIVO ULTRA-PRECISO ======
     speakWithNativeAccent: (text, langCode, onEnd) => {
-        if (!text || !text.trim() || text === 'Traduciendo...') {
+        const cleanText = (text || '').replace(/^[-–—•·\s]+/, '').trim();
+        if (!cleanText || cleanText === 'Traduciendo...' || cleanText === 'Re-traduciendo con IA...') {
             if (onEnd) onEnd();
             return;
         }
@@ -940,10 +971,10 @@ RULES:
         };
 
         if (typeof audio !== 'undefined' && audio.speakNative) {
-            audio.speakNative(text, langCode, handleEnd, translator.speed || 0.85);
+            audio.speakNative(cleanText, langCode, handleEnd, translator.speed || 0.85);
         } else {
             window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(text);
+            const u = new SpeechSynthesisUtterance(cleanText);
             u.lang = langCode === 'es' ? 'es-ES' : (LANGUAGES[langCode]?.speechLang || 'en-US');
             u.onend = handleEnd;
             u.onerror = handleEnd;
