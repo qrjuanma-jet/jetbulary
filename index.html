@@ -136,7 +136,7 @@
             <button onclick="conversation.startLevelAssessment()" class="tech" style="width: auto; padding: 6px 14px; font-size: 0.72rem; font-weight: bold; border: 1px solid var(--cyber-warn); color: var(--cyber-warn); background: rgba(255,184,0,0.08); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
                 🎯 Prueba Nivel
             </button>
-            <button id="btn-dashboard-extra-tools" onclick="app.toggleExtraToolsModal()" class="tech" style="width: auto; min-width: 32px; padding: 5px 11px; font-size: 0.92rem; font-weight: 900; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.12); border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,243,255,0.25); transition: all 0.2s;" title="Más herramientas: Gramática Relacionada y Conversación Libre IA">
+            <button id="btn-dashboard-extra-tools" onclick="app.toggleExtraToolsModal()" class="tech" style="width: auto; min-width: 32px; padding: 5px 11px; font-size: 0.92rem; font-weight: 900; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.12); border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,243,255,0.25); transition: all 0.2s;" title="Más herramientas: Gramática+, Conversación Amiga y Ebooks con Audio">
                 +
             </button>
             <button onclick="app.openBackupModal()" class="tech" style="width: auto; padding: 6px 14px; font-size: 0.72rem; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); background: rgba(0,243,255,0.06); border-radius: 4px; cursor: pointer; text-transform: none; letter-spacing: 0.5px;">
@@ -195,8 +195,8 @@
             </button>
 
             <button id="btn-free-conversation" onclick="conversation.startFreeConversation()" class="tech" style="width: 100%; padding: 13px 18px; border: 2px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 8px; box-shadow: 0 0 15px rgba(255,0,85,0.25); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;">
-                <span style="color: var(--neon-pink); font-size: 1.05rem; font-weight: 900; letter-spacing: 1px;">💬 FREE CONVERSATION</span>
-                <span style="font-size: 0.74rem; color: #BBB; text-transform: none; letter-spacing: 0;">Conversación libre interactiva con IA</span>
+                <span style="color: var(--neon-pink); font-size: 1.05rem; font-weight: 900; letter-spacing: 1px;">💖 CONVERSACIÓN AMIGA</span>
+                <span style="font-size: 0.74rem; color: #E2E8F0; text-transform: none; letter-spacing: 0;">Tu profesora y apoyo incondicional · Consejos & datos guardados</span>
             </button>
         </div>
 
@@ -260,6 +260,23 @@
         <div id="assessment-timer-banner" class="hidden" style="margin-bottom: 14px; padding: 10px 16px; background: rgba(255,184,0,0.14); border: 1.5px solid var(--cyber-warn); border-radius: 8px; font-family: 'Orbitron'; font-size: 0.88rem; color: var(--cyber-warn); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 15px rgba(255,184,0,0.25);">
             <span>⏳ TIEMPO RESTANTE: <strong id="assessment-countdown-text" style="color: #FFF; font-size: 1rem; margin-left: 4px;">01:50</strong></span>
             <button onclick="conversation.finishLevelAssessment()" class="warning" style="width: auto; padding: 6px 12px; font-size: 0.78rem; font-weight: bold;">Finalizar y Evaluar</button>
+        </div>
+
+        <!-- TEACHER FRIENDSHIP & MEMORY BADGE (CONVERSACIÓN CON LA PROFESORA) -->
+        <div id="convo-friendship-badge" class="hidden" style="margin: 6px auto 14px; max-width: 580px; width: 100%; background: rgba(10, 15, 26, 0.94); border: 1.5px solid var(--neon-pink); border-radius: 14px; padding: 12px 16px; box-shadow: 0 0 18px rgba(255,0,85,0.25); text-align: left; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.3rem;">💖</span>
+                    <strong id="convo-friendship-title" style="color: var(--neon-pink); font-size: 0.9rem; letter-spacing: 0.5px;">AMISTAD Y APOYO INCONDICIONAL</strong>
+                </div>
+                <span id="convo-memory-storage-badge" style="font-size: 0.7rem; color: var(--cyber-ok); background: rgba(0,255,149,0.12); padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(0,255,149,0.3);">🧠 Guardado en tu dispositivo</span>
+            </div>
+            <div style="font-size: 0.76rem; color: #cbd5e1; margin-bottom: 8px; line-height: 1.4;">
+                🌟 <em>Tu profesora amiga siempre es un apoyo para ti: te acompaña sin juicios, comprende tu timidez y celebra cada palabra que pronuncias.</em>
+            </div>
+            <div id="convo-memory-chips" style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.78rem; color: #EEE; min-height: 22px; align-items: center;">
+                <span style="color: #94a3b8; font-style: italic;">La profesora te irá conociendo y recordando tus gustos e intereses en cada charla...</span>
+            </div>
         </div>
 
         <div id="conversation-history" class="convo-history"></div>
@@ -680,7 +697,7 @@
 
     <!-- ====== MODAL: GUÍA DE GRAMÁTICA+ Y EXIGENCIAS DEL NIVEL ====== -->
     <div id="modal-grammar-plus" class="hidden" style="position: fixed; inset: 0; z-index: 9999999; background: rgba(0,0,0,0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 14px; box-sizing: border-box;" onclick="if(event.target === this) game.closeGrammarConsultation()">
-        <div class="hud-card" style="width: 100%; max-width: 580px; max-height: 90vh; display: flex; flex-direction: column; background: rgba(10, 15, 26, 0.98); border: 2px solid var(--neon-cyan); border-radius: 16px; box-shadow: 0 0 35px rgba(0, 243, 255, 0.4); overflow: hidden; padding: 0; margin: 0;">
+        <div class="hud-card" style="width: 100%; max-width: 650px; max-height: 90vh; display: flex; flex-direction: column; background: rgba(10, 15, 26, 0.98); border: 2px solid var(--neon-cyan); border-radius: 16px; box-shadow: 0 0 35px rgba(0, 243, 255, 0.4); overflow: hidden; padding: 0; margin: 0;">
             
             <!-- HEADER -->
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(0, 243, 255, 0.08); border-bottom: 1px solid rgba(0, 243, 255, 0.25);">
@@ -741,12 +758,12 @@
                     <span style="color: var(--neon-cyan); font-size: 1.2rem; font-weight: bold;">›</span>
                 </button>
 
-                <!-- 2. CONVERSACIÓN LIBRE CON IA -->
+                <!-- 2. CONVERSACIÓN AMIGA CON IA -->
                 <button onclick="app.launchExtraFreeConvo()" class="tech" style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--neon-pink); background: linear-gradient(135deg, rgba(255,0,85,0.15), rgba(0,243,255,0.08)); color: #FFF; border-radius: 10px; box-shadow: 0 0 12px rgba(255,0,85,0.2); cursor: pointer; display: flex; align-items: center; gap: 12px; text-align: left; transition: all 0.2s;">
-                    <span style="font-size: 1.6rem; flex-shrink: 0;">💬</span>
+                    <span style="font-size: 1.6rem; flex-shrink: 0;">💖</span>
                     <div style="flex: 1;">
-                        <div style="font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.88rem; color: var(--neon-pink); letter-spacing: 0.5px;">CONVERSACIÓN LIBRE IA</div>
-                        <div style="font-size: 0.74rem; color: #DDD; font-family: 'Segoe UI', sans-serif; font-weight: normal; margin-top: 2px; line-height: 1.3;">Diálogo interactivo hablado en tiempo real con tu profesora nativa</div>
+                        <div style="font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 0.88rem; color: var(--neon-pink); letter-spacing: 0.5px;">CONVERSACIÓN AMIGA (IA)</div>
+                        <div style="font-size: 0.74rem; color: #DDD; font-family: 'Segoe UI', sans-serif; font-weight: normal; margin-top: 2px; line-height: 1.3;">Charla con tu profesora y amiga: consejos, temas que te gustan y recuerdos guardados</div>
                     </div>
                     <span style="color: var(--neon-pink); font-size: 1.2rem; font-weight: bold;">›</span>
                 </button>
@@ -1329,15 +1346,15 @@
     <script src="js/config.js"></script>
     <script src="js/data/topics.js"></script>
     <script src="js/db.js"></script>
-    <script src="js/audio.js?v=149"></script>
-    <script src="js/stt.js?v=149"></script>
-    <script src="js/session.js?v=149"></script>
-    <script src="js/app.js?v=149"></script>
-    <script src="js/vocab.js?v=149"></script>
-    <script src="js/game.js?v=149"></script>
-    <script src="js/conversation.js?v=149"></script>
-    <script src="js/translator.js?v=149"></script>
-    <script src="js/ebooks.js?v=149"></script>
+    <script src="js/audio.js?v=151"></script>
+    <script src="js/stt.js?v=151"></script>
+    <script src="js/session.js?v=151"></script>
+    <script src="js/app.js?v=151"></script>
+    <script src="js/vocab.js?v=151"></script>
+    <script src="js/game.js?v=151"></script>
+    <script src="js/conversation.js?v=151"></script>
+    <script src="js/translator.js?v=151"></script>
+    <script src="js/ebooks.js?v=151"></script>
 
     <script>
         // ====== PWA INSTALL & SERVICE WORKER ======

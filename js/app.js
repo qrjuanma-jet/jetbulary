@@ -366,6 +366,13 @@
             app.saveAcademyLevel(lvl);
         },
 
+        getAcademyLevel: (lang) => {
+            if (typeof db !== 'undefined' && db.academy_level !== undefined && db.academy_level !== null) {
+                return parseInt(db.academy_level, 10) || 0;
+            }
+            return 0;
+        },
+
         saveAcademyLevel: (val) => {
             const targetLvl = parseInt(val);
             db.academy_level = targetLvl;

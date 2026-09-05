@@ -2128,37 +2128,140 @@ Respond ONLY with a valid JSON object matching this schema:
 
         return curriculumList[safeIdx] || curriculumList[0];
     },
-
         selectGrammarLevel: function(levelIdx) {
-            game.selectedGrammarLevelIdx = levelIdx;
-            if (game.isGrammarSpeaking) {
-                if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
-                game.isGrammarSpeaking = false;
-                game.updateGrammarSpeakBtn();
-            }
+            game.selectedGrammarLevelIdx = parseInt(levelIdx, 10);
             game.renderGrammarContent();
+            game.speakGrammarSummary(true);
         },
 
-        speakExampleText: function(text) {
-            if (!text) return;
-            if (game.isGrammarSpeaking) {
-                if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
-                game.isGrammarSpeaking = false;
-                game.updateGrammarSpeakBtn();
+        buildGrammarPlainText: function(cur, langInfo) {
+            const teacher = langInfo.teacherName || 'Profesora';
+            const lang = langInfo.name || 'Idioma';
+            
+            let phoneticsNarrative = '';
+            if (cur.phonetics && cur.phonetics.length > 0) {
+                phoneticsNarrative = cur.phonetics.map(p => {
+                    let ex = p.example ? ` Por ejemplo: <strong style="color: var(--neon-cyan); font-style: italic;">"${p.example}"</strong> <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(p.example)}'))" class="tech" style="padding: 2px 7px; border-radius: 4px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer; vertical-align: baseline; margin: 0 4px;" title="Escuchar pronunciación">🔊</button>.` : '';
+                    let contrast = p.spanishContrast ? ` Frente al castellano, ${p.spanishContrast}` : '';
+                    return `Respecto a <strong>${p.sound}</strong>: ${p.tip}${contrast}${ex}`;
+                }).join(' ');
             }
-            if (typeof audio !== 'undefined' && audio.speakNative) {
-                audio.speakNative(text, currentLang);
+
+            let grammarNarrative = '';
+            if (cur.grammar && cur.grammar.length > 0) {
+                grammarNarrative = cur.grammar.map(g => {
+                    let ex = g.example ? ` Escúchalo en la práctica: <strong style="color: var(--neon-cyan); font-style: italic;">"${g.example}"</strong> <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(g.example)}'))" class="tech" style="padding: 2px 7px; border-radius: 4px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer; vertical-align: baseline; margin: 0 4px;" title="Escuchar frase">🔊</button>.` : '';
+                    return `Para dominar <strong>${g.name}</strong>, la clave es ${g.desc} El esquema mental directo es <span style="color: var(--cyber-ok); font-weight: 600;">${g.formula}</span>.${ex}`;
+                }).join(' ');
             }
+
+            let bridgesNarrative = '';
+            if (cur.bridges && cur.bridges.length > 0) {
+                bridgesNarrative = cur.bridges.map(b => {
+                    return `Aprovecha la regla de <strong>${b.rule}</strong>: ${b.spanishLink} Puedes comprobarlo en términos como <span style="color: #67e8f9; font-weight: 600;">${b.example}</span>.`;
+                }).join(' ');
+            }
+
+            let mistakesNarrative = '';
+            if (cur.mistakes && cur.mistakes.length > 0) {
+                mistakesNarrative = cur.mistakes.map(m => {
+                    let ex = m.example ? ` Escucha el uso auténtico: <strong style="color: var(--neon-cyan); font-style: italic;">"${m.example}"</strong> <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(m.example)}'))" class="tech" style="padding: 2px 7px; border-radius: 4px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer; vertical-align: baseline; margin: 0 4px;" title="Escuchar">🔊</button>.` : '';
+                    return `Un fallo habitual de traducción directa es decir <span style="color: #ff6b81; text-decoration: line-through;">"${m.error}"</span>, cuando lo natural es <span style="color: var(--cyber-ok); font-weight: bold;">"${m.fix}"</span>, ya que ${m.why}.${ex}`;
+                }).join(' ');
+            }
+
+            let mnemonicsNarrative = '';
+            if (cur.mnemonics && cur.mnemonics.length > 0) {
+                mnemonicsNarrative = cur.mnemonics.map(mn => {
+                    let form = mn.formula ? ` Recuerda esta fórmula directa: <span style="color: #a78bfa; font-weight: bold;">${mn.formula}</span>.` : '';
+                    return `Aplica la regla nemotécnica de <strong>${mn.trick}</strong>: ${mn.explanation}${form}`;
+                }).join(' ');
+            }
+
+            let modelPhrasesNarrative = '';
+            if (cur.modelPhrases && cur.modelPhrases.length > 0) {
+                modelPhrasesNarrative = cur.modelPhrases.map(mp => {
+                    return `<span style="display: block; margin: 6px 0; color: #E2E8F0;">• <strong style="color: #FFF; font-style: italic;">"${mp.phrase}"</strong> <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(mp.phrase)}'))" class="tech" style="padding: 2px 7px; border-radius: 4px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer; margin: 0 4px; vertical-align: baseline;" title="Escuchar">🔊</button> <span style="color: #94a3b8; font-size: 0.88rem;">(${mp.meaning})</span></span>`;
+                }).join('');
+            }
+
+            return `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 0.95rem; line-height: 1.8; color: #E2E8F0; text-align: left;">
+                    
+                    <p style="margin: 0 0 16px;">
+                        <strong style="color: var(--neon-cyan); font-size: 1.02rem; font-family: 'Orbitron', sans-serif;">GUÍA DEL NIVEL ${cur.levelTitle.toUpperCase()}</strong> · <span style="color: #94a3b8; font-size: 0.84rem;">Profesora ${teacher} (${lang})</span>
+                    </p>
+
+                    <p style="margin: 0 0 16px;">
+                        ¡Bienvenido a tu guía pedagógica de <strong>${cur.levelTitle}</strong>! En esta etapa tu meta principal es <strong>${cur.scope.toLowerCase()}</strong> Para avanzar con rapidez y naturalidad, abordamos las habilidades requeridas apoyándonos en todo lo que compartes con el castellano y desactivando los vicios de traducción palabra por palabra.
+                    </p>
+
+                    ${phoneticsNarrative ? `
+                        <p style="margin: 0 0 16px;">
+                            En el ámbito de la <strong>fonética, pronunciación y colocación bucal</strong>, la clave respecto al español radica en relajar la musculatura de los labios y dominar los sonidos propios del idioma: ${phoneticsNarrative}
+                        </p>
+                    ` : ''}
+
+                    ${grammarNarrative ? `
+                        <p style="margin: 0 0 16px;">
+                            En cuanto a la <strong>arquitectura gramatical y el orden de la frase</strong>, debes acostumbrarte a pensar en los esquemas nativos sin traducir palabra por palabra: ${grammarNarrative}
+                        </p>
+                    ` : ''}
+
+                    ${bridgesNarrative ? `
+                        <p style="margin: 0 0 16px;">
+                            Dispones de una enorme ventaja gracias a los <strong>puentes y similitudes con el español</strong>, con miles de raíces y sufijos comunes que amplían tu vocabulario al instante: ${bridgesNarrative}
+                        </p>
+                    ` : ''}
+
+                    ${mistakesNarrative ? `
+                        <p style="margin: 0 0 16px;">
+                            Por otro lado, presta especial atención a las <strong>diferencias críticas y falsos amigos</strong> donde el cerebro hispanohablante suele tropezar: ${mistakesNarrative}
+                        </p>
+                    ` : ''}
+
+                    ${mnemonicsNarrative ? `
+                        <p style="margin: 0 0 16px;">
+                            Para memorizar y usar el idioma sin dudar en una conversación real, utiliza estas <strong>reglas nemotécnicas y trucos mentales</strong>: ${mnemonicsNarrative}
+                        </p>
+                    ` : ''}
+
+                    ${modelPhrasesNarrative ? `
+                        <div style="margin: 0 0 16px;">
+                            Entrena tu ritmo y entonación leyendo y repitiendo en voz alta estas <strong>frases modelo esenciales</strong> del nivel:
+                            ${modelPhrasesNarrative}
+                        </div>
+                    ` : ''}
+
+                    <p style="margin: 0; color: #cbd5e1; font-style: italic; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 14px;">
+                        💡 <strong>Consejo de tu profesora ${teacher}:</strong> He comenzado a explicarte este nivel en ${lang} para que entrenes el oído. Lee este texto a tu ritmo, pulsa los altavoces 🔊 en cada ejemplo para imitar los sonidos nativos y verás cómo tu soltura crece día a día.
+                    </p>
+
+                </div>
+            `;
         },
 
         updateGrammarSpeakBtn: function() {
+            const btn = document.getElementById('btn-speak-grammar-summary');
             const lbl = document.getElementById('lbl-speak-grammar-btn');
-            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
-            if (!lbl) return;
-            if (game.isGrammarSpeaking) {
-                lbl.innerText = "⏹️ Detener Explicación";
-            } else {
-                lbl.innerText = `Escuchar a ${langInfo.teacherName} (en ${langInfo.name})`;
+            const avatar = document.getElementById('avatar-grammar-modal');
+            if (lbl) {
+                lbl.innerText = game.isGrammarSpeaking ? 'Pausar Profesora' : 'Escuchar Profesora';
+            }
+            if (btn) {
+                if (game.isGrammarSpeaking) {
+                    btn.classList.add('pulsing');
+                    btn.style.borderColor = 'var(--neon-pink)';
+                    btn.style.boxShadow = '0 0 16px rgba(255,0,85,0.4)';
+                } else {
+                    btn.classList.remove('pulsing');
+                    btn.style.borderColor = 'var(--neon-cyan)';
+                    btn.style.boxShadow = '0 0 12px rgba(0,243,255,0.35)';
+                }
+            }
+            if (avatar) {
+                if (game.isGrammarSpeaking) avatar.classList.add('talking');
+                else avatar.classList.remove('talking');
             }
         },
 
@@ -2173,8 +2276,8 @@ Respond ONLY with a valid JSON object matching this schema:
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const levelLabels = app.getLevelLabels();
-            const defaultLevel = db.academy_level || 0;
-            const currentLevelIdx = (game.selectedGrammarLevelIdx !== null && game.selectedGrammarLevelIdx !== undefined) ? game.selectedGrammarLevelIdx : defaultLevel;
+            const activeLevel = (typeof app !== 'undefined' && app.getAcademyLevel) ? app.getAcademyLevel(currentLang) : (db.academy_level || 0);
+            const currentLevelIdx = (game.selectedGrammarLevelIdx !== null && game.selectedGrammarLevelIdx !== undefined) ? parseInt(game.selectedGrammarLevelIdx, 10) : activeLevel;
             const currentLevelName = levelLabels[currentLevelIdx] || 'A1-A2';
 
             if (avatarModal) {
@@ -2182,7 +2285,7 @@ Respond ONLY with a valid JSON object matching this schema:
             }
 
             if (titleEl) titleEl.innerText = `${langInfo.grammarPlusBtnLabel || 'GRAMMAR+'} · NIVEL ${currentLevelName}`;
-            if (subtitleEl) subtitleEl.innerText = `Guía Oficial y Exigencias · ${langInfo.name} (${langInfo.teacherName})`;
+            if (subtitleEl) subtitleEl.innerText = `Guía Pedagógica y Pronunciación · ${langInfo.name} (${langInfo.teacherName})`;
 
             const cur = game.getPedagogicalCurriculum(currentLang, currentLevelIdx);
             game.lastGrammarTextToSpeak = cur.teacherSpokenScript;
@@ -2190,169 +2293,21 @@ Respond ONLY with a valid JSON object matching this schema:
             game.updateGrammarSpeakBtn();
 
             const levelTabNames = ['A0', 'A1-A2', 'B1', 'B2', 'C1+'];
+            const plainTextHtml = game.buildGrammarPlainText(cur, langInfo);
 
             body.innerHTML = `
-                <!-- SELECTOR DE NIVELES (TABS DINÁMICAS) -->
-                <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 4px; scrollbar-width: none;">
+                <!-- SELECTOR DISCRETO DE NIVELES -->
+                <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none;">
                     ${levelTabNames.map((name, idx) => `
-                        <button onclick="game.selectGrammarLevel(${idx})" class="tech" style="flex: 1; min-width: 72px; padding: 7px 8px; border-radius: 8px; font-size: 0.78rem; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; ${idx === currentLevelIdx ? 'background: rgba(0,243,255,0.25); border: 1.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 10px rgba(0,243,255,0.4);' : 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #AAA;'}">
+                        <button onclick="game.selectGrammarLevel(${idx})" class="tech" style="flex: 1; min-width: 65px; padding: 7px 8px; border-radius: 6px; font-size: 0.78rem; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; ${idx === currentLevelIdx ? 'background: rgba(0,243,255,0.25); border: 1.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 10px rgba(0,243,255,0.4);' : 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #AAA;'}">
                             ${name}
                         </button>
                     `).join('')}
                 </div>
 
-                <!-- RESUMEN DEL NIVEL -->
-                <div style="background: rgba(0,243,255,0.08); border-left: 4px solid var(--neon-cyan); padding: 12px 14px; border-radius: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-cyan); display: flex; align-items: center; justify-content: space-between;">
-                        <span>🎯 REQUISITOS OFICIALES · ${cur.levelTitle}</span>
-                        <span style="font-size: 0.75rem; background: rgba(0,243,255,0.2); padding: 2px 8px; border-radius: 4px; color: #FFF;">CEFR</span>
-                    </div>
-                    <div style="margin-top: 5px; font-size: 0.82rem; color: #DDD; line-height: 1.4;">
-                        ${cur.scope}
-                    </div>
-                </div>
-
-                <!-- 1. FONÉTICA PRÁCTICA & COLOCACIÓN BUCAL (DESDE EL CASTELLANO) -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-pink); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>🗣️ 1. FONÉTICA & COLOCACIÓN BUCAL</span>
-                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Diferencias con el castellano)</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.phonetics.map(p => `
-                            <div style="background: rgba(255,0,85,0.06); border: 1px solid rgba(255,0,85,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: var(--neon-pink); font-size: 0.86rem;">• ${p.sound}:</strong>
-                                <div style="font-size: 0.82rem; color: #EEE; margin-top: 4px; line-height: 1.35;">
-                                    ${p.tip}
-                                </div>
-                                ${p.spanishContrast ? `
-                                    <div style="font-size: 0.78rem; color: #fca5a5; margin-top: 4px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; border-left: 2px solid #ef4444;">
-                                        ⚡ <strong>Contraste Castellano:</strong> ${p.spanishContrast}
-                                    </div>
-                                ` : ''}
-                                ${p.example ? `
-                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--neon-pink);">
-                                        <span style="font-size: 0.82rem; color: #FFF; font-style: italic;">"${p.example}"</span>
-                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(p.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--neon-pink); background: rgba(255,0,85,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar pronunciación">🔊</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 2. FÓRMULAS SINTÁCTICAS & ENSAMBLAJE (CHEAT CODES) -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-ok); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>🧩 2. FÓRMULAS SINTÁCTICAS (CHEAT CODES)</span>
-                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Patrones de ensamblaje)</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.grammar.map(g => `
-                            <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
-                                    <strong style="color: var(--cyber-ok); font-size: 0.86rem;">• ${g.name}</strong>
-                                </div>
-                                ${g.formula ? `
-                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.75rem; color: #5eead4; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px; margin: 4px 0;">
-                                        ${g.formula}
-                                    </div>
-                                ` : ''}
-                                <div style="font-size: 0.82rem; color: #CCC; margin: 3px 0 5px; line-height: 1.35;">${g.desc}</div>
-                                ${g.example ? `
-                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.82rem; color: #FFF; font-style: italic; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--cyber-ok);">
-                                        <span>"${g.example}"</span>
-                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(g.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--cyber-ok); background: rgba(0,255,149,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar">🔊</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 3. PUENTES CON EL CASTELLANO (SUPERATAJOS QUE YA SABES) -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-cyan); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>🌉 3. PUENTES CON EL CASTELLANO</span>
-                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Ahorra semanas de estudio)</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.bridges.map(b => `
-                            <div style="background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: var(--neon-cyan); font-size: 0.86rem;">💡 ${b.rule}</strong>
-                                <div style="font-size: 0.82rem; color: #DDD; margin: 4px 0; line-height: 1.35;">${b.spanishLink}</div>
-                                ${b.example ? `
-                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.8rem; color: #A5F3FC; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--neon-cyan);">
-                                        <span>${b.example}</span>
-                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(b.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar">🔊</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 4. TRAMPAS CRÍTICAS & FALSOS AMIGOS (LO QUE NUNCA DEBES DECIR) -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-warn); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>⚠️ 4. TRAMPAS & FALSOS AMIGOS</span>
-                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Errores comunes en España/Latam)</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.mistakes.map(m => `
-                            <div style="background: rgba(255,184,0,0.06); border: 1px solid rgba(255,184,0,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <div style="color: #ff6b81; font-size: 0.82rem; text-decoration: line-through; font-weight: 500;">❌ ${m.error}</div>
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; color: var(--cyber-ok); font-size: 0.85rem; font-weight: 700; margin-top: 3px;">
-                                    <span>✅ ${m.fix}</span>
-                                    ${m.example ? `
-                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(m.example)}'))" class="tech" style="padding: 2px 7px; border-radius: 5px; border: 1px solid var(--cyber-ok); background: rgba(0,255,149,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer;" title="Escuchar">🔊</button>
-                                    ` : ''}
-                                </div>
-                                <div style="font-size: 0.78rem; color: #DDD; margin-top: 4px; line-height: 1.3;">
-                                    🔍 <strong>Por qué:</strong> ${m.why}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 5. REGLAS NEMOTÉCNICAS & TRUCOS MENTALES -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: #a78bfa; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>⚡ 5. REGLAS NEMOTÉCNICAS & TRUCOS MENTALES</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.mnemonics.map(mn => `
-                            <div style="background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: #c4b5fd; font-size: 0.86rem;">🎯 ${mn.trick}</strong>
-                                <div style="font-size: 0.82rem; color: #DDD; margin-top: 4px; line-height: 1.35;">${mn.explanation}</div>
-                                ${mn.formula ? `
-                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.75rem; color: #e9d5ff; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 4px; margin-top: 5px; border-left: 2px solid #a78bfa;">
-                                        ⚡ ${mn.formula}
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 6. FRASES MODELO DEL NIVEL (ESCUCHA Y REPITE) -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span>💬 6. FRASES MODELO DEL NIVEL</span>
-                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Audio nativo integrado)</span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.modelPhrases.map(mp => `
-                            <div style="background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                                    <strong style="color: #FFF; font-size: 0.86rem; font-style: italic;">"${mp.phrase}"</strong>
-                                    <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(mp.phrase)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #38bdf8; background: rgba(56,189,248,0.2); color: #FFF; font-size: 0.8rem; cursor: pointer;" title="Escuchar frase">🔊</button>
-                                </div>
-                                <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 3px;">Significado: ${mp.meaning}</div>
-                            </div>
-                        `).join('')}
-                    </div>
+                <!-- CONTENIDO EN TEXTO PLANO CONTINUO (LIMPIO Y FÁCIL DE LEER) -->
+                <div style="padding: 4px 6px;">
+                    ${plainTextHtml}
                 </div>
             `;
         },
@@ -2361,13 +2316,26 @@ Respond ONLY with a valid JSON object matching this schema:
             const modal = document.getElementById('modal-grammar-plus');
             if (!modal) return;
 
-            if (game.selectedGrammarLevelIdx === null || game.selectedGrammarLevelIdx === undefined) {
-                game.selectedGrammarLevelIdx = db.academy_level || 0;
+            let activeLevel = 0;
+            if (typeof app !== 'undefined' && app.getAcademyLevel) {
+                activeLevel = app.getAcademyLevel(currentLang);
+            } else if (typeof db !== 'undefined' && db.academy_level !== undefined) {
+                activeLevel = parseInt(db.academy_level, 10);
             }
+            if (isNaN(activeLevel) || activeLevel < 0) activeLevel = 0;
+            game.selectedGrammarLevelIdx = activeLevel;
 
             modal.classList.remove('hidden');
             history.pushState({ modal: 'grammar-plus' }, null, '#grammar-plus');
             game.renderGrammarContent();
+
+            // Iniciar de inmediato la voz de la profesora en el idioma seleccionado
+            try {
+                if (window.speechSynthesis && window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                }
+            } catch(e) {}
+            game.speakGrammarSummary(true);
         },
 
         closeGrammarConsultation: (skipHistoryBack = false) => {
@@ -2385,10 +2353,10 @@ Respond ONLY with a valid JSON object matching this schema:
             }
         },
 
-        speakGrammarSummary: () => {
+        speakGrammarSummary: (forceStart = false) => {
             if (!game.lastGrammarTextToSpeak) return;
 
-            if (game.isGrammarSpeaking) {
+            if (game.isGrammarSpeaking && !forceStart) {
                 if (typeof audio !== 'undefined' && audio.stopSpeech) {
                     audio.stopSpeech();
                 } else if (window.speechSynthesis) {
@@ -2399,26 +2367,28 @@ Respond ONLY with a valid JSON object matching this schema:
                 return;
             }
 
+            if (typeof audio !== 'undefined' && audio.stopSpeech) {
+                audio.stopSpeech();
+            } else if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+
             game.isGrammarSpeaking = true;
             game.updateGrammarSpeakBtn();
 
+            const onDone = () => {
+                game.isGrammarSpeaking = false;
+                game.updateGrammarSpeakBtn();
+            };
+
             if (typeof audio !== 'undefined' && audio.speakNative) {
-                audio.speakNative(game.lastGrammarTextToSpeak, currentLang, () => {
-                    game.isGrammarSpeaking = false;
-                    game.updateGrammarSpeakBtn();
-                });
+                audio.speakNative(game.lastGrammarTextToSpeak, currentLang, onDone);
             } else if (window.speechSynthesis) {
                 window.speechSynthesis.cancel();
                 const u = new SpeechSynthesisUtterance(game.lastGrammarTextToSpeak);
                 u.lang = LANGUAGES[currentLang]?.speechLang || 'en-US';
-                u.onend = () => {
-                    game.isGrammarSpeaking = false;
-                    game.updateGrammarSpeakBtn();
-                };
-                u.onerror = () => {
-                    game.isGrammarSpeaking = false;
-                    game.updateGrammarSpeakBtn();
-                };
+                u.onend = onDone;
+                u.onerror = onDone;
                 window.speechSynthesis.speak(u);
             }
         },
