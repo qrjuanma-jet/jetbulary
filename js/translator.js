@@ -195,11 +195,10 @@ RULES:
         if (badgeFlag) badgeFlag.src = langInfo.flag || 'flag_en.jpg';
         if (badgeName) badgeName.innerText = `${langInfo.name.toUpperCase()} (Interlocutor)`;
 
-        // Modo apaisado permanente para el traductor
-        if (screen.orientation && screen.orientation.lock) {
-            try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
-        }
-        translator.checkOrientation();
+        // Entrar en modo apaisado nativo usando Fullscreen API + Screen Orientation API
+        translator.enterFullscreenLandscape();
+
+        // Listeners de respaldo por si cambia la orientación manualmente
         window.removeEventListener('resize', translator.checkOrientation);
         window.removeEventListener('orientationchange', translator.checkOrientation);
         window.addEventListener('resize', translator.checkOrientation);
@@ -212,6 +211,125 @@ RULES:
         translator.updateStatusBadge('ready');
         translator.updateCardStates(null);
         translator.syncSpeakAloudUI();
+    },
+
+    // ====== FULLSCREEN LANDSCAPE NATIVO (Android / iOS / Windows) ======
+    enterFullscreenLandscape: async () => {
+        const transView = document.getElementById('view-translator');
+        if (!transView) return;
+
+        const isMobileDevice = /Android|iPhone|iPod|iPad/i.test(navigator.userAgent) ||
+            (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
+        if (!isMobileDevice) {
+            // En PC: simplemente asegurarse de que ocupa toda la ventana
+            translator.applyDesktopLayout(transView);
+            return;
+        }
+
+        // --- ESTRATEGIA MÓVIL ---
+        // Paso 1: Intentar Fullscreen API (elimina barra del navegador)
+        // Paso 2: Intentar Screen Orientation API (fuerza apaisado nativamente)
+        // Paso 3: Si falla, usar rotación CSS como fallback
+
+        let fullscreenOk = false;
+        const fsElement = document.documentElement; // Fullscreen en todo el documento
+
+        try {
+            const fsPromise = fsElement.requestFullscreen
+                ? fsElement.requestFullscreen()
+                : fsElement.webkitRequestFullscreen
+                    ? fsElement.webkitRequestFullscreen()
+                    : null;
+            if (fsPromise) {
+                await fsPromise;
+                fullscreenOk = true;
+            }
+        } catch (e) {
+            console.log('[Translator] Fullscreen API no disponible o denegada:', e.message);
+        }
+
+        // Intentar bloquear orientación a landscape
+        let orientationLocked = false;
+        if (screen.orientation && screen.orientation.lock) {
+            try {
+                await screen.orientation.lock('landscape');
+                orientationLocked = true;
+                console.log('[Translator] Orientación bloqueada a landscape nativamente');
+            } catch (e) {
+                console.log('[Translator] No se pudo bloquear orientación:', e.message);
+            }
+        }
+
+        if (orientationLocked) {
+            // El SO rotó la pantalla nativamente → layout normal a pantalla completa
+            translator.applyDesktopLayout(transView);
+            // Esperar a que el navegador actualice las dimensiones tras la rotación nativa
+            setTimeout(() => translator.applyDesktopLayout(transView), 100);
+            setTimeout(() => translator.applyDesktopLayout(transView), 300);
+        } else {
+            // Fallback: rotación CSS manual
+            translator.applyCSSRotation(transView);
+        }
+    },
+
+    // Salir de fullscreen y desbloquear orientación (al salir del traductor)
+    exitFullscreenMode: () => {
+        // Desbloquear orientación
+        if (screen.orientation && screen.orientation.unlock) {
+            try { screen.orientation.unlock(); } catch (e) {}
+        }
+        // Salir de fullscreen
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            try {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            } catch (e) {}
+        }
+    },
+
+    // Layout estándar para PC o móvil en landscape nativo
+    applyDesktopLayout: (transView) => {
+        transView.classList.remove('apaisado-forced');
+        transView.style.position = 'fixed';
+        transView.style.top = '0';
+        transView.style.left = '0';
+        transView.style.right = '0';
+        transView.style.bottom = '0';
+        transView.style.inset = '0';
+        transView.style.width = '100vw';
+        transView.style.height = '100dvh';
+        transView.style.maxWidth = '100vw';
+        transView.style.maxHeight = '100dvh';
+        transView.style.transform = 'none';
+        transView.style.transformOrigin = '';
+        transView.style.margin = '0';
+        transView.style.boxSizing = 'border-box';
+    },
+
+    // Fallback: rotación CSS 90° para móviles que no soportan orientation lock
+    applyCSSRotation: (transView) => {
+        transView.classList.add('apaisado-forced');
+        // Usar screen.availWidth/Height para dimensiones reales del dispositivo
+        const screenW = window.screen.availWidth || window.screen.width || window.innerWidth;
+        const screenH = window.screen.availHeight || window.screen.height || window.innerHeight;
+        const longSide = Math.max(screenW, screenH);
+        const shortSide = Math.min(screenW, screenH);
+
+        transView.style.setProperty('position', 'fixed', 'important');
+        transView.style.setProperty('top', '50%', 'important');
+        transView.style.setProperty('left', '50%', 'important');
+        transView.style.setProperty('right', 'auto', 'important');
+        transView.style.setProperty('bottom', 'auto', 'important');
+        transView.style.setProperty('inset', 'auto', 'important');
+        transView.style.setProperty('width', longSide + 'px', 'important');
+        transView.style.setProperty('height', shortSide + 'px', 'important');
+        transView.style.setProperty('max-width', 'none', 'important');
+        transView.style.setProperty('max-height', 'none', 'important');
+        transView.style.setProperty('transform', 'translate(-50%, -50%) rotate(90deg)', 'important');
+        transView.style.setProperty('transform-origin', 'center center', 'important');
+        transView.style.setProperty('margin', '0', 'important');
+        transView.style.setProperty('box-sizing', 'border-box', 'important');
     },
 
     syncSpeakAloudUI: () => {
@@ -241,51 +359,26 @@ RULES:
         const transView = document.getElementById('view-translator');
         if (!transView || transView.classList.contains('hidden')) return;
 
-        // Intentar bloquear orientación apaisada en navegadores compatibles
-        if (screen.orientation && screen.orientation.lock) {
-            try { screen.orientation.lock('landscape').catch(() => {}); } catch(e){}
-        }
-
         const isPortrait = window.innerHeight > window.innerWidth;
         const isMobileDevice = /Android|iPhone|iPod|iPad/i.test(navigator.userAgent) ||
             (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
-        // En PC siempre va en apaisado nativo sin rotación
-        // En móvil con pantalla vertical forzamos rotación a 90° ocupando toda la pantalla
-        if (isMobileDevice && isPortrait) {
-            transView.classList.add('apaisado-forced');
-            const screenLong = Math.max(window.innerHeight, window.innerWidth);
-            const screenShort = Math.min(window.innerHeight, window.innerWidth);
-            transView.style.position = 'fixed';
-            transView.style.top = '50%';
-            transView.style.left = '50%';
-            transView.style.right = 'auto';
-            transView.style.bottom = 'auto';
-            transView.style.inset = 'auto';
-            transView.style.width = screenLong + 'px';
-            transView.style.height = screenShort + 'px';
-            transView.style.maxWidth = 'none';
-            transView.style.maxHeight = 'none';
-            transView.style.transform = 'translate(-50%, -50%) rotate(90deg)';
-            transView.style.transformOrigin = 'center center';
-            transView.style.margin = '0';
-            transView.style.boxSizing = 'border-box';
+        if (!isMobileDevice) {
+            // PC: layout normal sin rotación
+            translator.applyDesktopLayout(transView);
+        } else if (isPortrait) {
+            // Móvil en vertical: intentar lock nativo, si no → rotación CSS
+            if (screen.orientation && screen.orientation.type &&
+                screen.orientation.type.startsWith('landscape')) {
+                // El SO ya está en landscape (orientation lock funcionó)
+                translator.applyDesktopLayout(transView);
+            } else {
+                // Fallback CSS
+                translator.applyCSSRotation(transView);
+            }
         } else {
-            transView.classList.remove('apaisado-forced');
-            transView.style.position = 'fixed';
-            transView.style.top = '0';
-            transView.style.left = '0';
-            transView.style.right = '0';
-            transView.style.bottom = '0';
-            transView.style.inset = '0';
-            transView.style.width = '100vw';
-            transView.style.height = '100dvh';
-            transView.style.maxWidth = '100vw';
-            transView.style.maxHeight = '100dvh';
-            transView.style.transform = 'none';
-            transView.style.transformOrigin = '';
-            transView.style.margin = '0';
-            transView.style.boxSizing = 'border-box';
+            // Móvil en horizontal: layout normal
+            translator.applyDesktopLayout(transView);
         }
     },
 

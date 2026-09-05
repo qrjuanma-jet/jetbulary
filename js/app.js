@@ -862,6 +862,10 @@
             if (id !== 'view-translator' && transView) {
                 transView.classList.add('hidden');
                 transView.classList.remove('apaisado-forced');
+                // Salir de fullscreen y desbloquear orientación
+                if (window.translator && translator.exitFullscreenMode) {
+                    translator.exitFullscreenMode();
+                }
                 // Restaurar estilos inline que pudo haber forzado
                 transView.style.position = '';
                 transView.style.inset = '';
