@@ -213,7 +213,7 @@ RULES:
         translator.syncSpeakAloudUI();
     },
 
-    // ====== FULLSCREEN LANDSCAPE NATIVO (Android / iOS / Windows) ======
+    // ====== LANDSCAPE NATIVO (Android / iOS / Windows) ======
     enterFullscreenLandscape: async () => {
         const transView = document.getElementById('view-translator');
         if (!transView) return;
@@ -228,28 +228,11 @@ RULES:
         }
 
         // --- ESTRATEGIA MÓVIL ---
-        // Paso 1: Intentar Fullscreen API (elimina barra del navegador)
-        // Paso 2: Intentar Screen Orientation API (fuerza apaisado nativamente)
-        // Paso 3: Si falla, usar rotación CSS como fallback
+        // Paso 1: Intentar Screen Orientation API (fuerza apaisado nativamente)
+        //         En PWAs standalone esto funciona sin fullscreen
+        // Paso 2: Si falla, usar rotación CSS como fallback
+        // NOTA: NO usamos Fullscreen API porque bloquea la reproducción de audio (TTS)
 
-        let fullscreenOk = false;
-        const fsElement = document.documentElement; // Fullscreen en todo el documento
-
-        try {
-            const fsPromise = fsElement.requestFullscreen
-                ? fsElement.requestFullscreen()
-                : fsElement.webkitRequestFullscreen
-                    ? fsElement.webkitRequestFullscreen()
-                    : null;
-            if (fsPromise) {
-                await fsPromise;
-                fullscreenOk = true;
-            }
-        } catch (e) {
-            console.log('[Translator] Fullscreen API no disponible o denegada:', e.message);
-        }
-
-        // Intentar bloquear orientación a landscape
         let orientationLocked = false;
         if (screen.orientation && screen.orientation.lock) {
             try {
@@ -1090,11 +1073,6 @@ RULES:
         }
         translator.stopRecognitionOnly();
         translator.isSpeaking = true;
-        if (typeof audio !== 'undefined' && audio.stopSpeech) {
-            audio.stopSpeech();
-        } else {
-            window.speechSynthesis.cancel();
-        }
 
         const handleEnd = () => {
             translator.isSpeaking = false;
@@ -1105,11 +1083,14 @@ RULES:
             audio.speakNative(cleanText, langCode, handleEnd, translator.speed || 0.85);
         } else {
             window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(cleanText);
-            u.lang = langCode === 'es' ? 'es-ES' : (LANGUAGES[langCode]?.speechLang || 'en-US');
-            u.onend = handleEnd;
-            u.onerror = handleEnd;
-            window.speechSynthesis.speak(u);
+            setTimeout(() => {
+                try { if (window.speechSynthesis.paused) window.speechSynthesis.resume(); } catch(e){}
+                const u = new SpeechSynthesisUtterance(cleanText);
+                u.lang = langCode === 'es' ? 'es-ES' : (LANGUAGES[langCode]?.speechLang || 'en-US');
+                u.onend = handleEnd;
+                u.onerror = handleEnd;
+                window.speechSynthesis.speak(u);
+            }, 60);
         }
     },
 
