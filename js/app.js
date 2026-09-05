@@ -461,6 +461,41 @@
             if (modified) app.saveDB();
         },
 
+        toggleExtraToolsModal: () => {
+            const m = document.getElementById('modal-extra-tools');
+            if (!m) return;
+            if (m.classList.contains('hidden')) app.openExtraToolsModal();
+            else app.closeExtraToolsModal();
+        },
+
+        openExtraToolsModal: () => {
+            const m = document.getElementById('modal-extra-tools');
+            if (m) m.classList.remove('hidden');
+            history.pushState({ modal: 'extra-tools' }, null, '#extra-tools');
+        },
+
+        closeExtraToolsModal: (skipHistoryBack = false) => {
+            const m = document.getElementById('modal-extra-tools');
+            if (m) m.classList.add('hidden');
+            if (!skipHistoryBack && history.state && history.state.modal === 'extra-tools') {
+                history.back();
+            }
+        },
+
+        launchExtraGrammar: () => {
+            app.closeExtraToolsModal(true);
+            if (typeof game !== 'undefined' && game.showGrammarConsultation) {
+                game.showGrammarConsultation();
+            }
+        },
+
+        launchExtraFreeConvo: () => {
+            app.closeExtraToolsModal(true);
+            if (typeof conversation !== 'undefined' && conversation.startFreeConversation) {
+                conversation.startFreeConversation();
+            }
+        },
+
         openBackupModal: () => {
             const modal = document.getElementById('modal-backup-manager');
             if (modal) modal.classList.remove('hidden');
@@ -702,6 +737,20 @@
                     return;
                 }
 
+                const extraToolsModal = document.getElementById('modal-extra-tools');
+                if (extraToolsModal && !extraToolsModal.classList.contains('hidden')) {
+                    if (app.closeExtraToolsModal) app.closeExtraToolsModal(true);
+                    else extraToolsModal.classList.add('hidden');
+                    return;
+                }
+
+                const ebookReaderModal = document.getElementById('modal-ebook-reader');
+                if (ebookReaderModal && !ebookReaderModal.classList.contains('hidden')) {
+                    if (typeof ebooks !== 'undefined' && ebooks.closeReader) ebooks.closeReader(true);
+                    else ebookReaderModal.classList.add('hidden');
+                    return;
+                }
+
                 // 5. Si estamos en la vista del traductor (o hash #translator), salir al dashboard de forma limpia
                 const transView = document.getElementById('view-translator');
                 const isTransActive = (transView && !transView.classList.contains('hidden')) || window.location.hash === '#translator';
@@ -824,17 +873,37 @@
 
         showVocab: () => { app.switchView('view-vocab'); vocab.render(); },
         showTranslator: async () => {
-            window.speechSynthesis.cancel();
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') conversation.stopMic();
+
+            // 1. Mostrar la vista para que no tenga display:none y el Fullscreen API nativo no falle
             app.switchView('view-translator');
+
+            // 2. Activar Fullscreen y Landscape Nativo de inmediato dentro del gesto de usuario
+            if (typeof translator !== 'undefined' && translator.enterFullscreenLandscape) {
+                await translator.enterFullscreenLandscape();
+            }
+
+            // 3. Inicializar componentes del traductor
             if (typeof translator !== 'undefined') await translator.init();
         },
         startDirectHandsFree: async () => {
-            window.speechSynthesis.cancel();
+            if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+            else window.speechSynthesis.cancel();
             if (typeof game !== 'undefined' && game.stopMic) game.stopMic();
             if (typeof conversation !== 'undefined') conversation.stopMic();
+
+            // 1. Mostrar la vista para que no tenga display:none y el Fullscreen API nativo no falle
             app.switchView('view-translator');
+
+            // 2. Activar Fullscreen y Landscape Nativo de inmediato dentro del gesto de usuario
+            if (typeof translator !== 'undefined' && translator.enterFullscreenLandscape) {
+                await translator.enterFullscreenLandscape();
+            }
+
+            // 3. Inicializar componentes del traductor
             if (typeof translator !== 'undefined') await translator.init();
         },
         showStats: () => {
@@ -856,6 +925,10 @@
                 el.style.zIndex = '1';
                 el.style.position = 'relative';
             });
+
+            // Ocultar modal de herramientas extra si estuviera abierto
+            const extraModal = document.getElementById('modal-extra-tools');
+            if (extraModal) extraModal.classList.add('hidden');
 
             // Limpieza estricta del traductor si no es la pantalla activa
             const transView = document.getElementById('view-translator');

@@ -1214,9 +1214,955 @@ Respond ONLY with a valid JSON object matching this schema:
             }
         },
 
+        selectedGrammarLevelIdx: null,
+        isGrammarSpeaking: false,
         lastGrammarTextToSpeak: '',
 
-        showGrammarConsultation: async () => {
+        getPedagogicalCurriculum: function(langCode, levelIdx) {
+        const safeIdx = Math.max(0, Math.min(4, levelIdx !== undefined && levelIdx !== null ? levelIdx : 0));
+        const code = (langCode || 'en').toLowerCase();
+
+        // 1. ENGLISH CURRICULUM (5 NIVELES COMPLETOS CALIBRADOS PARA HISPANOHABLANTES)
+        const enCurriculums = [
+            {
+                levelTitle: "A0 (Iniciación / Starter)",
+                scope: "Fundamentos elementales: orden obligatorio S-V-O, pronombres y verbo To Be sin omitir sujetos.",
+                teacherSpokenScript: "Hello! I am Emma, your English teacher. Welcome to your starter guide! Remember the golden rule of English: every sentence must have an explicit subject. In Spanish you say 'es bueno', but in English you always say 'It is good'. Notice the difference between B and V: 'bat' and 'very'. Listen to these examples: 'I am here. It is nice. We are ready.' Let's practice together!",
+                phonetics: [
+                    {
+                        sound: "Diferencia B vs V (/b/ bilabial vs /v/ labiodental)",
+                        tip: "En español la B y la V suenan idénticas. En inglés son dos fonemas distintos: la B junta ambos labios ('bat', 'boy'), mientras que la V apoya los dientes superiores sobre el labio inferior y hace vibrar las cuerdas vocales ('very', 'voice', 'van').",
+                        spanishContrast: "En castellano 'baca' y 'vaca' suenan igual. En inglés, confundir B y V cambia totalmente la palabra ('berry' = baya vs 'very' = muy).",
+                        example: "A very delicious berry."
+                    },
+                    {
+                        sound: "La 'S' Líquida Inicial (Sin 'E' fantasma)",
+                        tip: "El cerebro hispanohablante tiende a poner una 'E' antes de cualquier palabra que empiece por S + consonante ('eschool', 'espain'). Elimínala: empieza silbando suavemente como una serpiente ('s-school', 's-start', 's-stop').",
+                        spanishContrast: "En castellano toda palabra empieza con E ('España, escuela, estación'). En inglés nunca añadas esa 'e'.",
+                        example: "Students start speaking Spanish in Spain."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Orden S-V-O y Sujeto Obligatorio",
+                        formula: "[ SUJETO + VERBO + COMPLEMENTO ]",
+                        desc: "En español podemos omitir el sujeto ('Tengo hambre', 'Llueve'). En inglés el sujeto es 100% obligatorio siempre, usando 'IT' como comodín impersonal.",
+                        example: "It is late and it rains outside."
+                    },
+                    {
+                        name: "El Verbo To Be (Ser y Estar unificados)",
+                        formula: "[ I am / You are / He-She-It is / We are / They are ]",
+                        desc: "El inglés une 'ser' y 'estar' en un solo verbo. El contexto indica si se refiere a identidad permanente o a un estado transitorio.",
+                        example: "I am a doctor and I am happy today."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Regla mágica: -TION pasa a -CIÓN",
+                        spanishLink: "Más de 1.000 palabras en inglés son idénticas al español cambiando -tion por -ción.",
+                        example: "Action (acción), Nation (nación), Information (información), Condition (condición)."
+                    },
+                    {
+                        rule: "El artículo universal 'THE'",
+                        spanishLink: "En español tienes 4 formas (el, la, los, las). En inglés una sola palabra sirve para todos los géneros y números.",
+                        example: "The car, the table, the cars, the tables."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "I have 25 years.",
+                        fix: "I am 25 years old.",
+                        why: "En inglés la edad no 'se tiene', la edad 'se es' mediante el verbo To Be.",
+                        example: "I am twenty-five years old."
+                    },
+                    {
+                        error: "I am agree with you.",
+                        fix: "I agree with you.",
+                        why: "'Agree' ya es un verbo en inglés ('estar de acuerdo'). No necesita el verbo 'am'.",
+                        example: "I agree with you completely."
+                    },
+                    {
+                        error: "Actually I work here.",
+                        fix: "Currently I work here. (o 'Right now...')",
+                        why: "'Actually' es un falso amigo: significa 'en realidad' o 'de hecho', NO 'actualmente'.",
+                        example: "Actually, I am not ready yet."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "El silbido de la serpiente (Sssss-cool)",
+                        explanation: "Pon el dedo en los labios y haz 'Sssss' durante 1 segundo antes de decir 'speak, Spanish, study' para erradicar la 'E' fantasma.",
+                        formula: "Sssss + peak = Speak (¡cero E inicial!)"
+                    },
+                    {
+                        trick: "El comodín 'IT' para el clima y la hora",
+                        explanation: "Siempre que en español digas frases sin persona ('hace frío', 'es la una', 'es fácil'), pon 'IT IS'.",
+                        formula: "Hace [X] / Es [X] -> IT IS [X]"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Hello! My name is Emma and I am very happy to help you.", meaning: "¡Hola! Mi nombre es Emma y estoy muy feliz de ayudarte." },
+                    { phrase: "It is cold outside, but it is warm in here.", meaning: "Hace frío afuera, pero está cálido aquí dentro." },
+                    { phrase: "Where is the train station? It is near the hotel.", meaning: "¿Dónde está la estación de tren? Está cerca del hotel." }
+                ]
+            },
+            {
+                levelTitle: "A1-A2 (Básico / Elemental)",
+                scope: "Rutinas diarias, pasado simple (-ed e irregulares), fórmulas de preguntas y preposiciones esenciales.",
+                teacherSpokenScript: "Welcome to level A1-A2! Let's master the rhythm of daily life. Pay close attention to questions: always remember the magic formula QUASM: Question word, Auxiliary, Subject, Main verb. For example: 'Where do you live?' or 'What did you buy?' Notice the past tense '-ed': we say 'walked' with a sharp 't', 'played' with a soft 'd', and only add the extra syllable 'id' after T and D, like 'wanted' or 'decided'. You've got this!",
+                phonetics: [
+                    {
+                        sound: "Las 3 pronunciaciones del pasado '-ed' (/t/, /d/, /ɪd/)",
+                        tip: "¡NO pronuncies la 'e'! Solo se añade la sílaba extra /ɪd/ si el verbo termina en 'T' o 'D' ('wanted', 'decided'). En verbos sordos suena como una 'T' seca ('walked', 'helped'). En verbos sonoros suena como una 'D' suave ('played', 'loved').",
+                        spanishContrast: "Los hispanohablantes suelen decir 'walk-ed' pronunciando la 'e'. En inglés es monosílabo: 'walkt'.",
+                        example: "She walked to the park and decided to stay."
+                    },
+                    {
+                        sound: "Letras mudas obligatorias (Silent Letters)",
+                        tip: "La 'k' antes de 'n' nunca suena ('know, knife, knee'). La 'l' en 'walk, talk, half, could' es 100% muda.",
+                        spanishContrast: "En español todas las letras escritas se pronuncian. En inglés hay letras históricas completamente silenciosas.",
+                        example: "I know that he could walk half a mile."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Fórmula QUASM para Preguntas",
+                        formula: "[ Question word + Auxiliary (do/does/did) + Subject + Main verb ]",
+                        desc: "La estructura universal para formular cualquier pregunta en inglés con fluidez inmediata.",
+                        example: "Where (Q) do (A) you (S) live (M)? / What (Q) did (A) you (S) see (M)?"
+                    },
+                    {
+                        name: "Presente Simple vs Continuo",
+                        formula: "[ Hábito: I work every day ] vs [ Ahora mismo: I am working right now ]",
+                        desc: "Diferencia tajante entre lo que haces como rutina habitual y lo que estás haciendo en este preciso instante.",
+                        example: "I usually drink coffee, but right now I am drinking tea."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Regla -TY pasa a -DAD",
+                        spanishLink: "Cientos de sustantivos abstractos terminados en -ty en inglés equivalen a -dad en español.",
+                        example: "City (ciudad), University (universidad), Reality (realidad), Activity (actividad)."
+                    },
+                    {
+                        rule: "Regla -IC pasa a -ICO",
+                        spanishLink: "Adjetivos terminados en -ic pasan directamente a -ico.",
+                        example: "Fantastic (fantástico), Romantic (romántico), Music (música), Classic (clásico)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "People is very friendly here.",
+                        fix: "People are very friendly here.",
+                        why: "'People' en inglés es un sustantivo plural (equivale a 'las personas'). Siempre lleva verbo plural.",
+                        example: "People are waiting for the train."
+                    },
+                    {
+                        error: "Can you explain me the rule?",
+                        fix: "Can you explain the rule to me?",
+                        why: "El verbo 'explain' exige la preposición 'to' delante de la persona ('explain something TO someone').",
+                        example: "Please explain this to me."
+                    },
+                    {
+                        error: "I was embarrassed during my pregnancy.",
+                        fix: "I was embarrassed (avergonzada) vs pregnant (embarazada).",
+                        why: "'Embarrassed' significa sentir vergüenza. 'Embarazada' se dice 'pregnant'.",
+                        example: "She felt embarrassed when she made a mistake."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La Pirámide de Preposiciones (IN, ON, AT)",
+                        explanation: "IN es la base ancha (países, ciudades, años, meses). ON es el medio (calles, días de la semana, superficies). AT es la punta afilada (horas exactas, lugares concretos).",
+                        formula: "IN (Grande/Tiempo largo) -> ON (Día/Calle) -> AT (Hora/Punto exacto)"
+                    },
+                    {
+                        trick: "Acrónimo QUASM",
+                        explanation: "Para no dudar nunca al hacer preguntas en presente o pasado.",
+                        formula: "Q(partícula) + A(auxiliar) + S(sujeto) + M(verbo principal)"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "I usually wake up at seven, but today I am sleeping late.", meaning: "Normalmente me despierto a las siete, pero hoy estoy durmiendo hasta tarde." },
+                    { phrase: "Yesterday we visited the gallery and bought three paintings.", meaning: "Ayer visitamos la galería y compramos tres cuadros." },
+                    { phrase: "What did you do last weekend with your family?", meaning: "¿Qué hiciste el fin de semana pasado con tu familia?" }
+                ]
+            },
+            {
+                levelTitle: "B1 (Intermedio)",
+                scope: "Independencia comunicativa, Present Perfect vs Past Simple, condicionales 1 y 2, y conectores.",
+                teacherSpokenScript: "Welcome to intermediate level B1! At this stage, your English connects past experiences to the present. The biggest difference from Spanish is the Present Perfect: when an action is unfinished or the exact time doesn't matter, say 'I have lived here for two years'. Notice your pronunciation flow: link words together! Instead of saying 'pick... it... up', blend them into 'pick-it-up'. Let's build real conversational independence!",
+                phonetics: [
+                    {
+                        sound: "Connected Speech & Enlace Consonante-Vocal (Linking)",
+                        tip: "En habla nativa, cuando una palabra termina en consonante y la siguiente empieza en vocal, se unen como si fueran una sola palabra ('check it out' -> /tʃekɪtaʊt/, 'pick it up' -> /pɪkɪtʌp/).",
+                        spanishContrast: "Los hispanohablantes tienden a pausar entre palabras. Enlazar sonidos elimina el acento entrecortado.",
+                        example: "Turn off the light and pick it up."
+                    },
+                    {
+                        sound: "Vocal Corta /ɪ/ vs Vocal Larga /i:/ (Pares Mínimos)",
+                        tip: "En español solo existe una 'I' tensa. En inglés, /ɪ/ es corta, relajada y con mandíbula caída ('ship', 'live', 'fit'), mientras que /i:/ es larga, sonriente y tensa ('sheep', 'leave', 'feet').",
+                        spanishContrast: "No diferenciar 'ship' (/ʃɪp/ barco) de 'sheep' (/ʃiːp/ oveja) o 'bitch' de 'beach' causa malentendidos cómicos.",
+                        example: "The big ship carried white sheep across the sea."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Present Perfect vs Past Simple",
+                        formula: "[ Pasado Simple: Momento cerrado ] vs [ Present Perfect: Conexión con el presente ]",
+                        desc: "Usa Past Simple si dices cuándo ocurrió ('Yesterday, in 2020'). Usa Present Perfect para experiencias de vida o acciones no concluidas ('I have lived here for 3 years').",
+                        example: "I lived in Paris in 2018. I have lived in Madrid since 2021."
+                    },
+                    {
+                        name: "Los Dos Condicionales Esenciales (1º y 2º)",
+                        formula: "[ Real: If + Present, will + Verb ] vs [ Hipotético: If + Past, would + Verb ]",
+                        desc: "El primer condicional expresa causa-efecto probable; el segundo condicional plantea situaciones imaginarias.",
+                        example: "If I have time, I will call you. If I had a million dollars, I would travel the world."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Regla -OUS pasa a -OSO",
+                        spanishLink: "Adjetivos descriptivos terminados en -ous se corresponden casi siempre con -oso.",
+                        example: "Famous (famoso), Delicious (delicioso), Curious (curioso), Nervous (nervioso)."
+                    },
+                    {
+                        rule: "Sufijos idénticos -ABLE / -IBLE",
+                        spanishLink: "La gran mayoría de palabras terminadas en -able / -ible tienen exactamente el mismo significado en ambos idiomas.",
+                        example: "Comfortable, flexible, horrible, possible, visible, incredible."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "I live here since three years ago.",
+                        fix: "I have lived here for three years.",
+                        why: "En inglés las acciones que empezaron en el pasado y continúan hoy exigen Present Perfect con 'for' (duración).",
+                        example: "She has worked here for five years."
+                    },
+                    {
+                        error: "I have a cold and I am constipated.",
+                        fix: "I have a cold and I am congested.",
+                        why: "'Constipated' significa estreñido en inglés. Estar constipado/resfriado se dice 'to have a cold' o 'congested'.",
+                        example: "I caught a cold yesterday."
+                    },
+                    {
+                        error: "He is very sensible with his feelings.",
+                        fix: "He is very sensitive with his feelings.",
+                        why: "'Sensible' en inglés significa sensato/juicioso. Sensible emocionalmente se dice 'sensitive'.",
+                        example: "It was a sensible decision made by a sensitive person."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La Chincheta (SINCE) vs La Barra de Tiempo (FOR)",
+                        explanation: "SINCE es una chincheta clavada en una fecha o punto de partida (since 2015, since Monday). FOR es una barra de medir que cuenta la duración (for 10 minutes, for 4 weeks).",
+                        formula: "SINCE = Punto de inicio / FOR = Cantidad de tiempo"
+                    },
+                    {
+                        trick: "Acrónimo FANBOYS para unir oraciones",
+                        explanation: "Los 7 conectores coordinantes clave para ganar fluidez B1 sin repetir 'and' todo el tiempo.",
+                        formula: "F(or) - A(nd) - N(or) - B(ut) - O(r) - Y(et) - S(o)"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "I have been working on this project for three weeks and it is almost ready.", meaning: "Llevo tres semanas trabajando en este proyecto y está casi listo." },
+                    { phrase: "If you don't hurry up, we will definitely miss the flight.", meaning: "Si no te das prisa, sin duda perderemos el vuelo." },
+                    { phrase: "Could you tell me how long it takes to walk from here to the station?", meaning: "¿Podrías decirme cuánto se tarda en caminar desde aquí hasta la estación?" }
+                ]
+            },
+            {
+                levelTitle: "B2 (Avanzado / Upper-Intermediate)",
+                scope: "Fluidez espontánea, debate, tercer condicional, estilo indirecto y el sonido rey Schwa /ə/.",
+                teacherSpokenScript: "Welcome to level B2! Now we move from simply communicating to expressing nuance, subtlety, and precision. Master the most important vowel in the entire English language: the schwa vowel, /ə/. It's a completely relaxed, neutral sound heard in unstressed syllables like 'about', 'problem', and 'police'. Speak with smooth cadence and upgrade your discourse connectors. Listen to how natural English flows!",
+                phonetics: [
+                    {
+                        sound: "El Sonido Rey del Inglés: La Schwa (/ə/)",
+                        tip: "El español pronuncia todas las vocales con tensión y claridad silábica. El inglés es acentual: las sílabas no acentuadas se relajan por completo en un sonido neutro y perezoso con la boca entreabierta: 'a-bout' (/əˈbaʊt/), 'prob-lem' (/ˈprɒbləm/), 'doc-tor' (/ˈdɒktə/).",
+                        spanishContrast: "Dominar la schwa elimina el 80% del acento hispanohablante y permite entender el habla rápida de películas y nativos.",
+                        example: "The doctor talked about a serious problem."
+                    },
+                    {
+                        sound: "Entonación Melódica y Modulación del Énfasis",
+                        tip: "Eleva el tono en la palabra con la información clave de la frase y desciende al final de las afirmaciones. Preguntas de sí/no suben al final (↗); preguntas informativas bajan (↘).",
+                        spanishContrast: "El español suele tener una entonación más plana. El inglés utiliza ondas melódicas para transmitir certeza, ironía o cortesía.",
+                        example: "Are you ready to leave? ↗ / Where did you put my keys? ↘"
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Tercer Condicional (Lamentos y pasado irreal)",
+                        formula: "[ If + had + participio, would + have + participio ]",
+                        desc: "Para hablar de situaciones hipotéticas en el pasado que nunca ocurrieron y sus consecuencias.",
+                        example: "If I had known about the delay, I would have taken the train."
+                    },
+                    {
+                        name: "Voz Pasiva Formal y Verbos de Reporte",
+                        formula: "[ It is widely believed that... / Subject + is expected to + infinitive ]",
+                        desc: "Estructuras impersonales y formales indispensables en exámenes oficiales B2 y entornos profesionales.",
+                        example: "The government is expected to announce the new policy tomorrow."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Sufijo -ATE pasa a verbos en -AR",
+                        spanishLink: "Gran cantidad de verbos formales en inglés que terminan en -ate derivan del latín y corresponden a -ar.",
+                        example: "Create (crear), Communicate (comunicar), Calculate (calcular), Motivate (motivar)."
+                    },
+                    {
+                        rule: "Conectores formales de raíz culta compartida",
+                        spanishLink: "A nivel B2 los conectores escritos son primos hermanos del español culto.",
+                        example: "Consequently (consecuentemente), Furthermore (además), In conclusion (en conclusión)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "I look forward to hear from you soon.",
+                        fix: "I look forward to hearing from you soon.",
+                        why: "En la expresión 'look forward to', 'to' es una preposición, no parte del infinitivo. Exige verbo en -ING.",
+                        example: "We look forward to meeting you next week."
+                    },
+                    {
+                        error: "I need to attend my clients right now.",
+                        fix: "I need to assist / serve my clients right now.",
+                        why: "'Attend' significa asistir o acudir a un evento ('attend a conference'). Atender a personas se dice 'assist' o 'serve'.",
+                        example: "She attended the meeting to assist the new team."
+                    },
+                    {
+                        error: "I didn't notice that the exam was cancelled.",
+                        fix: "I didn't realize that the exam was cancelled.",
+                        why: "'Notice' es percibir físicamente con la vista o el oído ('noté su perfume'). 'Realize' es darse cuenta mentalmente.",
+                        example: "I noticed her smile and realized she was happy."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La Regla del Sándwich para Argumentar",
+                        explanation: "1) Afirmación principal -> 2) Conector de contraste (However, Although, Despite) -> 3) Evidencia o matiz de conclusión.",
+                        formula: "Idea inicial + Conector B2 + Matiz complementario"
+                    },
+                    {
+                        trick: "El Ascensor de la Voz (Intonation Wave)",
+                        explanation: "Sube el tono en la palabra nueva o contrastada y bájalo suavemente al cerrar la oración.",
+                        formula: "Subida de tono en foco clave ↗ -> Bajada de confirmación ↘"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Had I been informed in advance, I would have prepared a much more thorough report.", meaning: "De haber sido informado con antelación, habría preparado un informe mucho más exhaustivo." },
+                    { phrase: "It is widely acknowledged that consistent practice is the single most effective strategy.", meaning: "Es ampliamente reconocido que la práctica constante es la estrategia más eficaz." },
+                    { phrase: "Despite facing significant logistical challenges, the team delivered the project on time.", meaning: "A pesar de afrontar importantes retos logísticos, el equipo entregó el proyecto a tiempo." }
+                ]
+            },
+            {
+                levelTitle: "C1+ (Dominio Nativo / Maestría)",
+                scope: "Precisión retórica, oraciones escindidas (cleft sentences), elisiones nativas y colocaciones de alta densidad.",
+                teacherSpokenScript: "Welcome to level C1 and beyond! At this master level, fluency is second nature and your focus is stylistic finesse, pragmatic nuance, and natural idioms. Learn to use cleft sentences to place effortless emphasis on what truly matters, and master idiomatic collocations. Let's speak with absolute elegance and native command!",
+                phonetics: [
+                    {
+                        sound: "Elisión Nativa y Parada Glotal (/ʔ/)",
+                        tip: "En registro nativo fluido, los hablantes omiten consonantes oclusivas (/t/ o /d/) cuando van entre dos consonantes ('next door' -> /neks dɔː/, 'last night' -> /lɑːs naɪt/). En acento británico informal se sustituye la /t/ intervocálica por oclusión glotal.",
+                        spanishContrast: "Los hispanohablantes intentan sobrearticular cada consonante final. Aprender a elidir da fluidez nativa inmediata.",
+                        example: "She left last night and walked next door."
+                    },
+                    {
+                        sound: "Micro-asimilación y Transición Dialectal",
+                        tip: "Cuando un sonido final se funde con el siguiente: 'don't you' pasa a sonar /dəʊntʃuː/ (t + y -> ch), 'did you' pasa a sonar /dɪdʒuː/ (d + y -> j).",
+                        spanishContrast: "Este fenómeno no existe en español formal. Reconocerlo desbloquea la comprensión de series y nativos reales.",
+                        example: "Didn't you know that could happen?"
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Oraciones Escindidas (Cleft Sentences para Énfasis)",
+                        formula: "[ What + cláusula + is/was + elemento destacado ] o [ It is/was + elemento + that... ]",
+                        desc: "Estructura sintáctica avanzada para poner el foco de atención con elegancia retórica superior.",
+                        example: "What really impressed the committee was her poise under pressure."
+                    },
+                    {
+                        name: "Inversiones Retóricas Negativas",
+                        formula: "[ Adverbio negativo restrictivo + Auxiliar + Sujeto + Verbo ]",
+                        desc: "Uso de 'Rarely, Seldom, Under no circumstances, Not only' al inicio para máximo impacto discursivo.",
+                        example: "Rarely have I witnessed such sheer determination in language acquisition."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "La Gran Ventaja Greco-Latina en el Registro Culto",
+                        spanishLink: "A nivel C1/C2, el inglés culto y académico recurre masivamente a raíces latinas. Más del 60% del vocabulario C1 es casi idéntico al español.",
+                        example: "Serendipitous, ephemeral, dichotomy, meticulous, paradigm, ubiquitous."
+                    },
+                    {
+                        rule: "Subjuntivo culto paralelo",
+                        spanishLink: "El subjuntivo formal inglés ('I recommend that he be present') refleja exactamente la lógica del subjuntivo español.",
+                        example: "It is imperative that every participant submit their evaluation on time."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "He is pulling my hair (como tomar el pelo).",
+                        fix: "He is pulling my leg.",
+                        why: "Nunca traduzcas modismos españoles literalmente. 'Tomar el pelo' se dice 'pull someone's leg'.",
+                        example: "Don't take him seriously, he is just pulling your leg."
+                    },
+                    {
+                        error: "She was very sympathetic with the party guests.",
+                        fix: "She was very friendly / outgoing with the guests.",
+                        why: "'Sympathetic' significa empático o comprensivo ante el dolor ajeno, NO simpático de carácter.",
+                        example: "The doctor was deeply sympathetic to the patient's concerns."
+                    },
+                    {
+                        error: "We need to put the batteries in this project.",
+                        fix: "We need to get our act together / pull our socks up.",
+                        why: "Modismo español traducido erróneamente. Usa expresiones nativas idiomáticas exactas.",
+                        example: "We need to step up our game to meet the deadline."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La Ley del Collocation Match",
+                        explanation: "A nivel C1 nunca aprendas adjetivos o adverbios sueltos. Apréndelos siempre en binomios nativos inseparables: bitterly disappointed, highly contentious, deeply ingrained.",
+                        formula: "Adverbio intensificador nativo + Adjetivo exacto"
+                    },
+                    {
+                        trick: "El Marco Cleft 'What... was...'",
+                        explanation: "Para sonar elocuente en cualquier presentación o ensayo, abre tu idea clave con 'What [X] is/was [Y]'.",
+                        formula: "What surprises me most is [clave]"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "What truly distinguished her argument was the meticulous corroboration of every claim.", meaning: "Lo que realmente distinguió su argumentación fue la meticulosa corroboración de cada afirmación." },
+                    { phrase: "Under no circumstances should confidentiality agreements be breached without prior authorization.", meaning: "Bajo ninguna circunstancia deben vulnerarse los acuerdos de confidencialidad sin autorización previa." },
+                    { phrase: "He was bitterly disappointed by the verdict, yet maintained remarkable composure throughout.", meaning: "Quedó amargamente decepcionado por el veredicto, pero mantuvo una compostura admirable en todo momento." }
+                ]
+            }
+        ];
+
+        // 2. FRENCH CURRICULUM (FRANÇAIS)
+        const frCurriculums = [
+            {
+                levelTitle: "A0 (Iniciación / Starter)",
+                scope: "Bases fundamentales: consonantes finales mudas, vocales nasales y sujeto obligatorio.",
+                teacherSpokenScript: "Bonjour ! Je suis Camille, votre professeure de français. Bienvenue ! En français, la première règle d'or est la clarté : l'accent tonique est toujours sur la dernière syllabe prononcée. Écoutez bien : 'Je suis prêt. C'est magnifique. Nous sommes ensemble.' Ne prononcez jamais les consonnes finales muettes comme dans 'grand' ou 'salut'. Pratiquons ensemble !",
+                phonetics: [
+                    {
+                        sound: "Consonantes Finales Mudas (S, T, D, P, X)",
+                        tip: "En francés, las consonantes al final de palabra casi nunca se pronuncian: 'salut' suena /saly/, 'grand' suena /gʁɑ̃/, 'Paris' suena /paʁi/.",
+                        spanishContrast: "En español toda letra final se pronuncia. En francés pronunciar la 's' o 't' final es un error grave.",
+                        example: "Salut, c'est très grand et très beau."
+                    },
+                    {
+                        sound: "La 'R' Uvular Gutural (/ʁ/)",
+                        tip: "No vibres la punta de la lengua contra los dientes como en español. Raspa suavemente la parte trasera de la lengua contra el paladar blando (gárgara suave).",
+                        spanishContrast: "La 'R' francesa nace en la garganta, no en los dientes.",
+                        example: "Merci beaucoup, au revoir !"
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Sujeto Obligatorio y Pronombres",
+                        formula: "[ Sujet + Verbe + Complément ]",
+                        desc: "Al igual que en inglés y a diferencia del español, el sujeto jamás se omite: 'Il pleut' (llueve), 'C'est bon' (es bueno).",
+                        example: "Il pleut aujourd'hui mais je suis content."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Transparencia Léxica Romance (70% común)",
+                        spanishLink: "Al ser lenguas hermanas del latín, cientos de palabras son casi idénticas.",
+                        example: "Information (información), Famille (familia), Restaurant (restaurante)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "Je suis actuellement fatigué (pensando que significa 'de hecho').",
+                        fix: "En fait, je suis fatigué. (Actuellement = 'en este momento').",
+                        why: "'Actuellement' significa en este momento, no 'en realidad' (que es 'en fait').",
+                        example: "Actuellement, j'habite à Lyon."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La Regla C-A-R-E-F-U-L",
+                        explanation: "Solo las consonantes C, R, F, L suelen pronunciarse al final de palabra (sac, soir, chef, ciel). Las demás son mudas.",
+                        formula: "Consonantes finales activas = C - R - F - L"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Bonjour ! Comment vous vous appelez ?", meaning: "¡Buenos días! ¿Cómo se llama usted?" },
+                    { phrase: "Je voudrais un café s'il vous plaît.", meaning: "Quisiera un café, por favor." }
+                ]
+            },
+            {
+                levelTitle: "A1-A2 (Básico / Elemental)",
+                scope: "Passé composé con Avoir/Être, la liaison obligatoria y preguntas cotidianas.",
+                teacherSpokenScript: "Bienvenue au niveau A1-A2 ! Aujourd'hui nous parlons du passé composé et de la liaison. Quand un mot se termine par une consonne et le suivant commence par une voyelle, liez-les : 'les amis' se prononce 'lé-zami'. Pour le passé composé, utilisez 'avoir' ou 'être' : 'J'ai mangé, je suis parti.' Vous progressez formidablement !",
+                phonetics: [
+                    {
+                        sound: "La Liaison Obligatoria",
+                        tip: "Cuando una palabra termina en consonante muda y la siguiente empieza por vocal o H muda, la consonante despierta y se une: 'les amis' -> /le.za.mi/ (la S suena como Z).",
+                        spanishContrast: "En español cada palabra se separa limpiamente; en francés la liaison es obligatoria para sonar natural.",
+                        example: "Nous avons deux enfants et trois amis."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Passé Composé con ÊTRE vs AVOIR",
+                        formula: "[ Sujet + Avoir/Être + Participe Passé ]",
+                        desc: "La mayoría de verbos usan AVOIR ('J'ai mangé'). Los 16 verbos de movimiento y cambio de estado usan ÊTRE ('Je suis allé').",
+                        example: "Hier, je suis allé au marché et j'ai acheté du fromage."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Verbos en -ER = Verbos en -AR",
+                        spanishLink: "Casi todos los verbos del primer grupo francés (-er) corresponden a verbos regulares en -ar.",
+                        example: "Parler (hablar), Chanter (cantar), Danser (bailar)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "J'attends pour le bus.",
+                        fix: "J'attends le bus.",
+                        why: "El verbo 'attendre' es transitivo directo (no lleva preposición 'pour').",
+                        example: "J'attends ma sœur depuis dix minutes."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "Acrónimo DR MRS VANDERTRAMP",
+                        explanation: "Las iniciales de los 16 verbos que se conjugan obligatoriamente con el auxiliar ÊTRE en passé composé.",
+                        formula: "Descendre, Rester, Monter, Revenir, Sortir, Venir, Aller, Naître, etc."
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Hier soir, nous sommes allés au cinéma avec des amis.", meaning: "Ayer por la tarde fuimos al cine con unos amigos." },
+                    { phrase: "Est-ce que vous pouvez m'indiquer le chemin de la gare ?", meaning: "¿Puede indicarme el camino hacia la estación?" }
+                ]
+            },
+            {
+                levelTitle: "B1 (Intermedio)",
+                scope: "Subjonctif, l'imparfait vs passé composé, y pronombres relativos.",
+                teacherSpokenScript: "Bienvenue au niveau B1 ! Maîtrisez le subjonctif pour exprimer vos sentiments, nécessités et doutes : 'Il faut que tu viennes.' Différenciez bien l'imparfait pour les descriptions et le passé composé pour les actions précises : 'Quand j'étais jeune, je voyageais souvent.' Continuez comme ça !",
+                phonetics: [
+                    {
+                        sound: "Distinción É (/e/ cerrada) vs È (/ɛ/ abierta)",
+                        tip: "É cerrada con labios estirados ('été'). È abierta con mandíbula relajada ('père, fête').",
+                        spanishContrast: "El español solo tiene una 'E' intermedia; el francés distingue nítidamente abierta de cerrada.",
+                        example: "En été, mon père préfère rester au frais."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "El Subjuntivo de Obligación y Deseo",
+                        formula: "[ Il faut que + Sujet + Verbe au Subjonctif ]",
+                        desc: "Imprescindible tras fórmulas impersonales de necesidad ('Il faut que...', 'Je veux que...').",
+                        example: "Il faut que nous partions avant midi."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Imparfait idéntico al Pretérito Imperfecto",
+                        spanishLink: "El uso del imperfecto para hábitos pasados y descripciones es exactamente igual al español.",
+                        example: "Quand j'étais petit, j'habitais à Madrid."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "Je te demande pardon de te déranger (usando demander como demandar legalmente).",
+                        fix: "Demander = Preguntar o pedir. Para demanda judicial = 'Poursuivre en justice'.",
+                        why: "'Demander' significa pedir o preguntar, no demandar judicialmente.",
+                        example: "Je peux vous demander un renseignement ?"
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "La regla 'Si + Imparfait -> Conditionnel'",
+                        explanation: "Nunca pongas condición en la cláusula con 'Si' (¡los 'si' no llevan 'rait'!).",
+                        formula: "Si j'avais le temps (imparfait), je viendrais (conditionnel)."
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Bien que ce soit difficile, nous avons réussi à terminer à temps.", meaning: "Aunque sea difícil, logramos terminar a tiempo." }
+                ]
+            },
+            {
+                levelTitle: "B2 (Avanzado / Upper-Intermediate)",
+                scope: "Argumentación, conectores lógicos, condición pasada y voz pasiva formal.",
+                teacherSpokenScript: "Bienvenue au niveau B2 ! À ce niveau, travaillez la fluidité et les connecteurs d'argumentation : 'Cependant, bien que, en revanche.' Écoutez : 'Bien qu'il fasse froid, nous avons décidé de sortir.' Utilisez le conditionnel passé pour exprimer des regrets : 'J'aurais aimé vous rencontrer plus tôt.'",
+                phonetics: [{ sound: "Rythme et Accent d'Insistance", tip: "Desplaza el acento tónico a la primera sílaba de una palabra para enfatizar emoción o contraste.", spanishContrast: "En español se sube el volumen; en francés se alarga la consonante inicial.", example: "C'est absolument formidable !" }],
+                grammar: [{ name: "Conditionnel Passé (Regrets)", formula: "[ Si + Plus-que-parfait, Conditionnel Passé ]", desc: "Para lamentar decisiones pasadas.", example: "Si j'avais su, je serais venu plus tôt." }],
+                bridges: [{ rule: "Conectores formales grecolatinos", spanishLink: "Néanmoins, par conséquent, en outre corresponden a conectores formales españoles.", example: "Par conséquent, la réunion est reportée." }],
+                mistakes: [{ error: "Confundir 'Deuxième' con 'Second'", fix: "'Second' si solo hay dos elementos; 'Deuxième' si hay tres o más.", why: "Regla académica francesa.", example: "La Seconde Guerre mondiale." }],
+                mnemonics: [{ trick: "Le Sandwich de l'Argument", explanation: "Thèse -> Antithèse -> Synthèse.", formula: "D'une part... d'autre part... en conclusion." }],
+                modelPhrases: [{ phrase: "Il est indéniable que cette approche présente des avantages majeurs.", meaning: "Es innegable que este enfoque presenta importantes ventajas." }]
+            },
+            {
+                levelTitle: "C1+ (Dominio Nativo / Maestría)",
+                scope: "Elegancia estilística, subjuntivo imperfecto literario y registros de lengua.",
+                teacherSpokenScript: "Bienvenue au niveau supérieur C1 ! Exprimez vos idées avec subtilité et élégance rhétorique. Maîtrisez les registres de langue et les figures de style : 'Quoi qu'il en soit, force est de constater que la situation évolue.' Visez l'aisance naturelle !",
+                phonetics: [{ sound: "Élision Rapide et Chute du 'E' Caduc", tip: "En conversación nativa culta, el 'e' caduco cae sistemáticamente: 'Je ne sais pas' -> /ʃe.pa/.", spanishContrast: "La economía articulatoria nativa francesa es extrema.", example: "Je ne sais pas du tout ce qui s'est passé." }],
+                grammar: [{ name: "Inversion du Sujet Littéraire", formula: "[ Adverbe initial + Verbe + Sujet ]", desc: "Inversión formal tras 'Peut-être, Sans doute, À peine'.", example: "À peine étions-nous arrivés que l'orage éclata." }],
+                bridges: [{ rule: "Vocabulario de la Ilustración", spanishLink: "La terminología filosófica, jurídica y científica es idéntica.", example: "Anachronisme, quintessence, pléthore." }],
+                mistakes: [{ error: "Mélanger les registres de langue", fix: "No usar argot en discurso formal.", why: "El francés penaliza duramente la ruptura de registro.", example: "Une opportunité remarquable." }],
+                mnemonics: [{ trick: "La Règle de l'Élégance Rhétorique", explanation: "Variedad léxica sin repeticiones.", formula: "Nom -> Pronom -> Périphrase" }],
+                modelPhrases: [{ phrase: "Quoi qu'il en soit, force est de constater l'efficacité de ces mesures.", meaning: "Sea como fuere, es forzoso constatar la eficacia de estas medidas." }]
+            }
+        ];
+
+        // 3. GERMAN CURRICULUM (DEUTSCH)
+        const deCurriculums = [
+            {
+                levelTitle: "A0 (Iniciación / Starter)",
+                scope: "Regla de oro: Verbo en posición 2, mayúsculas en sustantivos y fonética de los Umlaute.",
+                teacherSpokenScript: "Hallo! Ich bin Greta, deine Deutschlehrerin. Willkommen! Im Deutschen steht das konjugierte Verb im Hauptsatz immer an der zweiten Position. Höre genau zu: 'Ich heiße Greta. Das Wetter ist heute sehr schön. Wir lernen zusammen.' Achte auf die Umlaute: Ä, Ö und Ü. Viel Erfolg!",
+                phonetics: [
+                    {
+                        sound: "Los Umlaute (Ä, Ö, Ü)",
+                        tip: "Para Ö: pon la boca en posición de decir 'O' y, sin mover los labios, pronuncia una 'E'. Para Ü: pon la boca en posición de decir 'U' y pronuncia una 'I'.",
+                        spanishContrast: "Estos sonidos no existen en español. Cambian completamente el significado de las palabras ('schon' = ya vs 'schön' = hermoso).",
+                        example: "Das ist wirklich sehr schön und nützlich."
+                    },
+                    {
+                        sound: "La 'W' (/v/) y la 'V' (/f/)",
+                        tip: "En alemán la 'W' suena siempre como la 'V' labiodental inglesa (/v/). La 'V' alemana casi siempre suena como una 'F' española ('Vogel' suena 'fogel').",
+                        spanishContrast: "No digas 'Vasser' con sonido español; di 'Wasser' (/vasɐ/).",
+                        example: "Wir trinken warmes Wasser."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Verbo en Segunda Posición (V2)",
+                        formula: "[ Posición 1 + VERBO (Pos. 2) + Sujeto + Complementos ]",
+                        desc: "En una oración principal, el verbo conjugado va SIEMPRE en el segundo lugar, incluso si empiezas con el tiempo o lugar.",
+                        example: "Heute (1) lerne (2) ich (S) Deutsch."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Palabras Compuestas Lógicas",
+                        spanishLink: "El alemán ensambla palabras transparentes que se deducen fácilmente.",
+                        example: "Krankenhaus (casa de enfermos = hospital), Wörterbuch (libro de palabras = diccionario)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "Ich bekomme ein Lehrer (pensando que significa convertirse).",
+                        fix: "Ich werde Lehrer. (Bekommen = 'recibir').",
+                        why: "'Bekommen' significa recibir. 'Convertirse en' es el verbo 'werden'.",
+                        example: "Ich habe gestern einen Brief bekommen."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "El candado del verbo en Posición 2",
+                        explanation: "Pase lo que pase al inicio de la frase (tiempo, lugar, opinión), el verbo salta al segundo puesto.",
+                        formula: "Elemento 1 + VERBO + Sujeto"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Guten Tag! Wie geht es Ihnen?", meaning: "¡Buenos días! ¿Cómo está usted?" },
+                    { phrase: "Ich lerne Deutsch, weil es mir Spaß macht.", meaning: "Aprendo alemán porque me divierte." }
+                ]
+            },
+            {
+                levelTitle: "A1-A2 (Básico / Elemental)",
+                scope: "Verbos separables, preposiciones de Akkusativ/Dativ y pasado Perfekt.",
+                teacherSpokenScript: "Willkommen auf Niveau A1-A2! Achte auf die trennbaren Verben: 'Ich stehe jeden Tag um sieben Uhr auf.' Das Präfix wandert ganz ans Satzende. Und lerne die Akkusativ- und Dativ-Präpositionen mit Musik. Du machst fantastische Fortschritte!",
+                phonetics: [
+                    {
+                        sound: "El Sonido 'CH': Suave (/ç/) vs Duro (/x/)",
+                        tip: "Tras 'e, i, ä, ö, ü' suena suave como el siseo de un gato ('ich, Milch, echt'). Tras 'a, o, u' suena en la garganta como una J suave ('ach, Buch, Nacht').",
+                        spanishContrast: "Los hispanohablantes suelen pronunciar todas las CH como 'J' fuerte. Diferenciar el sonido suave 'ich' es vital.",
+                        example: "Ich habe in der Nacht ein Buch gelesen."
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Verbos Separables (Trennbare Verben)",
+                        formula: "[ Sujeto + Verbo Base (Pos. 2) + ... + Prefijo Separable (FINAL) ]",
+                        desc: "El prefijo se desprende y se coloca en el último lugar absoluto de la frase.",
+                        example: "Ich rufe dich heute Abend an (anrufen)."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Artículos de Caso Lógicos",
+                        spanishLink: "Akkusativ marca el Objeto Directo ('a quién'); Dativ marca el Objeto Indirecto ('para quién').",
+                        example: "Ich gebe dem Mann (Dativ) den Apfel (Akkusativ)."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "Confundir Wann, Wenn y Als.",
+                        fix: "Wann (pregunta horaria), Wenn (condicional/hábito), Als (momento único en pasado).",
+                        why: "El español usa 'cuando' para todo. El alemán exige precisión.",
+                        example: "Als ich ein Kind war, spielte ich viel."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "Preposiciones de Dativo con Rima",
+                        explanation: "Cántalas con ritmo para memorizarlas al instante.",
+                        formula: "Aus - bei - mit, nach - seit - von - zu (¡siempre DATIVO!)"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Gestern habe ich meine Freunde im Restaurant getroffen.", meaning: "Ayer me encontré con mis amigos en el restaurante." }
+                ]
+            },
+            {
+                levelTitle: "B1 (Intermedio)",
+                scope: "Oraciones subordinadas (verbo al final), Konjunktiv II y pasiva.",
+                teacherSpokenScript: "Willkommen auf Niveau B1! Jetzt verbinden wir Nebensätze mit 'weil', 'dass' oder 'obwohl'. Die goldene Regel: Das Verb wandert ganz ans Ende des Satzes! Höre zu: 'Ich lerne Deutsch, weil es mir großen Spaß macht.' Großartig!",
+                phonetics: [{ sound: "Knacklaut (Golpe de Glotis)", tip: "Pequeña interrupción de aire antes de palabras que empiezan por vocal.", spanishContrast: "Evita enlazar palabras como en español.", example: "Er isst einen Apfel." }],
+                grammar: [{ name: "Verbo al Final en Subordinadas", formula: "[ Hauptsatz + WEIL / DASS + Nebensatz + VERBO CONJUGADO AL FINAL ]", desc: "El conector subordinante dispara el verbo al final.", example: "Ich bleibe zu Hause, weil es heute stark regnet." }],
+                bridges: [{ rule: "Konjunktiv II = Subjuntivo Condicional", spanishLink: "Wäre = fuera/sería, Hätte = tuviera/tendría.", example: "Wenn ich Zeit hätte, würde ich kommen." }],
+                mistakes: [{ error: "Poner el verbo en segunda posición tras 'weil'.", fix: "Siempre al final tras conectores subordinantes.", why: "Regla sagrada de la sintaxis alemana.", example: "..., weil er krank ist." }],
+                mnemonics: [{ trick: "El Imán del Final", explanation: "Weil, dass, obwohl, wenn son imanes que arrastran el verbo conjugado al final.", formula: "Conector -> [ ... ] -> VERBO." }],
+                modelPhrases: [{ phrase: "Obwohl die Prüfung schwierig war, habe ich sie bestanden.", meaning: "Aunque el examen fue difícil, lo aprobé." }]
+            },
+            {
+                levelTitle: "B2 (Avanzado / Upper-Intermediate)",
+                scope: "Konjunktiv I de reporte, pasiva de estado y conectores de dos partes.",
+                teacherSpokenScript: "Willkommen auf Niveau B2! Meistere das Passiv und zweiteilige Konnektoren wie 'einerseits... andererseits' oder 'nicht nur... sondern auch'. Drücke komplexe Sachverhalte präzise aus!",
+                phonetics: [{ sound: "Reducción de '-en' final a sonido silábico /n/", tip: "'Laufen' suena /laʊfn̩/, sin vocal 'e'.", spanishContrast: "No sobrearticular la terminación.", example: "Wir müssen sofort handeln." }],
+                grammar: [{ name: "Conectores de Dos Partes (Zweiteilige Konnektoren)", formula: "[ Nicht nur... sondern auch... / Sowohl... als auch... ]", desc: "Estructuras para argumentación sofisticada.", example: "Er spricht sowohl fließend Deutsch als auch Englisch." }],
+                bridges: [{ rule: "Sufijos abstractos -heit / -keit = -dad", spanishLink: "Freiheit (libertad), Möglichkeit (posibilidad).", example: "Die Möglichkeit zur Verbesserung." }],
+                mistakes: [{ error: "Confundir 'denken an' con 'denken über'.", fix: "'An' para recordar o tener presente; 'Über' para opinar o reflexionar.", why: "Régimen preposicional.", example: "Ich denke oft an meinen Urlaub." }],
+                mnemonics: [{ trick: "La Balanza de Argumentación", explanation: "Einerseits (por un lado) equilibra andererseits (por otro).", formula: "Einerseits... andererseits..." }],
+                modelPhrases: [{ phrase: "Es steht außer Frage, dass weitere Maßnahmen erforderlich sind.", meaning: "Está fuera de toda duda que son necesarias más medidas." }]
+            },
+            {
+                levelTitle: "C1+ (Dominio Nativo / Maestría)",
+                scope: "Nomen-Verb-Verbindungen, construcciones participiales y registro académico.",
+                teacherSpokenScript: "Herzlich willkommen auf C1-Niveau! Hier geht es um stilistische Perfektion, Partizipialkonstruktionen und Nomen-Verb-Verbindungen: 'Wir müssen diese Entscheidung in Betracht ziehen.' Drücke komplexe Zusammenhänge souverän aus!",
+                phonetics: [{ sound: "Modulación y Matices de Partículas Modales", tip: "Uso sutil de 'ja, doch, wohl, mal, eben' para teñir la frase.", spanishContrast: "Transmiten matices que en español requieren frases enteras.", example: "Das ist ja wirklich eine Überraschung!" }],
+                grammar: [{ name: "Nomen-Verb-Verbindungen (Colocaciones Cultas)", formula: "[ Sustantivo abstracto + Verbo funcional ]", desc: "Sustituyen verbos simples por expresiones de alto registro.", example: "Eine Entscheidung treffen (entscheiden), in Betracht ziehen (berücksichtigen)." }],
+                bridges: [{ rule: "Préstamos greco-latinos en ciencias y derecho", spanishLink: "Kompatibel, Signifikant, Korrelieren son idénticos.", example: "Die Ergebnisse korrelieren eindeutig." }],
+                mistakes: [{ error: "Traducir literalmente giros hispanos.", fix: "Usar equivalentes idiomáticos alemanes exactos.", why: "Precisión pragmática.", example: "Jemandem die Daumen drücken (desear suerte)." }],
+                mnemonics: [{ trick: "El Bloque Compacto Participial", explanation: "Encapsular información entre artículo y sustantivo.", formula: "Die [gestern beschlossenen] Maßnahmen." }],
+                modelPhrases: [{ phrase: "Wir sollten alle relevanten Faktoren sorgfältig in Betracht ziehen.", meaning: "Deberíamos tener en cuenta detenidamente todos los factores pertinentes." }]
+            }
+        ];
+
+        // 4. ITALIAN CURRICULUM (ITALIANO)
+        const itCurriculums = [
+            {
+                levelTitle: "A0 (Iniciación / Starter)",
+                scope: "Vocales puras, concordancia de género/número y entonación melódica.",
+                teacherSpokenScript: "Ciao! Sono Chiara, la tua insegnante d'italiano. In italiano la musica delle parole è fondamentale! Ascolta bene le vocali chiare e le doppie consonanti: 'Ciao, mi chiamo Chiara. Sono felice di conoscerti.' Pronuncia sempre le vocali con decisione. Cominciamo!",
+                phonetics: [
+                    { sound: "Las 7 Vocales Italianas (E y O abiertas/cerradas)", tip: "El italiano tiene 'E' y 'O' abiertas (/ɛ/, /ɔ/) y cerradas (/e/, /o/). 'Pèsca' (melocotón) vs 'Pésca' (pesca).", spanishContrast: "El español solo tiene 5 vocales; el italiano distingue matices en E y O.", example: "Ho comprato una pesca fresca al mercato." },
+                    { sound: "Grupos C/G: Dulce vs Duro", tip: "C/G delante de E/I suena suave ('ciao' = chao, 'gelato' = yelato). Con 'H' suena duro ('chianti' = kianti, 'spaghetti' = spaguetti).", spanishContrast: "En español CH es siempre che; en italiano CH suena como 'K'.", example: "Ciao! Vorrei un caffè e un gelato." }
+                ],
+                grammar: [{ name: "Artículos Determinados Diversos", formula: "[ il/lo/la/i/gli/le ]", desc: "Uso de 'lo' y 'gli' delante de s+consonante, z, gn, ps ('lo studente', 'gli studenti').", example: "Lo studente legge il libro." }],
+                bridges: [{ rule: "Concordancia y Raíz Romance Directa (85% común)", spanishLink: "Las terminaciones -o (masc), -a (fem), -i (masc pl), -e (fem pl) son directas.", example: "Il ragazzo italiano / I ragazzi italiani." }],
+                mistakes: [{ error: "Salire pensar que es salir.", fix: "Salire = Subir. Salir se dice 'Uscire'.", why: "Falso amigo clásico.", example: "Salgo le scale / Esco di casa." }],
+                mnemonics: [{ trick: "CH suena como K de Kilo", explanation: "Cada vez que veas una H en italiano (ch, gh), piensa en un palo de hierro que endurece el sonido.", formula: "CH = K / GH = G dura" }],
+                modelPhrases: [{ phrase: "Piacere di conoscerti! Come stai?", meaning: "¡Un placer conocerte! ¿Cómo estás?" }]
+            },
+            {
+                levelTitle: "A1-A2 (Básico / Elemental)",
+                scope: "Dobles consonantes obligatorias, passato prossimo con essere/avere e preposizioni articolate.",
+                teacherSpokenScript: "Benvenuto al livello A1-A2! Ricorda la differenza cruciale tra consonanti semplici e doppie: 'pala' e 'palla', 'sete' e 'sette'. Usa il passato prossimo con precisione: 'Ieri ho parlato con Marco e sono andata al cinema.' Bravissimo!",
+                phonetics: [{ sound: "Las Dobles Consonantes Obligatorias", tip: "Detén el aire un microsegundo en la doble consonante: 'pala' (pala) vs 'palla' (pelota); 'sete' (sed) vs 'sette' (siete).", spanishContrast: "En español solo la RR y CC se doblan. En italiano todas las consonantes pueden doblarse y cambian el significado.", example: "Ci vediamo alle sette con sette amici." }],
+                grammar: [{ name: "Passato Prossimo con ESSERE vs AVERE", formula: "[ Sujeto + Essere/Avere + Participio ]", desc: "Con 'essere', el participio concuerda en género y número con el sujeto ('Lei è andata').", example: "Maria è andata a Roma e ha visto il Colosseo." }],
+                bridges: [{ rule: "Preposiciones Articuladas", spanishLink: "Di+il=del, In+il=nel, Da+il=dal se parecen a las contracciones españolas del y al.", example: "Vado nel centro della città." }],
+                mistakes: [{ error: "Curare pensar que es curar inmediatamente.", fix: "Curare = Tratar o atender médicamente; Sanare = Curar por completo.", why: "Matiz semántico.", example: "Il medico cura il paziente." }],
+                mnemonics: [{ trick: "El Freno de Mano en la Doble Consonante", explanation: "Pon el freno de mano con la lengua un instante antes de soltar la consonante geminada.", formula: "No digas 'sete', frena: 'set-te'." }],
+                modelPhrases: [{ phrase: "Ieri sera siamo andati in pizzeria e abbiamo mangiato benissimo.", meaning: "Ayer por la tarde fuimos a la pizzería y comimos de maravilla." }]
+            },
+            {
+                levelTitle: "B1 (Intermedio)",
+                scope: "Pronombres combinados (glielo, me lo), partículas 'ci' y 'ne', congiuntivo presente.",
+                teacherSpokenScript: "Benvenuto al livello B1! È il momento di conquistare il congiuntivo per esprimere desideri e opinioni: 'Credo che sia una buona idea. Spero che tu venga domani.' Usa le particelle 'ci' e 'ne' con naturalezza!",
+                phonetics: [{ sound: "Grupos 'GLI' (/ʎ/) y 'GN' (/ɲ/)", tip: "'GLI' suena como la 'LL' tradicional española ('figlio' -> fi-llo). 'GN' suena exactamente como la 'Ñ' ('bagno' -> ba-ño).", spanishContrast: "Completamente natural para hispanohablantes una vez identificada la grafía.", example: "Mio figlio va in bagno ogni mattina." }],
+                grammar: [{ name: "Partículas 'CI' y 'NE'", formula: "[ CI = lugar/con ello ] y [ NE = cantidad/de ello ]", desc: "'Ci vado' (voy allí); 'Ne voglio tre' (quiero tres de eso).", example: "Sei mai stato a Venezia? Sì, ci sono stato due volte." }],
+                bridges: [{ rule: "Uso del Subjuntivo paralelo", spanishLink: "Expresa duda, emoción, opinión ('Penso che sia vero').", example: "Penso che tu abbia ragione." }],
+                mistakes: [{ error: "Burro pensar que es el animal.", fix: "Burro = Mantequilla. El animal es 'l'asino'.", why: "Falso amigo histórico.", example: "Pane e burro a colazione." }],
+                mnemonics: [{ trick: "NE de Número", explanation: "Siempre que hables de una cantidad de algo previamente mencionado, pon NE.", formula: "Cantidad -> usa NE (Ne prendo due)." }],
+                modelPhrases: [{ phrase: "Spero vivamente che tu possa venire alla festa domani sera.", meaning: "Espero sinceramente que puedas venir a la fiesta mañana por la noche." }]
+            },
+            {
+                levelTitle: "B2 (Avanzado / Upper-Intermediate)",
+                scope: "Periodo ipotetico dell'irrealtà, congiuntivo imperfetto y pasiva con 'venire'.",
+                teacherSpokenScript: "Benvenuto al livello B2! Usa il periodo ipotetico dell'irrealtà: 'Se avessi saputo della festa, sarei venuta volentieri.' Padroneggia i pronomi combinati e l'intonazione espressiva. Ottimo lavoro!",
+                phonetics: [{ sound: "Entonación Exclamativa e Irónica", tip: "Uso de la melodía musical ascendente para dar énfasis afectivo.", spanishContrast: "El italiano modula tonalmente con mucha mayor amplitud que el español.", example: "Ma non mi dire! Davvero è successo questo?" }],
+                grammar: [{ name: "Periodo Ipotetico de 3er Grado", formula: "[ Se + Congiuntivo Trapassato, Condizionale Passato ]", desc: "Hipótesis irreales sobre el pasado.", example: "Se avessi avuto più tempo, avrei visitato anche Firenze." }],
+                bridges: [{ rule: "Conectores formales idénticos", spanishLink: "Tuttavia (sin embargo), Pertanto (por lo tanto), Ciononostante.", example: "Tuttavia, la decisione finale spetta al consiglio." }],
+                mistakes: [{ error: "Confundir 'caldo' con caldo de sopa.", fix: "'Caldo' = Caliente/Calor. Sopa es 'brodo'.", why: "Falso amigo de temperatura.", example: "Oggi fa molto caldo." }],
+                mnemonics: [{ trick: "La Pareja Congiuntivo-Condizionale", explanation: "El 'Se' se casa con el congiuntivo; la otra parte lleva condizionale.", formula: "Se + Congiuntivo -> Condizionale" }],
+                modelPhrases: [{ phrase: "Se avessi saputo della tua partenza, ti avrei accompagnato all'aeroporto.", meaning: "Si hubiera sabido de tu partida, te habría acompañado al aeropuerto." }]
+            },
+            {
+                levelTitle: "C1+ (Dominio Nativo / Maestría)",
+                scope: "Subjuntivo culto, figuras retóricas y precisión de registro.",
+                teacherSpokenScript: "Benvenuto al livello C1! Esprimi concetti complessi con eleganza stilistica e lessico ricercato: 'Ciò nonostante, è opportuno considerare tutte le implicazioni.' Raggiungi la vera maestria!",
+                phonetics: [{ sound: "Raddoppiamento Fonosintattico", tip: "Doble articulación natural de la consonante inicial tras ciertas palabras monosílabas ('a casa' -> /ak'kasa/).", spanishContrast: "Secreto supremo de los actores y oradores nativos.", example: "Andiamo a casa a mangiare." }],
+                grammar: [{ name: "Passato Remoto de Registro Culto", formula: "[ Verbos regulares e irregulares de pasado absoluto ]", desc: "Imprescindible en literatura, historia y alta cultura italiana.", example: "Dante scrisse la Divina Commedia nel Trecento." }],
+                bridges: [{ rule: "Léxico de la cultura clásica", spanishLink: "El italiano formal comparte casi el 95% de la terminología abstracta.", example: "Imprescindibile, paradigmatico, intrinseco." }],
+                mistakes: [{ error: "Usar dialectos regionales en contexto formal.", fix: "Emplear el italiano estándar cultivado.", why: "Prestigio lingüístico.", example: "Un punto di vista ineccepibile." }],
+                mnemonics: [{ trick: "El Eco Fonosintáctico", explanation: "Tras 'a, da, e, ma, se, più', duplica suavemente el sonido de la palabra siguiente.", formula: "A + Roma -> /a r'roma/" }],
+                modelPhrases: [{ phrase: "Resta inteso che ogni decisione dovrà essere ratificata in sede plenaria.", meaning: "Queda entendido que cualquier decisión deberá ser ratificada en sesión plenaria." }]
+            }
+        ];
+
+        // 5. PORTUGUESE CURRICULUM (PORTUGUÊS)
+        const ptCurriculums = [
+            {
+                levelTitle: "A0 (Iniciación / Starter)",
+                scope: "Vogais nasais (ão, mãe), reducción vocálica en Portugal y cortesía básica.",
+                teacherSpokenScript: "Olá! Eu sou a Inês, a tua professora de português. Bem-vindo! Repara no som das vogais nasais como em 'pão', 'mãe' e 'bom'. O ar sai pelo nariz e pela boca ao mesmo tempo. Ouve com atenção: 'Eu sou a Inês. Estou muito feliz por estar aqui contigo.' Vamos praticar!",
+                phonetics: [
+                    { sound: "Vogais Nasais (-ão, -ãe, -õ)", tip: "El diptongo '-ão' no suena como 'an' ni 'on'. Es una 'A' nasalizada seguida de un semivocal 'U' con el aire saliendo por la nariz ('pão', 'não', 'coração').", spanishContrast: "No existe en español. Intentar decir 'pan' o 'pao' delata inmediatamente al extranjero.", example: "Não, obrigado. Eu quero um pão fresco." },
+                    { sound: "La 'S' Palatal (/ʃ/ como 'sh')", tip: "En portugués de Portugal, la 'S' al final de palabra o antes de consonante sorda suena como 'sh' ('dois' suena /dojʃ/, 'festa' suena /fɛʃtɐ/).", spanishContrast: "En español la S es sibilante alveolar. En Portugal suena como mandar a callar.", example: "Estes dois rapazes vão à festa." }
+                ],
+                grammar: [{ name: "Verbo Ser vs Estar", formula: "[ Ser (permanente) ] vs [ Estar (temporal/localización) ]", desc: "Idéntica distinción que en español, pero con conjugaciones propias ('Sou, És, É, Somos, São').", example: "Eu sou português e estou em Lisboa." }],
+                bridges: [{ rule: "Sintaxis Compartida (88% común)", spanishLink: "El orden de las palabras y la concordancia es casi idéntica.", example: "A casa é muito grande e bonita." }],
+                mistakes: [{ error: "Propina pensar que es una gratificación.", fix: "Propina = Tasa de matrícula universitaria. Propina de camarero es 'Gorjeta'.", why: "Falso amigo financiero.", example: "Pagar a propina da faculdade." }],
+                mnemonics: [{ trick: "La Campana Nasal para el -ÃO", explanation: "Tápate la nariz un segundo al decir 'não': si vibra la nariz, lo estás haciendo perfecto.", formula: "N + A nasal + U = Não" }],
+                modelPhrases: [{ phrase: "Olá! Muito prazer em conhecer-te!", meaning: "¡Hola! ¡Mucho gusto en conocerte!" }]
+            },
+            {
+                levelTitle: "A1-A2 (Básico / Elemental)",
+                scope: "Pretérito perfeito vs imperfeito, estar a + infinitivo (Portugal) y falsos amigos.",
+                teacherSpokenScript: "Bem-vindo ao nível A1-A2! Repara nas diferenças entre o pretérito perfeito e o imperfeito: 'Ontem fui ao mercado enquanto chovia.' Em Portugal usamos 'estar a mais infinitivo' em vez do gerúndio: 'Estou a comer.' Muito bem!",
+                phonetics: [{ sound: "Reducción de Vocales Átonas en Portugal", tip: "Las vocales no acentuadas casi desaparecen en la pronunciación europea: 'excelente' suena /ɐjʃ.s(ə).lẽ.t(ə)/.", spanishContrast: "El portugués europeo es una lengua con reducción extrema, similar al ruso o inglés.", example: "O telefone está na mesa pequena." }],
+                grammar: [{ name: "Estar a + Infinitivo (Perífrasis de Portugal)", formula: "[ Estar conjugado + A + Infinitivo ]", desc: "En Portugal no se usa el gerundio para acciones continuas ('Estou a trabalhar' en vez de 'Estoy trabajando').", example: "Agora mesmo estou a estudar português." }],
+                bridges: [{ rule: "Terminaciones -ÇÃO = -CIÓN", spanishLink: "Informação, Ação, Condição son transparentes.", example: "A informação está correta." }],
+                mistakes: [{ error: "Borracha pensar que es mujer ebria.", fix: "Borracha = Goma de borrar. Mujer ebria es 'bêbada'.", why: "Falso amigo cómplice.", example: "Preciso de uma borracha para apagar o lápis." }],
+                mnemonics: [{ trick: "La Fórmula 'A + Infinitivo' de Portugal", explanation: "Cambia tu gerundio por 'a + verbo en infinitivo'.", formula: "Estou comendo -> Estou a comer" }],
+                modelPhrases: [{ phrase: "Ontem estive a falar com o médico sobre a receita.", meaning: "Ayer estuve hablando con el médico sobre la receta." }]
+            },
+            {
+                levelTitle: "B1 (Intermedio)",
+                scope: "O Segredo de Ouro: Infinitivo Pessoal, conjuntivo e pronombres clíticos.",
+                teacherSpokenScript: "Bem-vindo ao nível B1! O grande segredo do português é o infinitivo pessoal, que não existe em espanhol: 'É importante nós fazermos este exercício.' Usa também o conjuntivo: 'Espero que tenhas um ótimo dia.' Força!",
+                phonetics: [{ sound: "La 'L' Final Velarizada (/ɫ/ o /w/)", tip: "En Portugal la 'L' final suena velarizada (oscura). En Brasil suena como una 'U' ('Brasil' -> /bɾaˈziw/).", spanishContrast: "En español la L siempre es clara y dental.", example: "O sol brilha no Brasil e em Portugal." }],
+                grammar: [{ name: "El Infinitivo Personal (Invenção Portuguesa)", formula: "[ Infinitivo + Desinencias personales (-es, -mos, -des, -em) ]", desc: "Permite al infinitivo tener su propio sujeto: 'Para nós fazermos' (para que nosotros hagamos).", example: "É melhor irmos embora agora para não chegarmos tarde." }],
+                bridges: [{ rule: "Conjuntivo Presente casi idéntico", spanishLink: "Que eu faça, que tu tenhas, que ele possa.", example: "Espero que tudo corra bem." }],
+                mistakes: [{ error: "Polvo pensar que es suciedad.", fix: "Polvo = Pulpo de comer. Polvo de suciedad es 'Pó'.", why: "Falso amigo gastronómico.", example: "Hoje vamos comer arroz de polvo." }],
+                mnemonics: [{ trick: "El Infinitivo con Dueño", explanation: "Si el infinitivo lo hace 'nosotros', ponle '-mos' (fazer -> fazermos).", formula: "Verbo infinitivo + marca de persona" }],
+                modelPhrases: [{ phrase: "Seria conveniente nós falarmos com o diretor antes da decisão final.", meaning: "Sería conveniente que habláramos con el director antes de la decisión final." }]
+            },
+            {
+                levelTitle: "B2 (Avanzado / Upper-Intermediate)",
+                scope: "Futuro do conjuntivo, mesóclise y conectores de alta expresión.",
+                teacherSpokenScript: "Bem-vindo ao nível B2! Domina o futuro do conjuntivo: 'Quando fores a Lisboa, avisa-me.' E aprende a colocação pronominal avançada. Excelente trabalho!",
+                phonetics: [{ sound: "Cadencia Melódica Portuguesa", tip: "Alternancia rápida de sílabas comprimidas con sílabas tónicas alargadas.", spanishContrast: "Ritmo acentual marcado frente al silábico español.", example: "Independentemente de tudo, vamos conseguir." }],
+                grammar: [{ name: "Futuro del Subjuntivo (Futuro do Conjuntivo)", formula: "[ Quando / Se + Futuro do Conjuntivo ]", desc: "Totalmente vivo en portugués: 'Quando você quiser' (cuando quieras).", example: "Se tiveres tempo amanhã, vem tomar um café comigo." }],
+                bridges: [{ rule: "Sufijos -MENTE para adverbios", spanishLink: "Prontamente, felizmente, claramente.", example: "Ele resolveu o assunto prontamente." }],
+                mistakes: [{ error: "Presunto pensar que es sospechoso.", fix: "Presunto = Jamón curado. Sospechoso es 'Suspeito'.", why: "Falso amigo culinario.", example: "Comi uma sandes de presunto." }],
+                mnemonics: [{ trick: "El 'Quando' exige Futuro del Subjuntivo", explanation: "En cuanto digas 'quando' para el futuro, usa la forma infinitivo/futuro.", formula: "Quando eu for, quando tu fores, quando ele for." }],
+                modelPhrases: [{ phrase: "Assim que tivermos os resultados definitivos, entraremos em contacto.", meaning: "En cuanto tengamos los resultados definitivos, nos pondremos en contacto." }]
+            },
+            {
+                levelTitle: "C1+ (Dominio Nativo / Maestría)",
+                scope: "Mesóclise formal, riqueza estilística y precisión retórica lusófona.",
+                teacherSpokenScript: "Bem-vindo ao nível C1! Alcança a máxima fluência e riqueza vocabular com expressões idiomáticas e precisão estilística: 'Dir-se-ia que a questão está resolvida.' Parabéns pelo teu percurso!",
+                phonetics: [{ sound: "Micro-articulación y Sutileza Entonativa", tip: "Transición elegante entre registros formales e informales sin vacilación.", spanishContrast: "Fluidez natural sin perder la pureza nasal.", example: "Dir-se-ia que a situação é por demais evidente." }],
+                grammar: [{ name: "A Mesóclise Clássica", formula: "[ Raiz do verbo + Pronome + Desinência ]", desc: "Exclusiva del portugués formal: 'Far-me-ás um favor' (me harás un favor).", example: "Dar-te-ei todas as informações necessárias amanhã." }],
+                bridges: [{ rule: "Vocabulario jurídico-administrativo común", spanishLink: "Inalienável, jurisprudência, consubstanciar.", example: "Consubstanciar uma proposta sólida." }],
+                mistakes: [{ error: "Usar construcciones sintácticas del español en portugués culto.", fix: "Respetar la colocación pronominal (ênclise / próclise).", why: "Elegancia normativa.", example: "Disse-me que viria." }],
+                mnemonics: [{ trick: "Mesóclise = Pronombre en el Corazón del Verbo", explanation: "El pronombre se mete dentro del futuro o condicional.", formula: "Fará + o -> Fá-lo-á" }],
+                modelPhrases: [{ phrase: "Havendo disponibilidade orçamental, implementar-se-ão as novas diretrizes.", meaning: "Habiendo disponibilidad presupuestaria, se implementarán las nuevas directrices." }]
+            }
+        ];
+
+        // SELECCIÓN SEGÚN IDIOMA
+        let curriculumList = enCurriculums;
+        if (code === 'fr') curriculumList = frCurriculums;
+        else if (code === 'de') curriculumList = deCurriculums;
+        else if (code === 'it') curriculumList = itCurriculums;
+        else if (code === 'pt') curriculumList = ptCurriculums;
+        else {
+            // Idiomas secundarios (ru, ca, eu, gl): Generador calibrado
+            const langName = code.toUpperCase();
+            const levelNames = ["A0 (Iniciación / Starter)", "A1-A2 (Básico / Elemental)", "B1 (Intermedio)", "B2 (Avanzado)", "C1+ (Dominio Nativo)"];
+            return {
+                levelTitle: levelNames[safeIdx],
+                scope: `Dominio oficial y exigencias lingüísticas para el nivel ${levelNames[safeIdx]} en ${langName}.`,
+                teacherSpokenScript: `Welcome to level ${levelNames[safeIdx]}! Practice consistently, focus on natural sentence structures, and listen carefully to every native audio example. You are doing great!`,
+                phonetics: [
+                    {
+                        sound: `Fonética y Articulación ${langName}`,
+                        tip: "Articula con claridad, prestando atención a la posición de la lengua y a las vocales abiertas y cerradas.",
+                        spanishContrast: "Adapta el aparato fonador evitando trasladar directamente los hábitos fonéticos del castellano.",
+                        example: "Bona tarda, com esteu?"
+                    }
+                ],
+                grammar: [
+                    {
+                        name: "Estructura Oracional Clave",
+                        formula: "[ Sujeto + Verbo + Complementos ]",
+                        desc: "Construye oraciones claras respetando el orden sintáctico natural del idioma.",
+                        example: "Aquest és un exemple clar de la gramàtica."
+                    }
+                ],
+                bridges: [
+                    {
+                        rule: "Puentes Léxicos con el Castellano",
+                        spanishLink: "Aprovecha las raíces comunes y los cognados transparentes para expandir tu vocabulario sin esfuerzo.",
+                        example: "Informació, Situació, General."
+                    }
+                ],
+                mistakes: [
+                    {
+                        error: "Traducción literal de giros del castellano.",
+                        fix: "Usar expresiones idiomáticas nativas contrastadas.",
+                        why: "Cada lengua tiene sus propias colocaciones naturales.",
+                        example: "Tenir cura (cuidar)."
+                    }
+                ],
+                mnemonics: [
+                    {
+                        trick: "El Ancla de la Rutina Diaria",
+                        explanation: "Asocia cada regla gramatical con una acción cotidiana que realices todos los días.",
+                        formula: "Acción diaria = Frase en el idioma"
+                    }
+                ],
+                modelPhrases: [
+                    { phrase: "Moltes gràcies per la vostra atenció i col·laboració.", meaning: "Muchas gracias por vuestra atención y colaboración." }
+                ]
+            };
+        }
+
+        return curriculumList[safeIdx] || curriculumList[0];
+    },
+
+        selectGrammarLevel: function(levelIdx) {
+            game.selectedGrammarLevelIdx = levelIdx;
+            if (game.isGrammarSpeaking) {
+                if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+                game.isGrammarSpeaking = false;
+                game.updateGrammarSpeakBtn();
+            }
+            game.renderGrammarContent();
+        },
+
+        speakExampleText: function(text) {
+            if (!text) return;
+            if (game.isGrammarSpeaking) {
+                if (typeof audio !== 'undefined' && audio.stopSpeech) audio.stopSpeech();
+                game.isGrammarSpeaking = false;
+                game.updateGrammarSpeakBtn();
+            }
+            if (typeof audio !== 'undefined' && audio.speakNative) {
+                audio.speakNative(text, currentLang);
+            }
+        },
+
+        updateGrammarSpeakBtn: function() {
+            const lbl = document.getElementById('lbl-speak-grammar-btn');
+            const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
+            if (!lbl) return;
+            if (game.isGrammarSpeaking) {
+                lbl.innerText = "⏹️ Detener Explicación";
+            } else {
+                lbl.innerText = `Escuchar a ${langInfo.teacherName} (en ${langInfo.name})`;
+            }
+        },
+
+        renderGrammarContent: function() {
             const modal = document.getElementById('modal-grammar-plus');
             const body = document.getElementById('grammar-modal-body');
             const titleEl = document.getElementById('grammar-modal-title');
@@ -1227,7 +2173,8 @@ Respond ONLY with a valid JSON object matching this schema:
 
             const langInfo = LANGUAGES[currentLang] || LANGUAGES.en;
             const levelLabels = app.getLevelLabels();
-            const currentLevelIdx = db.academy_level || 0;
+            const defaultLevel = db.academy_level || 0;
+            const currentLevelIdx = (game.selectedGrammarLevelIdx !== null && game.selectedGrammarLevelIdx !== undefined) ? game.selectedGrammarLevelIdx : defaultLevel;
             const currentLevelName = levelLabels[currentLevelIdx] || 'A1-A2';
 
             if (avatarModal) {
@@ -1237,182 +2184,172 @@ Respond ONLY with a valid JSON object matching this schema:
             if (titleEl) titleEl.innerText = `${langInfo.grammarPlusBtnLabel || 'GRAMMAR+'} · NIVEL ${currentLevelName}`;
             if (subtitleEl) subtitleEl.innerText = `Guía Oficial y Exigencias · ${langInfo.name} (${langInfo.teacherName})`;
 
-            modal.classList.remove('hidden');
-            history.pushState({ modal: 'grammar-plus' }, null, '#grammar-plus');
+            const cur = game.getPedagogicalCurriculum(currentLang, currentLevelIdx);
+            game.lastGrammarTextToSpeak = cur.teacherSpokenScript;
 
-            // Matriz curricular completa y estructurada por nivel CEFR
-            const levelCurriculums = [
-                {
-                    level: "A0 (Iniciación / Starter)",
-                    scope: "Fundamentos básicos absolutos de comunicación elemental, sonidos y orden sintáctico.",
-                    grammar: [
-                        { name: "Pronombres y Verbo To Be / Ser-Estar", desc: "Uso correcto de pronombres personales y concordancia verbal básica.", example: "I am a student. You are ready. He is here." },
-                        { name: "Sustantivos Singulares y Plurales", desc: "Reglas de plurales regulares (-s, -es) y artículos determinados/indeterminados.", example: "a book / two books, an apple / three apples" },
-                        { name: "Negación y Preguntas Simples", desc: "Formación de oraciones negativas y preguntas de respuesta sí/no.", example: "Is this correct? No, it is not." }
-                    ],
-                    phonetics: [
-                        { sound: "Vocales Claras & Articulación", tip: "Apertura bucal deliberada y separación clara de sílabas sin acelerarse." }
-                    ],
-                    mistakes: [
-                        { error: "Olvidar el pronombre sujeto (ej. *is good*)", fix: "Siempre incluir el sujeto explícito: 'It is good'." }
-                    ],
-                    idioms: [
-                        { phrase: "Have a nice day! / Take care!", meaning: "Fórmulas de cortesía cotidianas obligatorias de despedida." }
-                    ]
-                },
-                {
-                    level: "A1-A2 (Básico / Elemental)",
-                    scope: "Comunicación cotidiana, descripciones personales, rutinas habituales y narración en pasado simple.",
-                    grammar: [
-                        { name: "Present Simple vs Present Continuous", desc: "Diferenciar hábitos y rutinas frente a acciones que ocurren en este preciso momento.", example: "I usually work, but right now I am studying." },
-                        { name: "Pasado Simple (Regulares -ed e Irregulares Clave)", desc: "Narrar acciones finalizadas en un momento concreto del pasado.", example: "Yesterday I went to the store and bought fresh fruit." },
-                        { name: "Preposiciones de Lugar y Tiempo (in, on, at)", desc: "Reglas fundamentales para situar objetos, fechas, horas y lugares.", example: "at 5 PM, on Monday, in the morning, at home" }
-                    ],
-                    phonetics: [
-                        { sound: "Las 3 pronunciaciones del pasado -ed (/t/, /d/, /ɪd/)", tip: "Solo se añade la sílaba extra /ɪd/ tras sonidos 'T' o 'D' (decided, wanted). En el resto, finaliza con sonido seco /t/ o /d/ (walked, played)." },
-                        { sound: "Letras mudas comunes", tip: "No pronunciar la 'k' en 'know/knife' ni la 'l' en 'walk/talk/could'." }
-                    ],
-                    mistakes: [
-                        { error: "Confundir 'make' vs 'do'", fix: "Usar 'do' para actividades y tareas (do homework); usar 'make' para crear o producir (make a decision)." }
-                    ],
-                    idioms: [
-                        { phrase: "Piece of cake", meaning: "Algo sumamente fácil de realizar." },
-                        { phrase: "See you later / Hold on a second", meaning: "Expresiones estándar de fluidez conversacional básica." }
-                    ]
-                },
-                {
-                    level: "B1 (Intermedio)",
-                    scope: "Independencia comunicativa, narración de vivencias pasadas, opiniones personales y planes futuros.",
-                    grammar: [
-                        { name: "Present Perfect vs Past Simple", desc: "Conectar experiencias pasadas con relevancia en el presente frente a momentos cerrados.", example: "I have lived here for two years (todavía vivo aquí)." },
-                        { name: "Primer y Segundo Condicional (Real vs Hipotético)", desc: "Estructuras condicionales de causa-efecto y situaciones imaginarias.", example: "If I have time, I will call you. If I had more time, I would travel more." },
-                        { name: "Modales de Obligación, Consejo y Deducción", desc: "Uso de must, should, have to, might y could con precisión de matices.", example: "You should rest. She must be at home right now." }
-                    ],
-                    phonetics: [
-                        { sound: "Connected Speech & Linking", tip: "Enlazar consonante final con vocal inicial de la siguiente palabra de forma continua (ej. 'pick it up' -> /pɪkɪtʌp/)." },
-                        { sound: "Diferenciación de vocales cortas vs largas", tip: "Distinguir nítidamente pares mínimos como ship /ʃɪp/ vs sheep /ʃiːp/." }
-                    ],
-                    mistakes: [
-                        { error: "Usar 'since' en lugar de 'for'", fix: "'Since' para un punto de inicio (since 2020); 'For' para una duración de tiempo (for 3 years)." }
-                    ],
-                    idioms: [
-                        { phrase: "Hit the nail on the head", meaning: "Acertar plenamente en un diagnóstico o respuesta." },
-                        { phrase: "Break the ice / Call it a day", meaning: "Romper la tensión / Dar por concluida una jornada de trabajo." }
-                    ]
-                },
-                {
-                    level: "B2 (Avanzado / Upper Intermediate)",
-                    scope: "Fluidez espontánea, debate argumentativo, matices estilísticos y estructuras sintácticas complejas.",
-                    grammar: [
-                        { name: "Tercer Condicional y Condicionales Mixtos", desc: "Hipótesis sobre el pasado y sus consecuencias en el presente.", example: "If I had taken that opportunity, my life would be completely different now." },
-                        { name: "Voz Pasiva Avanzada y Verbos de Reporte", desc: "Estructuras formales e impersonales (It is widely believed that...).", example: "The results are expected to be announced tomorrow." },
-                        { name: "Inversión y Estructuras de Énfasis", desc: "Uso de adverbios negativos al inicio para dar fuerza estilística.", example: "Rarely have I seen such dedication to language learning." }
-                    ],
-                    phonetics: [
-                        { sound: "Reducción de sílabas débiles (Schwa /ə/)", tip: "Relajar la mandíbula y neutralizar vocales átonas para lograr el ritmo acentual nativo." },
-                        { sound: "Entonación y Modulación del Énfasis", tip: "Variar la melodía de la frase para transmitir ironía, duda o certeza absoluta." }
-                    ],
-                    mistakes: [
-                        { error: "Abuso de conectores simples (and, but, so)", fix: "Utilizar conectores avanzados como 'furthermore', 'nevertheless', 'consequently' o 'in light of'." }
-                    ],
-                    idioms: [
-                        { phrase: "Burn the midnight oil", meaning: "Trabajar o estudiar intensamente hasta altas horas de la noche." },
-                        { phrase: "Read between the lines / Steal someone's thunder", meaning: "Captar el significado implícito / Quitarle el protagonismo a alguien." }
-                    ]
-                },
-                {
-                    level: "C1+ (Dominio Nativo / Maestría)",
-                    scope: "Precisión profesional, profundidad retórica, sutilezas culturales y flexibilidad total de registro.",
-                    grammar: [
-                        { name: "Oraciones Escindidas (Cleft Sentences)", desc: "Enfocar elementos concretos de la oración con máxima elegancia sintáctica.", example: "What really made the difference was her relentless consistency." },
-                        { name: "Subjuntivo Avanzado, Elipsis y Sustitución", desc: "Economía del lenguaje y construcciones hipotéticas de registro culto.", example: "Had we known sooner, we would have acted accordingly." },
-                        { name: "Colocaciones Avanzadas y Precisión Léxica", desc: "Uso exacto de combinaciones naturales nativas de alta densidad léxica.", example: "bitterly disappointed, highly contentious, fiercely independent" }
-                    ],
-                    phonetics: [
-                        { sound: "Micro-asimilación y Elisión Nativa", tip: "Transiciones naturales de sonidos adyacentes y oclusiones glotales según dialectos." }
-                    ],
-                    mistakes: [
-                        { error: "Traducción literal de frases hechas del español", fix: "Utilizar equivalentes pragmáticos nativos con carga cultural exacta." }
-                    ],
-                    idioms: [
-                        { phrase: "Barking up the wrong tree / Bite the bullet", meaning: "Estar equivocado de objetivo / Afrontar con valentía una situación inevitable." }
-                    ]
-                }
-            ];
+            game.updateGrammarSpeakBtn();
 
-            const cur = levelCurriculums[currentLevelIdx] || levelCurriculums[1];
-
-            game.lastGrammarTextToSpeak = `Esta es la guía de gramática y exigencias oficiales para el nivel ${currentLevelName} en ${langInfo.name}. Los puntos clave exigibles incluyen: ${cur.grammar.map(g => g.name).join('. ')}. En fonética, domina: ${cur.phonetics.map(p => p.sound).join('. ')}.`;
+            const levelTabNames = ['A0', 'A1-A2', 'B1', 'B2', 'C1+'];
 
             body.innerHTML = `
+                <!-- SELECTOR DE NIVELES (TABS DINÁMICAS) -->
+                <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 4px; scrollbar-width: none;">
+                    ${levelTabNames.map((name, idx) => `
+                        <button onclick="game.selectGrammarLevel(${idx})" class="tech" style="flex: 1; min-width: 72px; padding: 7px 8px; border-radius: 8px; font-size: 0.78rem; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s; ${idx === currentLevelIdx ? 'background: rgba(0,243,255,0.25); border: 1.5px solid var(--neon-cyan); color: #FFF; box-shadow: 0 0 10px rgba(0,243,255,0.4);' : 'background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #AAA;'}">
+                            ${name}
+                        </button>
+                    `).join('')}
+                </div>
+
                 <!-- RESUMEN DEL NIVEL -->
-                <div style="background: rgba(0,243,255,0.08); border-left: 4px solid var(--neon-cyan); padding: 12px 16px; border-radius: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.92rem; font-weight: bold; color: var(--neon-cyan);">
-                        🎯 REQUISITOS OFICIALES · NIVEL ${cur.level}
+                <div style="background: rgba(0,243,255,0.08); border-left: 4px solid var(--neon-cyan); padding: 12px 14px; border-radius: 6px;">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-cyan); display: flex; align-items: center; justify-content: space-between;">
+                        <span>🎯 REQUISITOS OFICIALES · ${cur.levelTitle}</span>
+                        <span style="font-size: 0.75rem; background: rgba(0,243,255,0.2); padding: 2px 8px; border-radius: 4px; color: #FFF;">CEFR</span>
                     </div>
-                    <div style="margin-top: 4px; font-size: 0.85rem; color: #DDD; line-height: 1.4;">
+                    <div style="margin-top: 5px; font-size: 0.82rem; color: #DDD; line-height: 1.4;">
                         ${cur.scope}
                     </div>
                 </div>
 
-                <!-- 1. ESTRUCTURAS GRAMATICALES CLAVE -->
-                <div style="margin-top: 4px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-ok); margin-bottom: 8px;">
-                        📖 1. ESTRUCTURAS GRAMATICALES EXIGIBLES
+                <!-- 1. FONÉTICA PRÁCTICA & COLOCACIÓN BUCAL (DESDE EL CASTELLANO) -->
+                <div style="margin-top: 6px;">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-pink); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>🗣️ 1. FONÉTICA & COLOCACIÓN BUCAL</span>
+                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Diferencias con el castellano)</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        ${cur.phonetics.map(p => `
+                            <div style="background: rgba(255,0,85,0.06); border: 1px solid rgba(255,0,85,0.25); border-radius: 8px; padding: 10px 12px;">
+                                <strong style="color: var(--neon-pink); font-size: 0.86rem;">• ${p.sound}:</strong>
+                                <div style="font-size: 0.82rem; color: #EEE; margin-top: 4px; line-height: 1.35;">
+                                    ${p.tip}
+                                </div>
+                                ${p.spanishContrast ? `
+                                    <div style="font-size: 0.78rem; color: #fca5a5; margin-top: 4px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; border-left: 2px solid #ef4444;">
+                                        ⚡ <strong>Contraste Castellano:</strong> ${p.spanishContrast}
+                                    </div>
+                                ` : ''}
+                                ${p.example ? `
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--neon-pink);">
+                                        <span style="font-size: 0.82rem; color: #FFF; font-style: italic;">"${p.example}"</span>
+                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(p.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--neon-pink); background: rgba(255,0,85,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar pronunciación">🔊</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 2. FÓRMULAS SINTÁCTICAS & ENSAMBLAJE (CHEAT CODES) -->
+                <div style="margin-top: 6px;">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-ok); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>🧩 2. FÓRMULAS SINTÁCTICAS (CHEAT CODES)</span>
+                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Patrones de ensamblaje)</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         ${cur.grammar.map(g => `
-                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: var(--neon-cyan); font-size: 0.88rem;">• ${g.name}:</strong>
-                                <div style="font-size: 0.82rem; color: #BBB; margin: 3px 0 5px;">${g.desc}</div>
-                                <div style="font-size: 0.8rem; color: #FFF; font-style: italic; background: rgba(0,0,0,0.4); padding: 5px 8px; border-radius: 4px; border-left: 2px solid var(--cyber-ok);">
-                                    Ejemplo: "${g.example}"
+                            <div style="background: rgba(0,255,149,0.06); border: 1px solid rgba(0,255,149,0.25); border-radius: 8px; padding: 10px 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                                    <strong style="color: var(--cyber-ok); font-size: 0.86rem;">• ${g.name}</strong>
+                                </div>
+                                ${g.formula ? `
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.75rem; color: #5eead4; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 4px; margin: 4px 0;">
+                                        ${g.formula}
+                                    </div>
+                                ` : ''}
+                                <div style="font-size: 0.82rem; color: #CCC; margin: 3px 0 5px; line-height: 1.35;">${g.desc}</div>
+                                ${g.example ? `
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.82rem; color: #FFF; font-style: italic; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--cyber-ok);">
+                                        <span>"${g.example}"</span>
+                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(g.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--cyber-ok); background: rgba(0,255,149,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar">🔊</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 3. PUENTES CON EL CASTELLANO (SUPERATAJOS QUE YA SABES) -->
+                <div style="margin-top: 6px;">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-cyan); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>🌉 3. PUENTES CON EL CASTELLANO</span>
+                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Ahorra semanas de estudio)</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        ${cur.bridges.map(b => `
+                            <div style="background: rgba(0,243,255,0.06); border: 1px solid rgba(0,243,255,0.25); border-radius: 8px; padding: 10px 12px;">
+                                <strong style="color: var(--neon-cyan); font-size: 0.86rem;">💡 ${b.rule}</strong>
+                                <div style="font-size: 0.82rem; color: #DDD; margin: 4px 0; line-height: 1.35;">${b.spanishLink}</div>
+                                ${b.example ? `
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.8rem; color: #A5F3FC; background: rgba(0,0,0,0.4); padding: 5px 10px; border-radius: 4px; border-left: 2px solid var(--neon-cyan);">
+                                        <span>${b.example}</span>
+                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(b.example)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid var(--neon-cyan); background: rgba(0,243,255,0.2); color: #FFF; font-size: 0.78rem; cursor: pointer;" title="Escuchar">🔊</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 4. TRAMPAS CRÍTICAS & FALSOS AMIGOS (LO QUE NUNCA DEBES DECIR) -->
+                <div style="margin-top: 6px;">
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-warn); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>⚠️ 4. TRAMPAS & FALSOS AMIGOS</span>
+                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Errores comunes en España/Latam)</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        ${cur.mistakes.map(m => `
+                            <div style="background: rgba(255,184,0,0.06); border: 1px solid rgba(255,184,0,0.25); border-radius: 8px; padding: 10px 12px;">
+                                <div style="color: #ff6b81; font-size: 0.82rem; text-decoration: line-through; font-weight: 500;">❌ ${m.error}</div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; color: var(--cyber-ok); font-size: 0.85rem; font-weight: 700; margin-top: 3px;">
+                                    <span>✅ ${m.fix}</span>
+                                    ${m.example ? `
+                                        <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(m.example)}'))" class="tech" style="padding: 2px 7px; border-radius: 5px; border: 1px solid var(--cyber-ok); background: rgba(0,255,149,0.2); color: #FFF; font-size: 0.74rem; cursor: pointer;" title="Escuchar">🔊</button>
+                                    ` : ''}
+                                </div>
+                                <div style="font-size: 0.78rem; color: #DDD; margin-top: 4px; line-height: 1.3;">
+                                    🔍 <strong>Por qué:</strong> ${m.why}
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
 
-                <!-- 2. FONÉTICA Y ARTICULACIÓN -->
+                <!-- 5. REGLAS NEMOTÉCNICAS & TRUCOS MENTALES -->
                 <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--neon-pink); margin-bottom: 8px;">
-                        🗣️ 2. PRONUNCIACIÓN & FONÉTICA DEL NIVEL
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: #a78bfa; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>⚡ 5. REGLAS NEMOTÉCNICAS & TRUCOS MENTALES</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.phonetics.map(p => `
-                            <div style="background: rgba(255,0,85,0.06); border: 1px solid rgba(255,0,85,0.2); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: var(--neon-pink); font-size: 0.88rem;">• ${p.sound}:</strong>
-                                <div style="font-size: 0.82rem; color: #DDD; margin-top: 3px; line-height: 1.35;">${p.tip}</div>
+                        ${cur.mnemonics.map(mn => `
+                            <div style="background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.3); border-radius: 8px; padding: 10px 12px;">
+                                <strong style="color: #c4b5fd; font-size: 0.86rem;">🎯 ${mn.trick}</strong>
+                                <div style="font-size: 0.82rem; color: #DDD; margin-top: 4px; line-height: 1.35;">${mn.explanation}</div>
+                                ${mn.formula ? `
+                                    <div style="font-family: 'Orbitron', monospace; font-size: 0.75rem; color: #e9d5ff; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 4px; margin-top: 5px; border-left: 2px solid #a78bfa;">
+                                        ⚡ ${mn.formula}
+                                    </div>
+                                ` : ''}
                             </div>
                         `).join('')}
                     </div>
                 </div>
 
-                <!-- 3. ERRORES TÍPICOS A EVITAR -->
+                <!-- 6. FRASES MODELO DEL NIVEL (ESCUCHA Y REPITE) -->
                 <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: var(--cyber-warn); margin-bottom: 8px;">
-                        ⚠️ 3. ERRORES TÍPICOS DE ESTE NIVEL
+                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span>💬 6. FRASES MODELO DEL NIVEL</span>
+                        <span style="font-size: 0.7rem; color: #BBB; font-family: 'Segoe UI', sans-serif; font-weight: normal;">(Audio nativo integrado)</span>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.mistakes.map(m => `
-                            <div style="background: rgba(255,184,0,0.06); border: 1px solid rgba(255,184,0,0.2); border-radius: 8px; padding: 10px 12px;">
-                                <div style="color: #ff6b81; font-size: 0.82rem; text-decoration: line-through;">❌ ${m.error}</div>
-                                <div style="color: var(--cyber-ok); font-size: 0.84rem; font-weight: 600; margin-top: 3px;">✅ Corrección: ${m.fix}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-
-                <!-- 4. MODISMOS Y EXPRESIONES -->
-                <div style="margin-top: 6px;">
-                    <div style="font-family: 'Orbitron', sans-serif; font-size: 0.88rem; font-weight: bold; color: #a78bfa; margin-bottom: 8px;">
-                        💬 4. EXPRESIONES Y MODISMOS (IDIOMS)
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px;">
-                        ${cur.idioms.map(item => `
-                            <div style="background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.25); border-radius: 8px; padding: 10px 12px;">
-                                <strong style="color: #c4b5fd; font-size: 0.88rem;">"${item.phrase}"</strong>
-                                <div style="font-size: 0.82rem; color: #DDD; margin-top: 3px;">Significado: ${item.meaning}</div>
+                        ${cur.modelPhrases.map(mp => `
+                            <div style="background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.25); border-radius: 8px; padding: 10px 12px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                                    <strong style="color: #FFF; font-size: 0.86rem; font-style: italic;">"${mp.phrase}"</strong>
+                                    <button onclick="game.speakExampleText(decodeURIComponent('${encodeURIComponent(mp.phrase)}'))" class="tech" style="padding: 3px 8px; border-radius: 6px; border: 1px solid #38bdf8; background: rgba(56,189,248,0.2); color: #FFF; font-size: 0.8rem; cursor: pointer;" title="Escuchar frase">🔊</button>
+                                </div>
+                                <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 3px;">Significado: ${mp.meaning}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -1420,10 +2357,29 @@ Respond ONLY with a valid JSON object matching this schema:
             `;
         },
 
+        showGrammarConsultation: async () => {
+            const modal = document.getElementById('modal-grammar-plus');
+            if (!modal) return;
+
+            if (game.selectedGrammarLevelIdx === null || game.selectedGrammarLevelIdx === undefined) {
+                game.selectedGrammarLevelIdx = db.academy_level || 0;
+            }
+
+            modal.classList.remove('hidden');
+            history.pushState({ modal: 'grammar-plus' }, null, '#grammar-plus');
+            game.renderGrammarContent();
+        },
+
         closeGrammarConsultation: (skipHistoryBack = false) => {
             const modal = document.getElementById('modal-grammar-plus');
             if (modal) modal.classList.add('hidden');
-            window.speechSynthesis.cancel();
+            if (typeof audio !== 'undefined' && audio.stopSpeech) {
+                audio.stopSpeech();
+            } else if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            game.isGrammarSpeaking = false;
+            game.updateGrammarSpeakBtn();
             if (!skipHistoryBack && history.state && history.state.modal === 'grammar-plus') {
                 history.back();
             }
@@ -1431,11 +2387,40 @@ Respond ONLY with a valid JSON object matching this schema:
 
         speakGrammarSummary: () => {
             if (!game.lastGrammarTextToSpeak) return;
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(game.lastGrammarTextToSpeak);
-            u.lang = 'es-ES';
-            u.rate = 0.95;
-            window.speechSynthesis.speak(u);
+
+            if (game.isGrammarSpeaking) {
+                if (typeof audio !== 'undefined' && audio.stopSpeech) {
+                    audio.stopSpeech();
+                } else if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+                game.isGrammarSpeaking = false;
+                game.updateGrammarSpeakBtn();
+                return;
+            }
+
+            game.isGrammarSpeaking = true;
+            game.updateGrammarSpeakBtn();
+
+            if (typeof audio !== 'undefined' && audio.speakNative) {
+                audio.speakNative(game.lastGrammarTextToSpeak, currentLang, () => {
+                    game.isGrammarSpeaking = false;
+                    game.updateGrammarSpeakBtn();
+                });
+            } else if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(game.lastGrammarTextToSpeak);
+                u.lang = LANGUAGES[currentLang]?.speechLang || 'en-US';
+                u.onend = () => {
+                    game.isGrammarSpeaking = false;
+                    game.updateGrammarSpeakBtn();
+                };
+                u.onerror = () => {
+                    game.isGrammarSpeaking = false;
+                    game.updateGrammarSpeakBtn();
+                };
+                window.speechSynthesis.speak(u);
+            }
         },
 
         openYouGlishDirect: () => {

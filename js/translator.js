@@ -195,17 +195,27 @@ RULES:
         if (badgeFlag) badgeFlag.src = langInfo.flag || 'flag_en.jpg';
         if (badgeName) badgeName.innerText = `${langInfo.name.toUpperCase()} (Interlocutor)`;
 
-        // Entrar en modo apaisado nativo usando Fullscreen API + Screen Orientation API
-        translator.enterFullscreenLandscape();
-
-        // Listeners de respaldo por si cambia la orientación manualmente
+        // Listeners de orientación (resize, orientationchange y screen.orientation change)
         window.removeEventListener('resize', translator.checkOrientation);
         window.removeEventListener('orientationchange', translator.checkOrientation);
+        if (screen.orientation) {
+            screen.orientation.removeEventListener('change', translator.checkOrientation);
+        }
+
         window.addEventListener('resize', translator.checkOrientation);
         window.addEventListener('orientationchange', () => {
             setTimeout(translator.checkOrientation, 50);
             setTimeout(translator.checkOrientation, 250);
         });
+        if (screen.orientation) {
+            screen.orientation.addEventListener('change', () => {
+                setTimeout(translator.checkOrientation, 50);
+                setTimeout(translator.checkOrientation, 250);
+            });
+        }
+
+        // Comprobación inicial de orientación
+        translator.checkOrientation();
 
         translator.renderConversationStreams();
         translator.updateStatusBadge('ready');
@@ -213,7 +223,7 @@ RULES:
         translator.syncSpeakAloudUI();
     },
 
-    // ====== LANDSCAPE NATIVO (Android / iOS / Windows) ======
+    // ====== FULLSCREEN LANDSCAPE NATIVO (Android / iOS / Windows) ======
     enterFullscreenLandscape: async () => {
         const transView = document.getElementById('view-translator');
         if (!transView) return;
@@ -222,38 +232,42 @@ RULES:
             (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
         if (!isMobileDevice) {
-            // En PC: simplemente asegurarse de que ocupa toda la ventana
+            // En PC: asegurarse de que ocupa toda la ventana en modo apaisado estándar sin fullscreen forzado
             translator.applyDesktopLayout(transView);
             return;
         }
 
-        // --- ESTRATEGIA MÓVIL ---
-        // Paso 1: Intentar Screen Orientation API (fuerza apaisado nativamente)
-        //         En PWAs standalone esto funciona sin fullscreen
-        // Paso 2: Si falla, usar rotación CSS como fallback
-        // NOTA: NO usamos Fullscreen API porque bloquea la reproducción de audio (TTS)
+        // --- ESTRATEGIA MÓVIL (NATIVA + FALLBACK) ---
+        // 1. Fullscreen API nativa (en transView si es posible, o document.documentElement)
+        const fsTarget = transView || document.documentElement;
+        try {
+            if (fsTarget.requestFullscreen) {
+                await fsTarget.requestFullscreen({ navigationUI: 'hide' });
+            } else if (document.documentElement.requestFullscreen) {
+                await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+            } else if (fsTarget.webkitRequestFullscreen) {
+                await fsTarget.webkitRequestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                await document.documentElement.webkitRequestFullscreen();
+            }
+        } catch (e) {
+            console.log('[Translator] Fullscreen API no disponible o denegada:', e.message);
+        }
 
-        let orientationLocked = false;
+        // 2. Screen Orientation API nativa (bloquea a apaisado nativamente en el SO)
         if (screen.orientation && screen.orientation.lock) {
             try {
                 await screen.orientation.lock('landscape');
-                orientationLocked = true;
                 console.log('[Translator] Orientación bloqueada a landscape nativamente');
             } catch (e) {
-                console.log('[Translator] No se pudo bloquear orientación:', e.message);
+                console.log('[Translator] Orientation lock no soportada o bloqueada por SO:', e.message);
             }
         }
 
-        if (orientationLocked) {
-            // El SO rotó la pantalla nativamente → layout normal a pantalla completa
-            translator.applyDesktopLayout(transView);
-            // Esperar a que el navegador actualice las dimensiones tras la rotación nativa
-            setTimeout(() => translator.applyDesktopLayout(transView), 100);
-            setTimeout(() => translator.applyDesktopLayout(transView), 300);
-        } else {
-            // Fallback: rotación CSS manual
-            translator.applyCSSRotation(transView);
-        }
+        // 3. Comprobar orientación inmediatamente y tras la animación de giro
+        translator.checkOrientation();
+        setTimeout(translator.checkOrientation, 150);
+        setTimeout(translator.checkOrientation, 350);
     },
 
     // Salir de fullscreen y desbloquear orientación (al salir del traductor)
@@ -274,30 +288,41 @@ RULES:
     // Layout estándar para PC o móvil en landscape nativo
     applyDesktopLayout: (transView) => {
         transView.classList.remove('apaisado-forced');
-        transView.style.position = 'fixed';
-        transView.style.top = '0';
-        transView.style.left = '0';
-        transView.style.right = '0';
-        transView.style.bottom = '0';
-        transView.style.inset = '0';
-        transView.style.width = '100vw';
-        transView.style.height = '100dvh';
-        transView.style.maxWidth = '100vw';
-        transView.style.maxHeight = '100dvh';
-        transView.style.transform = 'none';
-        transView.style.transformOrigin = '';
-        transView.style.margin = '0';
-        transView.style.boxSizing = 'border-box';
+        // Limpiar todas las propiedades inline que applyCSSRotation pudo fijar
+        transView.style.removeProperty('top');
+        transView.style.removeProperty('left');
+        transView.style.removeProperty('right');
+        transView.style.removeProperty('bottom');
+        transView.style.removeProperty('width');
+        transView.style.removeProperty('height');
+        transView.style.removeProperty('max-width');
+        transView.style.removeProperty('max-height');
+        transView.style.removeProperty('transform');
+        transView.style.removeProperty('transform-origin');
+        transView.style.removeProperty('margin');
+
+        transView.style.setProperty('position', 'fixed', 'important');
+        transView.style.setProperty('inset', '0', 'important');
+        transView.style.setProperty('top', '0', 'important');
+        transView.style.setProperty('left', '0', 'important');
+        transView.style.setProperty('right', '0', 'important');
+        transView.style.setProperty('bottom', '0', 'important');
+        transView.style.setProperty('width', '100vw', 'important');
+        transView.style.setProperty('height', '100dvh', 'important');
+        transView.style.setProperty('max-width', '100vw', 'important');
+        transView.style.setProperty('max-height', '100dvh', 'important');
+        transView.style.setProperty('transform', 'none', 'important');
+        transView.style.setProperty('box-sizing', 'border-box', 'important');
     },
 
-    // Fallback: rotación CSS 90° para móviles que no soportan orientation lock
+    // Fallback: rotación CSS 90° para móviles en vertical que no rotaron por SO
     applyCSSRotation: (transView) => {
         transView.classList.add('apaisado-forced');
-        // Usar screen.availWidth/Height para dimensiones reales del dispositivo
-        const screenW = window.screen.availWidth || window.screen.width || window.innerWidth;
-        const screenH = window.screen.availHeight || window.screen.height || window.innerHeight;
-        const longSide = Math.max(screenW, screenH);
-        const shortSide = Math.min(screenW, screenH);
+        // Dimensiones CSS reales del viewport
+        const vW = window.innerWidth || document.documentElement.clientWidth || 390;
+        const vH = window.innerHeight || document.documentElement.clientHeight || 844;
+        const longSide = Math.max(vW, vH);
+        const shortSide = Math.min(vW, vH);
 
         transView.style.setProperty('position', 'fixed', 'important');
         transView.style.setProperty('top', '50%', 'important');
@@ -307,8 +332,8 @@ RULES:
         transView.style.setProperty('inset', 'auto', 'important');
         transView.style.setProperty('width', longSide + 'px', 'important');
         transView.style.setProperty('height', shortSide + 'px', 'important');
-        transView.style.setProperty('max-width', 'none', 'important');
-        transView.style.setProperty('max-height', 'none', 'important');
+        transView.style.setProperty('max-width', longSide + 'px', 'important');
+        transView.style.setProperty('max-height', shortSide + 'px', 'important');
         transView.style.setProperty('transform', 'translate(-50%, -50%) rotate(90deg)', 'important');
         transView.style.setProperty('transform-origin', 'center center', 'important');
         transView.style.setProperty('margin', '0', 'important');
@@ -342,26 +367,22 @@ RULES:
         const transView = document.getElementById('view-translator');
         if (!transView || transView.classList.contains('hidden')) return;
 
-        const isPortrait = window.innerHeight > window.innerWidth;
         const isMobileDevice = /Android|iPhone|iPod|iPad/i.test(navigator.userAgent) ||
             (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
         if (!isMobileDevice) {
             // PC: layout normal sin rotación
             translator.applyDesktopLayout(transView);
-        } else if (isPortrait) {
-            // Móvil en vertical: intentar lock nativo, si no → rotación CSS
-            if (screen.orientation && screen.orientation.type &&
-                screen.orientation.type.startsWith('landscape')) {
-                // El SO ya está en landscape (orientation lock funcionó)
-                translator.applyDesktopLayout(transView);
-            } else {
-                // Fallback CSS
-                translator.applyCSSRotation(transView);
-            }
-        } else {
-            // Móvil en horizontal: layout normal
+            return;
+        }
+
+        // Comprobación física real: ¿la anchura es mayor que la altura?
+        const isLandscape = window.innerWidth > window.innerHeight;
+
+        if (isLandscape) {
             translator.applyDesktopLayout(transView);
+        } else {
+            translator.applyCSSRotation(transView);
         }
     },
 
@@ -1200,9 +1221,7 @@ RULES:
         const vocabModal = document.getElementById('modal-vocab-ai-mode');
         if (vocabModal) vocabModal.classList.add('hidden');
 
-        if (screen.orientation && screen.orientation.unlock) {
-            try { screen.orientation.unlock(); } catch(e){}
-        }
+        translator.exitFullscreenMode();
         if (translator.wakeLock) {
             try { translator.wakeLock.release(); } catch(e){}
             translator.wakeLock = null;

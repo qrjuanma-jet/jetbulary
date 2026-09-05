@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jetbulary-cache-v145';
+const CACHE_NAME = 'jetbulary-cache-v149';
 const PRECACHE_URLS = [
     './',
     'index.html',
@@ -16,6 +16,7 @@ const PRECACHE_URLS = [
     'js/game.js',
     'js/conversation.js',
     'js/translator.js',
+    'js/ebooks.js',
     'flag_sp.jpg',
     'flag_en.jpg',
     'flag_de.jpg',
